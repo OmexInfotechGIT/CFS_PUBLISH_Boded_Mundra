@@ -87,7 +87,7 @@
                                     <td>@Model.MyDatatable.Rows[i]["Size"]</td>
                                     <td>@Model.MyDatatable.Rows[i]["Line"]</td>
                                     <td class="freezeLastColumnwithWhite">
-                                        @if (ViewBag.gblBlnEdit &&  Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsMovementDone"]))
+                                        @if (ViewBag.gblBlnEdit &&  !Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsLoadedOut"]))
                                         {
                                         <a href="@Url.Action("Action", "trnExportCLP" , new { id=Model.MyDatatable.Rows[i]["trnExportCLPID"], pg=Model.pagger.CurrentPage, search=Model.pagger.Search, doaction="edit" , @IsSearch=true, @SearchContainerID=Model.MyDatatable.Rows[i]["trnexportstufingwoContainerDetailsID"],@SearchContainerNo =Model.MyDatatable.Rows[i]["ContNo"]})"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
                                         }
