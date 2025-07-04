@@ -1,0 +1,273 @@
+﻿@model CFS.Models.MstrWeighmentSlip
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Weighment Slip";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Weighment Slip";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrWeighmentSlip","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "MstrWeighmentSlip", FormMethod.Post))
+                    {
+
+                        <div class="row">
+                            <div class="col-md-6 margin-bottom">
+                                <div class="form-inline">
+                                    @Html.LabelFor(Model => Model.Equipment)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Equipment, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.RadioButtonFor(Model => Model.Equipment, "Truck", new { @id = "rbEquipmentTruck", @name = "rbEquipment", @class = "", @checked = "checked" })<b>&nbsp;&nbsp;&nbsp;</b>
+                                    @Html.LabelFor(Model => Model.Equipment, "Truck", new { @for = "rbEquipmentTruck", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+
+                                    @Html.RadioButtonFor(Model => Model.Equipment, "Truck", new { @id = "rbEquipmentReachStackerforcontainer", @name = "rbEquipment", @class = "form-control" })<b>&nbsp;&nbsp;&nbsp;</b>
+                                    @Html.LabelFor(Model => Model.Equipment, "Reach Stacker for container", new { @for = "rbEquipmentTruckReachStackerforcontainer", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                </div>
+                            </div>
+                            <div class="col-md-6 margin-bottom">
+                                <div class="form-inline">
+                                    @Html.LabelFor(Model => Model.WeighmentMode)
+                                    @Html.DisplayFor(Model => Model.WeighmentMode)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 margin-bottom">
+                                <div class="form-inline">
+                                    @Html.LabelFor(Model => Model.TrailerNo, new { @for = "txtTrailerNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TrailerNo, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.TrailerNo, new { @id = "txtTrailerNo", @name = "txtTrailerNo", @class = "form-control", @placeholder = "Enter Trailer No" })
+                                    <button type="submit" class="btn btn-primary" name="submit" value="Go">Go</button>
+                                </div>
+                            </div>
+                            <div class="col-md-4 margin-bottom">
+                                <div class="form-inline">
+                                    @Html.LabelFor(Model => Model.ContainerNo, new { @for = "txtContainerNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerNo, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.ContainerNo, new { @id = "txtContainerNo", @name = "txtContainerNo", @class = "form-control", @placeholder = "Enter Container No" })
+                                    <button type="submit" class="btn btn-primary" name="submit" value="Go">Go</button>
+                                </div>
+                            </div>
+                            <div class="col-md-4 margin-bottom">
+                                <div class="form-inline">
+                                    @Html.LabelFor(Model => Model.WeighmentInvoiceType)
+                                    @Html.DisplayFor(Model => Model.WeighmentInvoiceType)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 margin-bottom">
+                                <div class="form-inline">
+                                    @Html.LabelFor(Model => Model.CashWeighmentInvoiceNo)
+                                    @Html.DisplayFor(Model => Model.CashWeighmentInvoiceNo)
+                                </div>
+                            </div>
+                            <div class="col-md-4 margin-bottom">
+                                <div class="form-inline">
+                                    @Html.LabelFor(Model => Model.FirstWeighmentUser)
+                                    @Html.DisplayFor(Model => Model.FirstWeighmentUser)
+                                </div>
+                            </div>
+                            <div class="col-md-4 margin-bottom">
+                                <div class="form-inline">
+                                    @Html.LabelFor(Model => Model.SecondWeighmentUser)
+                                    @Html.DisplayFor(Model => Model.SecondWeighmentUser)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6  margin-bottom">
+                                <div class="form-inline">
+                                    @Html.LabelFor(Model => Model.Mode)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Equipment, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.RadioButtonFor(Model => Model.Mode, "First", new { @id = "rbModeFirst", @name = "rbMode", @class = "", @checked = "checked" })<b>&nbsp;&nbsp;&nbsp;</b>
+                                    @Html.LabelFor(Model => Model.Mode, "First", new { @for = "rbModeFirst", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+
+                                    @Html.RadioButtonFor(Model => Model.Mode, "Second", new { @id = "rbModeSecond", @name = "rbMode", @class = "form-control" })<b>&nbsp;&nbsp;&nbsp;</b>
+                                    @Html.LabelFor(Model => Model.Mode, "Second", new { @for = "rbModeSecond", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2  margin-bottom">
+                                <div class="form-inline">
+                                    @Html.LabelFor(Model => Model.ContNo)
+                                    @Html.DisplayFor(Model => Model.ContNo)
+                                </div>
+                            </div>
+                            <div class="col-md-2  margin-bottom">
+                                <div class="form-inline">
+                                    @Html.LabelFor(Model => Model.Size)
+                                    @Html.DisplayFor(Model => Model.Size)
+                                </div>
+                            </div>
+                            <div class="col-md-2  margin-bottom">
+                                <div class="form-inline">
+                                    @Html.LabelFor(Model => Model.Type)
+                                    @Html.DisplayFor(Model => Model.Type)
+                                </div>
+                            </div>
+                            <div class="col-md-2  margin-bottom">
+                                <div class="form-inline">
+                                    @Html.LabelFor(Model => Model.CargoType)
+                                    @Html.DisplayFor(Model => Model.CargoType)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-md-6 margin-bottom">
+                                <div class="form-inline">
+                                    @Html.LabelFor(Model => Model.WeighmentScaleWeight)
+                                    @Html.DisplayFor(Model => Model.WeighmentScaleWeight)
+                                </div>
+                            </div>
+                            <div class="col-md-6 margin-bottom">
+                                <div class="row">
+                                    <div class="col-md-12 margin-bottom">
+                                        <div class="form-inline">
+                                            @Html.LabelFor(Model => Model.GrossWeight)
+                                            @Html.DisplayFor(Model => Model.GrossWeight)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 margin-bottom">
+                                        <div class="form-inline">
+                                            @Html.LabelFor(Model => Model.TruckTareWeight)
+                                            @Html.DisplayFor(Model => Model.TruckTareWeight)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 margin-bottom">
+                                        <div class="form-inline">
+                                            @Html.LabelFor(Model => Model.ContainerTareWeight)
+                                            @Html.DisplayFor(Model => Model.ContainerTareWeight)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 margin-bottom">
+                                        <div class="form-inline">
+                                            @Html.LabelFor(Model => Model.NetWeight)
+                                            @Html.DisplayFor(Model => Model.NetWeight)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 margin-bottom">
+                                <div class="form-inline">
+                                    @Html.LabelFor(Model => Model.TranscationType)
+                                    @Html.DisplayFor(Model => Model.TranscationType)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12"  style="overflow:scroll">
+                                <table style="white-space: nowrap;" class="table table-responsive">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                NOC No:
+                                            </th>
+                                            <th>
+                                                LOT NO
+                                            </th>
+                                            <th>
+                                                Shiiping Bill no/BOE No.
+                                            </th>
+                                            <th>
+                                                Shiping Bill Date/ BOE Date
+                                            </th>
+                                            <th>
+                                                Invoice Number
+                                            </th>
+                                            <th>
+                                                Invoice Date
+                                            </th>
+                                            <th>
+                                                CHA/BROKER
+                                            </th>
+                                            <th>
+                                                IMPORTER/PARTY
+                                            </th>
+                                            <th>
+                                                BULK/NB STATUS
+                                            </th>
+                                            <th>
+                                                CARGO DESC
+                                            </th>
+                                            <th>
+                                                PACKAGE TYPE
+                                            </th>
+                                            <th>
+                                                NO OF PKGS
+                                            </th>
+                                            <th>
+                                                NO.OF PIECES
+                                            </th>
+                                            <th>
+                                                WEIGHT (KGS)
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Test111</td>
+                                            <td>Test111</td>
+                                            <td>Test111</td>
+                                            <td>Test111</td>
+                                            <td>Test111</td>
+                                            <td>Test111</td>
+                                            <td>Test111</td>
+                                            <td>Test111</td>
+                                            <td>Test111</td>
+                                            <td>Test111</td>
+                                            <td>Test111</td>
+                                            <td>Test111</td>
+                                            <td>Test111</td>
+                                            <td>Test111</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrWeighmentSlip.js")"></script>
+
+

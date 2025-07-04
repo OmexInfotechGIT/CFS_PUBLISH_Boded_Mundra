@@ -1,0 +1,112 @@
+﻿@model CFS.Models.MstrChamber  
+@{
+    ViewBag.Title = "View Chamber Details";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (ViewBag.gblBlnView)
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">Chamber Code: @Model.ChamberCode</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrChamber","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrChamber", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>Building Name : </label> <span>@Model.BuildingName</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Chamber Code : </label> <span>@Model.ChamberCode</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Chamber Name : </label> <span>@Model.ChamberName</span>
+                            </div>
+                            <div class="col-sm-12" style="padding-left:0px;">
+                                <div class="col-sm-2" style="padding-left:0px;">
+                                    <div class="form-group">
+                                        <label>Length : </label> <span>@Model.Length</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label>Width : </label> <span>@Model.Width</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label>Height : </label> <span>@Model.Height</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-1">
+                                    <label>=</label>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label>CFT : </label> <span>@Model.CFT</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12" style="padding-left:0px;">
+                                <div class="col-sm-2" style="padding-left:0px;">
+                                    <div class="form-group">
+                                        <label>Actual Size : </label> <span>@Model.ActualSize</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label>Useable Size: </label> <span>@Model.UseableSize</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label>Floor : </label> <span>@Model.Floor</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-1">
+                                    <label>=</label>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label>Square Feet : </label> <span>@Model.SquareFeet</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>No. of Pallet : </label> <span>@Model.NoOfPallet</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Status: </label> <span>@(Model.IsActive == true ? "Active" : "InActive")</span>
+                            </div>
+                            @if (!Model.IsActive)
+                            {
+                                <div class="form-group">
+                                    <label>InActivate Reason: </label> <span>@Model.InActiveReason</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

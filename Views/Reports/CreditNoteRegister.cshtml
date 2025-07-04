@@ -1,0 +1,27 @@
+﻿@{    
+    CFS.Models.ReportsModal ReportsModal = new CFS.Models.ReportsModal();
+    if (ViewBag.ReportsModal != null)
+    {
+        ReportsModal = ViewBag.ReportsModal;
+    }
+    ViewBag.Title = "Credit Note Register";
+}
+@using (Html.BeginForm("CreditNoteRegister", "Reports", FormMethod.Post))
+{
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-body">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => ReportsModal.CreditNote, new { @for = "CreditNote" })
+                        @Html.DropDownListFor(Model => ReportsModal.CreditNote, ReportsModal.DDLCreditNote, "SELECT",new { @id = "CreditNote", @name = "CreditNote", @class = "form-control" })
+                    </div>
+                </div>
+                @Html.Partial("_ReportsModalDate")
+                @Html.Partial("_ReportsModalSearchClearButton")
+            </div>
+        </div>
+    </div>
+}
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/ReportsModal.js")"></script>
+

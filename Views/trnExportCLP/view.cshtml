@@ -1,0 +1,278 @@
+﻿@model CFS.Models.trnExportCLP
+@{
+    ViewBag.Title = "View Export CLP";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+@using (Html.BeginForm("Action", "trnExportCLP", FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+{
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-left">
+                        <div style="display: inline-flex">
+                            <h4>
+                                <b>
+                                    <span class="badge bg-light-blue" style="font-size:15px;">CLP Reference No: @Model.trnExportCLPNo</span>
+                                    <span class="badge bg-light-blue" style="font-size:15px;">CLP Reference Date : @Model.CreatedDate</span>
+                                    <span class="badge bg-light-blue" style="font-size:15px;">User : @Model.CreatedUser</span>
+                                    <span class="badge bg-light-blue" style="font-size:15px;">StuffWoNo : @Model.StuffingWONo</span>
+                                    <span class="badge bg-light-blue" style="font-size:15px;">StuffWoDate : @Model.StuffingWODate</span>
+                                </b>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <a href="@Url.Action("Index", "trnExportCLP", new { pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12">
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.IsSearch)
+                        <input type="hidden" id="trnExportCLPID" name="trnExportCLPID" value="@Model.trnExportCLPID" />
+                        <input type="hidden" id="trnExportStufingWOContainerDetailsID" name="trnExportStufingWOContainerDetailsID" value="@Model.trnExportStufingWOContainerDetailsID" />
+
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                        <div id="dvLabelDetails">
+
+                        </div>
+                        
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.ContNo) : <span style="margin-right:50px">@Model.ContNo</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.Size) : <span id="CycleName">@Model.Size</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.Type, new { @for = "Type" }) : <span>@Model.Type</span>
+                        </div>
+
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.VCNNo, new { @for = "VCNNo" }) : <span>@Model.VCNNo</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.VOYNo, new { @for = "VOYNo" }) : <span>@Model.VOYNo</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.VesselName, new { @for = "VesselName" }) : <span>@Model.VesselName</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.CutoffDate, new { @for = "CutoffDate" }) : <span>@Model.CutoffDate</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.AgentSealNo, new { @for = "AgentSealNo" }) : <span>@Model.AgentSealNo</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.CustomsSealNo, new { @for = "CustomsSealNo" }) : <span>@Model.CustomsSealNo</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.CLPBeginDateAndTime, new { @for = "CLPBeginDateAndTime" }) : <span>@Model.CLPBeginDateAndTime</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.CLPEndDateAndTime, new { @for = "CLPEndDateAndTime" }) : <span>@Model.CLPEndDateAndTime</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.Contractor) : <span id="Contractor">@Model.Contractor</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.Surveyor) : <span id="Surveyor">@Model.Surveyor</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.CargoType, new { @for = "CargoType" }) : <span id="CargoType">@Model.CargoType</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.BillCommodity, new { @for= "BillCommodity" }) : <span id="BillCommodity">@Model.BillCommodity</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.ShortShipmentPackages) : <span id="ShortShipmentPackages">@Model.ShortShipmentPackages</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.ShortShipmentPieces) : <span id="ShortShipmentPieces">@Model.ShortShipmentPieces</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.ShortShipmentWeight) : <span id="ShortShipmentWeight">@Model.ShortShipmentWeight</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" })  : <span id="GateInType">@Model.Remarks</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <hr />
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header with-border" data-widget="collapse">
+                    <h4><b>SB Details</b></h4>
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12" style="overflow:scroll">
+                        <table id="SBDetails" class="table table-bordered table-hover" style="white-space: nowrap;">
+                            <thead>
+                                <tr>
+                                    <th>SB No</th>
+                                    <th>SB Date</th>
+                                    <th>Invoice Number</th>
+                                    <th>Invoice Date</th>
+                                    <th>Bulk/Non-Bulk</th>
+                                    <th>CHA/Customer</th>
+                                    <th>Forwarder</th>
+                                    <th>Exporter</th>
+                                    <th>Cargo</th>
+                                    <th>FOB</th>
+                                    <th>Cargo Type</th>
+                                    <th>Bill Commodity</th>
+                                    <th>Sub Commodity</th>
+                                    <th>POD</th>
+                                    <th>Class</th>
+                                    <th>UN</th>
+                                    <th>Temp</th>
+                                    <th>Declared Packages</th>
+                                    <th>Declared Pieces</th>
+                                    <th>Declared Weight</th>
+                                    <th>Stuff Request Packages</th>
+                                    <th>Stuff Request Pieces</th>
+                                    <th>Stuff Request Weight</th>
+                                    <th>CLP Balance Packages</th>
+                                    <th>CLP Balance Pieces</th>
+                                    <th>CLP Balance Weight</th>
+                                    <th>CLP Packages</th>
+                                    <th>CLP Pieces</th>
+                                    <th>CLP Weight</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblSBDetails">
+                                @if (Model.dtSBDetails != null && Model.dtSBDetails.Rows.Count > 0)
+                                {
+                                    for (int i = 0; i < Model.dtSBDetails.Rows.Count; i++)
+                                    {
+                                        decimal CLPBalPkgs = 0, CLPBalPcs = 0, CLPBalWt = 0;
+
+                                        if (!string.IsNullOrEmpty(Convert.ToString(Model.dtSBDetails.Rows[i]["NOOFPKGS"])) && !string.IsNullOrEmpty(Convert.ToString(Model.dtSBDetails.Rows[i]["CLPPackages"])))
+                                        {
+                                            CLPBalPkgs = Convert.ToDecimal(Model.dtSBDetails.Rows[i]["NOOFPKGS"]) - Convert.ToDecimal(Model.dtSBDetails.Rows[i]["CLPPackages"]);
+                                        }
+                                        if (!string.IsNullOrEmpty(Convert.ToString(Model.dtSBDetails.Rows[i]["NOOFPCS"])) && !string.IsNullOrEmpty(Convert.ToString(Model.dtSBDetails.Rows[i]["CLPPieces"])))
+                                        {
+                                            CLPBalPcs = Convert.ToDecimal(Model.dtSBDetails.Rows[i]["NOOFPCS"]) - Convert.ToDecimal(Model.dtSBDetails.Rows[i]["CLPPieces"]);
+                                        }
+                                        if (!string.IsNullOrEmpty(Convert.ToString(Model.dtSBDetails.Rows[i]["NOOFWT"])) && !string.IsNullOrEmpty(Convert.ToString(Model.dtSBDetails.Rows[i]["CLPWeight"])))
+                                        {
+                                            CLPBalWt = Convert.ToDecimal(Model.dtSBDetails.Rows[i]["NOOFWT"]) - Convert.ToDecimal(Model.dtSBDetails.Rows[i]["CLPWeight"]);
+                                        }
+
+                                        decimal CLPPkgs = 0, CLPPcs = 0, CLPWt = 0;
+                                        if (!string.IsNullOrEmpty(Convert.ToString(Model.dtSBDetails.Rows[i]["CLPPackages"])))
+                                        {
+                                            CLPPkgs = Convert.ToDecimal(Model.dtSBDetails.Rows[i]["CLPPackages"]);
+                                        }
+                                        if (!string.IsNullOrEmpty(Convert.ToString(Model.dtSBDetails.Rows[i]["CLPPieces"])))
+                                        {
+                                            CLPPcs = Convert.ToDecimal(Model.dtSBDetails.Rows[i]["CLPPieces"]);
+                                        }
+                                        if (!string.IsNullOrEmpty(Convert.ToString(Model.dtSBDetails.Rows[i]["CLPWeight"])))
+                                        {
+                                            CLPWt = Convert.ToDecimal(Model.dtSBDetails.Rows[i]["CLPWeight"]);
+                                        }
+
+
+
+                                <tr>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["SBNo"])</td>
+                                    @if (!string.IsNullOrEmpty(Model.dtSBDetails.Rows[i]["SBDate"].ToString()))
+                                    {
+                                        <td>@CFS.Com.ClsCommon.ConvertDateNullToBlank(Convert.ToDateTime(Model.dtSBDetails.Rows[i]["SBDate"]))</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["INVNo"])</td>
+                                    @if (!string.IsNullOrEmpty(Model.dtSBDetails.Rows[i]["InvDate"].ToString()))
+                                    {
+                                        <td>@CFS.Com.ClsCommon.ConvertDateNullToBlank(Convert.ToDateTime(Model.dtSBDetails.Rows[i]["InvDate"]))</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }                                    
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["BULKSTATUS"])</td>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["CHAName"])</td>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["ForwarderName"])</td>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["ExporterName"])</td>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["CARGODESC"])</td>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["FOB"])</td>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["CargoType"])</td>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["GroupCommodity"])</td>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["COMMODITYNAME"])</td>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["POD"])</td>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["IMO"])</td>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["UN"])</td>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["Temp"])</td>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["NoOfPackages"])</td>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["NoOfPieces"])</td>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["Weight"])</td>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["NOOFPKGS"])</td>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["NOOFPCS"])</td>
+                                    <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["NOOFWT"])</td>
+                                    <td>@CLPBalPkgs.ToString("0.00")</td>
+                                    <td>@CLPBalPcs.ToString("0.00")</td>
+                                    <td>@CLPBalWt.ToString("0.00")</td>
+                                    <td>@CLPPkgs.ToString("0.00")</td>
+                                    <td>@CLPPcs.ToString("0.00")</td>
+                                    <td>@CLPWt.ToString("0.00")</td>
+                                    <td style="text-align:center;">
+                                        <a style=" cursor: pointer;" href="@Url.Action("Index","trnExportCLPBOEItems"
+                                                                                                        , new {  @trnExportCLPID=Model.trnExportCLPID
+                                                                                                                    ,@trnDocumentLotDetailsID = Model.dtSBDetails.Rows[i]["trnDocumentLotDetailsID"]
+                                                                                                                    ,@BOENo = Model.dtSBDetails.Rows[i]["SBNo"]
+                                                                                                                    ,@trnExportDocumentDeclarationLotDetailsID = Model.dtSBDetails.Rows[i]["trnExportDocumentDeclarationLotDetailsID"]
+                                                                                                                    ,@trnExportDocumentDeclarationID = Convert.ToString(Model.dtSBDetails.Rows[i]["trnExportDocumentDeclarationID"])
+                                                                                                                    ,@WHLocation =""
+                                                                                                                    ,@WHLocationID = "0"
+                                                                                                                    ,@WHPackages=Model.dtSBDetails.Rows[i]["NOOFPKGS"]
+                                                                                                                    ,@WHPieces=Model.dtSBDetails.Rows[i]["NOOFPCS"]
+                                                                                                                    ,@WHWeight=Model.dtSBDetails.Rows[i]["NOOFWT"]
+                                                                                                                    ,@trnDocumentID=Model.dtSBDetails.Rows[i]["trnDocumentID"]
+                                                                                                                    ,@ContNo=Model.ContNo
+                                                                                                                    ,@contSize=Model.Size
+                                                                                                                    ,@contType=Model.Type
+                                                                                                                    ,@cargoType=Model.CargoType
+                                                                                                                    ,@trnexportstufingwoSBDetailsID =  Model.dtSBDetails.Rows[i]["trnexportstufingwoSBDetailsID"]
+                                                                                                                    ,@IsBulk=Model.dtSBDetails.Rows[i]["BULKSTATUS"]
+                                                                                                                    ,@trnExBondDocumentEntryDetailsID=Model.dtSBDetails.Rows[i]["trnExBondDocumentEntryDetailsID"]
+                                                                                                                    ,@IsView=true})" target="_blank" class="btn btn-primary"><i class="fa fa-plus"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <a><i data-toggle="modal" data-target="#ReExportDetails" onclick="GetReExportDetails(@Model.dtSBDetails.Rows[i]["trnExportDocumentDeclarationLotDetailsID"])" title="ReExport Details" class="fa fa-arrows-alt fa-spin" style="font-size: x-large; cursor: pointer; vertical-align: middle;color:#3c8dbc"></i></a>
+                                        <a target="_blank" href="@Url.Action("GenerateAndDisplayLotDetailsReport", "trnExportCLP", new { id = Model.trnExportCLPID,trnExportDocumentDeclarationLotDetailsID = Model.dtSBDetails.Rows[i]["trnExportDocumentDeclarationLotDetailsID"], format = "pdf" })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                    </td>
+                                </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+}
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnExportCLP.js")"></script>

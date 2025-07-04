@@ -1,0 +1,512 @@
+﻿@model CFS.Models.trnContainerDestuffWorkOrder
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    bool IsEdit = false;
+    if (Model.doaction == "edit")
+    {
+        IsEdit = true;
+        ViewBag.Title = "Update Container Destuffing Work Order";
+        if (!ViewBag.gblBlnEdit && !ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Container Destuffing Work Order";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    Model.IsviewConf = false;
+}
+@using (Html.BeginForm("Action", "trnContainerDestuffWorkOrder", FormMethod.Post))
+{
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        @if (Model.doaction == "edit" && Model.IsFinished)
+                        {
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <span class="badge bg-light-blue" style="font-size:15px;">Container Destuffing WO No : @Model.trnContainerDestuffWorkOrderNo</span> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                    <span class="badge bg-light-blue" style="font-size:15px;">User : @Model.User</span> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                    <span class="badge bg-light-blue" style="font-size:15px;">DateTime : @Model.CreatedDate</span>
+                                </div>
+                            </div>
+                        }
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                <a href="@Url.Action("Index", "trnContainerDestuffWorkOrder")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        @Html.HiddenFor(Model => Model.trnContainerDestuffWorkOrderID)
+                        @Html.HiddenFor(Model => Model.trnContainerDestuffWorkOrderNo)
+                        @Html.HiddenFor(Model => Model.trnContainerDestuffWorkOrderNumber)
+                        @Html.HiddenFor(Model => Model.trnContainerDestuffWorkOrderPrefix)
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.IsviewConf)
+                        @Html.HiddenFor(Model => Model.IsFinished, new { @id = "IsFinished", @name = "IsFinished" })
+                        <div class="col-lg-12">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @if (Model.doaction == "edit")
+                                    {
+                                        @Html.LabelFor(Model => Model.trnDocumentNo, new { @for = "trnDocumentNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnDocumentID, String.Empty, new { @id = "spn_trnDocumentID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnDocumentNo, new { @id = "trnDocumentNo", @name = "trnDocumentNo", @class = "form-control", @placeholder = "Select NOC NO",@readonly=true })
+                                        @Html.HiddenFor(Model => Model.trnDocumentID, new { @id = "trnDocumentID" })
+                                    }
+                                    else
+                                    {
+                                        @Html.LabelFor(Model => Model.trnDocumentNo, new { @for = "trnDocumentNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnDocumentID, String.Empty, new { @id = "spn_trnDocumentID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnDocumentNo, new { @id = "trnDocumentNo", @name = "trnDocumentNo", @class = "form-control", @placeholder = "Select NOC NO" })
+                                        @Html.HiddenFor(Model => Model.trnDocumentID, new { @id = "trnDocumentID" })
+                                    }
+
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @if (Model.doaction == "edit")
+                                    {
+                                        @Html.LabelFor(Model => Model.Surveyor, new { @for = "Surveyor" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.SurveyorID, String.Empty, new { @id = "spn_SurveyorID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.Surveyor, new { @id = "Surveyor", @name = "Surveyor", @class = "form-control", @placeholder = "Enter Surveyor",@readonly=true })
+                                        @Html.HiddenFor(Model => Model.SurveyorID, new { @id = "SurveyorID", @name = "SurveyorID" })
+                                    }
+                                    else
+                                    {
+                                        @Html.LabelFor(Model => Model.Surveyor, new { @for = "Surveyor" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.SurveyorID, String.Empty, new { @id = "spn_SurveyorID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.Surveyor, new { @id = "Surveyor", @name = "Surveyor", @class = "form-control", @placeholder = "Enter Surveyor" })
+                                        @Html.HiddenFor(Model => Model.SurveyorID, new { @id = "SurveyorID", @name = "SurveyorID" })
+                                    }
+
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @if (Model.doaction == "edit")
+                                    {
+                                        @Html.LabelFor(Model => Model.Vendor, new { @for = "Vendor" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.VendorID, String.Empty, new { @id = "spn_VendorID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.Vendor, new { @id = "Vendor", @name = "Vendor", @class = "form-control", @placeholder = "Enter Vendor",@readonly =true})
+                                        @Html.HiddenFor(Model => Model.VendorID, new { @id = "VendorID", @name = "VendorID" })
+                                    }
+                                    else
+                                    {
+                                        @Html.LabelFor(Model => Model.Vendor, new { @for = "Vendor" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.VendorID, String.Empty, new { @id = "spn_VendorID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.Vendor, new { @id = "Vendor", @name = "Vendor", @class = "form-control", @placeholder = "Enter Vendor" })
+                                        @Html.HiddenFor(Model => Model.VendorID, new { @id = "VendorID", @name = "VendorID" })
+                                    }
+
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @if (Model.doaction == "edit")
+                                    {
+                                        @Html.LabelFor(Model => Model.Remarks)
+                                        @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control", @placeholder = "Remark" ,@readonly=true})
+                                    }
+                                    else
+                                    {
+                                        @Html.LabelFor(Model => Model.Remarks)
+                                        @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control", @placeholder = "Remark" })
+                                    }
+
+                                </div>
+                            </div>
+                            @if (Model.doaction != "edit")
+                            {
+                                <div class="col-md-6 pull-right">
+                                    <div class="form-group">
+                                        <br />
+                                        <a href="@Url.Action("index", "trnContainerDestuffWorkOrder")" style="margin-right: 5px;" class="btn btn-danger pull-right">Cancel</a>
+                                        <button type="submit" style="margin-right: 5px;" class="btn btn-primary pull-right" id="SaveDocument" onclick="return validateModel()"> Continue </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            @if (Model.doaction == "edit")
+            {
+                @*<div class="col-lg-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h4><b>Container Details</b></h4>
+                        </div>
+                        <div class="box-body">
+                            @Html.HiddenFor(Model => Model.trnContainerDestuffWorkOrderDetails.trnContainerDestuffWorkOrderDetailsID,new { @id= "trnContainerDestuffWorkOrderDetailsID",@name= "trnContainerDestuffWorkOrderDetailsID" })
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnContainerDestuffWorkOrderDetails.ContainerNo, new { @for = "ContainerNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnContainerDestuffWorkOrderDetails.trnContainerGateInDetailsID, String.Empty, new { @id = "spn_trnContainerGateInDetailsID", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.trnContainerDestuffWorkOrderDetails.ContainerNo, new { @id = "ContainerNo", @name = "ContainerNo", @class = "form-control", @placeholder = "Enter ContainerNo" })
+                                    @Html.HiddenFor(Model => Model.trnContainerDestuffWorkOrderDetails.trnContainerGateInDetailsID, new { @id = "trnContainerGateInDetailsID", @name = "@trnContainerGateInDetailsID" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnContainerDestuffWorkOrderDetails.ISOCode, new { @for = "txtISOCode" })
+                                    @Html.TextBoxFor(Model => Model.trnContainerDestuffWorkOrderDetails.ISOCode, new { @id = "txtISOCode", @name = "txtISOCode", @readonly = true, @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnContainerDestuffWorkOrderDetails.ContSize, new { @for = "txtContSize" })
+                                    @Html.TextBoxFor(Model => Model.trnContainerDestuffWorkOrderDetails.ContSize, new { @id = "txtContSize", @name = "txtContSize", @readonly = true, @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnContainerDestuffWorkOrderDetails.ContType, new { @for = "txtContType" })
+                                    @Html.TextBoxFor(Model => Model.trnContainerDestuffWorkOrderDetails.ContType, new { @id = "txtContType", @name = "txtContType", @class = "form-control", @readonly = true })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnContainerDestuffWorkOrderDetails.CargoType, new { @for = "txtCargoType" })
+                                    @Html.TextBoxFor(Model => Model.trnContainerDestuffWorkOrderDetails.CargoType, new { @id = "txtCargoType", @name = "txtCargoType", @class = "form-control", @readonly = true })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnContainerDestuffWorkOrderDetails.ContLevel, new { @for = "txtContLevel" })
+                                    @Html.TextBoxFor(Model => Model.trnContainerDestuffWorkOrderDetails.ContLevel, new { @id = "txtContLevel", @name = "txtContLevel", @class = "form-control", @readonly = true })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnContainerDestuffWorkOrderDetails.BillCommodity, new { @for = "txtBillCommodity" })
+                                    @Html.TextBoxFor(Model => Model.trnContainerDestuffWorkOrderDetails.BillCommodity, new { @id = "txtBillCommodity", @name = "txtBillCommodity", @class = "form-control", @readonly = true })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnContainerDestuffWorkOrderDetails.GateInDate, new { @for = "txtGateInDate" })
+                                    @Html.TextBoxFor(Model => Model.trnContainerDestuffWorkOrderDetails.GateInDate, new { @id = "txtGateInDate", @name = "txtGateInDate", @class = "form-control", @readonly = true })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnContainerDestuffWorkOrderDetails.DeclaredSeal, new { @for = "txtDeclaredSeal" })
+                                    @Html.TextBoxFor(Model => Model.trnContainerDestuffWorkOrderDetails.DeclaredSeal, new { @id = "txtDeclaredSeal", @name = "txtDeclaredSeal", @class = "form-control", @readonly = true })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnContainerDestuffWorkOrderDetails.PhysicalSeal, new { @for = "txtPhysicalSeal" })
+                                    @Html.TextBoxFor(Model => Model.trnContainerDestuffWorkOrderDetails.PhysicalSeal, new { @id = "txtPhysicalSeal", @name = "txtPhysicalSeal", @class = "form-control", @readonly = true })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnContainerDestuffWorkOrderDetails.IMO, new { @for = "txtIMO" })
+                                    @Html.TextBoxFor(Model => Model.trnContainerDestuffWorkOrderDetails.IMO, new { @id = "txtIMO", @name = "txtIMO", @class = "form-control", @readonly = true })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnContainerDestuffWorkOrderDetails.UN, new { @for = "txtUN" })
+                                    @Html.TextBoxFor(Model => Model.trnContainerDestuffWorkOrderDetails.UN, new { @id = "txtUN", @name = "txtUN", @class = "form-control", @readonly = true })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnContainerDestuffWorkOrderDetails.TEMP, new { @for = "txtTEMP" })
+                                    @Html.TextBoxFor(Model => Model.trnContainerDestuffWorkOrderDetails.TEMP, new { @id = "txtTEMP", @name = "txtTEMP", @class = "form-control", @readonly = true })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnContainerDestuffWorkOrderDetails.WeighmentSatus, new { @for = "txtWeighmentSatus" })
+                                    @Html.TextBoxFor(Model => Model.trnContainerDestuffWorkOrderDetails.WeighmentSatus, new { @id = "txtWeighmentSatus", @name = "txtWeighmentSatus", @class = "form-control", @readonly = true })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnContainerDestuffWorkOrderDetails.DestuffStatus, new { @for = "txtDestuffStatus" })
+                                    @Html.TextBoxFor(Model => Model.trnContainerDestuffWorkOrderDetails.DestuffStatus, new { @id = "txtDestuffStatus", @name = "txtDestuffStatus", @class = "form-control", @readonly = true })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnContainerDestuffWorkOrderDetails.DestuffWOStatus, new { @for = "txtDestuffWOStatus" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnContainerDestuffWorkOrderDetails.DestuffWOStatus, String.Empty, new { @id = "spn_DestuffWOStatus", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.trnContainerDestuffWorkOrderDetails.DestuffWOStatus, new { @id = "txtDestuffWOStatus", @name = "txtDestuffWOStatus", @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-md-2 pull-right">
+
+                                <div class="form-group pull-right">
+                                    <br />
+                                    <a onclick="ClearContDetails()" class="btn btn-danger pull-right">Clear</a>
+                                    <button id="btnContDetails" type="button" style="margin-right:5px;" onclick="return validateModelForContainer()" class="btn btn-primary pull-right">Add</button>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12" style="overflow:scroll;padding-top:50px;">
+                                <table id="lotdetail" style="white-space:nowrap;" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Container No</th>
+                                            <th>Cont. Size</th>
+                                            <th>Cont. Type</th>
+                                            <th>ISO Code</th>
+                                            <th>Cargo Type</th>
+                                            <th>Bill Commodity</th>
+                                            <th>FCL/LCL</th>
+                                            <th>Gate In Date</th>
+                                            <th>Declared Seal</th>
+                                            <th>Physical Seal</th>
+                                            <th>IMO</th>
+                                            <th>UN</th>
+                                            <th>TEMP</th>
+                                            <th>Weighment Status</th>
+                                            <th>Destuff Status</th>
+                                            <th>Destuff WO Status Tick</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblContDetails">                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                                             
+                    </div>
+                </div>*@  
+            <div class="col-lg-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h4><b>Container Details</b></h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12" style="overflow:scroll;">
+                            <table id="lotdetail" style="white-space:nowrap;" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Select</th>
+                                        <th>Container No</th>
+                                        <th>Cont. Size</th>
+                                        <th>Cont. Type</th>
+                                        <th>ISO Code</th>
+                                        <th>Cargo Type</th>
+                                        <th>Bill Commodity</th>
+                                        <th>FCL/LCL</th>
+                                        <th>Gate In Date</th>
+                                        <th>Seal No. 1</th>
+                                        <th>Seal No. 2</th>
+                                        <th>IMO</th>
+                                        <th>UN</th>
+                                        <th>TEMP</th>
+                                        <th>Weighment Status</th>
+                                        <th>Destuff Status</th>
+                                        <th>Destuff WO Status Tick</th>                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.MyDatatable != null && Model.MyDatatable.Rows.Count > 0)
+                                    {
+                                        Model.trnDocumentContainerID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.trnContainerGateInDetailsID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.ContainerNo = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.ISOCode = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.ContSize = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.ContType = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.GateInDate = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.ContLevel = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.CargoType = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.BillCommodity = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.DeclaredSeal = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.PhysicalSeal = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.IMO = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.UN = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.TEMP = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.WeighmentSatus = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.DestuffStatus = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.DestuffWOStatusTick = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.IsCancel = new bool[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        Model.trnContainerDestuffWorkOrderDetailsID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+
+                                        for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                        {
+                                            Model.trnDocumentContainerID[i] = Convert.ToInt32(Model.MyDatatable.Rows[i]["trnDocumentContainerID"]);
+                                            Model.trnContainerGateInDetailsID[i] = Convert.ToInt32(Model.MyDatatable.Rows[i]["trnContainerGateInDetailsID"]);
+                                            Model.ContainerNo[i] = Convert.ToString(Model.MyDatatable.Rows[i]["ContainerNumber"]);
+                                            Model.ISOCode[i] = Convert.ToString(Model.MyDatatable.Rows[i]["ISOCode"]);
+                                            Model.ContSize[i] = Convert.ToString(Model.MyDatatable.Rows[i]["ISOCodeSize"]);
+                                            Model.ContType[i] = Convert.ToString(Model.MyDatatable.Rows[i]["ISOCodeType"]);
+                                            Model.GateInDate[i] = Convert.ToString(Model.MyDatatable.Rows[i]["GateInDate"]);
+                                            Model.ContLevel[i] = Convert.ToString(Model.MyDatatable.Rows[i]["ContLevel"]);
+                                            Model.CargoType[i] = Convert.ToString(Model.MyDatatable.Rows[i]["NatureofCargoName"]);
+                                            Model.BillCommodity[i] = Convert.ToString(Model.MyDatatable.Rows[i]["BillCommodity"]);
+                                            Model.DeclaredSeal[i] = Convert.ToString(Model.MyDatatable.Rows[i]["DeclaredSeal"]);
+                                            Model.PhysicalSeal[i] = Convert.ToString(Model.MyDatatable.Rows[i]["PhysicalSeal"]);
+                                            Model.IMO[i] = Convert.ToInt32(Model.MyDatatable.Rows[i]["IMO"]);
+                                            Model.UN[i] = Convert.ToInt32(Model.MyDatatable.Rows[i]["UN"]);
+                                            Model.TEMP[i] = Convert.ToInt32(Model.MyDatatable.Rows[i]["TEMP"]);
+                                            Model.DestuffStatus[i] = Convert.ToString(Model.MyDatatable.Rows[i]["DestuffStatus"]);
+
+                                            string ischeck = "";
+                                            int IsInUsed = 0;
+                                            int trnContainerDestuffWorkOrderDetailsID = 0;
+                                            System.Data.DataTable dt = Model.GetContainerDestuffWorkOrderDetails(Model.trnDocumentContainerID[i], Model.trnContainerDestuffWorkOrderID, Model.trnContainerGateInDetailsID[i]);
+                                            if (dt != null && dt.Rows.Count > 0)
+                                            {
+                                                Model.DestuffWOStatusTick[i] = Convert.ToString(dt.Rows[0]["DestuffWOStatusTick"]);
+                                                Model.IsCancel[i] = Convert.ToBoolean(dt.Rows[0]["IsCancel"]);
+                                                Model.trnContainerDestuffWorkOrderDetailsID[i] = Convert.ToInt32(dt.Rows[0]["trnContainerDestuffWorkOrderDetailsID"]);
+                                                IsInUsed = Convert.ToInt32(dt.Rows[0]["IsUsed"]);
+                                                if (!Model.IsCancel[i])
+                                                {
+                                                    ischeck = "checked = 'checked'";
+                                                }
+                                            }
+                                            <tr style="display:none;">
+                                                <td>
+                                                    @Html.HiddenFor(Model => Model.trnDocumentContainerID[i])
+                                                    @Html.HiddenFor(Model => Model.trnContainerGateInDetailsID[i])
+                                                    @Html.HiddenFor(Model => Model.ContainerNo[i])
+                                                    @Html.HiddenFor(Model => Model.ISOCode[i])
+                                                    @Html.HiddenFor(Model => Model.ContSize[i])
+                                                    @Html.HiddenFor(Model => Model.ContType[i])
+                                                    @Html.HiddenFor(Model => Model.GateInDate[i])
+                                                    @Html.HiddenFor(Model => Model.ContLevel[i])
+                                                    @Html.HiddenFor(Model => Model.CargoType[i])
+                                                    @Html.HiddenFor(Model => Model.BillCommodity[i])
+                                                    @Html.HiddenFor(Model => Model.DeclaredSeal[i])
+                                                    @Html.HiddenFor(Model => Model.PhysicalSeal[i])
+                                                    @Html.HiddenFor(Model => Model.IMO[i])
+                                                    @Html.HiddenFor(Model => Model.UN[i])
+                                                    @Html.HiddenFor(Model => Model.TEMP[i])
+                                                    @Html.HiddenFor(Model => Model.DestuffStatus[i])
+                                                    @Html.HiddenFor(Model => Model.IsCancel[i])
+                                                    @*@Html.HiddenFor(Model => Model.DestuffWOStatusTick[i])*@
+                                                    @Html.HiddenFor(Model => Model.IsCancel[i])
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    @if (IsInUsed == 0)
+                                                    {
+                                                        <input type="checkbox" id="chkcontainer_@Model.trnDocumentContainerID[i]" @ischeck value="@i" name="chkcontainer">
+                                                        if (!string.IsNullOrEmpty(ischeck))
+                                                        {
+                                                            <input type="hidden" id="chkoldcontainer_@Model.trnDocumentContainerID[i]" value="@i" name="chkoldcontainer">
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <input type="checkbox" id="tempchkcontainer_@Model.trnDocumentContainerID[i]" @(Model.trnContainerDestuffWorkOrderDetailsID[i] > 0 ? " checked " : "") disabled="disabled" value="@i" name="chktempcontainer">
+                                                        <input type="hidden" id="chkcontainer_@Model.trnDocumentContainerID[i]" @(Model.trnContainerDestuffWorkOrderDetailsID[i] > 0 ? " checked " : "") value="@i" name="chkcontainer">
+                                                        if (!string.IsNullOrEmpty(ischeck))
+                                                        {
+                                                            <input type="hidden" id="chkoldcontainer_@Model.trnDocumentContainerID[i]" value="@i" name="chkoldcontainer">
+                                                        }
+                                                    }
+                                                </td>
+                                                <td>@Model.MyDatatable.Rows[i]["ContainerNumber"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["ISOCodeSize"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["ISOCodeType"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["ISOCode"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["NatureofCargoName"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["BillCommodity"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["ContLevel"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["GateInDate"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["PhysicalSeal"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["DeclaredSeal"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["IMO"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["UN"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["TEMP"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["WeighmentRequired"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["DestuffStatus"]</td>
+                                                <td>
+                                                    @{
+                                                        if (IsInUsed == 0)
+                                                        {
+                                                            @Html.ValidationMessageFor(Model => Model.DestuffWOStatusTick[i], String.Empty, new { @id = "spn_DestuffWOStatusTick_" + i, @class = "help-inline text-red" })
+                                                            @Html.TextBoxFor(Model => Model.DestuffWOStatusTick[i], new { @class = "form-control", @placeholder = "DestuffWO Status Tick", @id = "DestuffWOStatusTick_" + i, @name = "DestuffWOStatusTick" })
+
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.TextBoxFor(Model => Model.DestuffWOStatusTick[i], new { @class = "form-control", @placeholder = "DestuffWO Status Tick", @id = "DestuffWOStatusTick_" + i, @name = "DestuffWOStatusTick", @readonly = "readonly" })
+                                                        }
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                        <input type="hidden" id="hdnrowcount" name="hdnrowcount" value="@Model.MyDatatable.Rows.Count" />
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+            
+                <div class="col-lg-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h4><b>NOC Detail</b></h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="col-lg-12" style="overflow:scroll;">
+                                <table id="docdetail" style="white-space:nowrap;" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>BOE/IGM NO</th>
+                                            <th>ItemNo</th>
+                                            <th>In-BOE NO.</th>
+                                            <th>In-BOE Date</th>
+                                            <th>BL No</th>
+                                            <th>BL Date</th>
+                                            <th>Bond NO/CP NO</th>
+                                            <th>Bond Date/CP Date</th>
+                                            <th>NOC NO</th>
+                                            <th>NOC Date</th>
+                                            <th>CHA</th>
+                                            <th>Forwarder</th>
+                                            <th>Consoler</th>
+                                            <th>Importer</th>
+                                            <th>Cargo Description</th>
+                                            <th>Package Type</th>
+                                            <th>No Of Packages</th>
+                                            <th>No Of Pieces</th>
+                                            <th>Weight</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="DocDeatils"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (Model.doaction == "edit")
+            {
+                <div class="col-md-6 pull-right">
+                    <div class="form-group">
+                        <br />
+                        <a href="@Url.Action("index", "trnContainerDestuffWorkOrder")" style="margin-right: 5px;" class="btn btn-danger pull-right">Cancel</a>
+                        <button type="submit" style="margin-right: 5px;" class="btn btn-primary pull-right" id="SaveDocument" onclick="return validateModel()"> Save </button>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </section>
+}
+    <script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnContainerDestuffWorkOrder.js")"></script>

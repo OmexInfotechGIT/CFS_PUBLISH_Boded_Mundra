@@ -1,0 +1,173 @@
+﻿@model CFS.Models.MstrTaxExempted
+@{
+    ViewBag.IsEdit = false;
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.IsEdit = true;
+        ViewBag.Title = "Update Tax Exempted";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add new Tax Exempted";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrTaxExempted","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrTaxExempted", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "MstrTaxExempted", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.MstrTaxExemptedID)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.CommodityName, new { @for = "txtCommodityName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.MstrSubCommodityID, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.CommodityName, new { @id = "txtCommodityName", @name = "txtCommodityName", @class = "form-control", @placeholder = "Enter Commodity Name"})
+                                    @Html.HiddenFor(Model => Model.MstrSubCommodityID)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2" id="btnsearchclick">
+                            <br />
+                            <button type="button" style="margin-top: 15px;" onclick="return searchTaxExempted()" class="btn btn-primary">Search</button>
+                        </div>
+                        if (Model.IsSearch || Model.MstrSubCommodityID > 0)
+                        {
+                            <div class="col-md-12 row">
+                                <div class="box-body">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.Remarks, new { @for = "txtRemarks" })
+                                            @Html.TextBoxFor(Model => Model.Remarks, new { @id = "txtRemarks", @name = "txtRemarks", @class = "form-control", @placeholder = "Enter Remarks" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        if (Model.IsSearch || Model.MstrSubCommodityID > 0)
+                        {
+                            @*<div class="col-md-12">
+
+                            </div>
+                            <div class="col-md-12 row">
+                                <div class="col-md-2">
+                                    @Html.LabelFor(Model => Model.BillableItems)
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Tariff Head List&nbsp;&nbsp; ( <span style="color:red;">&nbsp;<i class="fa fa-light fa-check-square-o"></i>&nbsp;Exempted &nbsp;&nbsp;&nbsp;<i class="fa fa-light fa-square-o"></i> Non-Exempted</span>&nbsp;)</label>
+                                    <table id="BillableItems" class="table table-bordered table-hover ">
+                                        <tbody>
+                                            @if (Model.dtTarriffHead != null && Model.dtTarriffHead.Rows.Count > 0)
+                                            {
+                                                for (int Q = 0; Q < Model.dtTarriffHead.Rows.Count; Q++)
+                                                {
+                                                    bool ischecked = false;
+                                                    if (!string.IsNullOrEmpty(Model.CommodityIDs))
+                                                    {
+                                                        string[] arrayCustomerType = Model.CommodityIDs.Split(',');
+                                                        if (Array.Exists(arrayCustomerType, element => element == Convert.ToString(Model.dtTarriffHead.Rows[Q]["MstrTariffHeadID"])))
+                                                        {
+                                                            ischecked = true;
+                                                        }
+                                                    }
+                                                    <tr>
+                                                        <td>
+                                                            @Html.CheckBox("ckboxCommodity" + Model.dtTarriffHead.Rows[Q]["MstrTariffHeadID"].ToString() + "", ischecked, new { @name = "ckboxCustomerType", @class = "form-control", @value = "" + Model.dtTarriffHead.Rows[Q]["MstrTariffHeadID"].ToString() + "", @checked = ischecked })
+                                                        </td>
+                                                        <td>
+                                                            @Html.Label(Model.dtTarriffHead.Rows[Q]["TariffHeadName"].ToString(), new { @for = "ckboxCommodity" + Model.dtTarriffHead.Rows[Q]["MstrTariffHeadID"].ToString() + "" })
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>*@
+                            <div class="col-md-12"></div>
+                            <div class="col-md-12">
+                                <div class="col-md-2">
+                                    @Html.LabelFor(Model => Model.BillableItems)<span class="text-red">*</span>
+                                </div>
+
+                                <div class="col-md-10">
+                                    <label>Tariff Head List&nbsp;&nbsp; ( <span style="color:red;">&nbsp;<i class="fa fa-light fa-check-square-o"></i>&nbsp;Exempted &nbsp;&nbsp;&nbsp;<i class="fa fa-light fa-square-o"></i> Non-Exempted</span>&nbsp;)</label>
+                                    <table id="BillableItems" class="table table-bordered table-hover ">
+                                        <tbody>
+                                        @for (int i = 0; i < Model.TariffHead.Count; i++)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @Html.CheckBoxFor(m => Model.TariffHead[i].IsChecked, new { @id = Model.TariffHead[i].Text + "_" + Model.TariffHead[i].Value })
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                                    @Html.Label(Model.TariffHead[i].Text, new { @for = Model.TariffHead[i].Text + "_" + Model.TariffHead[i].Value })
+                                                </td>
+                                                <td>
+                                                    @Html.HiddenFor(m => Model.TariffHead[i].Value) @Html.HiddenFor(m => Model.TariffHead[i].Text)
+                                                </td>
+                                            </tr>
+                                        } 
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        
+                            <div class="col-md-12">
+                                <div class="box-footer">
+                                    <button type="submit" onclick="return MstrTaxExemptedValidation()" class="btn btn-primary">Submit</button>
+                                    @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrTaxExempted","Index")"  class="btn btn-danger">Cancel</a>*@
+                                    <a href="@Url.Action("Index", "MstrTaxExempted", new {pg = Request.Params["pg"], search = Request.Params["search"] })"  class="btn btn-danger">Cancel</a>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    var IsEdit = '@ViewBag.IsEdit';
+   @* $('#txtCommodityName').keypress(function (e) {
+        e.preventDefault();
+    });*@
+</script>
+@*<script>
+
+    $('#txtCommodityName').onkeydown = function (event) {
+
+        if (event.which == 8 || event.which == 46) {
+
+            event.preventDefault();   // turn off browser transition to the previous page
+        }
+    };
+</script>*@
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrTaxExempted.js")"></script>

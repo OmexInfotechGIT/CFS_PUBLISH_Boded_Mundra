@@ -1,0 +1,113 @@
+﻿@model CFS.Models.MstrWeighBridge
+
+@{
+    ViewBag.Title = "View Weigh Bridge";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (ViewBag.gblBlnView)
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">WeighBridge Code: @Model.WeighBridgeCode</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrWeighBridge","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrWeighBridge", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div class="col-md-6">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>WeighBridge Make : </label> <span>@Model.WeighBridgeMake</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>WeighBridge Model : </label> <span>@Model.WeighBridgeModel</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Capacity : </label> <span>@Model.Capacity</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Location : </label> <span>@Model.Location</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>IP Address : </label> <span>@Model.IPaddress</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Remark : </label> <span>@Model.Remark</span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>PermittedOperation : </label> <span>@Model.PermittedOperation</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Reason To Change Operation : </label> <span>@Model.OperationReason</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>Port Name : </label> <span>@Model.PortName</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Baud Rate : </label> <span>@Model.BaudRate</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Parity : </label> <span>@Model.Parity</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Databit : </label> <span>@Model.Databit</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Stopbit : </label> <span>@Model.Stopbit</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Weight Registration Number : </label> <span>@Model.WeighRegNo</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Operation Change Date : </label> <span>@Model.OperationDate</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Status: </label> <span>@(Model.IsActive == true ? "Active" : "InActive")</span>
+                            </div>
+                            @if (!Model.IsActive)
+                            {
+                                <div class="form-group">
+                                    <label>Inactivate Reason : </label> <span>@Model.InActiveReason</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,56 @@
+﻿@model CFS.Models.MstrSpaceCertificateAllocation
+@{
+    ViewBag.Title = "Space Certificate Allocation List";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>@CFS.Com.ClsCommon.AddhtmlSpace(1)</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a href="@Url.Action("Action", "MstrSpaceCertificateAllocation", new { doaction = "add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Floor"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <table id="example2" class="table table-bordered table-hover">
+
+                        <thead>
+
+                        </thead>
+                        <tbody></tbody>
+
+                    </table>
+                    @Html.Partial("_pagination")
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    var doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrSpaceCertificateAllocation.js")"></script>
+

@@ -1,0 +1,112 @@
+﻿@model CFS.Models.MstrStateTax
+@{
+    ViewBag.Title = "View State Tax";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrStateTax","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrStateTax", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Tax Group Name: </label>
+                            @Html.DisplayFor(Model => Model.TaxGroupName, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <label>HSN Code: </label> <span id="HSNCode">@Model.HSNCode</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Status: </label> <span>@(Model.IsActive == true ? "Active" : "InActive")</span>
+                        </div>
+                        @if (!Model.IsActive)
+                        {
+                            <div class="form-group">
+                                <label>InActivate Reason: </label> <span>@Model.InActiveReason</span>
+                            </div>
+                        }
+
+                    </div>
+                    <div class="col-md-12" id="tableWithAllDetailes">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black"> State Name</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black"> State Code</a>
+                                    </th>
+                                    @{
+                                        List<string> TaxTypeList = Model.SubStateTaxRateList.Select(t => t.TaxName).Distinct().ToList();
+                                    }
+                                    @foreach (string TaxTypeName in TaxTypeList)
+                                    {
+                                        <th>
+                                            <a class="text-black"> @TaxTypeName</a>
+                                        </th>
+                                    }
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var StateList = Model.SubStateTaxRateList.Select(s => new { s.StateID, s.StateName }).Distinct().ToList();
+                                    int i = 0;
+                                    foreach (var State in StateList)
+                                    {
+                                        if (State != null)
+                                        {
+                                            <tr>
+                                                <td>@State.StateName</td>
+                                                <td>@State.StateID</td>
+
+                                                @{var SubTaxDetails = Model.SubStateTaxRateList.Where(s => s.StateID == State.StateID).ToList();
+                                                    if (SubTaxDetails != null)
+                                                    {
+
+                                                        foreach (var TaxDetails in SubTaxDetails)
+                                                        {
+                                                            <td>
+                                                                @Html.DisplayFor(Model => Model.SubStateTaxRateList[i].Rate, new { @class = "form-control" })
+                                                            </td>
+                                                            i++;
+                                                        }
+                                                    }
+                                                }
+                                            </tr>
+                                        }
+                                    }
+                                }
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Remark: </label>
+                            @Html.DisplayFor(Model => Model.Remark, new { @id = "txtRemark", @name = "txtRemark", @class = "form-control", @placeholder = "Enter Remarks" })
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

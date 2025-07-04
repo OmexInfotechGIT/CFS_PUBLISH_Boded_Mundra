@@ -1,0 +1,203 @@
+﻿@model CFS.Models.VendorMaster
+
+@{
+    ViewBag.Title = "View Vendor";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-left">
+                        <div style="display: inline-flex">
+                            <span class="badge bg-light-blue" style="font-size:15px;">Vendor Code: @Model.VendorCode</span>
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("VendorMaster","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","VendorMaster", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12">
+                        <div class="box-body">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Vendor Name : </label> <span>@Model.VendorName</span>
+                                </div>
+                                <div class="form-group" style="word-wrap: break-word">
+                                    <label>Vendor Address: </label> <span>@Model.VendorAddress</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>State: </label> <span>@Model.StateName</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>City: </label> <span>@Model.City</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>PIN Code: </label> <span>@Model.Pincode</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Contact No: </label> <span>@Model.ContactNo.Replace(",", ", ")</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Contact Person: </label> <span>@Model.ContactPerson</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Operations Mail Id: </label> <span> @Model.OperationsMailId.Replace(",", ", ") </span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Finance Mail Id: </label> <span> @Model.FinanceMailId.Replace(",", ", ") </span>
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-6">
+                                @{ string VendorType = "";}
+                                <div class="form-group">
+                                    <label>Vendor Type : </label>
+                                    <span>
+                                        @for (int Q = 0; Q < Model.VendorTypes.Count; Q++)
+                                        {
+                                            if (Model.VendorTypes[Q].IsChecked == true)
+                                            {
+                                                if (VendorType == "")
+                                                {
+                                                    VendorType = @Model.VendorTypes[Q].Text.ToString();
+                                                }
+                                                else
+                                                {
+                                                    VendorType = VendorType + " , " + @Model.VendorTypes[Q].Text.ToString();
+                                                }
+                                            }
+                                        }
+                                        @VendorType
+                                    </span>
+                                </div>
+
+                                @{ string DomainFor = "";}
+                                <div class="form-group">
+                                    <label>Vendor For : </label>
+                                    <span>
+                                        @for (int Q = 0; Q < Model.DomainDetails.Count; Q++)
+                                        {
+                                            if (Model.DomainDetails[Q].IsChecked == true)
+                                            {
+                                                if (DomainFor == "")
+                                                {
+                                                    DomainFor = @Model.DomainDetails[Q].Text.ToString();
+                                                }
+                                                else
+                                                {
+                                                    DomainFor = DomainFor + " , " + @Model.DomainDetails[Q].Text.ToString();
+                                                }
+                                            }
+                                        }
+                                        @DomainFor
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                    <label>KYC Document Status: </label> @{
+                                        if (Model.KYCDocumentStatus == false)
+                                        {
+                                            <span style="color:red">(KYC is Pending.)</span>
+                                        }
+                                        else
+                                        { <span style="color:green">(KYC is Completed.)</span>}
+                                    }
+                                </div>
+                                @if (Model.KYCDocumentStatus)
+                                {
+                                    <div class="form-group">
+                                        <label>Upload KYC Documents: </label><a href="@CFS.Com.ClsCommon.GetRootPath()Album/VendorKYC/@Model.UploadKYCDocuments" target="_blank"> @Model.UploadKYCDocuments</a>
+                                    </div>
+                                }
+                                <div class="form-group">
+                                    <label>GST Vendor Type: </label> <span>@Model.GSTVendorTypeName</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>GSTIN No: </label> <span>@Model.GSTINNo</span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>PAN No: </label> <span>@Model.PANNo</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>TAN No: </label> <span>@Model.TANNo</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Status: </label> <span>@(Model.IsActive ? "Active" : "InActive")</span>
+                                </div>
+                                @if (!Model.IsActive)
+                                {
+                                    <div class="form-group">
+                                        <label>Inactivate Reason : </label> <span>@Model.InActiveReason</span>
+                                    </div>
+                                }
+                                <div class="form-group">
+                                    <label>Remarks: </label> <span>@Model.Remarks</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        @if (Model.Addresses.MySubDatatable != null && Model.Addresses.MySubDatatable.Rows.Count > 0)
+        {
+            int counter = 1;
+            for (int i = 0; i < Model.Addresses.MySubDatatable.Rows.Count; i++)
+            {
+                <div class="clear"></div>
+                <div class="col-md-3">
+                    <div class="box box-solid">
+                        <div class="box-header with-border">
+                            <i class="glyphicon glyphicon-tags"></i>
+
+                            <h3 class="box-title">@Model.Addresses.MySubDatatable.Rows[i]["City"]</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="form-group" style="word-wrap: break-word">
+                                <label>Address: </label> <span>@Model.Addresses.MySubDatatable.Rows[i]["VendorAddress"]</span>
+                            </div>
+                            <div class="form-group">
+                                <label>State: </label> <span>@Model.Addresses.MySubDatatable.Rows[i]["StateName"]</span>
+                            </div>
+                            <div class="form-group">
+                                <label>City: </label> <span>@Model.Addresses.MySubDatatable.Rows[i]["City"]-@Model.Addresses.MySubDatatable.Rows[i]["Pincode"]</span>
+                            </div>
+                            <div class="form-group">
+                                <label>GST Type: </label> <span>@Model.Addresses.MySubDatatable.Rows[i]["GSTTypeName"]</span>
+                            </div>
+                            <div class="form-group">
+                                <label>GSTIN No: </label> <span>@Model.Addresses.MySubDatatable.Rows[i]["GSTINNo"]</span>
+                            </div>
+                            <div class="form-group">
+                                <label>PAN No: </label> <span>@Model.Addresses.MySubDatatable.Rows[i]["PANNo"]</span>
+                            </div> <div class="form-group">
+                                <label>TAN No: </label> <span>@Model.Addresses.MySubDatatable.Rows[i]["TANNo"]</span>
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+
+                counter++;
+            }
+        }
+    </div>
+</section>

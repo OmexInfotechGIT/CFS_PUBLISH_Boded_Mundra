@@ -1,0 +1,210 @@
+﻿@model CFS.Models.Users
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update User";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add new User";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("Users","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","Users", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "Users", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.UserID)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.FullName, new { @for = "txtFullName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.FullName, String.Empty, new { @ID = "spn_FullName", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.FullName, new { @id = "txtFullName", @name = "txtFullName", @class = "form-control", @placeholder = "Enter Full Name" })
+
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.UserName, new { @for = "txtuserName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.UserName, String.Empty, new { @ID = "spn_UserName", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.UserName, new { @id = "txtuserName", @name = "txtuserName", @class = "form-control", @placeholder = "Enter User Name", @onkeypress = "return AlphaNumber(event)" })
+                                    @Html.HiddenFor(Model => Model.RefID)
+                                </div>
+                                @if (ViewBag.doaction == "edit")
+                                {
+                                    <div class="form-group">
+                                        @Html.CheckBoxFor(Model => Model.IsChangePassword, new { @id = "IsChangePassword", @name = "IsChangePassword" })
+                                        &nbsp;
+                                        @Html.Label("Change Password", new { @for = "IsChangePassword" })
+                                    </div>
+                                }
+
+                                <div class="form-group" id="dvChangePassword">
+                                    @if (ViewBag.doaction == "edit")
+                                    {
+                                        <hr />
+                                    }
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.NewPassword, new { @for = "txtPassword" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.NewPassword, String.Empty, new { @ID = "spn_NewPassword", @class = "help-inline text-red" })
+                                        @Html.PasswordFor(Model => Model.NewPassword, new { @id = "txtPassword", @name = "txtPassword", @class = "form-control", @placeholder = "Enter Password", @autocomplete = "off" })
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ConfirmPassword, new { @for = "txtConfirmPassword" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ConfirmPassword, String.Empty, new { @ID = "spn_ConfirmPassword", @class = "help-inline text-red" })
+                                        @Html.PasswordFor(Model => Model.ConfirmPassword, new { @id = "txtConfirmPassword", @name = "txtConfirmPassword", @class = "form-control", @placeholder = "Enter Confirm Password", @autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Email, new { @for = "txtEmail" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Email, String.Empty, new { @ID = "spn_Email", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.Email, new { @id = "txtEmail", @name = "txtEmail", @class = "form-control", @placeholder = "Enter Email" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.theme, new { @for = "theme" }) 
+                                    <select id="theme" name="theme" class="form-control" onchange="changecolor()">
+                                        <option value="blue" style="background-color: #3c8dbc;color:white">blue</option>
+                                        <option value="blue-light" style="background-color: #59a2cc; color: white">blue-light</option>
+
+                                        <option value="black" style="background-color: #171616; color: white">black</option>
+                                        <option value="black-light" style="background-color: #4b4f50; color: white ">black-light</option>
+
+                                        <option value="purple" style="background-color: purple; color: white">purple</option>
+                                        <option value="purple-light" style="background-color: #bb13bb; color: white ">purple-light</option>
+
+                                        <option value="green" style="background-color: green; color: white">green</option>
+                                        <option value="green-light" style="background-color: #16c116; color: white ">green-light</option>
+
+                                        <option value="red" style="background-color: red; color: white">red</option>
+                                        <option value="red-light" style="background-color: #eb3737; color: white ">red-light</option>
+
+                                        <option value="yellow" style="background-color: yellow; color: white">yellow</option>
+                                        <option value="yellow-light" style="background-color: #e5e528; color: white ">yellow-light</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.GroupName, new { @for = "GroupName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.UserGroupID, String.Empty, new { @ID = "spn_UserGroupID", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.GroupName, new { @id = "GroupName", @name = "GroupName", @class = "form-control", @placeholder = "Enter User Group" })
+                                    @Html.HiddenFor(Model => Model.UserGroupID)
+                                </div>
+                                <br />
+                                <div class="form-group">
+                                    @Html.CheckBoxFor(Model => Model.IsActive, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.Label("IsActive") @Html.ValidationMessageFor(Model => Model.IsActive, String.Empty, new { @class = "help-inline text-red" })
+                                </div>
+                                <div class="form-group" id="dvInActiveReason">
+                                    @Html.LabelFor(Model => Model.InActiveReason, new { @for = "InActiveReason" }) @Html.ValidationMessageFor(Model => Model.InActiveReason, String.Empty, new { @ID = "spn_InActiveReason", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.InActiveReason, new { @class = "form-control", @placeholder = "Enter Inactivate Reason" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary" onclick="return ValidationModel()">Submit</button>
+                                @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("Users","Index")" class="btn btn-danger">Cancel</a>*@
+                                <a href="@Url.Action("Index", "Users", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/Users.js")"></script>
+<script>
+    $("#theme").val('@Model.theme');
+    changecolor();
+    function changecolor()
+    {
+        if ($("#theme").val() == "blue")
+        {
+            $("#theme").css("background-color", "#3c8dbc")
+            $("#theme").css("color","white")
+        }
+        else if ($("#theme").val() == "blue-light")
+        {
+            $("#theme").css("background-color", "#59a2cc")
+            $("#theme").css("color", "white")
+        }
+
+        else if ($("#theme").val() == "black")
+        {
+            $("#theme").css("background-color", "#171616")
+            $("#theme").css("color", "white")
+        }
+        else if ($("#theme").val() == "black-light")
+        {
+            $("#theme").css("background-color", "#4b4f50")
+            $("#theme").css("color", "white")
+        }
+
+        else if ($("#theme").val() == "purple") {
+            $("#theme").css("background-color", "purple")
+            $("#theme").css("color", "white")
+        }
+        else if ($("#theme").val() == "purple-light") {
+            $("#theme").css("background-color", "#bb13bb")
+            $("#theme").css("color", "white")
+        }
+ 
+       
+        else if ($("#theme").val() == "green") {
+            $("#theme").css("background-color", "green")
+            $("#theme").css("color", "white")
+        }
+        else if ($("#theme").val() == "green-light") {
+            $("#theme").css("background-color", "#16c116")
+            $("#theme").css("color", "white")
+        }
+
+        else if ($("#theme").val() == "red") {
+            $("#theme").css("background-color", "red")
+            $("#theme").css("color", "white")
+        }
+        else if ($("#theme").val() == "red-light") {
+            $("#theme").css("background-color", "#eb3737")
+            $("#theme").css("color", "white")
+        }
+
+        else if ($("#theme").val() == "yellow") {
+            $("#theme").css("background-color", "yellow")
+            $("#theme").css("color", "white")
+        }
+        else if ($("#theme").val() == "yellow-light") {
+            $("#theme").css("background-color", "#e5e528")
+            $("#theme").css("color", "white")
+        }
+    }
+</script>

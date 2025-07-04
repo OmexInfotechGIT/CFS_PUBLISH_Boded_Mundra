@@ -1,0 +1,186 @@
+﻿@model CFS.Models.trnEmptyTruckOutWOCS
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    Boolean IsEdit = false;
+    if (Model.doaction == "edit")
+    {
+        IsEdit = true;
+        ViewBag.Title = "Update Empty Truck Out CS No";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+        if (Model != null)
+        {
+            if (Model.IsApproved)
+            {
+                Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+            }
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add new Empty Truck Out CS No";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+<section class="content">
+    <div class="row">
+        <div class="box">
+            <div class="box-body">
+                @if (Model != null && Model.doaction == "edit")
+                {
+                    <div class="pull-left">
+                        <div style="display: inline-flex">
+                            <span class="badge bg-light-blue" style="font-size:15px;"> Empty Truck Out CS No No: @Model.trnEmptyTruckOutWOCSNo</span>
+                        </div>
+                    </div>
+                }
+                <div class="pull-right">
+                    <div style="display: inline-flex">
+                        <a href="@Url.Action("Index","trnEmptyTruckOutWOCS")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-12"></div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => Model.TruckNo)<span class="text-red">*</span>
+                        @if (Model.IsSearch)
+                        {
+                            @Html.TextBoxFor(Model => Model.TruckNo, new { @id = "TruckNo", @name = "TruckNo", @class = "form-control", @placeholder = "SELECT TruckNo", @readonly = "true" })
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(Model => Model.TruckNo, new { @id = "TruckNo", @name = "TruckNo", @class = "form-control", @placeholder = "SELECT TruckNo" })
+                        }
+                        @Html.HiddenFor(Model => Model.TruckID, new { @id = "TruckID", @name = "TruckID" })
+                    </div>
+                </div>
+                @if (!Model.IsSearch)
+                {
+
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <br />
+                            <button type="button" class="btn btn-primary" onclick="SearchwithTruckNo()">Search</button>
+                        </div>
+                    </div>
+                }
+                @if (!IsEdit)
+                {
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <br />
+                            <a href="@Url.Action("index",  "trnEmptyTruckOutWOCS")" class="btn btn-danger">Clear</a>
+                        </div>
+                    </div>
+                }
+                @if (Model.IsSearch)
+                {
+                    using (Html.BeginForm("Action", "trnEmptyTruckOutWOCS", FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.IsSearch)
+                        <input type="hidden" id="trnEmptyTruckOutWOCSID" name="trnEmptyTruckOutWOCSID" value="@Model.trnEmptyTruckOutWOCSID" />
+                        <input type="hidden" id="TruckNo" name="TruckNo" value="@Model.TruckNo" />
+                        <input type="hidden" id="TruckID" name="TruckID" value="@Model.TruckID" />
+                        <div class="col-md-6">
+                            <br />
+                            @Html.LabelFor(Model => Model.TransactionType) : <span>Cold Storage</span> @CFS.Com.ClsCommon.AddhtmlSpace(10)
+                            @Html.LabelFor(Model => Model.CycleName) : <span>@Model.CycleName</span>@CFS.Com.ClsCommon.AddhtmlSpace(10)
+                            @Html.LabelFor(Model => Model.User) : <span>@Model.User</span>@CFS.Com.ClsCommon.AddhtmlSpace(10)
+                        </div>
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Driver, new { @for = "Driver" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.DriverID, String.Empty, new { @id = "spn_DriverID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.Driver, new { @id = "Driver", @name = "Driver", @class = "form-control", @placeholder = "Select Driver" })
+                                @Html.HiddenFor(Model => Model.DriverID, new { @id = "DriverID", @name = "DriverID" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.LicenceNo, new { @for = "LicenceNo" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.LicenceNo, String.Empty, new { @id = "spn_LicenceNo", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.LicenceNo, new { @id = "LicenceNo", @name = "LicenceNo", @class = "form-control", @placeholder = "Enter Licence No" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.MobileNo, new { @for = "MobileNo" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.MobileNo, String.Empty, new { @id = "spn_MobileNo", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.MobileNo, new { @id = "MobileNo", @name = "MobileNo", @class = "form-control", @placeholder = "Enter Mobile No" })
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Address, new { @for = "Address" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Address, String.Empty, new { @id = "spn_Address", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.Address, new { @id = "Address", @name = "Address", @class = "form-control", @placeholder = "Enter Address No" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <br />
+                                @Html.CheckBoxFor(Model => Model.Containerplacedontruck, new { @id = "Containerplacedontruck", @name = "Containerplacedontruck", @class = "form-control" })
+                                @Html.LabelFor(Model => Model.Containerplacedontruck, new { @for = "Containerplacedontruck" }) <span class="text-red">*</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 pull-right">
+                            <div class="form-group">
+                                <br />
+                                <button type="submit" class="btn btn-primary" id="SaveDoc" onclick="return GatePassValidation()">Submit</button>
+
+                                <a href="@Url.Action("index", "trnEmptyTruckOutWOCS")" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    @if (Model.IsSearch)
+    {
+        @Html.Partial("_NOCDetailsCard");
+    }
+    </div> 
+</section>
+<script>
+    var VCNDeatails = '@Model.HtmlVCNDeatails';
+    var IsSearch = '@Model.IsSearch.ToString().ToLower()';
+
+    function changestepValue(tabNo) {
+        $("#DocumentTab").val(tabNo);
+        if (tabNo != "1") {
+            if (tabNo == "5") {
+                $("#IsChangeStep").val(2);
+            }
+        }
+        //$("frmpost").submit();
+    }
+</script>
+@if (((Model != null && Model.doaction.ToLower() == "edit") || Model.trnEmptyTruckOutWOCSID > 0))
+{
+    <script>
+        $(".isDisplayOnlyinEdit").show();
+    </script>
+}
+else
+{
+    <script>
+        $(".isDisplayOnlyinEdit").hide();
+    </script>
+}
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnEmptyTruckOutWOCS.js")"></script>

@@ -1,0 +1,160 @@
+﻿@model CFS.Models.MstrWeighBridge
+
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Weigh Bridge";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Weigh Bridge";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (Model.doaction == "edit")
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">WeighBridge Code: @Model.WeighBridgeCode</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrWeighBridge","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrWeighBridge", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "MstrWeighBridge", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.MstrWeighBridgeID)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+                        @Html.HiddenFor(Model => Model.WeighBridgeCode)
+
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.WeighBridgeMake, new { @for = "txtWeighBridgeMake" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.WeighBridgeMake, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.WeighBridgeMake, new { @id = "txtWeighBridgeMake", @name = "txtWeighBridgeMake", @class = "form-control", @placeholder = "Enter WeighBridge Make" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.WeighBridgeModel, new { @for = "txtWeighBridgeModel" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.WeighBridgeModel, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.WeighBridgeModel, new { @id = "txtWeighBridgeModel", @name = "txtWeighBridgeModel", @class = "form-control", @placeholder = "Enter WeighBridge Model" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Capacity, new { @for = "txtCapacity" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Capacity, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.Capacity, new { @id = "txtCapacity", @name = "txtCapacity", @class = "form-control", @placeholder = "Enter Capacity", @type = "number", @min = "0" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Location, new { @for = "txtLocation" }) @Html.ValidationMessageFor(Model => Model.Location, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.Location, new { @id = "txtLocation", @name = "txtLocation", @class = "form-control", @placeholder = "Enter Location" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.IPaddress, new { @for = "txtIPaddress" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.IPaddress, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.IPaddress, new { @id = "txtIPaddress", @name = "txtIPaddress", @class = "form-control", @placeholder = "Enter IP Address" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Remark, new { @for = "txtRemark" })@Html.ValidationMessageFor(Model => Model.Remark, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.Remark, new { @id = "txtRemark", @name = "txtRemark", @class = "form-control", @placeholder = "Enter Remark" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.PermittedOperation, new { @for = "rdbAUTOMATIC, rdbMANUAL" })@Html.ValidationMessageFor(Model => Model.PermittedOperation, String.Empty, new { @class = "help-inline text-red" })
+
+                                    @Html.RadioButtonFor(model => model.PermittedOperation, "AUTOMATIC", new { @id = "rdbAUTOMATIC", @checked = "checked" })<b>&nbsp;&nbsp;&nbsp;</b>@Html.Label("AUTOMATIC", new { @for = "rdbAUTOMATIC", @style = "font-weight: 600;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                    @Html.RadioButtonFor(model => model.PermittedOperation, "MANUAL", new { @id = "rdbMANUAL" })<b>&nbsp;&nbsp;&nbsp;</b>@Html.Label("MANUAL", new { @for = "rdbMANUAL", @style = "font-weight: 600;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                </div>
+                                 
+                                <div class="form-group" id="dvOperationReason">
+                                    @Html.LabelFor(Model => Model.OperationReason, new { @for = "txtOperationReason" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.OperationReason, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.OperationReason, new { @id = "txtOperationReason", @name = "txtOperationReason", @class = "form-control", @placeholder = "Enter Operation Reason" })
+                                </div>
+                                 
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.PortName, new { @for = "txtPortName" })<span class="text-red">*</span>
+                                    @Html.ValidationMessageFor(Model => Model.RefPortName, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.PortName, new { @id = "txtPortName", @name = "txtPortName", @class = "form-control", @placeholder = "Enter Port Name" })
+                                    @Html.HiddenFor(Model => Model.RefPortName)
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.BaudRate, new { @for = "txtBaudRate" })@Html.ValidationMessageFor(Model => Model.BaudRate, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.BaudRate, new { @id = "txtBaudRate", @name = "txtBaudRate", @class = "form-control", @placeholder = "Enter Baud Rate" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Parity, new { @for = "txtParity" })@Html.ValidationMessageFor(Model => Model.Parity, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.Parity, new { @id = "txtParity", @name = "txtParity", @class = "form-control", @placeholder = "Enter Parity" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Databit, new { @for = "txtDatabit" })@Html.ValidationMessageFor(Model => Model.Databit, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.Databit, new { @id = "txtDatabit", @name = "txtDatabit", @class = "form-control", @placeholder = "Enter Data bit" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Stopbit, new { @for = "txtStopbit" })@Html.ValidationMessageFor(Model => Model.Stopbit, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.Stopbit, new { @id = "txtStopbit", @name = "txtStopbit", @class = "form-control", @placeholder = "Enter Stop bit" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.WeighRegNo, new { @for = "txtWeighRegNo" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.WeighRegNo, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.WeighRegNo, new { @id = "txtWeighRegNo", @name = "txtWeighRegNo", @class = "form-control", @placeholder = "Enter WeighReg Number", @onkeypress = "return isonlynumber(event);" })
+                                    @Html.HiddenFor(Model => Model.RefID)
+                                </div>
+                                <div class="form-group">
+                                    @Html.CheckBoxFor(Model => Model.IsActive, new { @class = "form-control" })
+                                    @Html.Label("IsActive") @Html.ValidationMessageFor(Model => Model.IsActive, String.Empty, new { @class = "help-inline text-red" })
+                                </div>
+                                <div class="form-group" id="dvInActiveReason">
+                                    @Html.LabelFor(Model => Model.InActiveReason, new { @for = "InActiveReason" }) @Html.ValidationMessageFor(Model => Model.InActiveReason, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.InActiveReason, new { @class = "form-control", @placeholder = "Enter Inactivate Reason" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrWeighBridge","Index")" class="btn btn-danger">Cancel</a>*@
+                                <a href="@Url.Action("Index", "MstrWeighBridge", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    var IsEdit = '@Model.doaction';
+    var Reason = '@Model.OperationReason';
+    var doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrWeighBridge.js")"></script>
+
+

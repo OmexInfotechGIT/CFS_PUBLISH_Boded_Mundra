@@ -1,0 +1,171 @@
+﻿@model CFS.Models.trnLoadedContainerOutWO
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    bool IsEdit = false;
+    if (Model.doaction == "edit")
+    {
+        IsEdit = true;
+        ViewBag.Title = "Update Loaded Container Out WO";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add new Loaded Container Out WO";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            @using (Html.BeginForm("Action", "trnLoadedContainerOutWO", FormMethod.Post))
+            {
+                <div class="box">
+                    <div class="box-body">
+                        @if (Model != null && Model.doaction == "edit")
+                        {
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <span class="badge bg-light-blue" style="font-size:15px;">Work Order No : @Model.trnLoadedContainerOutWONo </span>@CFS.Com.ClsCommon.AddhtmlSpace(2)
+                                    <span class="badge bg-light-blue" style="font-size:15px;">Created Date : @ViewBag.CreatedDate </span>@CFS.Com.ClsCommon.AddhtmlSpace(2)
+                                    <span class="badge bg-light-blue" style="font-size:15px;">Gate Pass Date : @Model.GATEPASSDATE </span>@CFS.Com.ClsCommon.AddhtmlSpace(2)
+                                    <span class="badge bg-light-blue" style="font-size:15px;">User : @ViewBag.UserName </span>@CFS.Com.ClsCommon.AddhtmlSpace(2)
+                                </div>
+                            </div>
+                        }
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                <a href="@Url.Action("Index","trnLoadedContainerOutWO", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+                        @Html.HiddenFor(Model => Model.IsTruckUsed)
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.trnLoadedContainerOutWOID)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.IsFinished, new { @id = "IsFinished", @name = "IsFinished" })
+                        @Html.HiddenFor(Model => Model.trnLoadedContainerOutWONo, new { @id = "trnLoadedContainerOutWONo", @name = "trnLoadedContainerOutWONo" })
+                        @Html.HiddenFor(Model => Model.trnLoadedContainerOutWONewNo, new { @id = "trnLoadedContainerOutWONewNo", @name = "trnLoadedContainerOutWONewNo" })
+                        @Html.HiddenFor(Model => Model.trnLoadedContainerOutWOPrefix, new { @id = "trnLoadedContainerOutWOPrefix", @name = "trnLoadedContainerOutWOPrefix" })
+                        <input type="hidden" id="trnLoadedContainerOutWOTab" name="trnLoadedContainerOutWOTab" value="@Model.trnLoadedContainerOutWOTab" />
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.TRANSPORTATIONTYPE) : <span>@Model.TRANSPORTATIONTYPE</span>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.TRUCKNO, new { @for = "TRUCKNO" })  :
+                            @if (Model.TRANSPORTATIONTYPE == "Party")
+                            {
+                                <span>@Model.PARTYTRUCKNO</span>
+                            }
+                            else
+                            {
+                                <span>@Model.TRUCKNO</span>
+                            }
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.Transporter, new { @for = "Transporter" })  :
+                            @if (Model.TRANSPORTATIONTYPE == "Party")
+                            {
+                                <span>@Model.PartyTransporter</span>
+                            }
+                            else
+                            {
+                                <span>@Model.Transporter</span>
+                            }
+                        </div>
+                        <div class="col-md-2">
+                            @Html.Label("Weighment Required", new { @for = "WEIGHMENTREQUIRED" })  : <span>@(Convert.ToBoolean(Model.WEIGHMENTREQUIRED) ? "Yes" : "No")</span>
+                        </div>
+                        @if (!Convert.ToBoolean(Model.WEIGHMENTREQUIRED))
+                        {
+                            <div class="col-md-2" id="dvInActiveReason">
+                                @Html.LabelFor(Model => Model.NONWEIGHMENTREASON, new { @for = "NONWEIGHMENTREASON" })  : <span>@Model.NONWEIGHMENTREASON</span>
+                            </div>
+                        }
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.WEIGHMENTPAYMENTMODE, new { @for = "WEIGHMENTPAYMENTMODE" })  : <span>@Model.WEIGHMENTPAYMENTMODE</span>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.MANUALSSRNO, new { @for = "MANUALSSRNO" })  : <span>@Model.MANUALSSRNO</span>
+                        </div>
+                        <div class="col-md-12">
+                            @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" })  : <span>@Model.Remarks</span>
+                        </div>
+                    </div>
+                </div>
+
+                if (IsEdit)
+                {
+                    <div class="">
+                        <div class="box">
+                            <div class="box-header with-border" data-widget="collapse">
+                                <h4><b>Container Details </b></h4>
+                            </div>
+                            <div class="box-body">
+                                @Html.HiddenFor(Model => Model.trnLoadedContainerOutWODetails.trnLoadedContainerOutWODetailsID, new { @id = "trnLoadedContainerOutWODetailsID", @name = "@trnLoadedContainerOutWODetailsID" })
+                                <input type="hidden" id="trnLoadedContainerOutWOID" name="trnLoadedContainerOutWOID" value="@Model.trnLoadedContainerOutWOID" />
+                                
+
+                                <div class="col-md-12">
+                                    <div style="overflow-x:scroll">
+                                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Cont No</th>
+                                                    <th>ISO Code</th>
+                                                    <th>Size</th>
+                                                    <th>Type</th>
+                                                    <th>Cargo Type</th>
+                                                    <th>Agent</th>
+                                                    <th>Line</th>
+                                                    <th>Container Status</th>
+                                                    <th>Temp</th>
+                                                    <th>NOC No:</th>
+                                                    <th>Gate in date</th>
+                                                    <th>Plug in Date</th>
+                                                    <th>Plug off date</th>
+                                                    <th>Cycle</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tblContainer"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div id="tblContainerNOC"></div> 
+            }
+        </div>
+    </div>
+</section>
+
+
+<script>
+    var IsEdit = '@ViewBag.IsEdit';
+    var IsSearch = '@Model.IsSearch';
+    var TransportationType = '@Model.TRANSPORTATIONTYPE';
+     var IsTruckUsed = '@Model.IsTruckUsed';
+</script>
+<script>
+    setTimeout(function () {
+        $(".trnviewAction").hide();
+    }, 500);
+</script>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnLoadedContainerOutWO.js")"></script>

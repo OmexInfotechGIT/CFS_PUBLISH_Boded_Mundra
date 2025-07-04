@@ -1,0 +1,119 @@
+﻿@model CFS.Models.trnEmptyTruckOutWO
+@{
+    ViewBag.Title = "Empty Truck Out List";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a href="@Url.Action("Action", CFS.Com.ClsCommon.Controller(), new { doaction = "add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Empty Truck Out WO"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+
+
+                    <div style="overflow-x:scroll">
+                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.trnEmptyTruckOutWONo", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.trnemptytruckoutwono" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.trnemptytruckoutwono" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Empty Truck Out WO GW No.</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.TruckNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.truckno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.truckno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Truck No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.BOENo", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.boeno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.boeno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> In-BOE No</a>
+                                    </th>                                    
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.trnDocumentNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.trndocumentno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.trndocumentno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> NOC No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.Containerplacedontruck", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.containerplacedontruck" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.containerplacedontruck" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Container Placed On Truck</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "CreatedDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "createddate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "createddate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Empty truck Out Date</a>
+                                    </th>
+                                    <th>Status</th>
+                                    <th class="freezeLastColumn">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@Model.MyDatatable.Rows[i]["trnEmptyTruckOutWONo"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["TruckNo"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["BOENo"]</td>                                        
+                                        <td>@Model.MyDatatable.Rows[i]["trnDocumentNo"]</td>
+                                        <td>@(Convert.ToBoolean(Model.MyDatatable.Rows[i]["Containerplacedontruck"]) ? "Yes" : "No")</td>
+                                        <td>@Model.MyDatatable.Rows[i]["CreatedDate"]</td>
+                                        <td>@(Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]) ? "Approved" : "UnApproved")</td>
+                                        <td class="freezeLastColumnwithWhite">
+                                            @if (!Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]) && ViewBag.gblBlnApprove)
+                                            {
+                                                <a href="@Url.Action("Confirmation", CFS.Com.ClsCommon.Controller(), new { id = Model.MyDatatable.Rows[i]["trnEmptyTruckOutWOID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true, @WorkOrderID = Model.MyDatatable.Rows[i]["WorkOrderID"], @TruckNo = Model.MyDatatable.Rows[i]["TruckNo"] })"><i title="Click to approve" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i></a>
+                                            }
+                                            else if (ViewBag.gblBlnUnapprove && Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]))
+                                            {
+                                                <a href="@Url.Action("Confirmation", CFS.Com.ClsCommon.Controller(), new { id = Model.MyDatatable.Rows[i]["trnEmptyTruckOutWOID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true, @WorkOrderID = Model.MyDatatable.Rows[i]["WorkOrderID"], @TruckNo = Model.MyDatatable.Rows[i]["TruckNo"] })"><i title="Click to unapprove" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-down"></i></a>
+                                            }
+                                            @if (!Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]) && ViewBag.gblBlnEdit)
+                                            {
+                                                <a href="@Url.Action("Action", CFS.Com.ClsCommon.Controller(), new { id = Model.MyDatatable.Rows[i]["trnEmptyTruckOutWOID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true, @WorkOrderID = Model.MyDatatable.Rows[i]["WorkOrderID"], @TruckNo = Model.MyDatatable.Rows[i]["TruckNo"] })"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                            }
+                                            @if (ViewBag.gblBlnView)
+                                            {
+                                                <a href="@Url.Action("view", CFS.Com.ClsCommon.Controller(), new { id = Model.MyDatatable.Rows[i]["trnEmptyTruckOutWOID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true, @WorkOrderID = Model.MyDatatable.Rows[i]["WorkOrderID"], @TruckNo = Model.MyDatatable.Rows[i]["TruckNo"] })"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                            }
+                                            <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('trnEmptyTruckOutWO','@Model.MyDatatable.Rows[i]["trnEmptyTruckOutWOID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                            @if (!Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]) && ViewBag.gblBlnDelete)
+                                            {
+                                                <a href="@Url.Action("delete", CFS.Com.ClsCommon.Controller(), new { id = Model.MyDatatable.Rows[i]["trnEmptyTruckOutWOID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                            }
+                                            <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", CFS.Com.ClsCommon.Controller(), new { id = Model.MyDatatable.Rows[i]["trnEmptyTruckOutWOID"],WorkOrderID = Model.MyDatatable.Rows[i]["WorkOrderID"],TruckNo = Model.MyDatatable.Rows[i]["TruckNo"], format = "pdf" })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+
+                        </table>
+                        </div>
+                        @Html.Partial("_pagination")
+                    </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+ var IsSearch = '@Model.IsSearch.ToString().ToLower()'; var doaction = '@Model.doaction';</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnEmptyTruckOutWO.js")"></script>
+

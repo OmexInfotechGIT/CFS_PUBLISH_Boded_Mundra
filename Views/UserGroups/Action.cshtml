@@ -1,0 +1,86 @@
+﻿@model CFS.Models.UserGroups
+@{
+
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update User Group";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add new User Group";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("UserGroups", "Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","UserGroups", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div class="col-md-6">
+                        @using (Html.BeginForm("Action", "UserGroups", FormMethod.Post))
+                        {
+                            @Html.HiddenFor(Model => Model.pagger.Search)
+                            @Html.HiddenFor(Model => Model.doaction)
+                            @Html.HiddenFor(Model => Model.page)
+                            @Html.HiddenFor(Model => Model.filter)
+                            @Html.HiddenFor(Model => Model.UserGroupID)
+
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.UserGroupName, new { @for = "txtUserGroupName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.UserGroupName, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.UserGroupName, new { @id = "txtUserGroupName", @name = "txtUserGroupName", @class = "form-control", @placeholder = "Enter User Group Name" })
+                                    @Html.HiddenFor(Model => Model.RefID)
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Description, new { @for = "txtDescription" }) @Html.ValidationMessageFor(Model => Model.Description, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.Description, new { @id = "txtDescription", @name = "txtDescription", @class = "form-control", @placeholder = "Enter Description" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.CheckBoxFor(Model => Model.IsActive, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.Label("IsActive") @Html.ValidationMessageFor(Model => Model.IsActive, String.Empty, new { @class = "help-inline text-red" })
+                                </div>
+                                <div class="form-group" id="dvInActiveReason">
+                                    @Html.LabelFor(Model => Model.InActiveReason, new { @for = "InActiveReason" }) @Html.ValidationMessageFor(Model => Model.InActiveReason, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.InActiveReason, new { @class = "form-control", @placeholder = "Enter Inactivate Reason" })
+                                </div>
+                            </div>
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("UserGroups", "Index")" class="btn btn-danger">Cancel</a>*@
+                                <a href="@Url.Action("Index", "UserGroups", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    var UserGroupID = '@Model.UserGroupID';
+    doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/UserGroup.js")"></script>

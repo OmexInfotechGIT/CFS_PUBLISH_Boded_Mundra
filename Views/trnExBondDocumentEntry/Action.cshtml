@@ -1,0 +1,716 @@
+﻿@model CFS.Models.trnExBondDocumentEntry
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    bool IsEdit = false;
+    if (Model.doaction == "edit")
+    {
+        IsEdit = true;
+        ViewBag.Title = "Update EX Bond Document Entry";
+        if (!ViewBag.gblBlnEdit && !ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New EX Bond Document Entry";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    Model.IsviewConf = false;
+}
+@using (Html.BeginForm("Action", CFS.Com.ClsCommon.Controller(), FormMethod.Post))
+{
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (Model.doaction == "edit" && Model.IsFinished)
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">EX Bond Document Entry No : @Model.trnExBondDocumentEntryNo</span> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                <span class="badge bg-light-blue" style="font-size:15px;">User : @Model.User</span> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                <span class="badge bg-light-blue" style="font-size:15px;">DateTime : @Model.CreatedDate</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <a href="@Url.Action("Index",CFS.Com.ClsCommon.Controller())" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-body">
+                    @Html.HiddenFor(Model => Model.trnExBondDocumentEntryID)
+                    @Html.HiddenFor(Model => Model.trnExBondDocumentEntryNo)
+                    @Html.HiddenFor(Model => Model.trnExBondDocumentEntryNumber)
+                    @Html.HiddenFor(Model => Model.trnExBondDocumentEntryPrefix)
+                    @Html.HiddenFor(Model => Model.pagger.Search)
+                    @Html.HiddenFor(Model => Model.doaction, new { @id = "doaction", @name = "doaction" })
+                    @Html.HiddenFor(Model => Model.IsviewConf)
+                    @Html.HiddenFor(Model => Model.IsFinished, new { @id = "IsFinished", @name = "IsFinished" })
+                    @Html.HiddenFor(Model => Model.GuiID, new { @id = "GuiID", @name = "GuiID" })
+                    <div class="col-lg-12">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @if (Model.doaction == "edit")
+                                {
+                                    @Html.LabelFor(Model => Model.InBOENo, new { @for = "InBOENo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnDocumentLotDetailsID, String.Empty, new { @id = "spn_trnDocumentLotDetailsID", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.InBOENo, new { @id = "InBOENo", @name = "InBOENo", @class = "form-control", @placeholder = "Enter In BOENo", @readonly = true })
+
+                                }
+                                else
+                                {
+                                    @Html.LabelFor(Model => Model.InBOENo, new { @for = "InBOENo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnDocumentLotDetailsID, String.Empty, new { @id = "spn_trnDocumentLotDetailsID", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.InBOENo, new { @id = "InBOENo", @name = "InBOENo", @class = "form-control", @placeholder = "Enter In BOENo" })
+                                }
+                                @Html.HiddenFor(Model => Model.trnDocumentLotDetailsID, new { @id = "trnDocumentLotDetailsID", @name = "trnDocumentLotDetailsID" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.InBOEDate, new { @for = "InBOEDate" })
+                                @Html.TextBoxFor(Model => Model.InBOEDate, new { @id = "InBOEDate", @name = "InBOEDate", @class = "form-control DatePickerCustom", @readonly = true, @placeholder = "Enter In BOE Date" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.IGMNO, new { @for = "IGMNO" })
+                                @Html.TextBoxFor(Model => Model.IGMNO, new { @id = "IGMNO", @name = "IGMNO", @class = "form-control", @readonly = true, @placeholder = "Enter IGM NO" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.ItemNO, new { @for = "ItemNO" })
+                                @Html.TextBoxFor(Model => Model.ItemNO, new { @id = "ItemNO", @name = "ItemNO", @class = "form-control", @readonly = true, @placeholder = "Enter Item NO" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.CPStatus, new { @for = "CPStatus" })
+                                @Html.TextBoxFor(Model => Model.CPStatus, new { @id = "CPStatus", @name = "CPStatus", @class = "form-control", @readonly = true, @placeholder = "Enter CP Status" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.CPORBondNo, new { @for = "CPORBondNo" })
+                                @Html.TextBoxFor(Model => Model.CPORBondNo, new { @id = "CPORBondNo", @name = "CPORBondNo", @class = "form-control", @readonly = true, @placeholder = "Enter CP/Bond No" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.CPORBondExpiryDate, new { @for = "CPORBondExpiryDate" })
+                                @Html.TextBoxFor(Model => Model.CPORBondExpiryDate, new { @id = "CPORBondExpiryDate", @name = "CPORBondExpiryDate", @class = "form-control DatePickerCustom", @readonly = true, @placeholder = "Enter CP/Bond No" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.NocValidDate, new { @for = "NocValidDate" })
+                                @Html.TextBoxFor(Model => Model.NocValidDate, new { @id = "NocValidDate", @name = "NocValidDate", @class = "form-control DatePickerCustom", @readonly = true, @placeholder = "Enter Noc Valid Date" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Status, new { @for = "Status" })
+                                @Html.TextBoxFor(Model => Model.Status, new { @id = "Status", @name = "Status", @class = "form-control", @readonly = true, @placeholder = "Enter Status" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.CargoType, new { @for = "CargoType" })
+                                @Html.TextBoxFor(Model => Model.CargoType, new { @id = "CargoType", @name = "CargoType", @class = "form-control", @readonly = true, @placeholder = "Enter Cargo Type" })
+                                @Html.HiddenFor(Model => Model.CargoTypeID, new { @id = "CargoTypeID", @name = "CargoTypeID" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.InBondConsoler, new { @for = "InBondConsoler" })
+                                @Html.TextBoxFor(Model => Model.InBondConsoler, new { @id = "InBondConsoler", @name = "InBondConsoler", @class = "form-control", @readonly = true, @placeholder = "Enter In Bond Consoler" })
+                                @Html.HiddenFor(Model => Model.InBondConsolerID, new { @id = "InBondConsolerID", @name = "InBondConsolerID" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.CargoDescription, new { @for = "CargoDescription" })
+                                @Html.TextBoxFor(Model => Model.CargoDescription, new { @id = "CargoDescription", @name = "CargoDescription", @class = "form-control", @readonly = true, @placeholder = "Enter Cargo Desc" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.InBondBOEPackages, new { @for = "InBondBOEPackages" })
+                                @Html.TextBoxFor(Model => Model.InBondBOEPackages, new { @id = "InBondBOEPackages", @name = "InBondBOEPackages", @class = "form-control", @readonly = true, @placeholder = "Enter In Bond BOE Packages" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.InBondBOEPieces, new { @for = "InBondBOEPieces" })
+                                @Html.TextBoxFor(Model => Model.InBondBOEPieces, new { @id = "InBondBOEPieces", @name = "InBondBOEPieces", @class = "form-control", @readonly = true, @placeholder = "Enter In Bond BOE Pieces" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.InBondBOEWeight, new { @for = "InBondBOEWeight" })
+                                @Html.TextBoxFor(Model => Model.InBondBOEWeight, new { @id = "InBondBOEWeight", @name = "InBondBOEWeight", @class = "form-control", @readonly = true, @placeholder = "Enter In Bond BOE Weight" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.InBondCHA, new { @for = "InBondCHA" })
+                                @Html.TextBoxFor(Model => Model.InBondCHA, new { @id = "InBondCHA", @name = "InBondCHA", @class = "form-control", @readonly = true, @placeholder = "Enter In Bond CHA" })
+                                @Html.HiddenFor(Model => Model.InBondCHAID, new { @id = "InBondCHAID", @name = "InBondCHAID" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.InBondForwarder, new { @for = "InBondForwarder" })
+                                @Html.TextBoxFor(Model => Model.InBondForwarder, new { @id = "InBondForwarder", @name = "InBondForwarder", @class = "form-control", @readonly = true, @placeholder = "Enter In Bond Forwarder" })
+                                @Html.HiddenFor(Model => Model.InBondForwarderID, new { @id = "InBondForwarderID", @name = "InBondForwarderID" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.InBondImporter, new { @for = "InBondImporter" })
+                                @Html.TextBoxFor(Model => Model.InBondImporter, new { @id = "InBondImporter", @name = "InBondImporter", @class = "form-control", @readonly = true, @placeholder = "Enter In Bond Importer" })
+                                @Html.HiddenFor(Model => Model.InBondImporterID, new { @id = "InBondImporterID", @name = "InBondImporterID" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.BulkStatus, new { @for = "BulkStatus" })
+                                @Html.TextBoxFor(Model => Model.BulkStatus, new { @id = "BulkStatus", @name = "BulkStatus", @class = "form-control", @readonly = true, @placeholder = "Enter Bulk Status" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Remarks)
+                                @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control", @placeholder = "Remark" })
+                            </div>
+                        </div>
+                        @if (Model.doaction != "edit")
+                        {
+                            <div class="col-md-6 pull-right">
+                                <div class="form-group">
+                                    <br />
+                                    <a href="@Url.Action("index", CFS.Com.ClsCommon.Controller())" style="margin-right: 5px;" class="btn btn-danger pull-right">Cancel</a>
+                                    <button type="submit" style="margin-right: 5px;" class="btn btn-primary pull-right" id="SaveDocument" onclick="return validateModel()"> Continue </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        @if (Model.doaction == "edit")
+        {
+            <div class="col-lg-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h4><b>Ex-Bond Document Entry Details</b></h4>
+                    </div>
+                    <div class="box-body">
+                        @Html.HiddenFor(Model => Model.trnExBondDocumentEntryDetails.trnExBondDocumentEntryDetailsID, new { @id = "trnExBondDocumentEntryDetailsID", @name = "trnExBondDocumentEntryDetailsID" })
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.ReleasedType, new { @for = "DDLReleasedType" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.ReleasedType, String.Empty, new { @id = "spn_ReleasedType", @class = "help-inline text-red" })
+                                @Html.DropDownListFor(Model => Model.trnExBondDocumentEntryDetails.ReleasedType, Model.trnExBondDocumentEntryDetails.DDLReleasedType, new { @id = "DDLReleasedType", @name = "DDLReleasedType", @class = "form-control", @placeholder = "Enter Released Type", @onchange = "SetVisiblityForSBData()" })
+                            </div>
+                        </div>
+                        <div class="col-md-2" id="CollectExBond">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.CollectExBondCarge, new { @for = "CollectExBondCarge" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.CollectExBondCarge, String.Empty, new { @id = "spn_CollectExBondCarge", @class = "help-inline text-red" })
+                                @Html.DropDownListFor(Model => Model.trnExBondDocumentEntryDetails.CollectExBondCarge, Model.trnExBondDocumentEntryDetails.CollectExBondCargeType, new { @id = "CollectExBondCarge", @name = "CollectExBondCarge", @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div id="SBsetVisiblity">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.SBNo, new { @for = "SBNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.trnExportDocumentDeclarationLotDetailsID, String.Empty, new { @id = "spn_trnExportDocumentDeclarationLotDetailsID", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.SBNo, new { @id = "SBNo", @name = "SBNo", @class = "form-control" })
+                                    @Html.HiddenFor(Model => Model.trnExBondDocumentEntryDetails.trnExportDocumentDeclarationLotDetailsID, new { @id = "trnExportDocumentDeclarationLotDetailsID", @name = "trnExportDocumentDeclarationLotDetailsID" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.SBDate, new { @for = "SBDate" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.SBDate, String.Empty, new { @id = "spn_SBDate", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.SBDate, new { @id = "SBDate", @name = "SBDate", @class = "form-control DatePickerCustom" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.Exporter, new { @for = "Exporter" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.ExporterID, String.Empty, new { @id = "spn_ExporterID", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.Exporter, new { @id = "Exporter", @name = "Exporter", @class = "form-control", @placeholder = "Select  Exporter" })
+                                    @Html.HiddenFor(Model => Model.trnExBondDocumentEntryDetails.ExporterID, new { @id = "ExporterID", @name = "ExporterID" })
+                                </div>
+                            </div>
+                        </div>
+                        <div id="divsetVisiblity">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.EXBOEOrSBNo, new { @for = "txtEXBOEOrSBNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.EXBOEOrSBNo, String.Empty, new { @id = "spn_EXBOEOrSBNo", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.EXBOEOrSBNo, new { @id = "txtEXBOEOrSBNo", @name = "txtEXBOEOrSBNo", @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.EXBOEOrSBDate, new { @for = "txtEXBOEOrSBDate" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.EXBOEOrSBDate, String.Empty, new { @id = "spn_EXBOEOrSBDate", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.EXBOEOrSBDate, new { @id = "txtEXBOEOrSBDate", @name = "txtEXBOEOrSBDate", @class = "form-control DatePickerCustom" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.Importer, new { @for = "txtImporter" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.ImporterID, String.Empty, new { @id = "spn_ImporterID", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.Importer, new { @id = "txtImporter", @name = "txtImporter", @class = "form-control", @placeholder = "Select  Importer" })
+                                    @Html.HiddenFor(Model => Model.trnExBondDocumentEntryDetails.ImporterID, new { @id = "txtImporterID", @name = "txtImporterID" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.CHA, new { @for = "txtCHA" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.CHAID, String.Empty, new { @id = "spn_CHAID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.CHA, new { @id = "txtCHA", @name = "txtCHA", @class = "form-control", @placeholder = "Select CHA" })
+                                @Html.HiddenFor(Model => Model.trnExBondDocumentEntryDetails.CHAID, new { @id = "txtCHAID", @name = "txtCHAID" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.Forwarder, new { @for = "txtForwarder" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.ForwarderID, String.Empty, new { @id = "spn_ForwarderID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.Forwarder, new { @id = "txtForwarder", @name = "txtForwarder", @class = "form-control", @placeholder = "Select  Forwarder" })
+                                @Html.HiddenFor(Model => Model.trnExBondDocumentEntryDetails.ForwarderID, new { @id = "txtForwarderID", @name = "txtForwarderID" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.Consoler, new { @for = "txtConsoler" })
+                                @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.Consoler, new { @id = "txtConsoler", @name = "txtConsoler", @class = "form-control", @placeholder = "Select Consoler" })
+                                @Html.HiddenFor(Model => Model.trnExBondDocumentEntryDetails.ConsolerID, new { @id = "txtConsolerID", @name = "txtConsolerID" })
+                            </div>
+                        </div>
+                        <div id="setVisiblity">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.SBOrInvoiceNo, new { @for = "txtSBOrInvoiceNo" })
+                                    @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.SBOrInvoiceNo, new { @id = "txtSBOrInvoiceNo", @name = "txtSBOrInvoiceNo", @class = "form-control", @Readonly = true })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.SBOrInvoiceDate, new { @for = "txtSBOrInvoiceDate" })
+                                    @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.SBOrInvoiceDate, new { @id = "txtSBOrInvoiceDate", @name = "txtSBOrInvoiceDate", @class = "form-control", @Readonly = true })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.BalancePackages, new { @for = "txtBalancePackages" })
+                                @Html.TextBoxFor(Model => Model.BalancePackages, new { @id = "txtBalancePackages", @name = "txtBalancePackages", @class = "form-control", @readonly = true })
+                                @Html.HiddenFor(Model => Model.trnExBondDocumentEntryDetails.hdnBULKSTATUS, new { @id = "hdnBULKSTATUS", @name = "hdnBULKSTATUS" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.BalancePieces, new { @for = "txtBalancePieces" })
+                                @Html.TextBoxFor(Model => Model.BalancePieces, new { @id = "txtBalancePieces", @name = "txtBalancePieces", @class = "form-control", @readonly = true })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.BalanceWeight, new { @for = "txtBalanceWeight" })
+                                <div class="input-group" id="dvid11">
+                                    @Html.TextBoxFor(Model => Model.BalanceWeight, new { @id = "txtBalanceWeight", @name = "txtBalanceWeight", @class = "form-control", @readonly = true })
+                                    <div id="dvid" data-toggle="modal" style=" cursor: pointer;width:80px;" onclick="OpenLoadedContainer()" data-target="#AddContainer" class="input-group-addon">
+                                        <i id="dvcont" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-plus"></i>
+                                    </div>
+                                </div>
+                                <div id="dvid22">
+                                    @Html.TextBoxFor(Model => Model.BalanceWeight, new { @id = "BalanceWeight", @name = "BalanceWeight", @class = "form-control", @readonly = true })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cols-md-2">
+
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.BalanceArea, new { @for = "txtBalanceArea" })
+                                @Html.TextBoxFor(Model => Model.BalanceArea, new { @id = "txtBalanceArea", @name = "txtBalanceArea", @class = "form-control", @readonly = true })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.BalanceAssessableValue, new { @for = "BalanceAssessableValue" })
+                                @Html.TextBoxFor(Model => Model.BalanceAssessableValue, new { @id = "BalanceAssessableValue", @name = "BalanceAssessableValue", @class = "form-control", @readonly = true })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.BalanceDutyValue, new { @for = "BalanceDutyValue" })
+                                @Html.TextBoxFor(Model => Model.BalanceDutyValue, new { @id = "BalanceDutyValue", @name = "BalanceDutyValue", @class = "form-control", @readonly = true })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.ReleasedPackages, new { @for = "txtReleasedPackages" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.ReleasedPackages, String.Empty, new { @id = "spn_ReleasedPackages", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.ReleasedPackages, new { @id = "txtReleasedPackages", @name = "txtReleasedPackages", @class = "form-control", @onkeypress = "return isNumberWithTwoDecimal(event,'txtReleasedPackages')", @onblur = "return WeightCalculation('txtReleasedPackages','txtReleasedPieces','txtBalancePackages','txtBalanceWeight','txtReleasedWeight')" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.ReleasedPieces, new { @for = "txtReleasedPieces" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.ReleasedPieces, String.Empty, new { @id = "spn_ReleasedPieces", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.ReleasedPieces, new { @id = "txtReleasedPieces", @name = "txtReleasedPieces", @class = "form-control", @onkeypress = "return isNumberWithTwoDecimal(event,'txtReleasedPieces')" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.ReleasedWeight, new { @for = "txtReleasedWeight" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.ReleasedWeight, String.Empty, new { @id = "spn_ReleasedWeight", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.ReleasedWeight, new { @id = "txtReleasedWeight", @name = "txtReleasedWeight", @class = "form-control", @onkeypress = "return isNumberWithTwoDecimal(event,'txtReleasedWeight')" })
+                            </div>
+                        </div>
+                        @*<div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.ReExportReleasedArea, new { @for = "txtReExportReleasedArea" }) <span id="AreaVisible" class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.ReExportReleasedArea, String.Empty, new { @id = "spn_ReExportReleasedArea", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.ReExportReleasedArea, new { @id = "txtReExportReleasedArea", @name = "txtReExportReleasedArea", @class = "form-control" })
+                                </div>
+                            </div>*@
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.AssessableValue, new { @for = "txtAssessableValue" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.AssessableValue, String.Empty, new { @id = "spn_AssessableValue", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.AssessableValue, new { @id = "txtAssessableValue", @name = "txtAssessableValue", @class = "form-control", @onkeypress = "return isNumberWithTwoDecimal(event,'txtAssessableValue')" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.Dutyvalue, new { @for = "txtDutyvalue" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.Dutyvalue, String.Empty, new { @id = "spn_Dutyvalue", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.Dutyvalue, new { @id = "txtDutyvalue", @name = "txtDutyvalue", @class = "form-control", @onkeypress = "return isNumberWithTwoDecimal(event,'txtDutyvalue')" })
+                            </div>
+                        </div>
+                        <div id="dvRemoveFromReExport">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.DutyChallanNo, new { @for = "txtDutyChallanNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.DutyChallanNo, String.Empty, new { @id = "spn_DutyChallanNo", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.DutyChallanNo, new { @id = "txtDutyChallanNo", @name = "txtDutyChallanNo", @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.DutyChallanDate, new { @for = "txtDutyChallanDate" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.DutyChallanDate, String.Empty, new { @id = "spn_DutyChallanDate", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.DutyChallanDate, new { @id = "txtDutyChallanDate", @name = "txtDutyChallanDate", @class = "form-control DatePickerCustom" })
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.OOCNo, new { @for = "txtOOCNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.OOCNo, String.Empty, new { @id = "spn_OOCNo", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.OOCNo, new { @id = "txtOOCNo", @name = "txtOOCNo", @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.OOCDate, new { @for = "txtOOCDate" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.OOCDate, String.Empty, new { @id = "spn_OOCDate", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.OOCDate, new { @id = "txtOOCDate", @name = "txtOOCDate", @class = "form-control DatePickerCustom" })
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.Remarks, new { @for = "txtRemarks" })
+                                @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.Remarks, new { @id = "txtRemarks", @name = "txtRemarks", @class = "form-control" })
+                            </div>
+                        </div>
+                        @Html.HiddenFor(Model => Model.trnExBondDocumentEntryDetails.DeclaredPackage, new { @id = "DeclaredPackage" })
+                        @Html.HiddenFor(Model => Model.trnExBondDocumentEntryDetails.DeclaredPices, new { @id = "DeclaredPices" })
+                        @Html.HiddenFor(Model => Model.trnExBondDocumentEntryDetails.DeclaredWeight, new { @id = "DeclaredWeight" })
+                        @*<div class="col-md-1">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.Equipment, new { @for = "Equipment" })@Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.Equipment, String.Empty, new { @id = "spn_EquipmentID", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.Equipment, new { @id = "Equipment", @name = "Equipment", @class = "form-control", @placeholder = "Equipment" })
+                                    @Html.HiddenFor(Model => Model.trnExBondDocumentEntryDetails.EquipmentID, new { @id = "EquipmentID", @name = "EquipmentID" })
+                                </div>
+                            </div>*@
+                        <div class="col-md-2 pull-right">
+
+                            <div class="form-group pull-right">
+                                <br />
+                                <a onclick="ClearDetails()" class="btn btn-danger pull-right">Clear</a>
+                                <button id="btnContDetails" type="button" style="margin-right:5px;" onclick="return validateSubModel()" class="btn btn-primary pull-right">Add</button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12" style="overflow:scroll;padding-top:50px;">
+                            <table id="lotdetail" style="white-space:nowrap;" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Released Type</th>
+                                        <th id="ColectExBondCharge">Collect Ex-Bond Charges</th>
+                                        <th>Ex-Bond Ref No</th>
+                                        <th>Document Date Time</th>
+                                        <th>Ex-BOE/SB No.</th>
+                                        <th>Ex-BOE/SB Date</th>
+                                        <th>CHA</th>
+                                        <th>Forwarder</th>
+                                        <th>Importer/Exporter</th>
+                                        <th>Consoler</th>
+                                        <th>Inv No.</th>
+                                        <th>Inv Date</th>
+                                        <th>
+                                            Ex-Bond/Re-Export Released pkgs
+                                        </th>
+                                        <th>
+                                            Ex-Bond/Re-Export Released Pieces
+                                        </th>
+                                        <th>
+                                            EX-Bond/Re-Export Released Weight
+                                        </th>
+                                        @*<th>
+                                                Re-Export Released Area
+                                            </th>*@
+                                        <th>
+                                            Ex-Bond/Re-Export Assessable Value
+                                        </th>
+                                        <th>
+                                            Ex-Bond/Re-Export Duty Value
+                                        </th>
+                                        <th>
+                                            Duty Challan No
+                                        </th>
+                                        <th>
+                                            Duty Challan Date
+                                        </th>
+                                        <th>
+                                            OOC No
+                                        </th>
+                                        <th>
+                                            OOC Date
+                                        </th>
+                                        <th>
+                                            Remarks
+                                        </th>
+                                        @*<th>
+                                                Equipment
+                                            </th>*@
+                                        <th class="freezeLastColumn">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblDetails"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        }
+
+        @if (Model.doaction == "edit")
+        {
+            <div class="col-md-6 pull-right">
+                <div class="form-group">
+                    <br />
+                    <a href="@Url.Action("index", CFS.Com.ClsCommon.Controller())" style="margin-right: 5px;" class="btn btn-danger pull-right">Cancel</a>
+                    <button type="submit" style="margin-right: 5px;" class="btn  btn-primary pull-right" id="SaveDocument" onclick="return FinalFinished()"> Save </button>
+                </div>
+            </div>
+        }
+
+    </div>    
+    @if (Model.doaction == "edit")
+    {
+        <div class="row" style="margin-top:1%">
+            <div class="clear"></div>
+            <div class="col-md-4">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <i class="glyphicon glyphicon-tags"></i>
+                        <h3 class="box-title">
+                            A - In-BOE Receiving
+                        </h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body" style="min-height:130px">
+                        <label>Total Occupied Area (SQ MTR) :</label> <span>@Model.InBondBOEArea</span>
+                        <br />
+                        <label> Total Received Pkgs : </label> <span>@Model.InBondRecBOEPackages</span>
+                        <br />
+                        <label>Total Received Pieces: </label> <span>@Model.InBondRecBOEPieces </span>
+                        <br />
+                        <label> Total Received Weight: </label> <span> @Model.InBondRecBOEWeight</span> <br />
+                        <label> Total Assessable Value : </label> <span>@Model.InBondBOEAssessableValue </span> <br />
+                        <label> Total Duty Value : </label> <span>@Model.InBondBOEDutyvalue</span>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <div class="col-md-4">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <i class="glyphicon glyphicon-tags"></i>
+                        <h3 class="box-title"> B - Ex-Bond/Re-Export Work Order</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body" style="min-height:130px">
+                        <label>Ex-Bond/Re-Export Released Area (SQ MTR) : </label> <span>@Model.ExBondArea</span>
+                        <br />
+                        <label>Total Ex-Bond/Re-Export Packages :</label> <span>@Model.ExBondPackages</span>
+                        <br />
+                        <label>Total Ex-Bond/Re-Export Pieces:</label> <span> @Model.ExBondPieces</span>
+                        <br />
+                        <label>Total Ex-Bond/Re-Export Weight:</label> <span>@Model.ExBondWeight </span>
+                        <br />
+                        <label>Total Ex-Bond/Re-Export Assessable Value:</label> <span>@Model.ExBondAssessableValue </span>
+                        <br />
+                        <label>Total Ex-Bond/Re-Export Duty Value:</label> <span>@Model.ExBondDutyValue </span>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <div class="col-md-4">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <i class="glyphicon glyphicon-tags"></i>
+                        <h3 class="box-title">
+                            C -Total Cargo Gate Out
+                        </h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body" style="min-height:130px">
+                        <label>Total Out Area (SQ MTR):</label> <span>@Model.OutBondBOEArea</span>
+                        <br />
+                        <label> Total Out PKGS : </label> <span>@Model.OutBondBOEpkgs</span>
+                        <br />
+                        <label>Total Out Pieces: </label> <span> @Model.OutBondBOEpcs</span>
+                        <br />
+                        <label> Total Out Weight: </label> <span>@Model.OutBondBOEwgt</span>
+                        <br />
+                        <label> Total Out Assessable Value: </label> <span>@Model.OutBondBOEAssembleValue </span>
+                        <br />
+                        <label> Total Out Duty Value: </label> <span>@Model.OutBondBOEDutyValue</span>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <div class="col-md-4">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <i class="glyphicon glyphicon-tags"></i>
+                        <h3 class="box-title">
+                            D - Balance After Ex-Bond/Re-Export
+                        </h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body" style="min-height:130px">
+                        <label>Total Balance Area (SQ MTR) :</label> <span>@Model.BalanceArea</span>
+                        <br />
+                        <label> Total Balance PKGS : </label> <span>@Model.BalancePackages</span>
+                        <br />
+                        <label>Total Balance Pieces: </label> <span>@Model.BalancePieces </span>
+                        <br />
+                        <label> Total Balance Weight: </label> <span>@Model.BalanceWeight </span>
+                        <br />
+                        <label> Total Balance Assessable Value: </label> <span>@Model.BalanceAssessableValue </span>
+                        <br />
+                        <label> Total Balance Duty Value: </label> <span>@Model.BalanceDutyValue </span>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    }
+    <div class="modal fade in" id="AddContainer" style="display: none; padding-right: 17px;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Add Loaded Container</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div id="AddContainer" class="col-md-12">
+                            @Html.HiddenFor(Model => Model.trnExBondDocumentEntryDetails.trnExBondDocumentEntryContainerDetailsID, new { @id = "trnExBondDocumentEntryContainerDetailsID" })
+                            <div class="col-md-2 form-group">
+                                @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.ContainerNo, new { @for = "ContainerNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExBondDocumentEntryDetails.trnDocumentContainerID, String.Empty, new { @id = "spn_trnDocumentContainerID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.ContainerNo, new { @id = "ContainerNo", @name = "ContainerNo", @class = "form-control" })
+                                @Html.HiddenFor(Model => Model.trnExBondDocumentEntryDetails.trnDocumentContainerID, new { @id = "trnDocumentContainerID", @name = "trnDocumentContainerID" })
+                            </div>
+                            <div class="col-md-2 form-group">
+                                @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.ContType, new { @for = "ContType" })
+                                @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.ContType, new { @id = "ContType", @name = "ContType", @class = "form-control", @readonly = true })
+                            </div>
+                            <div class="col-md-2 form-group">
+                                @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.ContSize, new { @for = "ContSize" })
+                                @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.ContSize, new { @id = "ContSize", @name = "ContSize", @class = "form-control", @readonly = true })
+                            </div>
+                            <div class="col-md-2 form-group">
+                                @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.ContNoOfPkg, new { @for = "ContNoOfPkg" })
+                                @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.ContNoOfPkg, new { @id = "ContNoOfPkg", @name = "ContNoOfPkg", @class = "form-control", @readonly = true })
+                            </div>
+                            <div class="col-md-2 form-group">
+                                @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.ContNoOfPieces, new { @for = "ContNoOfPieces" })
+                                @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.ContNoOfPieces, new { @id = "ContNoOfPieces", @name = "ContNoOfPieces", @class = "form-control", @readonly = true })
+                            </div>
+                            <div class="col-md-2 form-group">
+                                @Html.LabelFor(Model => Model.trnExBondDocumentEntryDetails.ContNoOfWt, new { @for = "ContNoOfWt" })
+                                @Html.TextBoxFor(Model => Model.trnExBondDocumentEntryDetails.ContNoOfWt, new { @id = "ContNoOfWt", @name = "ContNoOfWt", @class = "form-control", @readonly = true })
+                            </div>
+                        </div>
+                        <div class="col-md-12 pull-right" style="margin-top:10px;">
+                            <div class="form-group pull-right">
+                                <button type="button" class="btn btn-info" onclick="AddLoadedContainer()" id="savebtn">Add</button>
+                                <button type="button" onclick="ClearLoadedContainerDetails()" class="btn btn-default">Clear</button>
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="overflow:scroll;height:250px;margin-top:10px;">
+                            <table id="tblExBondContainerDetails" style="width:100%" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Container No</th>
+                                        <th>Cont. Size</th>
+                                        <th>Cont. Type</th>
+                                        <th>No Of Package</th>
+                                        <th>No Of Pieces</th>
+                                        <th>Weight</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ContainerDetails">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</section>
+
+
+}
+<script>
+    function FinalFinished() {
+        $("#IsFinished").val(true);
+        return validateModel();
+    }
+    </script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnExBondDocumentEntry.js")"></script>

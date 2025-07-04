@@ -1,0 +1,60 @@
+﻿@model CFS.Models.MstrEquipment
+@{
+    ViewBag.Title = "View Equipment Details";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (ViewBag.gblBlnView)
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">Equipment Code: @Model.EquipmentCode</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrEquipment","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrEquipment", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div class="col-md-6">
+
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>Equipment Name : </label> <span>@Model.EquipmentName</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Equipment Capacity: </label> <span>@Model.EquipmentCapacity</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Remarks: </label> <span>@Model.Remarks</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Status: </label> <span>@(Model.IsActive == true ? "Active" : "InActive")</span>
+                            </div>
+                            @if (!Model.IsActive)
+                            {
+                                <div class="form-group">
+                                    <label>Inactivate Reason: </label> <span>@Model.InActiveReason</span>
+                                </div>
+                            }
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

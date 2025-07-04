@@ -1,0 +1,200 @@
+﻿@model CFS.Models.MstrTruck
+
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Truck";
+        if (!ViewBag.gblBlnEdit && !ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Truck";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (Model.doaction == "edit" && Model.TransporterCode != 0)
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">Transporter Code : @Model.TransporterCode</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrTruck","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrTruck", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "MstrTruck", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.MstrTruckID, new { @id= "MstrTruckID", @name= "MstrTruckID" })
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.TransporterCode)
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.TransporterName, new { @for = "txtTransporterName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TransporterID, String.Empty, new { @id = "spn_TransporterID", @class = "help -inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.TransporterName, new { @id = "txtTransporterName", @name = "txtTransporterName", @class = "form-control", @placeholder = "Enter Transporter Name" })
+                                    @Html.HiddenFor(Model => Model.TransporterID, new { @id = "TransporterID", @name= "TransporterID" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <br />
+                                @if (Model.doaction != "edit")
+                                {
+                                    <button type="button" class="btn btn-primary" onclick="return validate()" id="SaveTruck" name="submit" value="Save & Next">Save & Next</button>
+                                }
+                                @if (Model.doaction == "edit")
+                                {
+                                    <button type="submit" class="btn btn-primary" id="SaveTruck" name="submit" value="Submit">Submit</button>
+                                }
+                                <a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrTruck","Index")" id="cancle" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+
+                <div class="box-body">
+                    @using (Html.BeginForm("Actionsub", "MstrTruck", FormMethod.Post))
+                    {
+
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.MstrTruckID)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.TransporterName)
+                        @Html.HiddenFor(Model => Model.TransporterID)
+                        @Html.HiddenFor(Model => Model.MstrTruckDetailID, new { @id = "MstrTruckDetailID", @name = "MstrTruckDetailID" })
+                        if (Model != null && Model.doaction == "edit")
+                        {
+                            <div class="col-md-12">
+                                <div class="box-body">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.TruckNo, new { @for = "txtTruckNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TruckNo, String.Empty, new { @id = "spn_TruckNo", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.TruckNo, new { @id = "txtTruckNo", @name = "txtTruckNo", @class = "form-control", @placeholder = "Enter Truck Number", @onkeypress = "return AlphaNumberwithDash(event)",@maxlength="20" })
+                                            @Html.HiddenFor(Model => Model.subTruckDetailID, new { @id = "subTruckDetailID", @name = "subTruckDetailID" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.Weight, new { @for = "txtWeight" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Weight, String.Empty, new { @id = "spn_Weight", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.Weight, new { @id = "txtWeight", @name = "txtWeight", @class = "form-control", @placeholder = "Enter Weight", @onkeypress = "return isNumberWithTwoDecimal(event,'txtWeight')" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <br />
+                                            @Html.CheckBoxFor(Model => Model.IsActive, new { @id = "IsActive", @name = "IsActive", @class = "form-control" })
+                                            @Html.LabelFor(Model => Model.IsActive, new { @for = "IsActive" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group" id="dvSubInActiveReason">
+                                            @Html.LabelFor(Model => Model.InActiveReason, new { @for = "InActiveReason" }) @Html.ValidationMessageFor(Model => Model.InActiveReason, String.Empty, new { @id = "spn_InActiveReason", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.InActiveReason, new { @id = "InActiveReason", @name = "InActiveReason", @class = "form-control", @placeholder = "Enter Inactivate Reason" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <br />
+                                        <button type="submit" onclick="return Validation()" class="btn btn-primary">Save</button>
+                                        <a onclick="ClearTruckDetails()" class="btn btn-danger">Clear</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <table id="example2" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Truck Number</th>
+                                            <th>Weight</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.MySubDatatable != null && Model.MySubDatatable.Rows.Count > 0)
+                                        {
+                                            for (int i = 0; i < Model.MySubDatatable.Rows.Count; i++)
+                                            {
+                                        <tr>
+                                            <td style="display:none"><span id="TruckDetailID_@Model.MySubDatatable.Rows[i]["MstrTruckDetailID"]">@Model.MySubDatatable.Rows[i]["MstrTruckDetailID"]</span></td>
+                                            <td><span id="TruckNo_@Model.MySubDatatable.Rows[i]["MstrTruckDetailID"]">@Model.MySubDatatable.Rows[i]["TruckNo"]</span></td>
+                                            <td><span id="Weight_@Model.MySubDatatable.Rows[i]["MstrTruckDetailID"]">@Convert.ToDecimal(Model.MySubDatatable.Rows[i]["Weight"]).ToString("0.00")</span></td>
+                                            <td style="display:none"><span id="InActiveReason_@Model.MySubDatatable.Rows[i]["MstrTruckDetailID"]">@Model.MySubDatatable.Rows[i]["InActiveReason"]</span></td>
+                                            <td style="display:none" id="hdntxtStatus_@Model.MySubDatatable.Rows[i]["MstrTruckDetailID"]">@Model.MySubDatatable.Rows[i]["IsActive"]</td>
+                                            @*<td style="display:none" id="hdnWeight_@Model.MySubDatatable.Rows[i]["MstrTruckDetailID"]">@Model.MySubDatatable.Rows[i]["Weight"]</td>*@
+                                            @*<td style="display:none" id="txtTruckNo_@Model.MySubDatatable.Rows[i]["MstrTruckDetailID"]">@Model.MySubDatatable.Rows[i]["TruckNo"]</td>*@
+                                            <td>
+                                                @{
+                                                    string Icon = "glyphicon glyphicon-remove-circle";
+                                                    string click = "click to Active";
+                                                    string isactive = "true";
+                                                    if (Convert.ToBoolean(Model.MySubDatatable.Rows[i]["IsActive"]) == true)
+                                                    {
+                                                        Icon = "glyphicon glyphicon-ok-circle";
+                                                        click = "click to InActive";
+                                                        isactive = "false";
+                                                    }
+                                                }
+                                                <a><i onclick="ValidateUpdateStatus('mstrtruckdetail','@isactive','@Model.MySubDatatable.Rows[i]["MstrTruckDetailID"]')" title="@click" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="@Icon"></i></a>
+                                            </td>
+
+                                            <td>
+                                                <a onclick="EditTruckDetail('@Model.MySubDatatable.Rows[i]["MstrTruckDetailID"]')"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                                <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('MstrTruckDetail','@Model.MySubDatatable.Rows[i]["MstrTruckDetailID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                                <a href="@Url.Action("deleteSub", "MstrTruck", new { id = Model.MySubDatatable.Rows[i]["MstrTruckDetailID"],MstrTruckID = Model.MySubDatatable.Rows[i]["MstrTruckID"] })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                            </td>
+
+
+                                        </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+
+                    }
+                </div>
+                </div>
+            </div>
+        </div>
+</section>
+<script>
+    var doaction = '@Model.doaction';
+    var MstrTruckID = '@Model.MstrTruckID';
+    if (MstrTruckID == null || MstrTruckID == undefined || MstrTruckID == "") {
+        MstrTruckID = "0";
+    }
+    var MstrTruckDetailID = '@Model.MstrTruckDetailID';
+    if (MstrTruckDetailID == null || MstrTruckDetailID == undefined || MstrTruckDetailID == "") {
+        MstrTruckDetailID = "0";
+    }
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrTruck.js")"></script>

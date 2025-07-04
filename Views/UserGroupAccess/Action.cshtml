@@ -1,0 +1,538 @@
+﻿@model CFS.Models.UserGroupAccess
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (ViewBag.doaction == "edit")
+    {
+        ViewBag.Title = "Update User Group Access";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add new User Group Access";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-info">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <a href="@CFS.Com.ClsCommon.GetUrlReferrer("UserGroupAccess","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body" style="padding:20px;">
+                    @using (Html.BeginForm("Action", "UserGroupAccess", FormMethod.Post))
+                    {
+                        <div>
+                            @Html.Label("User Group") @Html.ValidationMessageFor(Model => Model.UserGroupID, String.Empty, new { @class = "help-inline text-red" })
+                            @{ if (Model.UserGroupID > 0)
+                                {
+                                    <span> : @Model.GroupName</span>
+                                    @Html.HiddenFor(model => model.UserGroupID, new { @id = "hdnUserGroupId", @name = "hdnPageMenuId", @Value = Model.UserGroupID })
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(model => model.UserGroupID, Model.UserGroupList, "SELECT", new { @class = "form-control" })
+                                }
+                            }
+
+                        </div><br /><br />
+                        <div class="row" style="padding-left:20px;">
+                            <div class="table-responsive">
+                                <table class="table table-responsive-md">
+                                    <thead>
+                                        <tr>
+                                            <th>Page Name</th>
+                                            <th colspan="5" class="clsTextAlignCenter">Page Access</th>
+                                            <input type="hidden" id="hdngblBlnView" value="@ViewBag.gblBlnView" />
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong></strong></td>
+                                            <td>All</td>
+                                            <td>View</td>
+                                            <td>Add</td>
+                                            <td>Edit</td>
+                                            <td>Delete</td>
+                                            <td>Approve</td>
+                                            <td>UnApprove</td>
+                                            <td>Action</td>
+                                        </tr>
+                                        @{ int FormatID = 0;
+                                            string gblStrUserId = Convert.ToString(HttpContext.Current.Session["UserID"]);
+
+                                            if (gblStrUserId == "")
+                                            {
+                                                gblStrUserId = "0";
+
+                                            }
+
+                                            if (Model.MyDatatable != null && Model.MyDatatable.Rows.Count > 0)
+                                            {
+                                                string style="",ControllerName="",strView = "", strAdd = "", strEdit = "", strDelete = "", strApprove = "", strUnApprove = "";
+                                                Boolean isStandAlon  = false;
+                                                for (int intI = 0; intI < Model.MyDatatable.Rows.Count; intI++)
+                                                {
+                                                    strView = "false";
+                                                    strAdd = "false";
+                                                    strEdit = "false";
+                                                    strDelete = "false";
+                                                    strApprove = "false";
+                                                    strUnApprove = "false";
+                                                    String MenuName = Convert.ToString(Model.MyDatatable.Rows[intI]["MenuName"]);
+                                                    int MenuID = Convert.ToInt32(Model.MyDatatable.Rows[intI]["PageMenuID"]);
+                                                    strView = Convert.ToString(Model.MyDatatable.Rows[intI]["FlagView"]);
+                                                    strAdd = Convert.ToString(Model.MyDatatable.Rows[intI]["FlagAdd"]);
+                                                    strEdit = Convert.ToString(Model.MyDatatable.Rows[intI]["FlagEdit"]);
+                                                    strDelete = Convert.ToString(Model.MyDatatable.Rows[intI]["FlagDelete"]);
+                                                    strApprove = Convert.ToString(Model.MyDatatable.Rows[intI]["FlagApprove"]);
+                                                    strUnApprove = Convert.ToString(Model.MyDatatable.Rows[intI]["FlagUnApprove"]);
+                                                    ControllerName = Convert.ToString(Model.MyDatatable.Rows[intI]["Controller"]);
+                                                    isStandAlon = Convert.ToBoolean(Model.MyDatatable.Rows[intI]["isStandAlon"]);
+                                                    if (!string.IsNullOrEmpty(ControllerName))
+                                                    {
+                                                        style = "";
+                                                    }
+                                                    else
+                                                    {
+                                                        style = "display:none";
+                                                    }
+
+
+                                                    if (Convert.ToString(Model.MyDatatable.Rows[intI]["LevelID"]) == "1")
+                                                    {
+                                                        <tr style="background: #efefef;">
+                                                            <td>
+                                                                <strong>@MenuName</strong>
+                                                                
+                                                            </td>
+                                                            @if (isStandAlon)
+                                                            {
+                                                                if (intI != 0)
+                                                                {
+                                                                    FormatID = FormatID + 1;
+                                                                }
+                                                            <td>
+                                                                <div class="form-group" style=@style>
+                                                                    @Html.HiddenFor(model => model.hdnPageMenuId[FormatID], new { @id = "hdnPageMenuId_" + FormatID + "", @name = "hdnPageMenuId_" + FormatID + "", @Value = MenuID })
+                                                                    @Html.Label("") @Html.ValidationMessageFor(Model => Model.FlagAll, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{
+                                                                        if (Convert.ToBoolean(strAdd) == true && Convert.ToBoolean(strEdit) == true && Convert.ToBoolean(strView) == true && Convert.ToBoolean(strDelete) == true && Convert.ToBoolean(strApprove) == true && Convert.ToBoolean(strUnApprove) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(model => model.FlagAll[FormatID], new { @id = "chkAll_" + FormatID + "", @name = "chkAll_" + FormatID + "", @class = "form-control", @checked = "checked", onchange = "ChkAll();" })
+
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(model => model.FlagAll[FormatID], new { @id = "chkAll_" + FormatID + "", @name = "chkAll_" + FormatID + "", @class = "form-control", onchange = "ChkAll();" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" style=@style>
+                                                                    @Html.Label("") @Html.ValidationMessageFor(model => model.FlagView, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strView) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(model => model.FlagView[FormatID], new { @id = "chkView_" + FormatID + "", @name = "chkView_" + FormatID + "", @class = "form-control", @checked = "checked" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(model => model.FlagView[FormatID], new { @id = "chkView_" + FormatID + "", @name = "chkView_" + FormatID + "", @class = "form-control" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" style=@style>
+                                                                    @Html.Label("") @Html.ValidationMessageFor(model => model.FlagAdd, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strAdd) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(model => model.FlagAdd[FormatID], new { @id = "chkAdd_" + FormatID + "", @name = "chkAdd_" + FormatID + "", @class = "form-control", @checked = "checked" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(model => model.FlagAdd[FormatID], new { @id = "chkAdd_" + FormatID + "", @name = "chkAdd_" + FormatID + "", @class = "form-control" })
+                                                                        }
+                                                                    }
+
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" style=@style>
+                                                                    @Html.Label("") @Html.ValidationMessageFor(Model => Model.FlagEdit, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strEdit) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(model => model.FlagEdit[FormatID], new { @id = "chkEdit_" + FormatID + "", @name = "chkEdit_" + FormatID + "", @class = "form-control", @checked = "checked" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(model => model.FlagEdit[FormatID], new { @id = "chkEdit_" + FormatID + "", @name = "chkEdit_" + FormatID + "", @class = "form-control" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" style=@style>
+                                                                    @Html.Label("") @Html.ValidationMessageFor(model => model.FlagDelete, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strDelete) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(model => model.FlagDelete[FormatID], new { @id = "chkDelete_" + FormatID + "", @name = "chkDelete_" + FormatID + "", @class = "form-control", @checked = "checked" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(model => model.FlagDelete[FormatID], new { @id = "chkDelete_" + FormatID + "", @name = "chkDelete_" + FormatID + "", @class = "form-control" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" style=@style>
+                                                                    @Html.Label("") @Html.ValidationMessageFor(Model => Model.FlagApprove, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strApprove) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(model => model.FlagApprove[FormatID], new { @id = "chkApproved_" + FormatID + "", @name = "chkApproved_" + FormatID + "", @class = "form-control", @checked = "checked" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(model => model.FlagApprove[FormatID], new { @id = "chkApproved_" + FormatID + "", @name = "chkApproved_" + FormatID + "", @class = "form-control" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group" style=@style>
+                                                                    @Html.Label("") @Html.ValidationMessageFor(Model => Model.FlagUnApprove, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strUnApprove) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(model => model.FlagUnApprove[FormatID], new { @id = "chkUnApproved_" + FormatID + "", @name = "chkUnApproved_" + FormatID + "", @class = "form-control", @checked = "checked" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(model => model.FlagUnApprove[FormatID], new { @id = "chkUnApproved_" + FormatID + "", @name = "chkUnApproved_" + FormatID + "", @class = "form-control" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            
+                                                                <td><a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('UserPages','@Model.MyDatatable.Rows[intI]["UserPagesID"]','Admin')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a></td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td colspan="8"></td>
+                                                                        }
+
+                                                        </tr>
+                                                    }
+                                                    else if (Convert.ToString(Model.MyDatatable.Rows[intI]["LevelID"]) == "2")
+                                                    {
+                                                                            FormatID = FormatID + 1;
+                                                        <tr>
+                                                            <td>
+                                                                &nbsp;&nbsp;&nbsp;&nbsp;<strong> @MenuName</strong>
+                                                                @Html.HiddenFor(model => model.hdnPageMenuId[FormatID], new { @id = "hdnPageMenuId_" + FormatID + "", @name = "hdnPageMenuId_" + FormatID + "", @Value = MenuID })
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    @Html.Label("") @Html.ValidationMessageFor(Model => Model.FlagAll, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strAdd) == true && Convert.ToBoolean(strEdit) == true && Convert.ToBoolean(strView) == true && Convert.ToBoolean(strDelete) == true && Convert.ToBoolean(strApprove) == true && Convert.ToBoolean(strUnApprove) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(model => model.FlagAll[FormatID], new { @id = "chkAll_" + FormatID + "", @name = "chkAll_" + FormatID + "", @class = "form-control", @checked = "checked", @onclick = "ChkAll('" + FormatID + "')" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(model => model.FlagAll[FormatID], new { @id = "chkAll_" + FormatID + "", @name = "chkAll_" + FormatID + "", @class = "form-control", @onclick = "ChkAll('" + FormatID + "')" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    @Html.Label("") @Html.ValidationMessageFor(Model => Model.FlagView, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strView) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(model => model.FlagView[FormatID], new { @id = "chkView_" + FormatID + "", @name = "chkView_" + FormatID + "", @class = "form-control", @checked = "checked" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(model => model.FlagView[FormatID], new { @id = "chkView_" + FormatID + "", @name = "chkView_" + FormatID + "", @class = "form-control" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    @Html.Label("") @Html.ValidationMessageFor(Model => Model.FlagAdd, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strAdd) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagAdd[FormatID], new { @id = "chkAdd_" + FormatID + "", @name = "chkAdd_" + FormatID + "", @class = "form-control", @checked = "checked" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagAdd[FormatID], new { @id = "chkAdd_" + FormatID + "", @name = "chkAdd_" + FormatID + "", @class = "form-control" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    @Html.Label("") @Html.ValidationMessageFor(Model => Model.FlagEdit, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strEdit) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagEdit[FormatID], new { @id = "chkEdit_" + FormatID + "", @name = "chkEdit_" + FormatID + "", @class = "form-control", @checked = "checked" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagEdit[FormatID], new { @id = "chkEdit_" + FormatID + "", @name = "chkEdit_" + FormatID + "", @class = "form-control" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    @Html.Label("") @Html.ValidationMessageFor(Model => Model.FlagDelete, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strDelete) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagDelete[FormatID], new { @id = "chkDelete_" + FormatID + "", @name = "chkDelete_" + FormatID + "", @class = "form-control", @checked = "checked" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagDelete[FormatID], new { @id = "chkDelete_" + FormatID + "", @name = "chkDelete_" + FormatID + "", @class = "form-control" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    @Html.Label("") @Html.ValidationMessageFor(Model => Model.FlagApprove, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strApprove) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagApprove[FormatID], new { @id = "chkApproved_" + FormatID + "", @name = "chkApproved_" + FormatID + "", @class = "form-control", @checked = "checked" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagApprove[FormatID], new { @id = "chkApproved_" + FormatID + "", @name = "chkApproved_" + FormatID + "", @class = "form-control" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    @Html.Label("") @Html.ValidationMessageFor(Model => Model.FlagUnApprove, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strUnApprove) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagUnApprove[FormatID], new { @id = "chkUnApproved_" + FormatID + "", @name = "chkUnApproved_" + FormatID + "", @class = "form-control", @checked = "checked", @onclick = "ChkAll('" + FormatID + "')" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagUnApprove[FormatID], new { @id = "chkUnApproved_" + FormatID + "", @name = "chkUnApproved_" + FormatID + "", @class = "form-control", @onclick = "ChkAll('" + FormatID + "')" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td><a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('UserPages','@Model.MyDatatable.Rows[intI]["UserPagesID"]','Admin')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a></td>
+                                                        </tr>
+                                                    }
+                                                    else if (Convert.ToString(Model.MyDatatable.Rows[intI]["LevelID"]) == "3")
+                                                    {
+                                                                            FormatID = FormatID + 1;
+                                                                             
+                                                        <tr>
+                                                            <td>
+                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @MenuName
+                                                                @Html.HiddenFor(model => model.hdnPageMenuId[FormatID], new { @id = "hdnPageMenuId_" + FormatID + "", @name = "hdnPageMenuId_" + FormatID + "", @Value = MenuID })
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    @Html.Label("") @Html.ValidationMessageFor(Model => Model.FlagAll, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strAdd) == true && Convert.ToBoolean(strEdit) == true && Convert.ToBoolean(strView) == true && Convert.ToBoolean(strDelete) == true && Convert.ToBoolean(strApprove) == true && Convert.ToBoolean(strUnApprove) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagAll[FormatID], new { @id = "chkAll_" + FormatID + "", @name = "chkAll_" + FormatID + "", @class = "form-control", @checked = "checked", @onclick = "ChkAll('" + FormatID + "')" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagAll[FormatID], new { @id = "chkAll_" + FormatID + "", @name = "chkAll_" + FormatID + "", @class = "form-control", @onclick = "ChkAll('" + FormatID + "')" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    @Html.Label("") @Html.ValidationMessageFor(Model => Model.FlagView, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strView) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagView[FormatID], new { @id = "chkView" + FormatID + "", @name = "chkView_" + FormatID + "", @class = "form-control", @checked = "checked" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagView[FormatID], new { @id = "chkView" + FormatID + "", @name = "chkView_" + FormatID + "", @class = "form-control" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    @Html.Label("") @Html.ValidationMessageFor(Model => Model.FlagAdd, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strAdd) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagAdd[FormatID], new { @id = "chkAdd" + FormatID + "", @name = "chkAdd_" + FormatID + "", @class = "form-control", @checked = "checked" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagAdd[FormatID], new { @id = "chkAdd" + FormatID + "", @name = "chkAdd_" + FormatID + "", @class = "form-control" })
+                                                                        }
+                                                                    }
+
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    @Html.Label("") @Html.ValidationMessageFor(Model => Model.FlagEdit, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strEdit) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagEdit[FormatID], new { @id = "chkEdit" + FormatID + "", @name = "chkEdit_" + FormatID + "", @class = "form-control", @checked = "checked" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagEdit[FormatID], new { @id = "chkEdit" + FormatID + "", @name = "chkEdit_" + FormatID + "", @class = "form-control" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    @Html.Label("") @Html.ValidationMessageFor(Model => Model.FlagDelete, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strDelete) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagDelete[FormatID], new { @id = "chkDelete" + FormatID + "", @name = "chkDelete_" + FormatID + "", @class = "form-control", @checked = "checked" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagDelete[FormatID], new { @id = "chkDelete" + FormatID + "", @name = "chkDelete_" + FormatID + "", @class = "form-control" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    @Html.Label("") @Html.ValidationMessageFor(Model => Model.FlagApprove, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strApprove) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagApprove[FormatID], new { @id = "chkApproved" + FormatID + "", @name = "chkApproved_" + FormatID + "", @class = "form-control", @checked = "checked" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagApprove[FormatID], new { @id = "chkApproved" + FormatID + "", @name = "chkApproved_" + FormatID + "", @class = "form-control" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    @Html.Label("") @Html.ValidationMessageFor(Model => Model.FlagUnApprove, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @{ if (Convert.ToBoolean(strUnApprove) == true)
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagUnApprove[FormatID], new { @id = "chkUnApproved" + FormatID + "", @name = "chkUnApproved_" + FormatID + "", @class = "form-control", @checked = "checked" })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.CheckBoxFor(Model => Model.FlagUnApprove[FormatID], new { @id = "chkUnApproved" + FormatID + "", @name = "chkUnApproved_" + FormatID + "", @class = "form-control" })
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td><a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('UserPages','@Model.MyDatatable.Rows[intI]["UserPagesID"]','Admin')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a></td>
+                                                        </tr>
+                                                    }                                                         
+                                                    <script>
+                                                            setTimeout(function () {
+                                                                InitiateCheckBoxEvent("@FormatID");
+                                                            }, 1000);
+                                                    </script>
+                                                    
+                                                }
+
+                                            }
+
+                                        }
+
+                                    </tbody>
+                                </table>
+                                @Html.HiddenFor(model => model.hdnDoAction, new { Value = ViewBag.doaction })
+                                @Html.HiddenFor(model => model.hdnTotalPages, new { Value = FormatID })
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <button type="submit" id="btnSave" name="btnSave" class="btn btn-rounded btn-primary" @*onclick="return Validate();"*@>Save</button>
+                                <a href="@CFS.Com.ClsCommon.GetUrlReferrer("UserGroupAccess","Index")" class="btn btn-rounded btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/UserGroupAccess.js")"></script>
+<script>
+    
+    function InitiateCheckBoxEvent(ID)
+    {
+        $("#chkAll_" + ID).on('ifChanged', function (event) {
+            if (event.target.checked)
+            {
+                $('#chkView_' + ID).iCheck('check');
+                $('#chkAdd_' + ID).iCheck('check');
+                $('#chkEdit_' + ID).iCheck('check');
+                $('#chkDelete_' + ID).iCheck('check');
+                $('#chkApproved_' + ID).iCheck('check');
+                $('#chkUnApproved_' + ID).iCheck('check');
+
+                $('#chkView' + ID).iCheck('check');
+                $('#chkAdd' + ID).iCheck('check');
+                $('#chkEdit' + ID).iCheck('check');
+                $('#chkDelete' + ID).iCheck('check');
+                $('#chkApproved' + ID).iCheck('check');
+                $('#chkUnApproved' + ID).iCheck('check');
+                 
+            }
+            else
+            {
+                $('#chkView_' + ID).iCheck('uncheck');
+                $('#chkAdd_' + ID).iCheck('uncheck');
+                $('#chkEdit_' + ID).iCheck('uncheck');
+                $('#chkDelete_' + ID).iCheck('uncheck');
+                $('#chkApproved_' + ID).iCheck('uncheck');
+                $('#chkUnApproved_' + ID).iCheck('uncheck');
+
+                $('#chkView' + ID).iCheck('uncheck');
+                $('#chkAdd' + ID).iCheck('uncheck');
+                $('#chkEdit' + ID).iCheck('uncheck');
+                $('#chkDelete' + ID).iCheck('uncheck');
+                $('#chkApproved' + ID).iCheck('uncheck');
+                $('#chkUnApproved' + ID).iCheck('uncheck');
+                
+            }
+        });
+         
+    }
+
+    
+</script>

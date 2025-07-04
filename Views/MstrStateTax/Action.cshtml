@@ -1,0 +1,170 @@
+﻿@model CFS.Models.MstrStateTax
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update State Tax";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New State Tax";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrStateTax","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrStateTax", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "MstrStateTax", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+                        @Html.HiddenFor(Model => Model.MstrStateTaxID)
+                        <div class="col-md-6">
+                            @if (Model.doaction == "add")
+                            {
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.TaxGroupName, new { @for = "txtTaxGrpCode" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TaxGroupRefID, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.TaxGroupName, new { @id = "txtTaxGrpCode", @name = "txtTaxGrpCode", @onblur = "FillTaxGroupDetails()", @class = "form-control", @placeholder = "Enter tax group name" })
+                                    @Html.HiddenFor(Model => Model.TaxGroupRefID, new { @id = "hdfTaxGroupRefID", @name = "hdfTaxGroupRefID" })
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-group">
+                                    <label>Tax Group Name: </label>
+                                    @Html.DisplayFor(Model => Model.TaxGroupName, new { @class = "form-control" })
+                                    @Html.HiddenFor(Model => Model.TaxGroupRefID, new { @id = "hdfGroupRefID" })
+                                    @Html.HiddenFor(Model => Model.TaxGroupName, new { @id = "hdfGroupRefID" })
+                                </div>
+                            }
+                            <div class="form-group">
+                                <label>HSN Code: </label> <span id="HSNCode">@Model.HSNCode</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.CheckBoxFor(Model => Model.IsActive, new { @class = "form-control" })
+                                    @Html.Label("IsActive") @Html.ValidationMessageFor(Model => Model.IsActive, String.Empty, new { @class = "help-inline text-red" })
+                                </div>
+                                <div class="form-group" id="dvInActiveReason">
+                                    @Html.LabelFor(Model => Model.InActiveReason, new { @for = "InActiveReason" })
+                                    @Html.ValidationMessageFor(Model => Model.InActiveReason, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.InActiveReason, new { @class = "form-control", @placeholder = "Enter Inactivate Reason" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12" id="tableWithAllDetailes">
+                            <table id="example2" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <a class="text-black"> State Name</a>
+                                        </th>
+                                        <th>
+                                            <a class="text-black"> State Code</a>
+                                        </th>
+                                        @{
+                                            List<string> TaxTypeList = Model.SubStateTaxRateList.Select(t => t.TaxName).Distinct().ToList();
+                                        }
+                                        @foreach (string TaxTypeName in TaxTypeList)
+                                        {
+                                            <th>
+                                                <a class="text-black"> @TaxTypeName</a>
+                                            </th>
+                                        }
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var StateList = Model.SubStateTaxRateList.Select(s => new { s.StateID, s.StateName }).Distinct().ToList();
+                                        int i = 0;
+                                        foreach (var State in StateList)
+                                        {
+                                            if (State != null)
+                                            {
+                                                <tr>
+                                                    <td>@State.StateName</td>
+                                                    <td>@State.StateID</td>
+
+                                                    @{var SubTaxDetails = Model.SubStateTaxRateList.Where(s => s.StateID == State.StateID).ToList();
+                                                        if (SubTaxDetails != null)
+                                                        {
+
+                                                            foreach (var TaxDetails in SubTaxDetails)
+                                                            {
+                                                                <td>
+                                                                    @Html.HiddenFor(Model => Model.SubStateTaxRateList[i].MstrSubStateTaxID, new { @class = "form-control" })
+                                                                    @Html.HiddenFor(Model => Model.SubStateTaxRateList[i].MstrStateTaxID, new { @class = "form-control" })
+                                                                    @Html.HiddenFor(Model => Model.SubStateTaxRateList[i].StateID, new { @class = "form-control" })
+                                                                    @Html.HiddenFor(Model => Model.SubStateTaxRateList[i].StateName, new { @class = "form-control" })
+                                                                    @Html.HiddenFor(Model => Model.SubStateTaxRateList[i].MstrTaxTypeID, new { @class = "form-control" })
+                                                                    @Html.HiddenFor(Model => Model.SubStateTaxRateList[i].Taxcode, new { @class = "form-control" })
+                                                                    @Html.HiddenFor(Model => Model.SubStateTaxRateList[i].TaxName, new { @class = "form-control" })
+                                                                    @Html.ValidationMessageFor(Model => Model.SubStateTaxRateList[i].Rate, String.Empty, new { @class = "help-inline text-red" })
+                                                                    @Html.TextBoxFor(Model => Model.SubStateTaxRateList[i].Rate, new { @class = "form-control", @onkeypress = "return isonlynumber(event)" })
+                                                                    @Html.HiddenFor(Model => Model.SubStateTaxRateList[i].IsActive, new { @class = "form-control" })
+                                                                    @Html.HiddenFor(Model => Model.SubStateTaxRateList[i].InActiveReason, new { @class = "form-control" })
+                                                                </td>
+                                                                i++;
+                                                            }
+                                                        }
+                                                    }
+                                                </tr>
+                                            }
+                                        }
+                                    }
+
+                                </tbody>
+
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Remark, new { @for = "txtRemark" })
+                                @Html.TextBoxFor(Model => Model.Remark, new { @id = "txtRemark", @name = "txtRemark", @class = "form-control", @placeholder = "Enter Remarks" })
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="box-footer">
+                                <button type="submit" onclick="return validation()" class="btn btn-primary">Submit</button>
+                                @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrStateTax","Index")" class="btn btn-danger">Cancel</a>*@
+                                <a href="@Url.Action("Index", "MstrStateTax", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    var TaxGroupDeatails = @Model.HtmlTaxGroupDeatails;
+    var doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrStateTax.js")"></script>

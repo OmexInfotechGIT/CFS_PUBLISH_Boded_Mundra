@@ -1,0 +1,169 @@
+﻿@model CFS.Models.trnEmptyContainerOutGatePass
+@{
+    ViewBag.Title = "View Empty Container Out Gate Pass ";
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+@using (Html.BeginForm("Action", "trnEmptyContainerOutGatePass", FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+{
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-body">
+                        <div style="display: inline-flex">
+                            <span class="badge bg-light-blue" style="font-size:15px;"> GatePass No : @Model.EmptyContainerOutGatePassNo</span>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                            <span class="badge bg-light-blue" style="font-size:15px;"> DateTime :@Model.GatepassDate </span>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                            <span class="badge bg-light-blue" style="font-size:15px;"> User : @Model.Username</span>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                        </div>
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                @if (ViewBag.gblBlnEdit && !Model.IsApproved)
+                                {
+                                    <a class="btn btn-primary btn-sm" href="@Url.Action("Action", "trnEmptyContainerOutGatePass", new { id = Model.trnEmptyContainerOutGatePassID, doaction = "edit", @IsSearch = true })"><i title="Click to Edit" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                }
+                                <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModalConfirmation">
+                                    @if (!Model.IsApproved)
+                                    {
+                                        <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                    }
+                                    else
+                                    {
+                                        <i title="Click to UnApprove" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-down"></i>
+                                    }
+                                </a> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                <a href="@Url.Action("Index", "trnEmptyContainerOutGatePass", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-md-12"></div>
+
+
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.IsSearch)
+                        @Html.HiddenFor(Model => Model.trnEmptyContainerOutGatePassID, new { @id = "trnEmptyContainerOutGatePassID", @name = "trnEmptyContainerOutGatePassID" })
+                        @Html.HiddenFor(Model => Model.IsFinished, new { @id = "IsFinished", @name = "IsFinished" })
+                        @Html.HiddenFor(Model => Model.IsSubRecord, new { @id = "IsSubRecord", @name = "IsSubRecord" })
+                        @Html.HiddenFor(Model => Model.EmptyContainerOutGatePassNo, new { @id = "EmptyContainerOutGatePassNo", @name = "EmptyContainerOutGatePassNo" })
+
+                        <div class="col-md-4">
+
+                            @Html.LabelFor(Model => Model.Transporter, new { @for = "Transporter" }) : <span>@Model.Transporter</span>
+
+                        </div>
+                        <div class="col-md-4">
+
+                            @Html.LabelFor(Model => Model.TruckNo, new { @for = "TruckNo" }) : <span>@Model.TruckNo</span>
+
+                        </div>
+                        <div class="col-md-4">
+
+                            @Html.LabelFor(Model => Model.LicenceNo, new { @for = "LicenceNo" }) : <span>@Model.LicenceNo</span>
+
+                        </div>
+                        <div class="col-md-4">
+
+                            @Html.LabelFor(Model => Model.Driver, new { @for = "Driver" }) : <span>@Model.Driver</span>
+
+                        </div>
+                        <div class="col-md-4">
+
+                            @Html.LabelFor(Model => Model.VehicleType, new { @for = "VehicleType" }) : <span>@Model.VehicleType</span>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            @Html.LabelFor(Model => Model.MobileNo, new { @for = "MobileNo" }) : <span>@Model.MobileNo</span>
+
+                        </div>
+                        <div class="col-md-6">
+
+                            @Html.LabelFor(Model => Model.Address, new { @for = "Address" })  : <span>@Model.Address</span>
+
+                        </div>
+
+                        @if (Model.trnEmptyContainerOutGatePassID > 0)
+                        {
+                            @Html.HiddenFor(Model => Model.trnEmptyContainerOutGatePassDetails.trnEmptyContainerOutGatePassDetailsID, new { @id = "trnEmptyContainerOutGatePassDetailsID", @name = "trnEmptyContainerOutGatePassDetailsID" })
+                            <div id="addLabel" class="col-md-12 IsFull">
+                            </div>
+                            <div class="col-md-12" style="overflow:scroll">
+                                <hr />
+                                <div class="pull-right">
+                                    <div style="display: inline-flex">
+                                        <div class="input-group input-group-sm">
+                                            <input id="txtlotdetail" name="txtlotdetail" type="text" class="form-control" onkeyup="DataTableSeachEngine('txtlotdetail','lotdetail','btnlotdetail')" placeholder="Search for Common" value="">
+                                            <span class="input-group-btn">
+                                                <button type="button" id="btnlotdetail" onclick="DataTableSeachEngine('txtlotdetail','lotdetail','btnlotdetail','yes')" class="btn btn-primary btn-flat">Search</button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table id="lotdetail" style="white-space: nowrap;" class="table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Cont No:</th>
+                                            <th>Condition</th>
+                                            <th>Damage Remarks</th>
+                                            <th>Move to Location</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblContainer"></tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+<script>
+    var IsView = 'true';
+
+    function changestepValue(tabNo) {
+        $("#DocumentTab").val(tabNo);
+        if (tabNo != "1") {
+            if (tabNo == "5") {
+                $("#IsChangeStep").val(2);
+            }
+        }
+        //$("frmpost").submit();
+    }
+    setTimeout(function () {
+        $(".trnviewAction").hide();
+    }, 500);
+
+    function HideIfView() {
+        setTimeout(function () {
+            $(".trnviewAction").hide();
+        }, 400);
+    }
+</script>
+@if (((Model != null && Model.doaction.ToLower() == "edit") || Model.trnEmptyContainerOutGatePassID > 0))
+{
+    <script>
+        $(".isDisplayOnlyinEdit").show();
+    </script>
+}
+else
+{
+    <script>
+        $(".isDisplayOnlyinEdit").hide();
+    </script>
+}
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnEmptyContainerOutGatePass.js")"></script>

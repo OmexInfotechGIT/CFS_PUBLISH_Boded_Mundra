@@ -1,0 +1,92 @@
+﻿@model CFS.Models.UserProfile
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    
+    ViewBag.Title = "Update User Profile";
+    //if (!ViewBag.gblBlnAdd)
+    //{
+    //    Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    //}
+    
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-left">
+                        <div style="display: inline-flex">
+                            <span class="badge bg-light-blue" style="font-size:15px;">User Name : @Model.UserName (@Model.GroupName)</span>
+                        </div>
+                    </div>
+                    
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Index", "userprofile", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.HiddenFor(Model => Model.UserID)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.UserName)
+                        @Html.HiddenFor(Model => Model.GroupName)
+                        <div class="col-md-6 row">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.FullName, new { @for = "txtFullName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.FullName, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.FullName, new { @id = "txtFullName", @name = "txtFullName", @class = "form-control", @placeholder = "Enter Full Name" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Email, new { @for = "txtEmail" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Email, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.Email, new { @id = "txtEmail", @name = "txtEmail", @class = "form-control", @placeholder = "Enter Email" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.ProfilePicture) @Html.ValidationMessageFor(Model => Model.ProfilePicture, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.ProfilePicture, Model.doaction == "edit" ? (object)new {  type = "file", @class = "form-control", @accept = ".png,.jpg,.jpeg,.pdf" }
+                                    : new { type = "file", @class = "form-control", @accept = ".png,.jpg,.jpeg,.pdf" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.CheckBoxFor(Model => Model.IsChangePassword, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.Label("IsChangePassword", " Change Password") @Html.ValidationMessageFor(Model => Model.IsChangePassword, String.Empty, new { @id = "IsChangePassword", @class = "help-inline text-red" })
+                                </div>
+                                <div class="form-group" id="dvChangePassword">
+                                    <hr />
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.CurrentPassword, new { @for = "txtCurrentPassword" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CurrentPassword, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.PasswordFor(Model => Model.CurrentPassword, new { @id = "txtCurrentPassword", @name = "txtCurrentPassword", @class = "form-control", @placeholder = "Enter Current Password" , autocomplete = "off" })
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.NewPassword, new { @for = "txtPassword" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.NewPassword, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.PasswordFor(Model => Model.NewPassword, new { @id = "txtPassword", @name = "txtPassword", @class = "form-control", @placeholder = "Enter Password" })
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ConfirmPassword, new { @for = "txtConfirmPassword" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ConfirmPassword, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.PasswordFor(Model => Model.ConfirmPassword, new { @id = "txtConfirmPassword", @name = "txtConfirmPassword", @class = "form-control", @placeholder = "Enter Confirm Password" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a href="@CFS.Com.ClsCommon.GetUrlReferrer("Userprofile", "Index")" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    var doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/UserProfile.js")"></script>

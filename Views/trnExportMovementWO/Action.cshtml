@@ -1,0 +1,331 @@
+﻿@model CFS.Models.trnExportMovementWO
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Export Movement Work Order - Operational";
+        if (!ViewBag.gblBlnEdit && !ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Export Movement Work Order - Operational";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+<script>
+    var doaction  = '@Model.doaction';
+    var IsSearch  = '@Model.IsSearch';
+</script>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            @using (Html.BeginForm("Action", "trnExportMovementWO", FormMethod.Post))
+            {
+
+                <div class="box">
+                    <div class="box-body">
+                        @if (Model != null && Model.doaction == "edit" && Model.IsFinished)
+                        {
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4>
+                                        <b>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">Movement Work Order No:@Model.trnExportMovementWOPrefix@Model.trnExportMovementWONo </span>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">Date Time : @Model.CreatedDate </span>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">User : @Model.CreatedUser </span>
+                                        </b>
+                                    </h4>
+                                </div>
+                            </div>
+                        }
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                <a href="@Url.Action("Index", "trnExportMovementWO", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.trnExportMovementWOID)
+                        @Html.HiddenFor(Model => Model.trnExportMovementWONo)
+                        @Html.HiddenFor(Model => Model.trnExportMovementWOPrefix)
+                        @Html.HiddenFor(Model => Model.IsFinished)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+                        @Html.HiddenFor(Model => Model.IsApproved)
+                        @Html.HiddenFor(Model => Model.IsHandlingInvoice)
+                        @Html.HiddenFor(Model => Model.IsSearch, new { @id = "IsSearch", @name = "IsSearch" })
+                        <input type="hidden" id="trnExportMovementWOTab" name="trnExportMovementWOTab" value="@Model.trnExportMovementWOTab" />
+
+                        <div class="col-md-12">
+                            <div class="box-body">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.BOENo)<span class="text-red">*</span>
+                                        @Html.TextBoxFor(Model => Model.BOENo, new { @id = "BOENo", @name = "BOENo", @class = "form-control", @placeholder = "Select Shipping Bill No" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3" style="border-right:1px solid #c5c1c196">
+                                    @Html.LabelFor(Model => Model.BOEDate, new { @id = "lblBOEDate", @for = "BOEDate" })
+                                    @Html.TextBoxFor(Model => Model.BOEDate, new { @id = "BOEDate", @name = "BOEDate", @class = "form-control  clsReadonly" })
+                                    @Html.HiddenFor(Model => Model.trnExportStufingWOSBDetailsID, new { @id = "trnExportStufingWOSBDetailsID", @name = "trnExportStufingWOSBDetailsID" })
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ContainerNo)<span class="text-red">*</span>
+                                        @Html.TextBoxFor(Model => Model.ContainerNo, new { @id = "ContainerNo", @name = "ContainerNo", @class = "form-control", @placeholder = "Select Container No" })
+                                        @Html.HiddenFor(Model => Model.trnExportStufingWOContainerDetailsID, new { @id = "trnExportStufingWOContainerDetailsID", @name = "trnExportStufingWOContainerDetailsID" })
+                                        @Html.HiddenFor(Model => Model.SearchType, new { @id = "SearchType", @name = "SearchType" })
+                                    </div>
+                                </div>
+                                @if (!Model.IsSearch && Model.doaction == "add")
+                                {
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <br />
+                                            <button type="button" class="btn btn-primary" onclick="GetExportDetails()">Go</button>
+                                            <a class="btn btn-danger" onclick="ClearSearchFields()">Clear</a>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            @if (Model.IsSearch)
+                            {
+                                <div class="col-md-12">
+                                   
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                @Html.LabelFor(Model => Model.TRANSPORTATIONTYPE)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TRANSPORTATIONTYPE, String.Empty, new { @class = "help-inline text-red", @id = "spn_TRANSPORTATIONTYPE" })
+                                                <br />
+                                                @Html.RadioButtonFor(model => model.TRANSPORTATIONTYPE, "OWN", new { @id = "TransactionTypeOWN", @name = "TransportationType" })@CFS.Com.ClsCommon.AddhtmlSpace(3) @Html.Label("OWN", new { @for = "TransactionTypeOWN", @style = "font-weight: 600;" })@CFS.Com.ClsCommon.AddhtmlSpace(4)
+                                                @Html.RadioButtonFor(model => model.TRANSPORTATIONTYPE, "Party", new { @id = "TransactionTypeParty", @name = "TransportationType" })@CFS.Com.ClsCommon.AddhtmlSpace(3) @Html.Label("Party", new { @for = "TransactionTypeParty", @style = "font-weight: 600;" })
+                                                @Html.HiddenFor(model => model.TRANSPORTATIONTYPE)
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3" id="dvOwnTruckTransporter">
+                                            <div class="form-group">
+                                                @Html.LabelFor(Model => Model.Transporter, new { @for = "Transporter" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TransporterID, String.Empty, new { @id = "spn_TransporterID", @class = "help-inline text-red" })
+                                                @Html.TextBoxFor(Model => Model.Transporter, new { @id = "Transporter", @name = "Transporter", @class = "form-control", @placeholder = "Enter Transporter" })
+                                                @Html.HiddenFor(Model => Model.TransporterID, new { @id = "TransporterID", @name = "TransporterID" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3" id="dvPartyTruckTransporter">
+                                            <div class="form-group">
+                                                @Html.LabelFor(Model => Model.PartyTransporter, new { @for = "PartyTransporter" }) <span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.PartyTransporter, String.Empty, new { @id = "spn_PartyTransporter", @class = "help-inline text-red" })
+                                                @Html.TextBoxFor(Model => Model.PartyTransporter, new { @id = "PartyTransporter", @name = "PartyTransporter", @class = "form-control", @placeholder = "Enter Transporter" })
+                                            </div>
+                                        </div>
+                                    
+
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.StuffRequestNo, new { @id = "lblStuffRequestNo", @for = "StuffRequestNo" })
+                                            @Html.TextBoxFor(Model => Model.StuffRequestNo, new { @id = "StuffRequestNo", @name = "StuffRequestNo", @class = "form-control clsReadonly" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.StuffRequestDate, new { @id = "lblStuffRequestDate", @for = "StuffRequestDate" })
+                                            @Html.TextBoxFor(Model => Model.StuffRequestDate, new { @id = "StuffRequestDate", @name = "StuffRequestDate", @class = "form-control clsReadonly" })
+                                        </div>
+                                    </div>
+                                    @if (Model.IsHandlingInvoice == false && Model.IsApproved == true)
+                                    {
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                @Html.LabelFor(Model => Model.VCNNo, new { @id = "lblVCNNo", @for = "VCNNo" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.VCNID, String.Empty, new { @id = "spn_VCNID", @class = "help-inline text-red" })
+                                                @Html.TextBoxFor(Model => Model.VCNNo, new { @id = "VCNNo", @name = "VCNNo", @class = "form-control", @readonly = "true" })
+                                                @Html.HiddenFor(Model => Model.VCNID, new { @id = "VCNID", @name = "VCNID", @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                @Html.LabelFor(Model => Model.VCNNo, new { @id = "lblVCNNo", @for = "VCNNo" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.VCNID, String.Empty, new { @id = "spn_VCNID", @class = "help-inline text-red" })
+                                                @Html.TextBoxFor(Model => Model.VCNNo, new { @id = "VCNNo", @name = "VCNNo", @class = "form-control" })
+                                                @Html.HiddenFor(Model => Model.VCNID, new { @id = "VCNID", @name = "VCNID", @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.VOYNo, new { @id = "lblVOYNo", @for = "VOYNo" })
+                                            @Html.TextBoxFor(Model => Model.VOYNo, new { @id = "VOYNo", @name = "VOYNo", @class = "form-control clsReadonly" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.VesselName, new { @id = "lblVesselName", @for = "VesselName" })
+                                            @Html.TextBoxFor(Model => Model.VesselName, new { @id = "VesselName", @name = "VesselName", @class = "form-control clsReadonly" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.CutOffDate, new { @id = "lblCutOffDate", @for = "CutOffDate" })
+                                            @Html.TextBoxFor(Model => Model.CutOffDate, new { @id = "CutOffDate", @name = "CutOffDate", @class = "form-control clsReadonly" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.PortLocation, new { @id = "lblPortLocation", @for = "PortLocation" })
+                                            @Html.TextBoxFor(Model => Model.PortLocation, new { @id = "PortLocation", @name = "PortLocation", @class = "form-control clsReadonly" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.ExportInvoiceNo, new { @id = "lblExportInvoiceNo", @for = "ExportInvoiceNo" })
+                                            @Html.TextBoxFor(Model => Model.ExportInvoiceNo, new { @id = "ExportInvoiceNo", @name = "ExportInvoiceNo", @class = "form-control clsReadonly" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            @*@{ Model.ExportInvoiceDate = CFS.Com.ClsCommon.ConvertDateNullToBlank(Convert.ToDateTime(Model.ExportInvoiceDate));}*@
+                                            @Html.LabelFor(Model => Model.ExportInvoiceDate, new { @id = "lblExportInvoiceDate", @for = "ExportInvoiceDate" })
+                                            @Html.TextBoxFor(Model => Model.ExportInvoiceDate, new { @id = "ExportInvoiceDate", @name = "ExportInvoiceDate", @class = "form-control clsReadonly" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.Remarks, new { @id = "lblRemarks", @for = "Remarks" })
+                                            @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 pull-right">
+                                        <div class="form-group">
+                                            @if (Model.doaction != "edit")
+                                            {
+                                                <a href="@Url.Action("Index", "trnExportMovementWO", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger pull-right">Cancel</a>
+                                                <button type="submit" style="margin-right: 5px;" class="btn btn-primary pull-right" id="SaveDocument" onclick="return ExportMovementWOValidation(1)">Continue Entry</button>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+                if (Model.IsSearch)
+                {
+                    if (Model != null && Model.doaction.ToLower() == "edit")
+                    {
+                        <div class="box">
+                            <div class="box-header with-border" data-widget="collapse" style="display: flex;">
+                                <h4>
+                                    <b>Container Details:</b>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <div style="display: inline-flex">   
+                                        <span class="badge bg-light-blue" style="font-size:15px;">Container 20 : <span id="ContSize20"></span> </span>&nbsp;&nbsp;&nbsp;
+                                        <span class="badge bg-light-blue" style="font-size:15px;">Container 40 : <span id="ContSize40"></span> </span>&nbsp;&nbsp;&nbsp;
+                                        <span class="badge bg-light-blue" style="font-size:15px;">Container 45 : <span id="ContSize45"></span> </span>&nbsp;&nbsp;&nbsp;
+                                    </div>
+                                </h4>   
+                            </div>
+                            <div class="box-body">
+                                <div class="col-md-12 table-responsive" style="overflow:scroll">
+                                    <table id="tblContainerdetail" style="white-space:nowrap;" class=" table table-bordered ">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 100px;"> <spn style="background-color: white;"> @Html.CheckBoxFor(Model => Model.IsAllCHK, new { @id = "IsAllCHK", @name = "IsAllCHK", @class = "IsAllCHK", @onclick = "AllCheckBoxChecked()" }) </spn> &nbsp;&nbsp; Select All <br /> <span id="ContainerDetailsID" style="display:none;"></span></th>
+                                                <th>Container No</th>
+                                                <th>Size</th>
+                                                <th>Type</th>
+                                                <th>CargoType</th>
+                                                <th>Agent</th>
+                                                <th>Line</th>
+                                                <th>Fianance Confirmation Date</th>
+                                                <th>Stuffed Pkgs</th>
+                                                <th>Stuffed Pieces</th>
+                                                <th>Stuffed Wt</th>
+                                                <th>Agent Seal</th>
+                                                <th>Customs Seal</th>
+                                                <th>Plug in date</th>
+                                                <th>Plug off date</th>
+                                                <th>Non-Plug in reason</th>
+                                                <th>VCN No</th>
+                                                <th>VOY No</th>
+                                                <th>Vessel Name</th>
+                                                <th>Cut off date</th>
+                                                <th>Port Location</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tblContainer"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="box">
+                            <div class="box-header with-border" data-widget="collapse">
+                                <h4><b>Document Details:</b></h4>
+                            </div>
+                            <div class="box-body">
+                                <div class="col-md-12  table-responsive" style="overflow:scroll">
+                                    <table id="tblSBdetail" style="white-space:nowrap;" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>SB No</th>
+                                                <th>SB Date</th>
+                                                <th>Bulk/Non-Bulk</th>
+                                                <th>CHA/Customer</th>
+                                                <th>Forwarder</th>
+                                                <th>Exporter</th>
+                                                <th>Cargo</th>
+                                                <th>FOB</th>
+                                                <th>Cargo Type</th>
+                                                <th>Bill Commodity</th>
+                                                <th>POD</th>
+                                                <th>Class</th>
+                                                <th>UN</th>
+                                                <th>Temp</th>
+                                                <th>Re-Export Details</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tblSB"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                }
+                if (Model.IsSearch)
+                {
+                    <div class="col-md-3 pull-right">
+                        <br />
+                        <div class="form-group">
+                            @if (Model.doaction == "edit")
+                            {
+                                <a href="@Url.Action("Index", "trnExportMovementWO", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger pull-right">Cancel</a>
+                                <button type="submit" style="margin-right: 5px;" class="btn btn-primary pull-right" id="SaveDocument" onclick="return ExportMovementWOValidation(1)">Save</button>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+<script>
+    var IsApproved = '@Model.IsApproved';
+    var IsHandlingInvoice = '@Model.IsHandlingInvoice';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnExportMovementWO.js")"></script>

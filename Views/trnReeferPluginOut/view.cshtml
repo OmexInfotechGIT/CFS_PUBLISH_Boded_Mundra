@@ -1,0 +1,140 @@
+﻿@model CFS.Models.trnReeferPluginOut
+
+@{
+    ViewBag.Title = "View Reefer Plug in Plug Out";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+@using (Html.BeginForm("Action", "trnReeferPluginOut", FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+{
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <h4>
+                                    <b>
+                                        <span class="badge bg-light-blue" style="font-size:15px;"> Reefer WO No : @CFS.Com.ClsCommon.AddhtmlSpace(3)@Model.ContPrefix@Model.ReeferWONo</span>
+                                        <span class="badge bg-light-blue" style="font-size:15px;">Reefer Date And Time : @CFS.Com.ClsCommon.AddhtmlSpace(3)@Model.ReeferDateTime</span>
+                                        <span class="badge bg-light-blue" style="font-size:15px;">User : @CFS.Com.ClsCommon.AddhtmlSpace(3)@Model.UseName</span>
+                                    </b>
+                                </h4>                                
+                            </div>
+                        </div>
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                <a href="@Url.Action("index", "trnReeferPluginOut", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.Size) : <span>@Model.Size</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.ContType) : <span>@Model.ContType</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.GateinDate) : <span>@Model.GateinDate</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.GateOutDate) : <span>@Model.GateOutDate</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.DeliveryMode) : <span>@Model.DeliveryMode</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.Agent) : <span>@Model.Agent</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.Line) : <span>@Model.Line</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.TransactionType) : <span>@Model.TransactionType</span>
+                        </div>
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.Remarks) : <span>@Model.Remarks</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    @Html.Partial("_DOCDetailsGrid")
+                </div>
+                <div class="box">
+                    <input type="hidden" id="trnReeferPluginOutID" name="trnReeferPluginOutID" value="@Model.trnReeferPluginOutID" />
+                    <input type="hidden" id="ContNo" name="ContNo" value="@Model.ContNo" />
+                    <input type="hidden" id="ContNoID" name="ContNoID" value="@Model.ContNoID" />
+                    <div class="box-header with-border" data-widget="collapse">
+                        <h4><b>Plug in/Plug out Details </b></h4>
+                    </div>
+
+                    <div class="box-body">
+                        <div class="col-md-12">
+                            <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Power On Date</th>
+                                        <th>Power Off Date</th>
+                                        <th>Temp</th>
+                                        <th>Invoice No</th>
+                                        <th>Invoice Date</th>
+                                        <th>No of days</th>
+                                        <th>Power On Date Entered by</th>
+                                        <th>Power Off Date Entered by</th>
+                                        <th>Power off date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblContainer"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <br/>
+                    <div>
+                        <div class="box-body">
+                            <div class="col-md-12">
+                                <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Monitor Date</th>
+                                            <th>Temperature</th>
+                                            <th>Remarks</th>
+                                            <th>Monitored By</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblMonitor"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+<script>
+    var VCNDeatails = '@Model.HtmlVCNDeatails';
+    var IsSearch = '@Model.IsSearch.ToString().ToLower()';
+    var doaction = '@Model.doaction.ToString().ToLower()';
+
+</script>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnReeferPluginOut.js")"></script>
+<script>
+    setTimeout(function () {
+        $(".trnview").hide();
+    }, 500);
+</script>

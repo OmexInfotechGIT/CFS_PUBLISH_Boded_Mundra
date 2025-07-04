@@ -1,0 +1,109 @@
+﻿@model CFS.Models.MstrLocation
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Location Master";
+
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Location Master";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (Model.doaction == "edit")
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">Location Code: @Model.LocationCode</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrLocation","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrLocation", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "MstrLocation", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.MstrLocationID)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.LocationCode)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+
+
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.LocationName, new { @for = "txtLocationName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.LocationName, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.LocationName, new { @id = "txtLocationName", @name = "txtLocationName", @class = "form-control", @placeholder = "Location Name" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.LocationAlias, new { @for = "txtLocationAlias" }) @Html.ValidationMessageFor(Model => Model.LocationAlias, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.LocationAlias, new { @id = "txtLocationAlias", @name = "txtLocationAlias", @class = "form-control", @placeholder = "Location Alias" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Address, new { @for = "txtAddress" }) @Html.ValidationMessageFor(Model => Model.Address, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextAreaFor(Model => Model.Address, new { @id = "txtAddress", @name = "txtAddress", @class = "form-control", @placeholder = "Address" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <br />
+                                    @Html.CheckBoxFor(Model => Model.IsActive, new { @class = "form-control" })
+                                    @Html.Label("IsActive") @Html.ValidationMessageFor(Model => Model.IsActive, String.Empty, new { @class = "help-inline text-red" })
+                                </div>
+                                <div class="form-group" id="dvInActiveReason">
+                                    @Html.LabelFor(Model => Model.InActiveReason, new { @for = "InActiveReason" }) @Html.ValidationMessageFor(Model => Model.InActiveReason, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.InActiveReason, new { @class = "form-control", @placeholder = "Enter InActivate Reason" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrLocation","Index")" class="btn btn-danger">Cancel</a>*@
+                                <a href="@Url.Action("Index", "MstrLocation", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrLocation.js")"></script>
+
+

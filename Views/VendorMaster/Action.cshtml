@@ -1,0 +1,418 @@
+﻿@model CFS.Models.VendorMaster
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Vendor";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add new Vendor";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (Model.doaction == "edit")
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">Vendor Code: @Model.VendorCode</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("VendorMaster","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","VendorMaster", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12">
+                        @using (Html.BeginForm("Action", "VendorMaster", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.HiddenFor(Model => Model.pagger.Search)
+                            @Html.HiddenFor(Model => Model.MstrVendorID)
+                            @Html.HiddenFor(Model => Model.doaction)
+                            @Html.HiddenFor(Model => Model.page)
+                            @Html.HiddenFor(Model => Model.filter)
+
+                            <div class="box-body">
+                                <div class="col-md-12 text-left bg-light-blue">
+                                    <h4>Vendor Basic Details</h4>
+                                </div>
+
+                            </div>
+
+                            <div class="box-body">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.VendorName, new { @for = "txtVendorname" })<span class="text-red">*</span>
+                                        @Html.ValidationMessageFor(Model => Model.VendorName, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.VendorName, Model.doaction == "edit" ? (object)new { @id = "txtVendorname", @name = "txtVendorname", @class = "form-control" }
+                                        : new { @id = "txtVendorname", @name = "txtVendorname", @class = "form-control", @placeholder = "Enter Vendor Name" })
+                                        @Html.HiddenFor(Model => Model.VendorCode, new { @id = "txtVendorname", @name = "txtVendorname", @class = "form-control", @placeholder = "Enter Vendor Name" })
+                                    </div>
+
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ContactNo, new { @for = "txtContactNo" })@Html.ValidationMessageFor(Model => Model.ContactNo, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.ContactNo, new { @id = "txtContactNo", @name = "txtContactNo", @class = "form-control", @placeholder = "Enter Contact No", @onkeypress = "return isonlynumber(event)", @maxlength = "10" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ContactPerson, new { @for = "txtContactPerson" })
+                                        @Html.TextBoxFor(Model => Model.ContactPerson, new { @id = "txtContactPerson", @name = "txtContactPerson", @class = "form-control", @placeholder = "Enter Contact Person" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.OperationsMailId, new { @for = "txtareaOperationsMailId", @id = "lblOperationsMailId" })
+                                        @Html.ValidationMessageFor(Model => Model.OperationsMailId, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextAreaFor(Model => Model.OperationsMailId, new { @id = "txtareaOperationsMailId", @name = "txtareaOperationsMailId", @class = "form-control", @placeholder = "Enter Operations Mail Id" })
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.FinanceMailId, new { @for = "txtareaFinanceMailId", @id = "lblFinanceMailId" })
+                                        @Html.ValidationMessageFor(Model => Model.FinanceMailId, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextAreaFor(Model => Model.FinanceMailId, new { @id = "txtareaFinanceMailId", @name = "txtareaFinanceMailId", @class = "form-control", @placeholder = "Enter Finance Mail Id" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.KYCDocuments)
+                                            @{
+                                                if (Model.KYCDocumentStatus == false)
+                                                {
+                                                    <span style="color:red">(KYC is Pending.)</span>
+                                                }
+                                                else
+                                                { <span style="color:green">(KYC is Completed.)</span>}
+                                            }
+                                            @Html.TextBoxFor(Model => Model.KYCDocuments, Model.doaction == "edit" ? (object)new { type = "file", @id = "KYCDocuments", @name = "KYCDocuments", @class = "form-control", @accept = ".png,.jpg,.jpeg,.pdf" }
+                                            : new { type = "file", @id = "KYCDocuments", @name = "KYCDocuments", @class = "form-control", @accept = ".png,.jpg,.jpeg,.pdf" })
+                                            @Html.HiddenFor(Model => Model.HdnUploadKYCDocuments, new { @id = "KYCDocuments", @name = "KYCDocuments" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Remarks, new { @for = "txtRemarks" })
+                                        @Html.TextBoxFor(Model => Model.Remarks, Model.doaction == "edit" ? (object)new { @id = "txtRemarks", @name = "txtRemarks", @class = "form-control", @placeholder = "Enter Remarks" }
+                                        : new { @id = "txtRemarks", @name = "txtRemarks", @class = "form-control", @placeholder = "Enter Remarks" })
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="box-body">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.VendorTypeName)<span class="text-red">*</span>
+                                    </div>
+                                </div>
+                                @for (int i = 0; i < Model.VendorTypes.Count; i++)
+                                {
+                                    <div class="col-md-3">
+                                        @Html.CheckBoxFor(m => Model.VendorTypes[i].IsChecked, new { @id = Model.VendorTypes[i].Text + "_" + Model.VendorTypes[i].Value })
+
+                                        @Html.Label(Model.VendorTypes[i].Text, new { @style = "font-weight: normal", @for = Model.VendorTypes[i].Text + "_" + Model.VendorTypes[i].Value })
+
+                                        @Html.HiddenFor(m => Model.VendorTypes[i].Value) @Html.HiddenFor(m => Model.VendorTypes[i].Text) <br />
+                                    </div>
+                                }
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.VendorDomainName)<span class="text-red">*</span>
+                                    </div>
+                                </div>
+                                @for (int i = 0; i < Model.DomainDetails.Count; i++)
+                                {
+                                    <div class="col-md-3">
+                                        @Html.CheckBoxFor(m => Model.DomainDetails[i].IsChecked, new { @id = Model.DomainDetails[i].Text + "_" + Model.DomainDetails[i].Value })
+
+                                        @Html.Label(Model.DomainDetails[i].Text, new { @style = "font-weight: normal", @for = Model.DomainDetails[i].Text + "_" + Model.DomainDetails[i].Value })
+
+                                        @Html.HiddenFor(m => Model.DomainDetails[i].Value) @Html.HiddenFor(m => Model.DomainDetails[i].Text) <br />
+                                    </div>
+                                }
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2" style="height:80px">
+                                    <div class="form-group">
+                                        @Html.CheckBoxFor(Model => Model.IsActive, Model.doaction == "edit" ? (object)new { @class = "form-control" }
+                                        : new { @class = "form-control" })
+                                        @Html.Label("IsActive") @Html.ValidationMessageFor(Model => Model.IsActive, String.Empty, new { @class = "help-inline text-red" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group" id="dvInActiveReason">
+                                        @Html.LabelFor(Model => Model.InActiveReason, new { @for = "InActiveReason" }) @Html.ValidationMessageFor(Model => Model.InActiveReason, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.InActiveReason, Model.doaction == "edit" ? (object)new { @class = "form-control", @placeholder = "Enter Inactivate Reason" }
+                                        : new { @class = "form-control", @placeholder = "Enter Inactivate Reason" })
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="box-body">
+                                <div class="col-md-12 text-left bg-light-blue">
+                                    <h4>Primary Address Details</h4>
+                                </div>
+
+                            </div>
+
+
+                            <div class="box-body">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.VendorAddress, new { @for = "txtVendoraddress" })<span class="text-red">*</span>
+                                        @Html.ValidationMessageFor(Model => Model.VendorAddress, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextAreaFor(Model => Model.VendorAddress, new { @id = "txtVendoraddress", @name = "txtVendorname", @class = "form-control", @placeholder = "Enter Vendor Address", @maxlength = "100" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.StateName, new { @for = "txtstate" })<span class="text-red">*</span>
+                                        @Html.ValidationMessageFor(Model => Model.StateId, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.StateName, new { @id = "txtstate", @name = "txtstate", @class = "form-control", @placeholder = "Enter State" })
+                                        @Html.HiddenFor(Model => Model.StateId)
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.City, new { @for = "txtcity" })
+                                        @Html.TextBoxFor(Model => Model.City, Model.doaction == "edit" ? (object)new { @id = "txtcity", @name = "txtcity", @class = "form-control", @placeholder = "Enter City" }
+                                        : new { @id = "txtcity", @name = "txtcity", @class = "form-control", @placeholder = "Enter City" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Pincode, new { @for = "txtpincode" })
+                                        @Html.ValidationMessageFor(Model => Model.Pincode, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.Pincode, Model.doaction == "edit" ? (object)new { @id = "txtpincode", @name = "txtpincode", @class = "form-control", @maxlength = "6", @placeholder = "Enter PIN Code", @onkeypress = "return isonlynumber(event);" }
+                                        : new { @id = "txtpincode", @name = "txtpincode", @class = "form-control", @maxlength = "6", @placeholder = "Enter PIN Code", @onkeypress = "return isonlynumber(event);" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.PANNo, new { @for = "txtPANNo" })
+                                        @Html.ValidationMessageFor(Model => Model.PANNo, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.PANNo, Model.doaction == "edit" ? (object)new { @id = "txtPANNo", @name = "txtPANNo", @class = "form-control", @placeholder = "Enter PAN No", @maxlength = "10", @onkeypress = "return AlphaNumber(event);" }
+                                        : new { @id = "txtPANNo", @name = "txtPANNo", @class = "form-control", @placeholder = "Enter PAN No", @maxlength = "10", @onkeypress = "return AlphaNumber(event);" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.TANNo, new { @for = "txtTANNo" })
+                                        @Html.ValidationMessageFor(Model => Model.TANNo, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.TANNo, Model.doaction == "edit" ? (object)new { @id = "txtTANNo", @name = "txtTANNo", @class = "form-control", @placeholder = "Enter TAN No", @maxlength = "10", @onkeypress = "return AlphaNumber(event);" }
+                                        : new { @id = "txtTANNo", @name = "txtTANNo", @class = "form-control", @placeholder = "Enter TAN No", @maxlength = "10" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.GSTVendorTypeId)<span class="text-red">*</span>
+                                        @Html.ValidationMessageFor(Model => Model.GSTVendorTypeId, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.DropDownListFor(Model => Model.GSTVendorTypeId, Model.GSTVendorType, new { @id = "dpdGSTVendorType", onchange = "GSTVendorTypeChanged()", @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group" id="dvUnregistered">
+                                        @Html.LabelFor(Model => Model.GSTINNo, new { @for = "GSTINNo" })
+                                        @Html.ValidationMessageFor(Model => Model.GSTINNo, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.GSTINNo, new { @class = "form-control", @placeholder = "Enter GSTIN NO", @maxlength = "15", @id = "GSTINNo", @name = "GSTINNo", @onkeypress = "return AlphaNumber(event);" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="box-footer">
+                                @if (Model.doaction != "edit")
+                                {
+                                    <button type="submit" onclick="return validatemodel()" class="btn btn-primary" id="SaveVendor" name="submit" value="Save & Next">Save & Add New Address</button>
+                                }
+                                <button type="submit" onclick="return validatemodel()" class="btn btn-primary" id="SaveCtmr" name="submit" value="Submit">Submit</button>
+
+                                @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("VendorMaster","Index")" class="btn btn-danger">Cancel</a>*@
+                                <a href="@Url.Action("Index", "VendorMaster", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                            </div>
+                        }
+
+
+
+                        @using (Html.BeginForm("Actionsub", "VendorMaster", FormMethod.Post))
+                        {
+                            @Html.HiddenFor(Model => Model.pagger.Search)
+                            @Html.HiddenFor(Model => Model.Addresses.MstrVendorID)
+                            @Html.HiddenFor(Model => Model.Addresses.MstrVendorAddressesID, new { @id = "MstrVendorAddressesID", @name = "MstrVendorAddressesID" })
+                            if (Model != null && Model.doaction == "edit")
+                            {
+
+                                <div class="box-body">
+                                    <div class="col-md-12 text-left bg-light-blue">
+                                        <h4>Secondry Address Details</h4>
+                                    </div>
+                                </div>
+
+                                <div class="box-body">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.Addresses.VendorAddress, new { @for = "address" })<span class="text-red">*</span>
+                                            @Html.ValidationMessageFor(Model => Model.Addresses.VendorAddress, String.Empty, new { @class = "help-inline text-red" })
+                                            @Html.TextAreaFor(Model => Model.Addresses.VendorAddress, new { @id = "address", @name = "txtVendorname", @class = "form-control", @placeholder = "Enter Vendor Address", @maxlength = "100" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.Addresses.StateName, new { @for = "state" })<span class="text-red">*</span>
+                                            @Html.ValidationMessageFor(Model => Model.Addresses.StateId, String.Empty, new { @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.Addresses.StateName, new { @id = "state", @name = "state", @class = "form-control", @placeholder = "Enter State" })
+                                            @Html.HiddenFor(Model => Model.Addresses.StateId, new { @id = "MainStateId" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.Addresses.City, new { @for = "city" })
+                                            @Html.TextBoxFor(Model => Model.Addresses.City, new { @id = "city", @name = "txtcity", @class = "form-control", @placeholder = "Enter City" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.Addresses.Pincode, new { @for = "pincode" })
+                                            @Html.TextBoxFor(Model => Model.Addresses.Pincode, new { @id = "pincode", @name = "pincode", @class = "form-control", @placeholder = "Enter PIN Code", @maxlength = "6", @onkeypress = "return isonlynumber(event);" })
+                                        </div>
+                                        <br />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.Addresses.PANNo, new { @for = "PANNo" })
+                                            @Html.ValidationMessageFor(Model => Model.Addresses.PANNo, String.Empty, new { @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.Addresses.PANNo, new { @id = "PANNo", @name = "txtPANNo", @class = "form-control", @placeholder = "Enter PAN No", @maxlength = "10", @onkeypress = "return AlphaNumber(event);" })
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.Addresses.TANNo, new { @for = "TANNo" })
+                                            @Html.ValidationMessageFor(Model => Model.Addresses.TANNo, String.Empty, new { @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.Addresses.TANNo, new { @id = "TANNo", @name = "txtTANNo", @class = "form-control", @placeholder = "Enter TAN No", @maxlength = "10", @onkeypress = "return AlphaNumber(event);" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.Addresses.GSTVendorTypeId)<span class="text-red">*</span>
+                                            @Html.ValidationMessageFor(Model => Model.Addresses.GSTVendorTypeId, String.Empty, new { @class = "help-inline text-red" })
+                                            @Html.DropDownListFor(Model => Model.Addresses.GSTVendorTypeId, Model.Addresses.GSTVendorType, new { @id = "dpdGSTType", onchange = "GSTTypeChanged()", @class = "form-control" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group" id="divchange">
+                                            @Html.LabelFor(Model => Model.Addresses.GSTINNo, new { @for = "GSTINNo" })
+                                            @Html.ValidationMessageFor(Model => Model.Addresses.GSTINNo, String.Empty, new { @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.Addresses.GSTINNo, new { @class = "form-control", @placeholder = "Enter GSTIN NO", @maxlength = "15", @id = "txtGSTINNo", @name = "GSTINNo", @onkeypress = "return AlphaNumber(event);" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group pull-right">
+                                            <br />
+                                            <button type="submit" class="btn btn-primary" id="btnAddressSave">Add</button>
+                                            <a onclick="ClearAddress()" class="btn btn-danger">Clear</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div style="overflow-x:scroll">
+                                            <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="col-md-3">Address</th>
+                                                        <th class="col-md-3">City/State/Pincode</th>
+                                                        <th class="col-md-2">GST Type</th>
+                                                        <th class="col-md-1">GSTIN No</th>
+                                                        <th class="col-md-1">PAN No</th>
+                                                        <th class="col-md-1">TAN No</th>
+                                                        <th class="freezeLastColumn">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (Model.Addresses.MySubDatatable != null && Model.Addresses.MySubDatatable.Rows.Count > 0)
+                                                    {
+                                                        for (int i = 0; i < Model.Addresses.MySubDatatable.Rows.Count; i++)
+                                                        {
+                                                            <tr>
+                                                                <td style="display:none"><span id="MstrVendorAddressesID_@Model.Addresses.MySubDatatable.Rows[i]["MstrVendorAddressesID"]">@Model.Addresses.MySubDatatable.Rows[i]["MstrVendorAddressesID"]</span></td>
+                                                                <td style="display:none"><span id="StateID_@Model.Addresses.MySubDatatable.Rows[i]["MstrVendorAddressesID"]">@Model.Addresses.MySubDatatable.Rows[i]["StateId"]</span></td>
+                                                                <td style="display:none"><span id="GSTVendorTypeId_@Model.Addresses.MySubDatatable.Rows[i]["MstrVendorAddressesID"]">@Model.Addresses.MySubDatatable.Rows[i]["GSTVendorTypeId"]</span></td>
+                                                                <td><span id="Address_@Model.Addresses.MySubDatatable.Rows[i]["MstrVendorAddressesID"]">@Model.Addresses.MySubDatatable.Rows[i]["VendorAddress"]</span></td>
+                                                                <td>
+                                                                    <span id="City_@Model.Addresses.MySubDatatable.Rows[i]["MstrVendorAddressesID"]">@Model.Addresses.MySubDatatable.Rows[i]["City"]</span>
+                                                                    /<span id="State_@Model.Addresses.MySubDatatable.Rows[i]["MstrVendorAddressesID"]">@Model.Addresses.MySubDatatable.Rows[i]["StateName"]</span>
+                                                                    /<span id="Pincode_@Model.Addresses.MySubDatatable.Rows[i]["MstrVendorAddressesID"]">@Model.Addresses.MySubDatatable.Rows[i]["Pincode"]</span>
+                                                                </td>
+                                                                <td><span id="GSTTypeName_@Model.Addresses.MySubDatatable.Rows[i]["MstrVendorAddressesID"]">@Model.Addresses.MySubDatatable.Rows[i]["GSTTypeName"]</span></td>
+                                                                <td><span id="GSTINNo_@Model.Addresses.MySubDatatable.Rows[i]["MstrVendorAddressesID"]">@Model.Addresses.MySubDatatable.Rows[i]["GSTINNo"]</span></td>
+                                                                <td><span id="PANNo_@Model.Addresses.MySubDatatable.Rows[i]["MstrVendorAddressesID"]">@Model.Addresses.MySubDatatable.Rows[i]["PANNo"]</span></td>
+                                                                <td><span id="TANNo_@Model.Addresses.MySubDatatable.Rows[i]["MstrVendorAddressesID"]">@Model.Addresses.MySubDatatable.Rows[i]["TANNo"]</span></td>
+                                                                <td class="freezeLastColumnwithWhite">
+                                                                    <a onclick="EditAddress('@Model.Addresses.MySubDatatable.Rows[i]["MstrVendorAddressesID"]')"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                                                    <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('MstrVendorAddresses','@Model.Addresses.MySubDatatable.Rows[i]["MstrVendorAddressesID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                                                    <a href="@Url.Action("deleteSub", "VendorMaster", new { id = Model.Addresses.MySubDatatable.Rows[i]["MstrVendorAddressesID"] })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/VendorMaster.js")"></script>
+
+

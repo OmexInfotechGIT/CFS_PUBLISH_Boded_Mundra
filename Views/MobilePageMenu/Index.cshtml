@@ -1,0 +1,410 @@
+﻿@model CFS.Models.MobilePageMenu
+@{
+    ViewBag.Title = "Page Menu";
+    CFS.Models.MobilePageMenu pm = new CFS.Models.MobilePageMenu();
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            @using (Html.BeginForm("Index", "MobilePageMenu", FormMethod.Post))
+            {
+                if (Convert.ToString(Session["OTPVerifiedMobilePageMenu"]) == "Yes")
+                {
+                    <div class="box">
+
+                        <div class="box-body" style="overflow:scroll;">
+
+
+                            <table id="example2" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            ID
+                                        </th>
+                                        <th>
+                                            ParentID
+                                        </th>
+                                        <th>
+                                            Level
+                                        </th>
+                                        <th>
+                                            Controller
+                                        </th>
+                                        <th>
+                                            Action
+                                        </th>
+                                        <th>
+                                            MenuName
+                                        </th>
+
+                                        <th>
+                                            MenuLogoText
+                                        </th>
+                                        <th>
+                                            SortOrder
+                                        </th>
+                                        <th>
+                                            W
+                                        </th>
+                                        <th>
+                                            C
+                                        </th>
+                                        <th>
+                                            B
+                                        </th>
+                                        <th>
+                                            CFS
+                                        </th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                    {
+                                        int MobilePageMenuID = Convert.ToInt32(Model.MyDatatable.Rows[i]["MobilePageMenuID"]);
+                                        int ParentID = Convert.ToInt32(Model.MyDatatable.Rows[i]["ParentID"]);
+                                        string Controller = Convert.ToString(Model.MyDatatable.Rows[i]["Controller"]);
+                                        <tr>
+                                            <td style="background: green">
+                                                @Model.MyDatatable.Rows[i]["MobilePageMenuID"]
+                                            </td>
+                                            <td style="background: green">
+                                                <input type="hidden" value="@Model.MyDatatable.Rows[i]["MobilePageMenuID"]" id="MobilePageMenuID" name="MobilePageMenuID" />
+                                                <input type="number" value="@Model.MyDatatable.Rows[i]["ParentID"]" id="ParentID" name="ParentID" style="border:1px solid green;width:50px" />
+                                            </td>
+                                            <td style="background: green">
+                                                <input type="number" value="@Model.MyDatatable.Rows[i]["LevelID"]" id="LevelID" name="LevelID" style="border:1px solid green;width:50px" />
+                                            </td>
+                                            <td style="background: green">
+                                                <input type="text" value="@Model.MyDatatable.Rows[i]["Controller"]" id="Controller" name="Controller" style="border:1px solid green" />
+                                            </td>
+                                            <td style="background: green">
+                                                <input type="text" value="@Model.MyDatatable.Rows[i]["Action"]" id="Action" name="Action" style="border: 1px solid green; width: 50px" />
+                                            </td>
+                                            <td style="background: green">
+                                                <input type="text" value="@Model.MyDatatable.Rows[i]["MenuName"]" id="MenuName" name="MenuName" style="border:1px solid green" />
+                                            </td>
+                                            <td style="background: green">
+                                                <input type="text" value="@Model.MyDatatable.Rows[i]["MenuLogoText"]" id="MenuLogoText" name="MenuLogoText" style="border:1px solid green" />
+                                            </td>
+                                            <td style="background: green">
+                                                <input type="number" value="@Model.MyDatatable.Rows[i]["SortOrder"]" id="SortOrder" name="SortOrder" style="border:1px solid green;width:50px" />
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" checked="@Model.MyDatatable.Rows[i]["Warehouse"]" value="@Model.MyDatatable.Rows[i]["MobilePageMenuID"]" id="Warehouse" name="Warehouse" />
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" checked="@Model.MyDatatable.Rows[i]["ColdStorage"]" value="@Model.MyDatatable.Rows[i]["MobilePageMenuID"]" id="ColdStorage" name="ColdStorage" />
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" checked="@Model.MyDatatable.Rows[i]["Bonded"]" value="@Model.MyDatatable.Rows[i]["MobilePageMenuID"]" id="Bonded" name="Bonded" />
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" checked="@Model.MyDatatable.Rows[i]["CFS"]" value="@Model.MyDatatable.Rows[i]["MobilePageMenuID"]" id="CFSs" name="CFSs" />
+                                            </td>
+
+                                            <td style="background: green">
+                                                <select id="IsActive" name="IsActive" style="border:1px solid green">
+                                                    @if (Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsActive"]))
+                                                    {
+                                                        <option value="True" selected="selected"> Yes</option>
+                                                        <option value="False">No</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="True"> Yes</option>
+                                                        <option value="False" selected="selected">No</option>
+                                                    }
+
+
+                                                </select>
+
+                                            </td>
+                                            <td style="background: green">
+                                                <select id="FlagDeleted" name="FlagDeleted" style="border:1px solid green">
+                                                    @if (Convert.ToBoolean(Model.MyDatatable.Rows[i]["FlagDeleted"]))
+                                                    {
+                                                        <option value="True" selected="selected"> Yes</option>
+                                                        <option value="False">No</option>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="True"> Yes</option>
+                                                        <option value="False" selected="selected">No</option>
+                                                    }
+
+                                                </select>
+                                            </td>
+
+                                        </tr>
+
+
+                                        System.Data.DataTable dt = pm.GetMobilePageMenuSub(MobilePageMenuID);
+                                        for (int j = 0; j < dt.Rows.Count; j++)
+                                        {
+                                            int MobilePageMenuID2 = Convert.ToInt32(dt.Rows[j]["MobilePageMenuID"]);
+                                            int ParentID2 = Convert.ToInt32(dt.Rows[j]["ParentID"]);
+                                            string Controller2 = Convert.ToString(dt.Rows[j]["Controller"]);
+                                            <tr>
+                                                <td style="background: #3c8dbc">
+                                                    @dt.Rows[j]["MobilePageMenuID"]
+                                                </td>
+                                                <td style="background: #3c8dbc">
+                                                    <input type="hidden" value="@dt.Rows[j]["MobilePageMenuID"]" id="MobilePageMenuID" name="MobilePageMenuID" />
+                                                    <input type="number" value="@dt.Rows[j]["ParentID"]" id="ParentID" name="ParentID" style="border:1px solid #3c8dbc;width:50px" />
+                                                </td>
+                                                <td style="background: #3c8dbc">
+                                                    <input type="number" value="@dt.Rows[j]["LevelID"]" id="LevelID" name="LevelID" style="border:1px solid #3c8dbc;width:50px" />
+                                                </td>
+                                                <td style="background: #3c8dbc">
+                                                    <input type="text" value="@dt.Rows[j]["Controller"]" id="Controller" name="Controller" style="border:1px solid #3c8dbc" />
+                                                </td>
+
+                                                <td style="background: #3c8dbc">
+                                                    <input type="text" value="@dt.Rows[j]["Action"]" id="Action" name="Action" style="border: 1px solid #3c8dbc; width: 50px" />
+                                                </td>
+                                                <td style="background: #3c8dbc">
+                                                    <input type="text" value="@dt.Rows[j]["MenuName"]" id="MenuName" name="MenuName" style="border:1px solid #3c8dbc" />
+                                                </td>
+                                                <td style="background: #3c8dbc">
+                                                    <input type="text" value="@dt.Rows[j]["MenuLogoText"]" id="MenuLogoText" name="MenuLogoText" style="border:1px solid #3c8dbc" />
+                                                </td>
+                                                <td>
+                                                    <input type="number" value="@dt.Rows[j]["SortOrder"]" id="SortOrder" name="SortOrder" style="border:1px solid #3c8dbc;width:50px" />
+                                                </td>
+
+                                                <td>
+                                                    <input type="checkbox" checked="@dt.Rows[j]["Warehouse"]" value="@dt.Rows[j]["MobilePageMenuID"]" id="Warehouse" name="Warehouse" />
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" checked="@dt.Rows[j]["ColdStorage"]" value="@dt.Rows[j]["MobilePageMenuID"]" id="ColdStorage" name="ColdStorage" />
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" checked="@dt.Rows[j]["Bonded"]" value="@dt.Rows[j]["MobilePageMenuID"]" id="Bonded" name="Bonded" />
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" checked="@dt.Rows[j]["CFS"]" value="@dt.Rows[j]["MobilePageMenuID"]" id="CFS" name="CFS" />
+                                                </td>
+
+
+                                                <td style="background: #3c8dbc">
+                                                    <select id="IsActive" name="IsActive" style="border:1px solid green">
+                                                        @if (Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsActive"]))
+                                                        {
+                                                            <option value="True" selected="selected"> Yes</option>
+                                                            <option value="False">No</option>
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="True"> Yes</option>
+                                                            <option value="False" selected="selected">No</option>
+                                                        }
+
+
+                                                    </select>
+                                                </td>
+                                                <td style="background: #3c8dbc">
+                                                    <select id="FlagDeleted" name="FlagDeleted" style="border:1px solid green">
+                                                        @if (Convert.ToBoolean(Model.MyDatatable.Rows[i]["FlagDeleted"]))
+                                                        {
+                                                            <option value="True" selected="selected"> Yes</option>
+                                                            <option value="False">No</option>
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="True"> Yes</option>
+                                                            <option value="False" selected="selected">No</option>
+                                                        }
+
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            System.Data.DataTable dts = pm.GetMobilePageMenuSub(MobilePageMenuID2);
+                                            for (int k = 0; k < dts.Rows.Count; k++)
+                                            {
+                                                <tr>
+                                                    <td style="background: #f39c12">
+                                                        @dts.Rows[k]["MobilePageMenuID"]
+                                                    </td>
+                                                    <td style="background: #f39c12">
+                                                        <input type="hidden" value="@dts.Rows[k]["MobilePageMenuID"]" id="MobilePageMenuID" name="MobilePageMenuID" />
+                                                        <input type="number" value="@dts.Rows[k]["ParentID"]" id="ParentID" name="ParentID" style="border:1px solid #f39c12;width:50px" />
+                                                    </td>
+                                                    <td style="background: #f39c12">
+                                                        <input type="number" value="@dts.Rows[k]["LevelID"]" id="LevelID" name="LevelID" style="border:1px solid #f39c12;width:50px" />
+                                                    </td>
+                                                    <td style="background: #f39c12">
+                                                        <input type="text" value="@dts.Rows[k]["Controller"]" id="Controller" name="Controller" style="border:1px solid #f39c12" />
+                                                    </td>
+
+                                                    <td style="background: #f39c12">
+                                                        <input type="text" value="@dts.Rows[k]["Action"]" id="Action" name="Action" style="border: 1px solid #f39c12; width: 50px" />
+                                                    </td>
+                                                    <td style="background: #f39c12">
+                                                        <input type="text" value="@dts.Rows[k]["MenuName"]" id="MenuName" name="MenuName" style="border:1px solid #f39c12" />
+                                                    </td>
+                                                    <td style="background: #f39c12">
+                                                        <input type="text" value="@dts.Rows[k]["MenuLogoText"]" id="MenuLogoText" name="MenuLogoText" style="border:1px solid #f39c12" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" value="@dts.Rows[k]["SortOrder"]" id="SortOrder" name="SortOrder" style="border:1px solid #f39c12;width:50px" />
+                                                    </td>
+
+                                                    <td>
+                                                        <input type="checkbox" checked="@dts.Rows[k]["Warehouse"]" value="@dts.Rows[k]["MobilePageMenuID"]" id="Warehouse" name="Warehouse" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="checkbox" checked="@dts.Rows[k]["ColdStorage"]" value="@dts.Rows[k]["MobilePageMenuID"]" id="ColdStorage" name="ColdStorage" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="checkbox" checked="@dts.Rows[k]["Bonded"]" value="@dts.Rows[k]["MobilePageMenuID"]" id="Bonded" name="Bonded" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="checkbox" checked="@dts.Rows[k]["CFS"]" value="@dts.Rows[k]["MobilePageMenuID"]" id="CFS" name="CFS" />
+                                                    </td>
+
+
+                                                    <td style="background: #f39c12">
+                                                        <select id="IsActive" name="IsActive" style="border:1px solid green">
+                                                            @if (Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsActive"]))
+                                                            {
+                                                                <option value="True" selected="selected"> Yes</option>
+                                                                <option value="False">No</option>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="True"> Yes</option>
+                                                                <option value="False" selected="selected">No</option>
+                                                            }
+
+
+                                                        </select>
+                                                    </td>
+                                                    <td style="background: #f39c12">
+                                                        <select id="FlagDeleted" name="FlagDeleted" style="border:1px solid green">
+                                                            @if (Convert.ToBoolean(Model.MyDatatable.Rows[i]["FlagDeleted"]))
+                                                            {
+                                                                <option value="True" selected="selected"> Yes</option>
+                                                                <option value="False">No</option>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="True"> Yes</option>
+                                                                <option value="False" selected="selected">No</option>
+                                                            }
+
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                    <tr>
+                                        <td style="background: pink">
+                                            ADD
+                                        </td>
+                                        <td style="background: pink">
+                                            <input type="hidden" value="0" id="MobilePageMenuID" name="MobilePageMenuID" />
+                                            <input type="number" id="ParentID" name="ParentID" style="border:1px solid #3c8dbc;width:50px" />
+                                        </td>
+                                        <td style="background: pink">
+                                            <input type="number" id="LevelID" name="LevelID" style="border:1px solid #3c8dbc;width:50px" />
+                                        </td>
+                                        <td style="background: pink">
+                                            <input type="text" id="Controller" name="Controller" style="border:1px solid #3c8dbc" />
+                                        </td>
+                                        <td style="background: pink">
+                                            <input type="text" id="Action" name="Action" style="border: 1px solid #3c8dbc; width: 50px" />
+                                        </td>
+                                        <td style="background: pink">
+                                            <input type="text" id="MenuName" name="MenuName" style="border:1px solid #3c8dbc" />
+                                        </td>
+                                        <td style="background: pink">
+                                            <input type="text" id="MenuLogoText" name="MenuLogoText" style="border:1px solid #3c8dbc" />
+                                        </td>
+                                        <td style="background: pink">
+                                            <input type="number" id="SortOrder" name="SortOrder" style="border:1px solid #3c8dbc;width:50px" />
+                                        </td>
+
+
+
+                                        <td>
+                                            <input type="checkbox" id="Warehouse" name="Warehouse" />
+                                        </td>
+                                        <td>
+                                            <input type="checkbox" id="ColdStorage" name="ColdStorage" />
+                                        </td>
+                                        <td>
+                                            <input type="checkbox" id="Bonded" name="Bonded" />
+                                        </td>
+                                        <td>
+                                            <input type="checkbox" id="CFS" name="CFS" />
+                                        </td>
+
+
+                                        <td style="background: pink">
+                                            <select id="IsActive" name="IsActive" style="border:1px solid green">
+                                                <option value="True" selected="selected"> Yes</option>
+                                                <option value="False">No</option>
+                                            </select>
+                                        </td>
+                                        <td style="background: pink">
+                                            <select id="FlagDeleted" name="FlagDeleted" style="border:1px solid green">
+                                                <option value="True"> Yes</option>
+                                                <option value="False" selected="selected">No</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                            @Html.HiddenFor(model => model.pmDoAction, new { Value = ViewBag.doaction })
+                            @Html.HiddenFor(model => model.pmTotalPages, new { Value = Model.MyDatatable.Rows.Count })
+
+                            <div class="col-md-12">
+                                <div class="box-footer">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <a href="@Url.Action("Index",  "MobilePageMenu")" class="btn btn-danger">Cancel</a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="box">
+                        <div class="box-body">
+
+                            <div class="col-md-12">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <input type="text" id="OTP" name="OTP" class="form-control" placeholder="Entre OTP" />
+                                        </td>
+                                        <td>
+                                            &nbsp;&nbsp;&nbsp;<button type="submit" class="btn btn-primary">Submit</button>
+                                        </td>
+                                        <td>
+                                            &nbsp;&nbsp;&nbsp;<a href="@Url.Action("Index", "MobilePageMenu")" class="btn btn-danger">Cancel</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+

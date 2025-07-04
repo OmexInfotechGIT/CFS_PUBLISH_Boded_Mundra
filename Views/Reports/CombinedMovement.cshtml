@@ -1,0 +1,128 @@
+﻿@{
+    CFS.Models.ReportsModal ReportsModal = new CFS.Models.ReportsModal();
+    if (ViewBag.ReportsModal != null)
+    {
+        ReportsModal = ViewBag.ReportsModal;
+    }
+    ViewBag.Title = "Combined Movement Report";
+}
+@using (Html.BeginForm("CombinedMovement", "Reports", FormMethod.Post))
+{
+    <div class="">
+        <div class="box">
+            <div class="box-body">
+
+                @Html.Partial("_ReportsModalDate")
+                @Html.Partial("_ReportModalLine")
+                @Html.Partial("_ReportsModalCHA")
+                @Html.Partial("_ReportsModalForwarder")
+                @Html.Partial("_ReportsModalImporter")
+                @Html.Partial("_ReportsModalExporter")
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-body">
+                <div class="col-md-12" style="margin-top:15px;">
+                    <div class="col-md-12" style="text-align:center;">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(Model => ReportsModal.IsAllReport, new { @id = "IsAllReport", @name = "IsAllReport" })
+                            @Html.LabelFor(Model => ReportsModal.IsAllReport, new { @for = "IsAllReport" })
+                            @Html.HiddenFor(Model => ReportsModal.IsAllReport)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(Model => ReportsModal.IsCargoInward, new { @id = "IsCargoInward" })
+                            @Html.LabelFor(Model => ReportsModal.IsCargoInward, new { @for = "IsCargoInward" })
+                            @Html.HiddenFor(Model => ReportsModal.IsCargoInward)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(Model => ReportsModal.IsCargoOutward, new { @id = "IsCargoOutward" })
+                            @Html.LabelFor(Model => ReportsModal.IsCargoOutward, new { @for = "IsCargoOutward" })
+                            @Html.HiddenFor(Model => ReportsModal.IsCargoOutward)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(Model => ReportsModal.IsCargoBal, new { @id = "IsCargoBal" })
+                            @Html.LabelFor(Model => ReportsModal.IsCargoBal, new { @for = "IsCargoBal" })
+                            @Html.HiddenFor(Model => ReportsModal.IsCargoBal)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(Model => ReportsModal.IsLoadedGateIn, new { @id = "IsLoadedGateIn" })
+                            @Html.LabelFor(Model => ReportsModal.IsLoadedGateIn, new { @for = "IsLoadedGateIn" })
+                            @Html.HiddenFor(Model => ReportsModal.IsLoadedGateIn)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(Model => ReportsModal.IsLoadedGateOut, new { @id = "IsLoadedGateOut" })
+                            @Html.LabelFor(Model => ReportsModal.IsLoadedGateOut, new { @for = "IsLoadedGateOut" })
+                            @Html.HiddenFor(Model => ReportsModal.IsLoadedGateOut)
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(Model => ReportsModal.IsLoadedContBal, new { @id = "IsLoadedContBal" })
+                            @Html.LabelFor(Model => ReportsModal.IsLoadedContBal, new { @for = "IsLoadedContBal" })
+                            @Html.HiddenFor(Model => ReportsModal.IsLoadedContBal)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(Model => ReportsModal.IsEmptyContGateIn, new { @id = "IsEmptyContGateIn" })
+                            @Html.LabelFor(Model => ReportsModal.IsEmptyContGateIn, new { @for = "IsEmptyContGateIn" })
+                            @Html.HiddenFor(Model => ReportsModal.IsEmptyContGateIn)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(Model => ReportsModal.IsEmptyContGateOut, new { @id = "IsEmptyContGateOut" })
+                            @Html.LabelFor(Model => ReportsModal.IsEmptyContGateOut, new { @for = "IsEmptyContGateOut" })
+                            @Html.HiddenFor(Model => ReportsModal.IsEmptyContGateOut)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(Model => ReportsModal.IsEmptyContBal, new { @id = "IsEmptyContBal" })
+                            @Html.LabelFor(Model => ReportsModal.IsEmptyContBal, new { @for = "IsEmptyContBal" })
+                            @Html.HiddenFor(Model => ReportsModal.IsEmptyContBal)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(Model => ReportsModal.IsExportContStuff, new { @id = "IsExportContStuff" })
+                            @Html.LabelFor(Model => ReportsModal.IsExportContStuff, new { @for = "IsExportContStuff" })
+                            @Html.HiddenFor(Model => ReportsModal.IsExportContStuff)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(Model => ReportsModal.IsExportContBal, new { @id = "IsExportContBal" })
+                            @Html.LabelFor(Model => ReportsModal.IsExportContBal, new { @for = "IsExportContBal" })
+                            @Html.HiddenFor(Model => ReportsModal.IsExportContBal)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(Model => ReportsModal.IsExportContOut, new { @id = "IsExportContOut" })
+                            @Html.LabelFor(Model => ReportsModal.IsExportContOut, new { @for = "IsExportContOut" })
+                            @Html.HiddenFor(Model => ReportsModal.IsExportContOut)
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="">
+            @Html.Partial("_ReportsModalSearchClearButton")
+        </div>
+    </div>
+}
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/ReportsModal.js")"></script>
+

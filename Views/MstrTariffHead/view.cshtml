@@ -1,0 +1,75 @@
+﻿@model CFS.Models.MstrTariffHead
+@{
+    ViewBag.Title = "View Tariff Head";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (ViewBag.gblBlnView)
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">Tariff Head Code: @Model.TariffHeadCode</span>
+                            </div>
+                        </div>
+                    }
+                <div class="pull-right">
+                    
+                    <div style="display: inline-flex">
+                        @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrTariffHead","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                        <a href="@Url.Action("index","MstrTariffHead", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                    </div>
+                </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div class="col-md-6">
+
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>Tariff Head Name : </label> <span>@Model.TariffHeadName</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Nature of Head: </label> <span>@Model.NatureofHead</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Tariff Activity : </label> <span>@Model.TariffActivity</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Tariff Type : </label> <span>@Model.TariffType</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Cycle : </label> <span>@Model.Cycle</span>
+                            </div>
+                            <div class="form-group">
+                                <label>HSN/SAC Code : </label> <span>@Model.HSNSACCode</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Sequence Code : </label> <span>@Model.SequenceCode</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Last Sequence Code : </label> <span>@ViewBag.LastSequenceCode</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Status: </label> <span>@(Model.IsActive == true ? "Active" : "InActive")</span>
+                            </div>
+                            @if (!Model.IsActive)
+                            {
+                                <div class="form-group">
+                                    <label>InActivate Reason: </label> <span>@Model.InActiveReason</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

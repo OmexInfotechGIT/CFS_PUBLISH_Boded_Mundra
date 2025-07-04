@@ -1,0 +1,133 @@
+﻿@model CFS.Models.MstrISO
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update ISO Code";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New ISO Code";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (Model.doaction == "edit")
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">ISO Code: @Model.ISOCode</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrISO","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrISO", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>                        
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "MstrISO", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.ISOCode)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                @if (Model.doaction == "edit")
+                                {
+                                    @*<div class="form-group">
+                                            <span>ISO Code Name: @Model.ISOCodeName</span>
+                                        </div>
+                                        @Html.HiddenFor(Model => Model.ISOCodeName)*@
+                                }
+                                @*else
+                                    {*@
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.ISOCodeName, new { @for = "txtIsoCodeName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ISOCodeName, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.ISOCodeName, new { @id = "txtIsoCodeName", @name = "txtIsoCodeName", @class = "form-control", @placeholder = "Enter ISO Code Name",  @onkeypress = "return AlphaNumber(event)" })
+                                    @Html.HiddenFor(Model => Model.RefID)
+                                </div>
+                                @*}*@
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.ISORemark, new { @for = "txtISORemarks" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ISORemark, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.ISORemark, new { @id = "txtISORemarks", @name = "txtISORemarks", @maxlength = "60", @class = "form-control", @placeholder = "Enter ISO Remarks" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.ContSizeId, new { @for = "dpdGSTCustomerType" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContSizeId, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.DropDownListFor(Model => Model.ContSizeId, Model.ContSize, "Select Container Size", new { @id = "dpdGSTCustomerType", @class = "form-control" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.ContType, new { @for = "txtContType" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContTypeID, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.ContType, new { @id = "txtContType", @name = "txtContType", @class = "form-control", @placeholder = "Enter Container Type" })
+                                    @Html.HiddenFor(Model => Model.ContTypeID)
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.TareWeight, new { @for = "txtTareWeight" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TareWeight, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.TareWeight, new { @id = "txtTareWeight", @name = "txtTareWeight", @onkeypress = "return isonlynumber(event);", @maxlength = "4", @class = "form-control", @placeholder = "Enter Tare Weight" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.NatureOfCargo, new { @for = "txtNatureOfCargo" })<span class="text-red">*</span>
+                                    @Html.ValidationMessageFor(Model => Model.NatureOfCargoId, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.NatureOfCargo, new { @id = "txtNatureOfCargo", @name = "txtNatureOfCargo", @class = "form-control", @placeholder = "Enter Container Nature" })
+                                    @Html.HiddenFor(Model => Model.NatureOfCargoId)
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Remarks, new { @for = "txtRemarks" })
+                                    @Html.TextBoxFor(Model => Model.Remarks, new { @id = "txtRemarks", @name = "txtRemarks", @class = "form-control", @placeholder = "Enter Remarks" })
+                                </div>
+                                <div class="form-group">
+                                    <br />
+                                    @Html.CheckBoxFor(Model => Model.IsActive, new { @class = "form-control" })
+                                    @Html.Label("IsActive") @Html.ValidationMessageFor(Model => Model.IsActive, String.Empty, new { @class = "help-inline text-red" })
+                                </div>
+                                <div class="form-group" id="dvInActiveReason">
+                                    @Html.LabelFor(Model => Model.InActiveReason, new { @for = "InActiveReason" }) @Html.ValidationMessageFor(Model => Model.InActiveReason, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.InActiveReason, new { @class = "form-control", @placeholder = "Enter InActivate Reason" })
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrISO","Index")" class="btn btn-danger">Cancel</a>*@
+                                <a href="@Url.Action("Index", "MstrISO", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrISO.js")"></script>

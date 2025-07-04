@@ -1,0 +1,32 @@
+﻿
+@{
+    CFS.Models.ReportsModal ReportsModal = new CFS.Models.ReportsModal();
+    if (ViewBag.ReportsModal != null)
+    {
+        ReportsModal = ViewBag.ReportsModal;
+    }
+    ViewBag.Title = "Cargo Balance Report";
+}
+@using (Html.BeginForm("CargoBalanceReport", "Reports", FormMethod.Post))
+{
+    <div class="">
+        <div class="box">
+            <div class="box-body">
+                @Html.Partial("_ReportsModalCHA")
+                @Html.Partial("_ReportsModalForwarder")
+                @Html.Partial("_ReportsModalImporter")
+                @Html.Partial("_ReportsModalExporter")
+
+                <div class="col-md-2">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => ReportsModal.OnDate, new { @for="OnDate"})
+                        @Html.TextBoxFor(Model => ReportsModal.OnDate, new { @id = "OnDate", @name = "OnDate", @class = "form-control DateTimePicker" })
+                    </div>
+                </div>
+                @Html.Partial("_ReportsModalSearchClearButton")
+            </div>
+        </div>
+    </div>
+}
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/ReportsModal.js")"></script>
+

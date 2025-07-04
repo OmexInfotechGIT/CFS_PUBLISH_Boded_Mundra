@@ -1,0 +1,857 @@
+﻿@model CFS.Models.trnExportCLPBOEItems
+@using System.Globalization;
+@{
+
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update BOE Items";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else if (Model.doaction == "view")
+    {
+        ViewBag.Title = "View BOE Items";
+        //if (!ViewBag.gblBlnView)
+        //{
+        //    Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        //}
+    }
+    else
+    {
+        ViewBag.Title = "Add New BOE Items";
+
+    }
+    string heading = "";
+    System.Text.StringBuilder StrAutocomplete = new System.Text.StringBuilder();
+}
+
+<style>
+    th, td {
+        padding: 3px;
+    }
+
+    input, select {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+
+    .ui-autocomplete {
+        z-index: 9999;
+    }
+</style>
+<!-- Main content -->
+<section class="">
+
+    @using (Html.BeginForm("Index", "trnExportCLPBOEItems", FormMethod.Post))
+    {
+        @Html.HiddenFor(Model => Model.trnExportCLPBOEItemsID)
+        @Html.HiddenFor(Model => Model.trnExportCLPID)
+        @Html.HiddenFor(Model => Model.trnDocumentLotDetailsID)
+        @Html.HiddenFor(Model => Model.trnExportDocumentDeclarationID)
+        @Html.HiddenFor(Model => Model.trnExportDocumentDeclarationLotDetailsID)
+        @Html.HiddenFor(Model => Model.trnexportstufingwoSBDetailsID)
+        @Html.HiddenFor(Model => Model.IsBulk)
+        @Html.HiddenFor(Model => Model.trnExBondDocumentEntryDetailsID)
+        @Html.HiddenFor(Model=>Model.IsAreaGroup)
+        @Html.HiddenFor(Model=>Model.IsCLPFinished)
+        @Html.HiddenFor(Model=>Model.IsView)
+        <div class="row" id="step-1">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h4>
+                            <b>BOE Items</b>
+                            <div class="pull-right">
+                                <div style="display: inline-flex">
+                                    @if (Model.doaction == "view" || Model.IsView)
+                                    {
+                                        <a href="@Url.Action("view", "trnexportclp", new { @id = Request.QueryString["trnExportCLPID"], @doaction = "view",@SearchContainerID=Request.QueryString["SearchContainerID"], @SearchContainerNo = Request.QueryString["SearchContainerNo"]})" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("Action", "trnexportclp", new { @id = Request.QueryString["trnExportCLPID"], @doaction = "edit",@SearchContainerID=Request.QueryString["SearchContainerID"], @SearchContainerNo = Request.QueryString["SearchContainerNo"]})" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                                    }
+                                </div>
+
+                            </div>
+                        </h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="row" style="padding-left:15px;">
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.ModelBOENo) : <span>@Model.BOENo</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.ContainerNumber) :  <span>@Model.ContainerNumber</span>
+                                @*<span>@Model.ModelGatePassWeight</span>*@
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.ContainerSize) : <span>@Model.ContainerSize</span>
+                                @*<span>@Model.ModelGatePassWeight</span>*@
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.ContainerType) : <span>@Model.ContainerType</span>
+                                @*<span>@Model.ModelGatePassWeight</span>*@
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.StuffingWOPackages) : <span>@Model.StuffingWOPackages</span>
+                                @Html.HiddenFor(Model => Model.StuffingWOPackages)
+                                @*<span>@(Convert.ToDecimal(Model.ModelGatePassPackages).ToString("0"))</span>*@
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.StuffingWOPieces) : <span>@Model.StuffingWOPieces</span>
+                                @Html.HiddenFor(Model => Model.StuffingWOPieces)
+                                @*<span>@(Convert.ToDecimal(Model.ModelGatePassPieces).ToString("0"))</span>*@
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.StuffingWOWeight) : <span>@Model.StuffingWOWeight</span>
+                                @Html.HiddenFor(Model => Model.StuffingWOWeight)
+                                @*<span>@Model.ModelGatePassWeight</span>*@
+                            </div>
+
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.CargoType) : <span>@Model.CargoType</span>
+                                @*<span>@Model.ModelGatePassWeight</span>*@
+                            </div>
+                            <div class="col-md-3">
+                                @Html.Label("Total Declared Area") :
+                                <span id="TotalReceivedArea">@Model.dtAreaDetails.Rows[0]["TotalReceivedArea"].ToString()</span>
+                            </div>
+                            @if (Model.IsView)
+                            {
+                                <div class="col-md-3">
+                                    @Html.Label("Total CLP Area") :
+                                    <span id="txtTotalReceivedArea">@Model.dtAreaDetails.Rows[0]["CLPArea"].ToString()</span>
+                                </div>
+                            }
+                            <div class="col-md-3">
+                                @Html.Label("Total Area Released") :
+                                <span id="txtTotalOutwadArea">@Model.dtAreaDetails.Rows[0]["TotalOutwadArea"].ToString()</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.Label("Total Balance Area") :
+                                <span id="txtTotalBalanceArea">@(Convert.ToDecimal(Model.dtAreaDetails.Rows[0]["TotalReceivedArea"].ToString()) - (Convert.ToDecimal(Model.dtAreaDetails.Rows[0]["TotalOutwadArea"].ToString()) + Convert.ToDecimal(Model.dtAreaDetails.Rows[0]["CLPArea"].ToString()))) </span>
+                            </div>
+                        </div>
+                        @if (!Model.IsView)
+                        {
+                            <div class="row" style="padding-left:15px;padding-top:5px;">
+                                <div class="col-md-1 form-group">
+                                    @Html.LabelFor(Model => Model.AreaCleared, new { @for = "AreaCleared" })
+                                    @if (Model.IsCLPFinished)
+                                    {
+                                        @Html.TextBoxFor(Model => Model.AreaCleared, new { @id = "AreaCleared", @name = "AreaCleared", @class = "form-control", @placeholder = "Enter Area" ,@readonly=true})
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBoxFor(Model => Model.AreaCleared, new { @id = "AreaCleared", @name = "AreaCleared", @class = "form-control", @placeholder = "Enter Area" })
+                                    }
+                                </div>
+                                <div class="col-md-3 form-group">
+                                    @Html.LabelFor(Model => Model.ModelPackingType, new { @for = "ModelPackingType" })
+                                    @if (Model.IsCLPFinished)
+                                    {
+                                        @Html.TextBoxFor(Model => Model.ModelPackingType, new { @id = "ModelPackingType", @name = "ModelPackingType", @class = "form-control", @placeholder = "Enter PackingType" ,@readonly=true})
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBoxFor(Model => Model.ModelPackingType, new { @id = "ModelPackingType", @name = "ModelPackingType", @class = "form-control", @placeholder = "Enter PackingType" })
+                                    }
+
+                                    @Html.HiddenFor(Model => Model.ModelPackingTypeID)
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    @Html.LabelFor(Model => Model.ModelBillCommodity, new { @for = "ModelBillCommodity" })
+                                    @if (Model.IsCLPFinished)
+                                    {
+                                        @Html.TextBoxFor(Model => Model.ModelBillCommodity, new { @id = "ModelBillCommodity", @name = "ModelBillCommodity", @class = "form-control", @placeholder = "Enter BillCommodity" ,@readonly=true})
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBoxFor(Model => Model.ModelBillCommodity, new { @id = "ModelBillCommodity", @name = "ModelBillCommodity", @class = "form-control", @placeholder = "Enter BillCommodity" })
+                                    }
+                                    @Html.HiddenFor(Model => Model.ModelBillCommodityID)
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    @Html.LabelFor(Model => Model.ModelEquipment, new { @for = "ModelEquipment" })
+                                    @if (Model.IsCLPFinished)
+                                    {
+                                        @Html.TextBoxFor(Model => Model.ModelEquipment, new { @id = "ModelEquipment", @name = "ModelEquipment", @class = "form-control", @placeholder = "Enter Equipment" ,@readonly=true})
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBoxFor(Model => Model.ModelEquipment, new { @id = "ModelEquipment", @name = "ModelEquipment", @class = "form-control", @placeholder = "Enter Equipment" })
+                                    }
+                                    @Html.HiddenFor(Model => Model.ModelEquipmentID)
+                                </div>
+                            </div>
+                        }
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                        <div class="col-md-12" style="overflow:auto">
+                            <table id="tblterifftable" style="width:140%">
+                                <thead>
+                                    <tr>
+                                        <th style="width:100px">In BOE No</th>
+                                        <th style="width:100px">SB No</th>
+                                        <th style="width:100px">INV No</th>
+                                        <th style="width:60px">Destuff Date</th>
+                                        <th style="width:200px">WH Location</th>
+                                        <th style="width:90px">WH Packages</th>
+                                        <th style="width:90px">WH Pieces</th>
+                                        <th style="width:90px">WH Weight</th>
+                                        <th style="width:90px">CLP Packages</th>
+                                        <th style="width:90px">CLP Pieces</th>
+                                        <th style="width:90px">CLP Weight</th>
+                                        <th style="width:100px">Packing Type</th>
+                                        <th style="width:100px">Bill Commodity</th>
+                                        <th style="width:100px">Equipment</th>
+                                        @*<th style="width:80px">Area UOM</th>
+                        <th style="width:80px">Balance Area</th>
+                        <th style="width:80px">Area Cleared</th>*@
+                                        @if (!Model.IsCLPFinished)
+                                        {
+                                            <th style="width:10px">Clear</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        int count1 = 0;
+                                    }
+                                    @{
+                                        StrAutocomplete.Append(@"<script>setTimeout(function () {");
+
+                                        Model.trnDestuffingID = new int[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.trnDocumentBoiItemsID = new int[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.Types = new string[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+
+                                        Model.CLPPackages = new decimal[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.CLPPieces = new decimal[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.CLPWeight = new decimal[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+
+                                        Model.InBOENo = new string[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.hdnInBOENo = new string[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.ShiipingBillNo = new string[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.InvoiceNumber = new string[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.hdnShiipingBillNo = new string[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.hdnInvoiceNumber = new string[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.WHLocation = new string[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.hdnWHLocation = new string[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.hdnWHLocationID = new int[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.WHPackages = new decimal[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.hdnWHPackages = new decimal[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.WHPieces = new decimal[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.hdnWHPieces = new decimal[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.WHWeight = new decimal[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.hdnWHWeight = new decimal[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+
+                                        Model.PackingType = new string[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.PackingTypeID = new int[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+
+                                        Model.BillCommodity = new string[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.BillCommodityID = new int[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+
+                                        Model.Equipment = new string[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.EquipmentID = new int[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+
+                                        Model.hdnWHWeight = new decimal[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.hdnWHWeight = new decimal[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+
+                                        //Model.BalanceArea = new string[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        //Model.hdnBalanceArea = new string[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        //Model.AreaCleared = new string[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        //Model.AreaUOM = new string[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+
+                                        Model.EndDestuffDate = new string[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.hdnIsAreaGroup = new long[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                        Model.trnexportstufingwoSBDetailsID = new int[(Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count + (10 - (Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count % 10)))];
+                                    }
+                                    @{
+
+                                        for (int i = 0; i < Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count; i++)
+                                        {
+                                            Model.trnDestuffingID[i] = Convert.ToInt32(Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["trnDestuffingID"]);
+                                            Model.trnDocumentBoiItemsID[i] = Convert.ToInt32(Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["trnDocumentBoiItemsID"]);
+                                            Model.Types[i] = Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["Type"].ToString();
+
+                                            Model.InBOENo[i] = Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["InBOENo"].ToString();
+                                            Model.ShiipingBillNo[i] = Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["SBNo"].ToString();
+                                            Model.InvoiceNumber[i] = Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["InvNo"].ToString();
+
+                                            Model.CLPPackages[i] = Convert.ToDecimal(Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["CLPPackages"]);
+                                            Model.CLPPieces[i] = Convert.ToDecimal(Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["CLPPieces"]);
+                                            Model.CLPWeight[i] = Convert.ToDecimal(Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["CLPWeight"]);
+
+                                            Model.hdnInBOENo[i] = Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["InBOENo"].ToString();
+                                            Model.hdnShiipingBillNo[i] = Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["SBNo"].ToString();
+                                            Model.hdnInvoiceNumber[i] = Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["InvNo"].ToString();
+                                            Model.WHLocation[i] = Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["WHLocation"].ToString();
+                                            Model.hdnWHLocationID[i] = Convert.ToInt32(Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["WHLocationID"]);
+                                            Model.WHPackages[i] = Convert.ToDecimal(Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["WHPackages"].ToString());
+                                            Model.hdnWHPackages[i] = Convert.ToDecimal(Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["WHPackages"].ToString());
+                                            Model.WHPieces[i] = Convert.ToDecimal(Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["WHPieces"].ToString());
+                                            Model.hdnWHPieces[i] = Convert.ToDecimal(Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["WHPieces"].ToString());
+                                            Model.WHWeight[i] = Convert.ToDecimal(Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["WHWeight"].ToString());
+                                            Model.hdnWHWeight[i] = Convert.ToDecimal(Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["WHWeight"].ToString());
+                                            Model.trnexportstufingwoSBDetailsID[i] = Convert.ToInt32(Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["trnExportStufingWOSBDetailsID"].ToString());
+
+                                            if (Model.dtExportCLPBOEItemsDetails != null && Model.dtExportCLPBOEItemsDetails.Rows.Count > 0)
+                                            {
+                                                System.Data.DataView dv = new System.Data.DataView(Model.dtExportCLPBOEItemsDetails);
+
+                                                dv.RowFilter = "trnDocumentBoiItemsID = '" + Model.trnDocumentBoiItemsID[i] + "'"+ "AND trnexportstufingwoSBDetailsID='"+Model.trnexportstufingwoSBDetailsID[i]+"'";
+                                                System.Data.DataTable dtCLPBOEItemsDetails = dv.ToTable();
+
+                                                if (dtCLPBOEItemsDetails != null && dtCLPBOEItemsDetails.Rows.Count > 0)
+                                                {
+                                                    Model.AreaCleared = Convert.ToDecimal(dtCLPBOEItemsDetails.Rows[0]["AreaCleared"].ToString());
+                                                    Model.PackingType[i] = Convert.ToString(dtCLPBOEItemsDetails.Rows[0]["PackingType"].ToString());
+                                                    Model.PackingTypeID[i] = Convert.ToInt32(dtCLPBOEItemsDetails.Rows[0]["PackingTypeID"].ToString());
+
+                                                    Model.BillCommodity[i] = Convert.ToString(dtCLPBOEItemsDetails.Rows[0]["BillCommodity"].ToString());
+                                                    Model.BillCommodityID[i] = Convert.ToInt32(dtCLPBOEItemsDetails.Rows[0]["BillCommodityID"].ToString());
+
+                                                    Model.Equipment[i] = Convert.ToString(dtCLPBOEItemsDetails.Rows[0]["EquipmentName"].ToString());
+                                                    Model.EquipmentID[i] = Convert.ToInt32(dtCLPBOEItemsDetails.Rows[0]["EquipmentID"].ToString());
+                                                    if (!string.IsNullOrEmpty(dtCLPBOEItemsDetails.Rows[0]["IsAreaGroup"].ToString()))
+                                                    {
+                                                        Model.hdnIsAreaGroup[i] = Convert.ToInt64(dtCLPBOEItemsDetails.Rows[0]["IsAreaGroup"]);
+                                                    }
+                                                    else
+                                                    {
+                                                        Model.hdnIsAreaGroup[i] = 0;
+                                                    }
+                                                }
+
+                                            }
+
+
+                                            Model.EndDestuffDate[i] = Convert.ToString(Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["EndDestuffDate"].ToString());
+
+                                            //Model.AreaUOM[i] = Convert.ToString(Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["AUom"]);
+                                            //Model.BalanceArea[i] = Convert.ToString(Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["BalanceArea"]);
+                                            //Model.AreaCleared[i] = Convert.ToString(Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["AreaCleared"].ToString());
+
+                                            StrAutocomplete.Append(@"Autocompletebox('PackingType" + i + @"', 'PackingTypeID" + i + @"', 'trnExportCLPBOEItems', 'GetPackingType');");
+                                            StrAutocomplete.Append(@"Autocompletebox('BillCommodity" + i + @"', 'BillCommodityID" + i + @"', 'trnExportCLPBOEItems', 'GetBillCommodity');");
+                                            StrAutocomplete.Append(@"Autocompletebox('Equipment" + i + @"', 'EquipmentID" + i + @"', 'trnExportCLPBOEItems', 'GetEquipment');");
+
+                                    <tr>
+                                        <td>
+                                            @Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["InBOENo"]
+                                            @Html.HiddenFor(Model => Model.hdnInBOENo, new { @id = "hdnInBOENo" + i + "", Value = "" + Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["InBOENo"] + "" })
+                                        </td>
+                                        <td>
+                                            @*@Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["trnDestuffingID"]*@
+                                            @Html.HiddenFor(Model => Model.trnDestuffingID, new { @id = "trnDestuffingID" + i + "", Value = "" + Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["trnDestuffingID"] + "" })
+                                            @Html.HiddenFor(Model => Model.trnDocumentBoiItemsID, new { @id = "trnDocumentBoiItemsID" + i + "", Value = "" + Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["trnDocumentBoiItemsID"] + "" })
+
+
+                                            @*@Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["Type"]*@
+                                            @Html.HiddenFor(Model => Model.Types, new { @id = "Types" + i + "", Value = "" + Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["Type"] + "" })
+
+
+                                            @Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["SBNo"]
+                                            @Html.HiddenFor(Model => Model.hdnShiipingBillNo, new { @id = "hdnBOENo" + i + "", Value = "" + Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["SBNo"] + "" })
+                                        </td>
+                                        <td>
+                                            @Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["InvNo"]
+                                            @Html.HiddenFor(Model => Model.hdnInvoiceNumber, new { @id = "hdnBLNo" + i + "", Value = "" + Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["InvNo"] + "" })
+                                        </td>
+
+                                        <td>
+                                            @Convert.ToDateTime(Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["EndDestuffDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture)
+                                        </td>
+                                        <td>
+                                            @Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["WHLocation"]
+
+                                            @Html.HiddenFor(Model => Model.hdnWHLocation, new { @id = "hdnWHLocation" + i + "", Value = "" + Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["WHLocation"] + "" })
+
+                                            @Html.HiddenFor(Model => Model.hdnWHLocationID, new { @id = "hdnWHLocationID" + i + "", Value = "" + Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["WHLocationID"] + "" })
+                                        </td>
+
+                                        <td>
+                                            <span id="WHPackages">@Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["WHPackages"]</span>
+                                            @Html.HiddenFor(Model => Model.hdnWHPackages, new { @id = "hdnWHPackages" + i + "", Value = "" + Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["WHPackages"] + "" })
+                                        </td>
+
+                                        <td>
+
+                                            <span id="WHPieces">@Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["WHPieces"]</span>
+                                            @Html.HiddenFor(Model => Model.hdnWHPieces, new { @id = "hdnWHPieces" + i + "", Value = "" + Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["WHPieces"] + "" })
+                                        </td>
+
+                                        <td>
+
+                                            <span id="WHWeight">@Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["WHWeight"]</span>
+                                            @Html.HiddenFor(Model => Model.hdnWHWeight, new { @id = "hdnWHWeight" + i + "", Value = "" + Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["WHWeight"] + "" })
+                                        </td>
+
+                                        <td>
+                                            @Html.ValidationMessageFor(Model => Model.CLPPackages[i], String.Empty, new { @id = "spn_CLPPackages", @class = "help-inline text-red" })
+                                            @if (Model.IsView)
+                                            {
+                                                @Html.TextBoxFor(Model => Model.CLPPackages[i], new { @id = "CLPPackages" + i + "", @class = "CLPPackages", @style = "width: 80px;", @placeholder = "CLP Packages", @onkeypress = "return isNumberWithTwoDecimal(event,'CLPPackages" + i + "')", @onblur = "checkitems('CLPPackages'," + i + ")", @Readonly = true })
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBoxFor(Model => Model.CLPPackages[i], new { @id = "CLPPackages" + i + "", @class = "CLPPackages", @style = "width: 80px;", @placeholder = "CLP Packages", @onkeypress = "return isNumberWithTwoDecimal(event,'CLPPackages" + i + "')", @onblur = "checkitems('CLPPackages'," + i + ")" })
+                                            }
+                                        </td>
+
+                                        <td>
+                                            @Html.ValidationMessageFor(Model => Model.CLPPieces[i], String.Empty, new { @id = "spn_CLPPieces", @class = "help-inline text-red" })
+                                            @if (Model.IsView)
+                                            {
+                                                @Html.TextBoxFor(Model => Model.CLPPieces[i], new { @id = "CLPPieces" + i + "", @class = "CLPPieces", @style = "width: 80px;", @placeholder = "CLPPieces", @onkeypress = "return isNumberWithTwoDecimal(event,'CLPPieces" + i + "')", @onblur = "checkitems('CLPPieces'," + i + ")", @Readonly = true })
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBoxFor(Model => Model.CLPPieces[i], new { @id = "CLPPieces" + i + "", @class = "CLPPieces", @style = "width: 80px;", @placeholder = "CLPPieces", @onkeypress = "return isNumberWithTwoDecimal(event,'CLPPieces" + i + "')", @onblur = "checkitems('CLPPieces'," + i + ")" })
+                                            }
+                                        </td>
+
+                                        <td>
+                                            @Html.ValidationMessageFor(Model => Model.CLPWeight[i], String.Empty, new { @id = "spn_CLPWeight", @class = "help-inline text-red" })
+                                            @if (Model.IsView)
+                                            {
+                                                @Html.TextBoxFor(Model => Model.CLPWeight[i], new { @id = "CLPWeight" + i + "", @class = "CLPWeight", @style = "width: 80px;", @placeholder = "CLPWeight", @onkeypress = "return isNumberWithTwoDecimal(event,'CLPWeight" + i + "')", @onblur = "checkitems('CLPWeight'," + i + ")", @Readonly = true })
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBoxFor(Model => Model.CLPWeight[i], new { @id = "CLPWeight" + i + "", @class = "CLPWeight", @style = "width: 80px;", @placeholder = "CLPWeight", @onkeypress = "return isNumberWithTwoDecimal(event,'CLPWeight" + i + "')", @onblur = "checkitems('CLPWeight'," + i + ")" })
+                                            }
+
+                                        </td>
+
+                                        <td>
+                                            @Html.ValidationMessageFor(Model => Model.PackingTypeID[i], String.Empty, new { @id = "spn_PackingTypeID", @class = "help-inline text-red" })
+                                            @if (Model.IsView)
+                                            {
+                                                @Html.TextBoxFor(Model => Model.PackingType[i], new { @id = "PackingType" + i + "", @class = "PackingType", @style = "width: 100px;", @placeholder = "Packing Type", @Readonly = true })
+                                            }
+                                            else
+                                            {
+                                                if (Model.IsCLPFinished)
+                                                {
+                                                    @Html.TextBoxFor(Model => Model.PackingType[i], new { @id = "PackingType" + i + "", @class = "PackingType", @style = "width: 100px;", @placeholder = "Packing Type", @Readonly = true })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBoxFor(Model => Model.PackingType[i], new { @id = "PackingType" + i + "", @class = "PackingType", @style = "width: 100px;", @placeholder = "Packing Type" })
+                                                }
+                                            }
+
+                                            @Html.HiddenFor(Model => Model.PackingTypeID[i], new { @id = "PackingTypeID" + i + "", @name = "PackingTypeID_" + i + "" })
+                                        </td>
+
+                                        <td>
+                                            @Html.ValidationMessageFor(Model => Model.BillCommodityID[i], String.Empty, new { @id = "spn_BillCommodityID", @class = "help-inline text-red" })
+                                            @if (Model.IsView)
+                                            {
+                                                @Html.TextBoxFor(Model => Model.BillCommodity[i], new { @id = "BillCommodity" + i + "", @class = "BillCommodity" + i + "", @style = "width: 100px;", @placeholder = "Bill Commodity", @Readonly = true })
+                                            }
+                                            else
+                                            {
+                                                if (Model.IsCLPFinished)
+                                                {
+                                                    @Html.TextBoxFor(Model => Model.BillCommodity[i], new { @id = "BillCommodity" + i + "", @class = "BillCommodity" + i + "", @style = "width: 100px;", @placeholder = "Bill Commodity", @Readonly = true })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBoxFor(Model => Model.BillCommodity[i], new { @id = "BillCommodity" + i + "", @class = "BillCommodity" + i + "", @style = "width: 100px;", @placeholder = "Bill Commodity" })
+                                                }
+                                            }
+
+                                            @Html.HiddenFor(Model => Model.BillCommodityID[i], new { @id = "BillCommodityID" + i + "", @name = "BillCommodityID" + i + "" })
+                                        </td>
+
+                                        <td>
+                                            @Html.ValidationMessageFor(Model => Model.EquipmentID[i], String.Empty, new { @id = "spn_EquipmentID", @class = "help-inline text-red" })
+                                            @if (Model.IsView)
+                                            {
+                                                @Html.TextBoxFor(Model => Model.Equipment[i], new { @id = "Equipment" + i + "", @class = "Equipment" + i + "", @style = "width: 100px;", @placeholder = "Equipment", @Readonly = true })
+                                            }
+                                            else
+                                            {
+                                                if (Model.IsCLPFinished)
+                                                {
+                                                    @Html.TextBoxFor(Model => Model.Equipment[i], new { @id = "Equipment" + i + "", @class = "Equipment" + i + "", @style = "width: 100px;", @placeholder = "Equipment", @Readonly = true })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBoxFor(Model => Model.Equipment[i], new { @id = "Equipment" + i + "", @class = "Equipment" + i + "", @style = "width: 100px;", @placeholder = "Equipment" })
+                                                }
+                                            }
+
+                                            @Html.HiddenFor(Model => Model.EquipmentID[i], new { @id = "EquipmentID" + i + "", @name = "EquipmentID" + i + "" })
+                                        </td>
+                                        <td style="display:none;">
+                                            @Html.HiddenFor(Model => Model.hdnAreaUOM, new { @id = "hdnAreaUOM" + i + "", Value = "" + Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["AUom"] + "" })
+                                            @Html.HiddenFor(Model => Model.hdnBalanceArea, new { @id = "hdnBalanceArea" + i + "", Value = "" + Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["BalanceArea"] + "" })z
+                                        </td>
+                                        <td style="display:none;">@Html.HiddenFor(Model => Model.hdnIsAreaGroup[i], new { @id = "hdnIsAreaGroup" + i })
+                                        @Html.HiddenFor(Model => Model.trnexportstufingwoSBDetailsID[i], new { @id= "trnexportstufingwoSBDetailsID"+i })
+                                        </td>
+                                        @* <td>
+            @Model.dtExportCLPBOEItemsDetailsByCLP.Rows[i]["BalanceArea"]
+
+
+        </td>
+
+        <td>
+            @Html.ValidationMessageFor(Model => Model.AreaCleared[i], String.Empty, new { @id = "spn_AreaCleared", @class = "help-inline text-red" })
+            @if (Model.IsView)
+            {
+                @Html.TextBoxFor(Model => Model.AreaCleared[i], new { @id = "AreaCleared" + i + "", @class = "AreaCleared", @style = "width: 50px;", @placeholder = "Area Cleared", @onkeypress = "return isNumberWithTwoDecimal(event,'AreaCleared" + i + "')", @Readonly = true })
+            }
+            else
+            {
+                @Html.TextBoxFor(Model => Model.AreaCleared[i], new { @id = "AreaCleared" + i + "", @class = "AreaCleared", @style = "width: 50px;", @placeholder = "Area Cleared", @onkeypress = "return isNumberWithTwoDecimal(event,'AreaCleared" + i + "')" })
+            }
+        </td>*@
+                                        @if (!Model.IsCLPFinished) { 
+                                                <td><a class="" onclick="ClearGridDate('@i')"><i title="Click to Clear" style="font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-refresh"></i></a></td>
+                                        }
+                                    </tr>
+                                        }
+                                    }
+                                    @{
+                                        Model.hdnGridCount = Model.dtExportCLPBOEItemsDetailsByCLP.Rows.Count;
+
+                                    }
+                                    @{
+                                        StrAutocomplete.Append(@" }, 1000); $('#AreaCleared').val('" + Model.AreaCleared + "'); </script> ");
+                                    }
+                                    @Html.HiddenFor(Model => Model.hdnGridCount, new { @id = "hdnGridCount", @name = "hdnGridCount" })
+                                    <tr style="display:none;">
+                                        <td align="right"><input type="hidden" id="ttlpkg" value="@(Convert.ToDecimal(Model.CLPPackages.Sum()))" /></td>
+                                        <td align="right"><input type="hidden" id="ttlpcs" value="@(Convert.ToDecimal(Model.CLPPieces.Sum()))" /></td>
+                                        <td align="right"><input type="hidden" id="ttlwgt" value="@(Convert.ToDecimal(Model.CLPWeight.Sum()))" /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                        @if (!Model.IsView)
+                        {
+                            <div class="col-md-12 box-footer">
+                                <div class="pull-right">
+                                    <button type="submit" onclick="return Validation()" class="btn btn-primary">Submit</button>
+                                </div>
+                            </div>
+                        }
+
+
+                    </div>
+                    </div>
+            </div>
+        </div>
+
+    }
+
+</section>
+<script>
+    $(document).ready(function () {        
+        Autocompletebox("ModelBillCommodity", "ModelBillCommodityID", "trnExportCLPBOEItems", "GetBillCommodity");
+        Autocompletebox("ModelPackingType", "ModelPackingTypeID", "trnExportCLPBOEItems", "GetPackingType");
+        Autocompletebox("ModelEquipment", "ModelEquipmentID", "trnExportCLPBOEItems", "GetEquipment");
+
+        $("#AreaCleared").blur(function () {
+            var area = $("#TotalReceivedArea").text() - +$("#txtTotalOutwadArea").text();
+            var AddArea = $("#AreaCleared").val();
+
+            if (parseFloat(area) > 0) {
+
+                if (parseFloat(AddArea) > area) {
+                    $("#AreaCleared").val(" ");
+                    TosterAlert("warning", "Please enter area less than balance area", "warning!");
+                    $("#txtTotalBalanceArea").text(area);
+                }
+                else {
+                    var totalreceivedarea = +$("#TotalReceivedArea").text() - +$("#txtTotalOutwadArea").text() - +$("#AreaCleared").val();
+
+                    $("#txtTotalBalanceArea").text(totalreceivedarea);
+                }
+            }
+
+        });
+        $('[id^=CLPPackages]').each(function () {
+            var Pkg = parseInt($(this).val());
+            if (Pkg == 0) {                
+                $(this).val('');
+            }
+
+        });
+
+        $('[id^=CLPPieces]').each(function () {
+            var Pices = parseInt($(this).val());
+            if (Pices == 0) {                
+                $(this).val('');
+            }
+
+        });
+
+        $('[id^=CLPWeight]').each(function () {
+            var wt = parseInt($(this).val());
+            if (wt == 0) {                
+                $(this).val('');
+            }
+
+        });               
+        var AreaRequired = $('#AreaCleared').val();
+        if (AreaRequired == '0') { $('#AreaCleared').val('') } 
+        
+    });
+    function ChangeAllforfields(i) {        
+        var Package = $("#CLPPackages" + i).val();
+        var Pieces = $("#CLPPieces" + i).val();
+        var Weight = $("#CLPWeight" + i).val();
+        var isneedtoadd = false;
+        if (Package > 0 || Pieces > 0 || Weight > 0) {
+            isneedtoadd = true;
+        }       
+        var ModelPackagingTypeID = $("#ModelPackingTypeID").val();
+        var ModelPackagingType = $("#ModelPackingType").val();
+
+        if (ModelPackagingTypeID > 0 && ModelPackagingType != "" && isneedtoadd) {
+            $("#PackingType" + i).val(ModelPackagingType);
+            $("#PackingTypeID" + i).val(ModelPackagingTypeID);
+        }
+        else {
+            $("#PackingType" + i).val("");
+            $("#PackingTypeID" + i).val("0");
+        }
+
+        var ModelBillCommodityID = $("#ModelBillCommodityID").val();
+        var ModelBillCommodity = $("#ModelBillCommodity").val();
+
+        if (ModelBillCommodityID > 0 && ModelBillCommodity != "" && isneedtoadd) {
+            $("#BillCommodity" + i).val(ModelBillCommodity);
+            $("#BillCommodityID" + i).val(ModelBillCommodityID);
+        }
+        else {
+            $("#BillCommodity" + i).val("");
+            $("#BillCommodityID" + i).val("0");
+        }
+
+        var ModelEquipmentUsedID = $("#ModelEquipmentID").val();
+        var ModelEquipmentUsed = $("#ModelEquipment").val();
+
+        if (ModelEquipmentUsedID > 0 && ModelEquipmentUsed != "" && isneedtoadd) {
+            $("#Equipment" + i).val(ModelEquipmentUsed);
+            $("#EquipmentID" + i).val(ModelEquipmentUsedID);
+        }
+        else {
+            $("#Equipment" + i).val("");
+            $("#EquipmentID" + i).val("0");
+        }
+    }
+    function Validation() {        
+        var isvalid = true;
+        var MErrormsg = "";
+        var msg = "";
+        var counter = 0;
+        var pkg = 0, pcs = 0, wgt = 0;
+        pkg = $("#ttlpkg").val();
+        pcs = $("#ttlpcs").val();
+        wgt = $("#ttlwgt").val();
+        var ttlwgt = wgt;
+        var ttlpcs = pcs;
+        var ttlpkg = pkg;
+        var gpPkg = $("#StuffingWOPackages").val();
+        var gpPcs = $("#StuffingWOPieces").val();
+        var gpWgt = $("#StuffingWOWeight").val();
+        if (ttlpkg == 0 || ttlpkg == undefined || ttlpkg == null) { ttlpkg = 0 }
+        if (ttlpcs == 0 || ttlpcs == undefined || ttlpcs == null) { ttlpcs = 0 }
+        if (ttlwgt == 0 || ttlwgt == undefined || ttlwgt == null) { ttlwgt = 0 }
+
+        if (gpPkg == 0 || gpPkg == undefined || gpPkg == null) { gpPkg = 0 }
+        if (gpPcs == 0 || gpPcs == undefined || gpPcs == null) { gpPcs = 0 }
+        if (gpWgt == 0 || gpWgt == undefined || gpWgt == null) { gpWgt = 0 }
+        if (parseFloat(ttlpkg) > parseFloat(gpPkg)) {
+            msg += "Please Enter Packages, less than Stuffing WorkOrder Packages<br/>";
+            counter++;
+            isvalid = false;
+        }
+        if (parseFloat(ttlpcs) > parseFloat(gpPcs)) {
+            msg += "Please Enter Pieces, less than Stuffing WorkOrder Pieces<br/>";
+            counter++;
+            isvalid = false;
+        }
+        if (parseFloat(ttlwgt) > parseFloat(gpWgt)) {
+            msg += "Please Enter Weight, less than Stuffing WorkOrder Weight<br/>";
+            counter++;
+            isvalid = false;
+        }
+        
+        if (!isvalid) {
+            
+            $(".CLPPackages").val(0);
+            $(".CLPPieces").val(0);
+            $(".CLPWeight").val(0);
+            var ttlpkg = $("#ttlpkg").val(0);
+            var ttlpcs = $("#ttlpcs").val(0);
+            var ttlwgt = $("#ttlwgt").val(0);
+            TosterAlert("warning", msg, "Warning!");
+        }
+        if (isvalid == true && (parseInt(counter) == 0)) {
+            
+            $.ajax({
+            url: GetRootPath + "trnExportCLPBOEItems/validateModel",
+            type: "Post",
+            data: $("form").serialize(),
+            dataType: "text",
+            async: false,
+            success: function (data) {
+                $(".redborder").removeClass("redborder");
+                if (data != "") {
+                    isvalid = false;
+                    var Errormsg = data.split("|")[0];
+                    var ErrorFields = data.split("|")[1].split(",");
+
+                    if (ErrorFields != null && ErrorFields.length > 0) {
+                        for (var Q = 0; Q < ErrorFields.length; Q++) {
+                            $("#spn_" + ErrorFields[Q]).text('');
+                            $("#spn_" + ErrorFields[Q]).next().addClass("redborder");
+                        }
+                    }
+                    if (Errormsg != "") {
+                        MErrormsg += Errormsg;
+                        TosterAlert("error", MErrormsg, "Required!");
+                    }
+                }
+                else {
+                }
+            }
+        });
+        }
+        
+        if (!isvalid) {
+            if (MErrormsg != "") {
+                TosterAlert("error", MErrormsg, "error!");
+            }
+        }
+        else {
+            var AreaRequired = $("#AreaCleared").val();
+            if (AreaRequired == 0) {
+                if (confirm('Are you sure to submit with required area 0  for the destuffing?')) {
+                    isvalid = true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return isvalid;
+    }
+    function findTotal(Name, ID) {
+        
+        var arr = document.getElementsByClassName(Name);
+        var tot = 0;
+        for (var i = 0; i < arr.length; i++) {
+            if (parseFloat(arr[i].value))
+                tot += parseFloat(arr[i].value);
+        }
+        //   document.getElementById(ID).innerText = tot;
+        document.getElementById(ID).value = tot;
+
+    }
+    function checkitems(type, num) {
+        
+        var msg = "";
+        var isvalid = true;
+        if (type == "CLPPackages") {
+            WHPackages = $("#hdnWHPackages" + num).val();
+            if (WHPackages == null && WHPackages == undefined && WHPackages == "") {
+                WHPackages = 0;
+            }
+            var CLPPackages = $("#CLPPackages" + num).val();
+            if (CLPPackages == null && CLPPackages == undefined && CLPPackages == "") {
+                CLPPackages = 0;
+            }
+            if (parseFloat(WHPackages) < parseFloat(CLPPackages)) {
+                $("#CLPPackages" + num).val(0);
+                msg += "Enter Package is grater then WH Packages";
+                isvalid = false;
+            }
+            findTotal("CLPPackages", "ttlpkg");
+            WeightCalculation("CLPPackages" + num, "CLPPieces" + num, "hdnWHPackages" + num, "hdnWHWeight" + num, "CLPWeight" + num);
+            $("#ttlpcs").val($("#CLPPieces" + num).val())
+            $("#ttlwgt").val($("#CLPWeight" + num).val())
+
+            findTotal("CLPPieces", "ttlpcs");
+            findTotal("CLPWeight", "ttlwgt");
+        }
+
+        else if (type == "CLPPieces") {
+            WHPieces = $("#hdnWHPieces" + num).val();
+            if (WHPieces == null && WHPieces == undefined && WHPieces == "") {
+                WHPieces = 0;
+            }
+            var CLPPieces = $("#CLPPieces" + num).val();
+            if (CLPPieces == null && CLPPieces == undefined && CLPPieces == "") {
+                CLPPieces = 0;
+            }
+            if (parseFloat(WHPieces) < parseFloat(CLPPieces)) {
+                $("#CLPPieces" + num).val(0);
+                msg += "Enter Pieces is grater then WH Pieces";
+                isvalid = false;
+            }
+            findTotal("CLPPieces", "ttlpcs");
+        }
+
+        else if (type == "CLPWeight") {
+            WHWeight = $("#hdnWHWeight" + num).val();
+            if (WHWeight == null && WHWeight == undefined && WHWeight == "") {
+                WHWeight = 0;
+            }
+            var CLPWeight = $("#CLPWeight" + num).val();
+            if (CLPWeight == null && CLPWeight == undefined && CLPWeight == "") {
+                CLPWeight = 0;
+            }
+            if (parseFloat(WHWeight) < parseFloat(CLPWeight)) {
+                $("#CLPWeight" + num).val(0);
+                msg += "Enter Weight is grater then WH Weight";
+                isvalid = false;
+            }
+            findTotal("CLPWeight", "ttlwgt");
+        }
+        //findTotal("calPackage", "ttlpkg");
+        var IsCLPFinished ='@Model.IsCLPFinished';
+        if (IsCLPFinished == "False" || IsCLPFinished == "false" || IsCLPFinished == false) {
+            debugger;
+                ChangeAllforfields(num);  
+        }
+        if (!isvalid) {
+            TosterAlert("warning", msg, "Warning!");
+        }
+    }
+
+    function ClearGridDate(num) {
+        $("#CLPPackages" + num).val('0');
+        $("#CLPPieces" + num).val('0');
+        $("#CLPWeight" + num).val('0');
+        $("#WHLocation" + num).val('');
+        $("#PackingType" + num).val('');
+        $("#BillCommodity" + num).val('');
+        $("#Equipment" + num).val('');
+        $("#EquipmentID" + num).val('0');
+        $("#BillCommodityID" + num).val('0');
+        $("#PackingTypeID" + num).val('0');
+        $("#WHLocationID" + num).val('0');
+    }
+</script>
+
+@{
+
+    System.Web.HtmlString HtmlDeatails = new HtmlString(StrAutocomplete.ToString());
+}
+@HtmlDeatails
+
+<style>
+    .ui-menu-item {
+        font-size: 12px !important;
+    }
+</style>

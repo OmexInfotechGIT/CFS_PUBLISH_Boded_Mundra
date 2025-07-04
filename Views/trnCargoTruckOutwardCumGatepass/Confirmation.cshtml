@@ -1,0 +1,340 @@
+﻿@model CFS.Models.trnCargoTruckOutwardCumGatepass
+@using System.Globalization;
+@{
+    ViewBag.Title = "Confirmation Cargo Truck Outward Cum Gatepass";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    if (!ViewBag.gblBlnUnapprove && !ViewBag.gblBlnApprove)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+
+}
+
+<style>
+    .ui-autocomplete {
+        z-index: 10000;
+    }
+</style>
+<!-- Main content -->
+@using (Html.BeginForm("Action", "trnCargoTruckOutwardCumGatepass", FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+{
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+
+                <div class="box">
+                    <div class="box-header">
+                        @if (Model.doaction == "edit")
+                        {
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <span class="badge bg-light-blue" style="font-size:15px;">Cargo Truck Outward Cum Gatepass No : @Model.StuffReferenceNo</span>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                    <span class="badge bg-light-blue" style="font-size:15px;">User : @Model.User</span> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                    <span class="badge bg-light-blue" style="font-size:15px;">Outward Date and time : @Model.StuffDateTime</span>
+                                </div>
+                            </div>
+                        }
+                        <div class="pull-right">
+                            <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModalConfirmation">
+                                @if (!Model.IsApproved)
+                                {
+                                    <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                }
+                                else
+                                {
+                                    <i title="Click to UnApprove" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-down"></i>
+                                }
+                            </a>
+                            @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                            <div style="display: inline-flex">
+                                <a href="@Url.Action("Index", "trnCargoTruckOutwardCumGatepass" , new {pg=Request.Params["pg"], search=Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.WorkOrderNo)<span class="text-red">*</span>
+
+                                @Html.TextBoxFor(Model => Model.TruckNo, new { @id = "TruckNo", @name = "TruckNo", @class = "form-control", @placeholder = "Truck No. ", @readonly = "true" })
+
+                                @Html.HiddenFor(Model => Model.trnEmptyTruckGateInID, new { @id = "trnEmptyTruckGateInID", @name = "trnEmptyTruckGateInID" })
+                            </div>
+                        </div>
+
+
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.IsSearch)
+                        <input type="hidden" id="trnCargoTruckOutwardCumGatepassTab" name="trnCargoTruckOutwardCumGatepassTab" value="@Model.trnCargoTruckOutwardCumGatepassTab" />
+                        <input type="hidden" id="trnEmptyTruckGateInID" name="trnEmptyTruckGateInID" value="@Model.trnEmptyTruckGateInID" />
+                        <input type="hidden" id="TruckNo" name="TruckNo" value="@Model.TruckNo" />
+                        @Html.HiddenFor(Model => Model.trnCargoTruckOutwardCumGatepassID, new { id = "trnCargoTruckOutwardCumGatepassID", name = "trnCargoTruckOutwardCumGatepassID" })
+                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInNo, new { id = "trnEmptyTruckGateInNo", name = "trnEmptyTruckGateInNo" })
+                        @Html.HiddenFor(Model => Model.WorkOrderIDOnly, new { id = "WorkOrderIDOnly", name = "WorkOrderIDOnly" })
+                        @Html.HiddenFor(Model => Model.WorkOrderNoOnly, new { id = "WorkOrderNoOnly", name = "WorkOrderNoOnly" })
+                        @Html.HiddenFor(Model => Model.WorkOrderID, new { id = "WorkOrderID", name = "WorkOrderID" })
+                        @Html.HiddenFor(Model => Model.WorkOrderNo, new { id = "WorkOrderNo", name = "WorkOrderNo" })
+                        @Html.HiddenFor(Model => Model.trnCargoTruckOutwardCumGatepassNo)
+                        @Html.HiddenFor(Model => Model.trnCargoTruckOutwardCumGatepassPrifix)
+                        @Html.HiddenFor(Model => Model.IsFinished, new { @id = "IsFinished", @name = "IsFinished" })
+
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.CargoType, new { @for = "txtCargoType" }) : <span>@Model.CargoType</span>
+                        </div>
+
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.TEMP, new { @for = "txtTemp" }) : <span>@Model.TEMP</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.IMO, new { @for = "txtIMO" }) : <span>@Model.IMO</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.UN, new { @for = "txtUN" }) : <span>@Model.UN</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.HighValueStatus, new { @for = "txtHighValueStatus" }) : <span>@Model.HighValueStatus</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.GateInDate, new { @for = "GateInDate" }) : <span>@Model.GateInDate</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.Transporter, new { @for = "txtTransporter" }) : <span>@Model.Transporter</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.VehicleType, new { @for = "txtVehicleType" }) : <span>@Model.VehicleType</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.WeighmentStatus, new { @for = "txtWeighmentStatus" }) : <span>@Model.WeighmentStatus</span>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Weighment Payment Mode</label> : <span>@ViewBag.WeighmentPaymentMode</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.GrossWeight, new { @for = "txtGrossWeight" }) : @if (!string.IsNullOrEmpty(Model.GrossWeight))
+                            {<span>@Convert.ToDecimal(Model.GrossWeight).ToString("0.00")</span>}
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.TruckTareWeight, new { @for = "txtTruckTareWeight" }) : @if (!string.IsNullOrEmpty(Model.GrossWeight))
+                            {<span>@Convert.ToDecimal(Model.TruckTareWeight).ToString("0.00")</span>}
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.NetWeight, new { @for = "txtNetWeight" }) : @if (!string.IsNullOrEmpty(Model.GrossWeight))
+                            {<span>@Convert.ToDecimal(Model.NetWeight).ToString("0.00")</span>}
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.PlugIndate, new { @for = "PlugIndate" }) : <span>@Model.PlugIndate</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.PlugOffDate, new { @for = "PlugOffDate" }) : <span>@Model.PlugOffDate</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.NoofPackages, new { @for = "txtNoofPackages" }) : <span>@Model.NoofPackages</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.NoofPieces, new { @for = "txtNoofPieces" }) : <span>@Model.NoofPieces</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.Weight, new { @for = "txtWeight" }) : <span>@Model.Weight</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.BillCommodity, new { @for = "txtBillCommodity" }) : <span>@Model.BillCommodity</span>
+                        </div>
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Surveyor, new { @for = "Surveyor" }) : <span>@Model.Surveyor</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Contractor, new { @for = "Contractor" }) : <span>@Model.Contractor</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.BeginActualStuffDateandTime, new { @for = "BeginActualStuffDateandTime" }) : <span>@Model.BeginActualStuffDateandTime</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.EndActualStuffDateandTime, new { @for = "EndActualStuffDateandTime" }) : <span>@Model.EndActualStuffDateandTime</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" }) : <span>@Model.Remarks</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.DomesticContainerStatus, new { @for = "DomesticContainerStatus" }) : <span id="DomesticContainerStatus">@((Model.DomesticContainerStatus) ? "Yes" : "No")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="dvDomesticContainer">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h4><b>Domestic Container Details </b></h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="col-md-12">
+                                <table id="example2" style="white-space: nowrap" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Cont No</th>
+                                            <th>ISO Code</th>
+                                            <th>Size</th>
+                                            <th>Cont Type</th>
+                                            <th>Gross Weight</th>
+                                            <th>Tare Weight</th>
+                                            <th>Payload Capacity</th>
+                                            <th>Physical Seal</th>
+                                            <th>Declared Seal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ContainerDetails"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="box">
+                    <div class="box-header">
+                        <h4><span>NOC Details</span></h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12" style="overflow:scroll;">
+                            <table id="example2" class="table table-bordered table-hover" style="white-space:nowrap;">
+                                <thead>
+                                    <tr>
+                                        <th>NOC No.</th>
+                                        <th>NOC Date</th>
+                                        <th>In-BOE No.</th>
+                                        <th>In-BOE Date</th>
+                                        <th>EX-BOE No.</th>
+                                        <th>EX-BOE Date</th>
+                                        <th>IGM No.</th>
+                                        <th>IGM Dt</th>
+                                        <th>Item No.</th>
+                                        <th>Bulk</th>
+                                        <th>Doc. Dec. Pkgs</th>
+                                        <th>Doc. Dec. Pieces</th>
+                                        <th>Doc. Dec. Weight</th>
+                                        <th>Document Received Packages</th>
+                                        <th>Document Received Pieces</th>
+                                        <th>Document Received Weight</th>
+                                        <th>Short/Excess Packages</th>
+                                        <th>Short/Excess Pieces</th>
+                                        <th>Short/Excess Weight</th>
+                                        <th>Total Outward Packages</th>
+                                        <th>Total Outward Pieces</th>
+                                        <th>Total Outward Weight</th>
+                                        <th>Total Balance Packages</th>
+                                        <th>Total Balance Pieces</th>
+                                        <th>Total Balance Weight</th>
+                                        <th>Truck cargo Packages</th>
+                                        <th>Truck cargo Pieces</th>
+                                        <th>Truck cargo weight</th>
+                                        <th>Outward Details</th>
+                                        <th>Billing Party</th>
+                                        <th>Importer</th>
+                                        <th> CHA</th>
+                                        <th>Forwarder</th>
+                                        <th>Cargo Desc.</th>
+                                        <th>Sub Commodity</th>
+                                        <th>Pkge Type</th>
+                                        <th>Cycle</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.dtDocDetails != null)
+                                    {
+                                        for (int i = 0; i < Model.dtDocDetails.Rows.Count; i++)
+                                        {
+                                            <tr>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["DocumentNo"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["DocDate"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["InBOE"])</td>
+                                                <td>@Model.dtDocDetails.Rows[i]["InBOEDate"]</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["EXBOE"])</td>
+                                                <td>@Model.dtDocDetails.Rows[i]["EXBOEDate"]</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["IGMNo"])</td>
+                                                <td>@Model.dtDocDetails.Rows[i]["IGMDate"]</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["ItemNo"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["BULKSTATUS"])</td>
+                                                <td>@Convert.ToInt32(Model.dtDocDetails.Rows[i]["DocumentPackages"])</td>
+                                                <td>@Convert.ToInt32(Model.dtDocDetails.Rows[i]["DocumentPices"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["DocumentWeight"])</td>
+
+                                                <td>@(Convert.ToDecimal(Model.dtDocDetails.Rows[i]["EXBondPkg"]).ToString("0"))</td>
+                                                <td>@(Convert.ToDecimal(Model.dtDocDetails.Rows[i]["EXBondpcs"]).ToString("0"))</td>
+                                                <td>@Model.dtDocDetails.Rows[i]["EXBondwgt"]</td>
+                                                <td>@( Convert.ToInt32(Model.dtDocDetails.Rows[i]["DocumentPackages"]) - Convert.ToInt32(Model.dtDocDetails.Rows[i]["EXBondPkg"]))</td>
+                                                <td>@(Convert.ToInt32(Model.dtDocDetails.Rows[i]["DocumentPices"]) - Convert.ToInt32(Model.dtDocDetails.Rows[i]["EXBondpcs"]))</td>
+                                                <td>@(Convert.ToDecimal(Model.dtDocDetails.Rows[i]["DocumentWeight"]) - Convert.ToDecimal(Model.dtDocDetails.Rows[i]["EXBondwgt"]))</td>
+
+                                                <td>@Convert.ToInt32(Model.dtDocDetails.Rows[i]["TotalOutwardPkg"])</td>
+                                                <td>@Convert.ToInt32(Model.dtDocDetails.Rows[i]["TotalOutwardpcs"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["TotalOutwardwgt"])</td>
+
+                                                <td>@(Convert.ToInt32(Model.dtDocDetails.Rows[i]["EXBondPkg"]) - Convert.ToInt32(Model.dtDocDetails.Rows[i]["TotalOutwardPkg"]))</td>
+                                                <td>@(Convert.ToInt32(Model.dtDocDetails.Rows[i]["EXBondpcs"]) - Convert.ToInt32(Model.dtDocDetails.Rows[i]["TotalOutwardpcs"]))</td>
+                                                <td>@(Convert.ToDecimal(Model.dtDocDetails.Rows[i]["EXBondwgt"]) - Convert.ToDecimal(Model.dtDocDetails.Rows[i]["TotalOutwardwgt"]))</td>
+
+                                                <td>@Convert.ToInt32(Model.dtDocDetails.Rows[i]["OutwardPkg"])</td>
+                                                <td>@Convert.ToInt32(Model.dtDocDetails.Rows[i]["Outwardpcs"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["Outwardwgt"])</td>
+                                                <td>
+                                                    @if (Model.trnCargoTruckOutwardCumGatepassID > 0)
+                                                    {
+                                                        <a style=" cursor: pointer;" href="@Url.Action("Index", "trnBOEItemsOut" , new { @id=Model.dtDocDetails.Rows[i]["trnDocumentLotDetailsID"], @trnCargoTruckOutwardCumGatepassID=Model.trnCargoTruckOutwardCumGatepassID, @TruckNo=Model.TruckNo, @BOENo=Convert.ToString(Model.dtDocDetails.Rows[i]["InBOE"]), @GatePassNOOFPKGS=Convert.ToString(Model.dtDocDetails.Rows[i]["EXBondPkg"]), @GatePassNOOFPIECES=Convert.ToString(Model.dtDocDetails.Rows[i]["EXBondpcs"]), @GatePassWEIGHT=Convert.ToString(Model.dtDocDetails.Rows[i]["EXBondwgt"]), @type='T' , @SearchID=ViewBag.searchID, @SearchNO=ViewBag.searchNo,@doaction="view",@trnExBondDocumentEntryDetailsID=Convert.ToString(Model.dtDocDetails.Rows[i]["trnExBondDocumentEntryDetailsID"]) ,@IsBulk=@Convert.ToString(Model.dtDocDetails.Rows[i]["BULKSTATUS"])})" target="_blank" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+                                                    }
+                                                </td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["BillToCustomerName"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["ImporterName"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["SubCHA"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["Forwarder"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["CARGODESC"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["SUBCOMMODITY"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["PACKAGETYPE"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["Cycle"])</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+    </section>
+}
+<script>
+    var doaction = '@Model.doaction';
+    var IsView = true;
+
+    setTimeout(function () {
+        $(".HideIfView").hide();
+    }, 500);
+
+    function HideIfView() {
+        setTimeout(function () {
+            $(".HideIfView").hide();
+        }, 400);
+    }
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnCargoTruckOutwardCumGatepass.js")"></script>
+

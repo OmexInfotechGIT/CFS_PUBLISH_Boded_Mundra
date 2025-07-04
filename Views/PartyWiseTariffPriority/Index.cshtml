@@ -1,0 +1,124 @@
+﻿@model CFS.Models.PartyWiseTariffPriority
+@{
+    ViewBag.Title = "PartyWise Tariff Priority List";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <select class="form-control" id="InvoiceType" onchange="SearchData()">
+                                    <option value="Bond"> Bond</option>
+                                    <option value="Export"> Export</option>
+                                    <option value="Empty"> Empty</option>
+                                </select>
+                            </div>
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a href="@Url.Action("Action", "PartyWiseTariffPriority", new { doaction = "add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Brand"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+
+
+                    <div style="overflow-x:scroll">
+                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "PartyWiseTariffPriority", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "SequenceNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "sequenceno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "sequenceno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Sequence No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "PartyWiseTariffPriority", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "InvoiceType", SortOrder = (Model.pagger.SortColumn.ToLower() == "invoicetype" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "invoicetype" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Invoice Type</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "PartyWiseTariffPriority", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "BillToParty", SortOrder = (Model.pagger.SortColumn.ToLower() == "billtoparty" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "billtoparty" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>Billing Party</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "PartyWiseTariffPriority", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "Line", SortOrder = (Model.pagger.SortColumn.ToLower() == "line" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "line" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>Line</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "PartyWiseTariffPriority", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "CHA", SortOrder = (Model.pagger.SortColumn.ToLower() == "cha" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "cha" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>CHA</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "PartyWiseTariffPriority", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "Importer", SortOrder = (Model.pagger.SortColumn.ToLower() == "importer" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "importer" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>Importer</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "PartyWiseTariffPriority", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "Agent", SortOrder = (Model.pagger.SortColumn.ToLower() == "agent" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "agent" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>Agent</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "PartyWiseTariffPriority", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "Exporter", SortOrder = (Model.pagger.SortColumn.ToLower() == "exporter" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "exporter" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>Exporter</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "PartyWiseTariffPriority", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "Consoler", SortOrder = (Model.pagger.SortColumn.ToLower() == "consoler" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "consoler" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>Consoler</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "PartyWiseTariffPriority", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "Forwarder", SortOrder = (Model.pagger.SortColumn.ToLower() == "forwarder" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "forwarder" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>Forwarder</a>
+                                    </th>
+                                    <th class="freezeLastColumn">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@Model.MyDatatable.Rows[i]["SequenceNo"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["InvoiceType"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["BillToParty"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["Line"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["CHA"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["Importer"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["Agent"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["Exporter"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["Consoler"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["Forwarder"]</td>                                        
+                                        
+                                        <td class="freezeLastColumnwithWhite">
+                                            @if (ViewBag.gblBlnEdit)
+                                            {
+                                                <a href="@Url.Action("Action", "PartyWiseTariffPriority", new { id = Model.MyDatatable.Rows[i]["PartyWiseTariffPriorityID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit" })"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                            }                                            
+                                            @if (ViewBag.gblBlnDelete)
+                                            {
+                                                <a href="@Url.Action("delete", "PartyWiseTariffPriority", new { id = Model.MyDatatable.Rows[i]["PartyWiseTariffPriorityID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+                    @Html.Partial("_pagination")
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/PartyWiseTariffPriority.js")"></script>
+

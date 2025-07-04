@@ -1,0 +1,140 @@
+﻿@model CFS.Models.MiscInvoice
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    ViewBag.Title = "Misc. Invoice List ";
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>@CFS.Com.ClsCommon.AddhtmlSpace(1)</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a href="@Url.Action("Action","MiscInvoice", new { pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "add" , step = "1"})" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Misc. Invoice"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+
+
+                    <div style="overflow-x:scroll">
+                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "MiscInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.MiscInvoiceNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.MiscInvoiceno".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.MiscInvoiceno".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Misc. Invoice GW No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "MiscInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "MiscInvoiceDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "miscinvoicedate".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "miscinvoicedate".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Misc. Invoice Date</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "MiscInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.ImporterName", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.importername".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.importername".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Importer</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "MiscInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.CHAName", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.chaname".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.chaname".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> CHA</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "MiscInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.ForwarderName", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.forwardername".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.forwardername".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Forwarder</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "MiscInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.ConsolerName", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.consolername".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.consolername".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Consoler</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "MiscInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.BillToCustomerName", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.billtocustomername".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.billtocustomername".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Bill To Customer</a>
+                                    </th>
+                                    <th class="freezeLastColumn">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                {
+                                    bool IsExpired = false;
+                                    if (Model.MyDatatable.Rows[i]["CreatedDate"] != null && Model.MyDatatable.Rows[i]["CreatedDate"].ToString() != "")
+                                    {
+                                        DateTime CurrentDate = DateTime.Now;
+                                        DateTime IsInvoiceExpired = Convert.ToDateTime(Model.MyDatatable.Rows[i]["CreatedDate"]);
+                                        if (CurrentDate > IsInvoiceExpired)
+                                        {
+                                            IsExpired = true;
+                                        }
+                                        else
+                                        {
+                                            IsExpired = false;
+                                        }
+                                    }
+                                    <tr>
+                                        <td>@Model.MyDatatable.Rows[i]["MiscInvoicePrefix"]@Model.MyDatatable.Rows[i]["MiscInvoiceNo"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["MiscInvoiceDate"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["ImporterName"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["CHAName"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["ForwarderName"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["ConsolerName"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["BillToCustomerName"]</td>
+                                        <td class="freezeLastColumnwithWhite">
+                                            @if (!(Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"])) && ViewBag.gblBlnEdit)
+                                            {
+                                                <a href="@Url.Action("Action", "MiscInvoice", new { id = Model.MyDatatable.Rows[i]["MiscInvoiceID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", IsSearch = true, MiscType = Model.MyDatatable.Rows[i]["MiscType"], trnDocumentLotDetailsID = Model.MyDatatable.Rows[i]["trnDocumentLotDetailsID"], InBoeNo = Model.MyDatatable.Rows[i]["InBoeNo"] })"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                            }
+                                            @if (ViewBag.gblBlnView)
+                                            {
+                                                <a href="@Url.Action("view", "MiscInvoice", new { id = Model.MyDatatable.Rows[i]["MiscInvoiceID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, IsSearch = true, MiscType = Model.MyDatatable.Rows[i]["MiscType"], trnDocumentLotDetailsID = Model.MyDatatable.Rows[i]["trnDocumentLotDetailsID"], InBoeNo = Model.MyDatatable.Rows[i]["InBoeNo"] })"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                            }
+                                            @if (!(Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"])) && ViewBag.gblBlnDelete)
+                                            {
+                                                <a href="@Url.Action("delete", "MiscInvoice", new { id = Model.MyDatatable.Rows[i]["MiscInvoiceID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                            }
+                                            @if (!(Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"])) && ViewBag.gblBlnApprove && Convert.ToInt32(Model.MyDatatable.Rows[i]["IsFinished"]) == 1)
+                                            {
+                                                <a href="@Url.Action("Confirmation", "MiscInvoice", new { id = Model.MyDatatable.Rows[i]["MiscInvoiceID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", IsSearch = true, MiscType = Model.MyDatatable.Rows[i]["MiscType"], trnDocumentLotDetailsID = Model.MyDatatable.Rows[i]["trnDocumentLotDetailsID"], InBoeNo = Model.MyDatatable.Rows[i]["InBoeNo"] })"><i title="Click to Approve" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i></a>
+                                            }
+                                            else if (ViewBag.gblBlnUnapprove && Convert.ToInt32(Model.MyDatatable.Rows[i]["IsFinished"]) == 1 && Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]) && @IsExpired != true)
+                                            {
+                                                <a href="@Url.Action("Confirmation", "MiscInvoice", new { id = Model.MyDatatable.Rows[i]["MiscInvoiceID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", IsSearch = true, MiscType = Model.MyDatatable.Rows[i]["MiscType"], trnDocumentLotDetailsID = Model.MyDatatable.Rows[i]["trnDocumentLotDetailsID"], InBoeNo = Model.MyDatatable.Rows[i]["InBoeNo"] })"><i title="Click to Unapprove" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-down"></i></a>
+                                            }
+                                            @if (Convert.ToInt32(Model.MyDatatable.Rows[i]["IsFinished"]) == 1)
+                                            {
+                                                <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", "MiscInvoice", new { id = Model.MyDatatable.Rows[i]["MiscInvoiceID"], format = "pdf" })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+                    @Html.Partial("_pagination")
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MiscInvoice.js")"></script>

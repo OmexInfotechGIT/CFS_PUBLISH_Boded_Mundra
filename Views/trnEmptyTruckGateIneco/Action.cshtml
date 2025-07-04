@@ -1,0 +1,10 @@
+﻿@model CFS.Models.trnEmptyTruckGateIn
+@if (Model.doaction == "edit")
+{
+    ViewBag.Title = "Update Empty truck Gate in";
+}
+else
+{
+    ViewBag.Title = "Add new Empty truck Gate in";
+}
+@Html.Partial("../trnEmptyTruckGateIn/action")

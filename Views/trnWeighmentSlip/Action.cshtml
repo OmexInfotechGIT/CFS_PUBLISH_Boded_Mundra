@@ -1,0 +1,404 @@
+﻿@model CFS.Models.trnWeighmentSlip
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    bool IsEdit = false;
+    if (Model.doaction == "edit")
+    {
+        IsEdit = true;
+        ViewBag.Title = "Update Weighment Slip";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Weighment Slip";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            @using (Html.BeginForm("Action", CFS.Com.ClsCommon.Controller(), FormMethod.Post))
+            {
+                <div class="box">
+                    <div class="box-header">
+                        @if (Model.doaction == "edit")
+                        {
+                            <div class="pull-left">
+                                <div style="display: inline-flex">                                    
+                                    <h4>
+                                        <b>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">Weighment Slip NO : @CFS.Com.ClsCommon.AddhtmlSpace(3)@Model.trnWeighmentSlipPrefix@Model.trnWeighmentSlipNo</span>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">Datetime  :@Model.CreatedDate</span>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">User :@Model.CreatedUser</span>
+                                        </b>
+                                    </h4>
+                                </div>
+                            </div>
+                        }
+                        <div class="pull-right" id="divBack">
+                            <div style="display: inline-flex">
+                                <a id="btnBack" href="@Url.Action("Index", CFS.Com.ClsCommon.Controller(), new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div id="divHeaderDetails">
+                            <input type="hidden" id="SearchID" name="SearchID" value="@Model.SearchID" />
+                            <input type="hidden" id="SearchNo" name="SearchNo" value="@Model.SearchNo" />
+                            <input type="hidden" id="SearchType" name="SearchType" value="@Model.SearchType" />
+                            @Html.HiddenFor(Model => Model.doaction)
+                            @Html.HiddenFor(Model => Model.trnWeighmentSlipID)
+                            @Html.HiddenFor(Model => Model.WeighmentModeNo, new { id = "WeighmentModeNo", name = "WeighmentModeNo" })
+                            @Html.HiddenFor(Model => Model.page)
+                            @Html.HiddenFor(Model => Model.filter)
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.HiddenFor(model => model.TransactionType)
+                                    @Html.LabelFor(Model => Model.Mode)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Mode, String.Empty, new { @class = "help-inline text-red", @id = "spn_Mode" })
+                                    <br />
+                                    @if (IsEdit)
+                                    {
+                                        @Html.RadioButtonFor(model => model.Mode, "Gate In", new { @id = "ModeGateIn", @name = "Mode", @disabled = "true" })@CFS.Com.ClsCommon.AddhtmlSpace(3) @Html.Label("Gate In", new { @for = "ModeGateIn", @style = "font-weight: 600;" })@CFS.Com.ClsCommon.AddhtmlSpace(4)
+                                        @Html.RadioButtonFor(model => model.Mode, "Gate Out", new { @id = "ModeGateOut", @name = "Mode", @disabled = "true" })@CFS.Com.ClsCommon.AddhtmlSpace(3) @Html.Label("Gate Out", new { @for = "ModeGateOut", @style = "font-weight: 600;" })
+                                        @Html.HiddenFor(Model => Model.Mode, new { @id = "Mode", @name = "Mode" })
+                                    }
+                                    else
+                                    {
+                                        @Html.RadioButtonFor(model => model.Mode, "Gate In", new { @id = "ModeGateIn", @name = "Mode" })@CFS.Com.ClsCommon.AddhtmlSpace(3) @Html.Label("Gate In", new { @for = "ModeGateIn", @style = "font-weight: 600;" })@CFS.Com.ClsCommon.AddhtmlSpace(4)
+                                        @Html.RadioButtonFor(model => model.Mode, "Gate Out", new { @id = "ModeGateOut", @name = "Mode" })@CFS.Com.ClsCommon.AddhtmlSpace(3) @Html.Label("Gate Out", new { @for = "ModeGateOut", @style = "font-weight: 600;" })
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.TruckNo, new { @for = "TruckNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnWorkOrderID, String.Empty, new { @id = "spn_TruckID", @class = "help-inline text-red" })
+                                    @if (!string.IsNullOrEmpty(Model.TType))
+                                    {
+                                        if (Model.TType.ToLower() == "exportsts")
+                                        {
+                                            @Html.TextBoxFor(Model => Model.TruckNo, new { @id = "TruckNo", @name = "TruckNo", @class = "form-control", @readonly = true, @placeholder = "Enter Trailer No", @onblur = "return DisableSearchBox()" })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(Model => Model.TruckNo, new { @id = "TruckNo", @name = "TruckNo", @class = "form-control", @placeholder = "Enter Trailer No", @onblur = "return DisableSearchBox()" })
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBoxFor(Model => Model.TruckNo, new { @id = "TruckNo", @name = "TruckNo", @class = "form-control", @placeholder = "Enter Trailer No", @onblur = "return DisableSearchBox()" })
+                                    }
+
+                                    @Html.HiddenFor(Model => Model.trnWorkOrderID, new { @id = "trnWorkOrderID", @name = "trnWorkOrderID" })
+                                    @Html.HiddenFor(Model => Model.TType, new { @id = "TType", @name = "TType" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.ContainerNo, new { @for = "ContainerNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerID, String.Empty, new { @id = "spn_ContainerID", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.ContainerNo, new { @id = "ContainerNo", @name = "ContainerNo", @class = "form-control", @placeholder = "Enter Container No", @onblur = "return DisableSearchBox()" })
+                                    @Html.HiddenFor(Model => Model.ContainerID, new { @id = "ContainerID", @name = "ContainerID" })
+                                </div>
+                            </div>
+
+                            @if (Model.doaction != "edit")
+                            {
+                                <div class="col-md-1 margin-r-0 no-padding">
+                                    <br />
+                                    <div class="form-group fa-pull-right">
+                                        <button type="button" class="btn btn-primary fa-pull-right" onclick="return SearchwithID()" name="submit" value="Go" id="btnHeaderSearch">Search</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <br />
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-danger" name="submit" onclick="return ClearSearch()" value="Go" id="btnHeaderClear">Clear</button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        @if (Model.IsSearch)
+                        {
+
+                            <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                            <div id="divDetails">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(Model => Model.Cycle) :
+                                    @Html.DisplayFor(Model => Model.Cycle)
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(Model => Model.WeighmentMode) :
+                                    @Html.DisplayFor(Model => Model.WeighmentMode)
+                                </div>
+
+                                <div class="col-md-4">
+                                    @Html.LabelFor(Model => Model.WeighmentInvoiceType) :
+                                    @Html.DisplayFor(Model => Model.WeighmentInvoiceType)
+                                </div>
+
+                                <div class="col-md-4">
+                                    @Html.LabelFor(Model => Model.CashWeighmentInvoiceNo) :
+                                    @Html.DisplayFor(Model => Model.CashWeighmentInvoiceNo)
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(Model => Model.FirstWeighmentUser) :
+                                    @Html.DisplayFor(Model => Model.FirstWeighmentUser)
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(Model => Model.SecondWeighmentUser) :
+                                    @Html.DisplayFor(Model => Model.SecondWeighmentUser)
+                                </div>
+
+                                <div class="col-md-4">
+                                    @Html.LabelFor(Model => Model.TransactionType) :
+                                    @Html.DisplayFor(Model => Model.TransactionType)
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(Model => Model.WeighmentModeNo) : <span id="spnWeighmentModeNo">@Model.WeighmentModeNo</span>
+                                    @Html.HiddenFor(Model => Model.WeighmentModeNo)
+                                </div>
+                                <div id="dvContainerDetails">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(Model => Model.ContainerNo) :
+                                        @Html.DisplayFor(Model => Model.ContainerNo)
+                                    </div>
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(Model => Model.Size) :
+                                        @Html.DisplayFor(Model => Model.Size)
+                                    </div>
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(Model => Model.Type) :
+                                        @Html.DisplayFor(Model => Model.Type)
+                                    </div>
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(Model => Model.CargoType) :
+                                        @Html.DisplayFor(Model => Model.CargoType)
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(Model => Model.Equipment)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Equipment, String.Empty, new { @class = "help-inline text-red" })<br />
+                                    @if (IsEdit)
+                                    {
+                                        @Html.RadioButtonFor(Model => Model.Equipment, "Truck", new { @id = "rbTruck", @name = "Equipment", @disabled = "true", @class = "form-control", @checked = "checked" })<b>&nbsp;&nbsp;&nbsp;</b>
+                                        @Html.LabelFor(Model => Model.Equipment, "Truck", new { @for = "rbTruck", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                        @Html.RadioButtonFor(Model => Model.Equipment, "Reach Stacker for Container", new { @id = "rbContainer", @disabled = "true", @name = "Equipment", @class = "form-control" })<b>&nbsp;&nbsp;&nbsp;</b>
+                                        @Html.LabelFor(Model => Model.Equipment, "Reach Stacker for Container", new { @for = "rbContainer", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+
+                                    }
+                                    else
+                                    {
+                                        if (Model.Mode.ToLower() == "gate out")
+                                        {
+                                            if (Model.SearchType.ToLower() == "container")
+                                            {
+                                                if (Model.TType.ToLower() == "exportclp")
+                                                {
+                                                    @Html.RadioButtonFor(Model => Model.Equipment, "Truck", new { @id = "rbTruck", @disabled = "true", @name = "Equipment", @class = "form-control" })<b>&nbsp;&nbsp;&nbsp;</b>
+                                                    @Html.LabelFor(Model => Model.Equipment, "Truck", new { @for = "rbTruck", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+
+                                                    @Html.RadioButtonFor(Model => Model.Equipment, "Reach Stacker for Container", new { @id = "rbContainer", @name = "Equipment", @class = "form-control", @checked = "checked" })<b>&nbsp;&nbsp;&nbsp;</b>
+                                                    @Html.LabelFor(Model => Model.Equipment, "Reach Stacker for Container", new { @for = "rbContainer", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                                }
+                                                else
+                                                {
+                                                    @Html.RadioButtonFor(Model => Model.Equipment, "Truck", new { @id = "rbTruck", @name = "Equipment", @class = "form-control", @checked = "checked" })<b>&nbsp;&nbsp;&nbsp;</b>
+                                                    @Html.LabelFor(Model => Model.Equipment, "Truck", new { @for = "rbTruck", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                                    if (Model.TType.ToLower() == "exportsts")
+                                                    {
+                                                        @Html.RadioButtonFor(Model => Model.Equipment, "Reach Stacker for Container", new { @id = "rbContainer", @disabled = "true", @name = "Equipment", @class = "form-control" })<b>&nbsp;&nbsp;&nbsp;</b>
+                                                        @Html.LabelFor(Model => Model.Equipment, "Reach Stacker for Container", new { @for = "rbContainer", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.RadioButtonFor(Model => Model.Equipment, "Reach Stacker for Container", new { @id = "rbContainer", @name = "Equipment", @class = "form-control" })<b>&nbsp;&nbsp;&nbsp;</b>
+                                                        @Html.LabelFor(Model => Model.Equipment, "Reach Stacker for Container", new { @for = "rbContainer", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                                    }
+
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @Html.RadioButtonFor(Model => Model.Equipment, "Truck", new { @id = "rbTruck", @name = "Equipment", @class = "form-control", @checked = "checked" })<b>&nbsp;&nbsp;&nbsp;</b>
+                                                @Html.LabelFor(Model => Model.Equipment, "Truck", new { @for = "rbTruck", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+
+                                                @Html.RadioButtonFor(Model => Model.Equipment, "Reach Stacker for Container", new { @id = "rbContainer", @disabled = "true", @name = "Equipment", @class = "form-control" })<b>&nbsp;&nbsp;&nbsp;</b>
+                                                @Html.LabelFor(Model => Model.Equipment, "Reach Stacker for Container", new { @for = "rbContainer", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            @Html.RadioButtonFor(Model => Model.Equipment, "Truck", new { @id = "rbTruck", @name = "Equipment", @class = "form-control", @checked = "checked" })<b>&nbsp;&nbsp;&nbsp;</b>
+                                            @Html.LabelFor(Model => Model.Equipment, "Truck", new { @for = "rbTruck", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                            if (Model.SearchType.ToLower() == "truck")
+                                            {
+                                                @Html.RadioButtonFor(Model => Model.Equipment, "Reach Stacker for Container", new { @id = "rbContainer", @disabled = "true", @name = "Equipment", @class = "form-control" })<b>&nbsp;&nbsp;&nbsp;</b>
+                                                @Html.LabelFor(Model => Model.Equipment, "Reach Stacker for Container", new { @for = "rbContainer", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                            }
+                                            else
+                                            {
+                                                @Html.RadioButtonFor(Model => Model.Equipment, "Reach Stacker for Container", new { @id = "rbContainer", @name = "Equipment", @class = "form-control" })<b>&nbsp;&nbsp;&nbsp;</b>
+                                                @Html.LabelFor(Model => Model.Equipment, "Reach Stacker for Container", new { @for = "rbContainer", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                            }
+                                        }
+
+                                    }
+                                    @Html.HiddenFor(Model => Model.Equipment, new { @id = "Equipment", @name = "Equipment" })
+                                </div>
+                                <div class="col-md-2" style="display:none;">
+                                    <div class="form-group">
+                                        <label style="margin-top:13px;"></label>
+                                        @*@Html.TextBoxFor(Model => Model.WeighmentScaleWeight, new { @id = "DisplayLabelScaleWeight", @name = "DisplayLabelScaleWeight", @class = "form-control", @style = "color:white;background-color:#28a745;font-size:24px!important;font-weight:bold;", @readonly = "readonly", @oninput = "return CalculateWeight();" })*@
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.WeighmentScaleWeight, new { @for = "WeighmentScaleWeight" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.WeighmentScaleWeight, String.Empty, new { @id = "spn_WeighmentScaleWeight", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.WeighmentScaleWeight, new { @id = "DisplayLabelScaleWeight", @name = "DisplayLabelScaleWeight", @class = "form-control", @style = "color:white;background-color:#28a745;font-size:24px!important;font-weight:bold;", @MaxLength = "5", @onkeypress = "return isNumberWithTwoDecimal(event,'WeighmentScaleWeight');", @oninput = "return CalculateWeight();" })
+                                        @*@Html.TextBoxFor(Model => Model.WeighmentScaleWeight, new { @id = "WeighmentScaleWeight", @name = "WeighmentScaleWeight", @class = "form-control", @placeholder = "Enter Weighment Scale Weight", @onkeypress = "return isNumberWithTwoDecimal(event,'WeighmentScaleWeight');", @oninput = "return CalculateWeight();", @MaxLength = "5", @style = "color:white;background-color:#28a745;font-size:24px!important;font-weight:bold;" })*@
+                                        @Html.HiddenFor(Model => Model.WeighmentScaleWeight, new { @id = "WeighmentScaleWeight", @name = "WeighmentScaleWeight" })
+                                    </div>
+                                </div>
+                                <div id="dvTruckTareWeight" class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.TruckTareWeight, new { @for = "TruckTareWeight" }) <span id="spanTrucktareWeight" class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TruckTareWeight, String.Empty, new { @id = "spn_TruckTareWeight", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.TruckTareWeight, new { @id = "TruckTareWeight", @name = "TruckTareWeight", @class = "form-control", @placeholder = "Enter Truck Tare Weight", @onkeypress = "return isNumberWithTwoDecimal(event,'TruckTareWeight')", @oninput = "return CalculateWeight()", @MaxLength = "4" })
+                                    </div>
+                                </div>
+                                <div id="dvContainerTareWeight" class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ContainerTareWeight, new { @for = "ContainerTareWeight" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.WeighmentScaleWeight, String.Empty, new { @id = "spn_ContainerTareWeight", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.ContainerTareWeight, new { @id = "ContainerTareWeight", @name = "ContainerTareWeight", @class = "form-control", @placeholder = "Enter Container Tare Weight", @onkeypress = "return isNumberWithTwoDecimal(event,'ContainerTareWeight')", @oninput = "return CalculateWeight()", @MaxLength = "4" })
+                                    </div>
+                                </div>
+                                <div id="dvGrossWeight" class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.GrossWeight)
+                                        @Html.TextBoxFor(Model => Model.GrossWeight, new { @id = "GrossWeight", @name = "GrossWeight", @class = "form-control", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                                <div id="dvNetWeight" class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.NetWeight)
+                                        @Html.TextBoxFor(Model => Model.NetWeight, new { @id = "NetWeight", @name = "NetWeight", @class = "form-control", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" })  @Html.ValidationMessageFor(Model => Model.Remarks, String.Empty, new { @id = "spn_Remarks", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control", @placeholder = "Enter Remarks" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2 pull-right">
+                                    <div class="form-group pull-right">
+                                        <br />
+                                        <button type="submit" onclick="return Validation()" class="btn btn-primary" id="btnSaveDetails">Save</button>
+                                        <a id="btnClearDetails" href="@Url.Action("Index", CFS.Com.ClsCommon.Controller(), new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                if (Model.IsSearch)
+                {
+                    <div id="dvNocDetails">
+                        @Html.Partial("_DOCDetailsGrid")
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnWeighmentSlip.js")"></script>
+<script>
+    var SearchID = '@Model.SearchID';
+    var SearchNo = '@Model.SearchNo';
+    var SearchType = '@Model.SearchType';   
+
+    $(document).ready(function () {
+        var counter = 0;
+        var olderData = 0;
+        
+       // $(document).ready(function () {
+         //   var counter = 0;
+         //   var olderData = 0;
+            var datatemp = 0;
+
+            var i = setInterval(function () {              
+                var aUrl = GetRootPath + "trnWeighmentSlip/READCOMPORTDATA";
+                $.ajax({
+                    url: aUrl,
+                    Method: 'GET',
+                    async: false,
+                    success: function (data)
+                    {
+                        console.log(data);
+                        if (parseInt(olderData) == parseInt(data))
+                        {
+                            if (counter > 5)
+                            {
+                                $("#DisplayLabelScaleWeight").css("background", "green");
+                            }
+                            else
+                            {
+                                $("#DisplayLabelScaleWeight").css("background", "red");
+                            }
+                        }
+                        else
+                        {
+                            $("#DisplayLabelScaleWeight").css("background", "red");
+                            counter = 0;
+                        }
+                        $("#DisplayLabelScaleWeight").val(data);
+                        $("#WeighmentScaleWeight").val($("#DisplayLabelScaleWeight").val());
+                        olderData = data;
+                        counter++;
+                    }
+                });
+                CalculateWeight();
+            }, 100);
+
+       // });
+
+        //var i = setInterval(function () {
+        //    var dt = new Date().toLocaleString().replace(",", "").replace("/", "").replace("/", "").replace(" ", "").replace(":", "").replace(" ", "").replace(":", "");
+        //    $.get(gblStrFullPath + 'weighment/weighment.txt?v=' + dt, function (data) {
+        //        console.log(data);
+
+        //        if (parseInt(olderData) == parseInt(data)) {
+        //            if (counter > 5) {
+        //                $("#DisplayLabelScaleWeight").css("background", "green");
+        //            }
+        //            else {
+        //                $("#DisplayLabelScaleWeight").css("background", "red");
+        //            }
+
+        //        }
+        //        else {
+        //            $("#DisplayLabelScaleWeight").css("background", "red");
+        //            counter = 0;
+        //        }
+        //        $("#DisplayLabelScaleWeight").val(data);
+        //        $("#WeighmentScaleWeight").val($("#DisplayLabelScaleWeight").val());
+        //        olderData = data;
+        //        counter++;
+        //    });
+        //    CalculateWeight();
+        //}, 100);
+    });
+</script>
+
+

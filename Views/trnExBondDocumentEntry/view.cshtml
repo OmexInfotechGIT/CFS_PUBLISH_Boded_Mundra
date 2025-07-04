@@ -1,0 +1,269 @@
+﻿@model CFS.Models.trnExBondDocumentEntry
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+  
+    ViewBag.Title = "View EX Bond Document Entry";
+    if (!ViewBag.gblBlnAdd)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+    Model.IsviewConf = true;
+}
+@using (Html.BeginForm("Action", CFS.Com.ClsCommon.Controller(), FormMethod.Post))
+{
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        @if (Model.doaction == "edit" && Model.IsFinished)
+                        {
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <span class="badge bg-light-blue" style="font-size:15px;">EX Bond Document Entry No : @Model.trnExBondDocumentEntryNo</span> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                    <span class="badge bg-light-blue" style="font-size:15px;">User : @Model.User</span> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                    <span class="badge bg-light-blue" style="font-size:15px;">DateTime : @Model.CreatedDate</span>
+                                </div>
+                            </div>
+                        }
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                <a href="@Url.Action("Index",CFS.Com.ClsCommon.Controller())" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        @Html.HiddenFor(Model => Model.trnExBondDocumentEntryID)
+                        @Html.HiddenFor(Model => Model.trnExBondDocumentEntryNo)
+                        @Html.HiddenFor(Model => Model.trnExBondDocumentEntryNumber)
+                        @Html.HiddenFor(Model => Model.trnExBondDocumentEntryPrefix)
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.IsviewConf)
+                        @Html.HiddenFor(Model => Model.IsFinished, new { @id = "IsFinished", @name = "IsFinished" })
+                        <div class="col-lg-12">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.InBOENo, new { @for = "InBOENo" }) :<span id="InBOENo">@Model.InBOENo</span>
+                                    @Html.HiddenFor(Model =>Model.trnDocumentLotDetailsID)
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.InBOEDate, new { @for = "InBOEDate" }) :<span id="InBOEDate">@Model.InBOEDate</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.IGMNO, new { @for = "IGMNO" }):<span>@Model.IGMNO</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.ItemNO, new { @for = "ItemNO" }) : <span>@Model.ItemNO</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.CPStatus, new { @for = "CPStatus" }): <span>@Model.CPStatus </span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.CPORBondNo, new { @for = "CPORBondNo" }) : <span>@Model.CPORBondNo</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.CPORBondExpiryDate, new { @for = "CPORBondExpiryDate" }) : <span>@Model.CPORBondExpiryDate </span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.NocValidDate, new { @for = "NocValidDate" })<span id="NocValidDate"> : @Model.NocValidDate</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Status, new { @for = "Status" }):<span>@Model.Status</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.CargoType, new { @for = "CargoType" }): <span>@Model.CargoType</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.InBondConsoler, new { @for = "InBondConsoler" }) : <span>@Model.InBondConsoler</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.CargoDescription, new { @for = "CargoDescription" }): <span>@Model.CargoDescription</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.InBondBOEPackages, new { @for = "InBondBOEPackages" }) : <span>@Model.InBondBOEPackages</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.InBondBOEPieces, new { @for = "InBondBOEPieces" }): <span>@Model.InBondBOEPieces</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.InBondBOEWeight, new { @for = "InBondBOEWeight" }): <span>@Model.InBondBOEWeight</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.InBondCHA, new { @for = "InBondCHA" }): <span>@Model.InBondCHA</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.InBondForwarder, new { @for = "InBondForwarder" }): <span>@Model.InBondForwarder</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.InBondImporter, new { @for = "InBondImporter" }): <span>@Model.InBondImporter</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.BulkStatus, new { @for = "BulkStatus" }): <span>@Model.BulkStatus</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Remarks): <span>@Model.Remarks</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            @if (Model.doaction == "edit")
+            {
+                if (Model.dtLoadedContainer != null && Model.dtLoadedContainer.Rows.Count > 0) {
+
+                    <div class="col-lg-12">
+                        <div class="box">
+                            <div class="box-header">
+                                <h4><b>Ex-Bond Document Loaded Container</b></h4>
+                            </div>
+                            <div class="box-body">
+                                <div class="col-md-12" style="overflow:scroll;">
+                                    <table id="lotdetail" style="white-space:nowrap;" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Container No</th>
+                                                <th>Cont. Size</th>
+                                                <th>Cont. Type</th>
+                                                <th>No Of Package</th>
+                                                <th>No Of Pieces</th>
+                                                <th>Weight</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @for (int i = 0; i < Model.dtLoadedContainer.Rows.Count; i++)
+                                            {
+                                                <tr>
+                                                    <td>@Model.dtLoadedContainer.Rows[i]["ContainerNo"].ToString()</td>
+                                                    <td>@Model.dtLoadedContainer.Rows[i]["Size"].ToString()</td>
+                                                    <td>@Model.dtLoadedContainer.Rows[i]["Type"].ToString()</td>
+                                                    <td>@Model.dtLoadedContainer.Rows[i]["NoOfPackages"].ToString()</td>
+                                                    <td>@Model.dtLoadedContainer.Rows[i]["NoOfPieces"].ToString()</td>
+                                                    <td>@Model.dtLoadedContainer.Rows[i]["NoOfWeight"].ToString()</td>
+                                                </tr>
+                                            }
+                                            </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="col-lg-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h4><b>Ex-Bond Document Entry Details</b></h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="col-md-12" style="overflow:scroll;">
+                                <table id="lotdetail" style="white-space:nowrap;" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Released Type</th>
+                                            <th>Collect Ex-Bond Charges</th>
+                                            <th>Ex-Bond Ref No</th>
+                                            <th>Document Date Time</th>
+                                            <th>Ex-BOE/SB No.</th>
+                                            <th>Ex-BOE/SB Date</th>
+                                            <th>CHA</th>
+                                            <th>Forwarder</th>
+                                            <th>Importer/Exporter</th>
+                                            <th>Consoler</th>
+                                            <th>INV No.</th>
+                                            <th>INV Date</th>
+                                            <th>
+                                                EX-Bond/Re-Export Released pkgs
+                                            </th>
+                                            <th>
+                                                EX-Bond/Re-Export Released Pieces
+                                            </th>
+                                            <th>
+                                                EX-Bond/Re-Export Released Weight
+                                            </th>
+                                            @*<th>
+                                            RE-Export Released Area
+                                        </th>*@
+                                            <th>
+                                                EX-Bond/RE-Export Assessable Value
+                                            </th>
+                                            <th>
+                                                EX-Bond/RE-Export Duty Value
+                                            </th>
+                                            <th>
+                                                Duty Challan No
+                                            </th>
+                                            <th>
+                                                Duty Challan Date
+                                            </th>
+                                            <th>
+                                                OOC No
+                                            </th>
+                                            <th>
+                                                OOC Date
+                                            </th>
+                                            <th>
+                                                Remarks
+                                            </th>
+                                            @*<th>
+                                            Equipment
+                                        </th>*@
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblDetails"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+             }
+
+        </div>
+    </section>
+}
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnExBondDocumentEntry.js")"></script>

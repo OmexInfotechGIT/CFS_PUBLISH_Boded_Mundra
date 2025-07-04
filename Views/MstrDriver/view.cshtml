@@ -1,0 +1,87 @@
+﻿@model CFS.Models.MstrDriver
+
+@{
+    ViewBag.Title = "View Driver";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (ViewBag.gblBlnView)
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">Transporter Code: @Model.TransporterCode</span>
+                            </div>
+                        </div>
+                    }
+                    @if (ViewBag.gblBlnView)
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;"></span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrDriver","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrDriver", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div class="col-md-6">
+
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>Transporter Name : </label> <span>@Model.Transporter</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Driver Name</th>
+                                    <th>License No.</th>
+                                    <th>Mobile Number</th>
+                                    <th>Address</th>
+                                    <th>Status</th>
+                                    <th>Inactivate Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.MySubDatatable.Rows.Count; i++)
+                                {
+                                <tr>
+                                    <td style="display:none"><span id="TruckDetailID_@Model.MySubDatatable.Rows[i]["MstrDriverDetailID"]">@Model.MySubDatatable.Rows[i]["MstrDriverDetailID"]</span></td>
+                                    <td><span id="DriverName_@Model.MySubDatatable.Rows[i]["MstrDriverDetailID"]">@Model.MySubDatatable.Rows[i]["DriverName"]</span></td>
+                                    <td><span id="LicenseNo_@Model.MySubDatatable.Rows[i]["MstrDriverDetailID"]">@Model.MySubDatatable.Rows[i]["LicenseNo"]</span></td>
+                                    <td><span id="MobileNumber_@Model.MySubDatatable.Rows[i]["MstrDriverDetailID"]">@Model.MySubDatatable.Rows[i]["MobileNumber"]</span></td>
+                                    <td><span id="Address_@Model.MySubDatatable.Rows[i]["MstrDriverDetailID"]">@Model.MySubDatatable.Rows[i]["Address"]</span></td>
+                                    <td id="IsActive_@Model.MySubDatatable.Rows[i]["MstrDriverDetailID"]">@(Convert.ToBoolean(Model.MySubDatatable.Rows[i]["IsActive"]) ? "Active" : "InActive")</td>
+                                    <td><span id="InActiveReason_@Model.MySubDatatable.Rows[i]["MstrDriverDetailID"]">@Model.MySubDatatable.Rows[i]["InActiveReason"]</span></td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

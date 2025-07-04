@@ -1,0 +1,542 @@
+﻿@model CFS.Models.ExportInvoice
+
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    bool IsEdit = false;
+
+    ViewBag.Title = "View Export Invoice";
+    if (!ViewBag.gblBlnAdd)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+@using System.Globalization;
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+@using (Html.BeginForm("Action", "ExportInvoice", FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+{
+    <section class="content">
+        <div class="row">
+            <div class="box">
+                <div class="box-body">
+                    @if (Model != null && (Model.doaction == "edit" || Model.doaction == "view"))
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;"> Export Invoice No: @Model.ExportInvoiceNo</span> @CFS.Com.ClsCommon.AddhtmlSpace(2)
+                                <span class="badge bg-light-blue" style="font-size:15px;"> Export Invoice Date: @ViewBag.InvoiceDate</span>@CFS.Com.ClsCommon.AddhtmlSpace(2)
+                                <span class="badge bg-light-blue" style="font-size:15px;"> Created By: @ViewBag.Username</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <a href="@Url.Action("Index", "ExportInvoice" )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-12"></div>
+                    <div class="col-md-7">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.SBInvoiceNo, new { @for = "SBInvoiceNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.SBInvoiceNo, String.Empty, new { @id = "spn_trnExportDocumentDeclarationLotDetailsID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.SBInvoiceNo, new { @id = "SBInvoiceNo", @name = "SBInvoiceNo", @class = "form-control", @placeholder = "Select In-BOE No", @readonly = true })
+                            @Html.HiddenFor(Model => Model.trnExportStufingWOSBDetailsID, new { @id = "trnExportStufingWOSBDetailsID", @name = "trnExportStufingWOSBDetailsID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.SBInvoiceDate, new { @for = "SBInvoiceDate" })
+                            @Html.TextBoxFor(Model => Model.SBInvoiceDate, new { @id = "SBInvoiceDate", @name = "SBInvoiceDate", @class = "form-control", @readonly = true })
+                        </div>
+                    </div>
+                    @if (Model.IsSearch)
+                    {
+
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.IsSearch)
+                        @Html.HiddenFor(Model => Model.IsFinished)
+                        @Html.HiddenFor(Model => Model.ExportInvoiceID, new { @ID = "ExportInvoiceID", @name = "ExportInvoiceID" })
+                        @Html.HiddenFor(Model => Model.ExportInvoiceID)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.ExportInvoiceNo)
+                        @Html.HiddenFor(Model => Model.trnExportDocumentDeclarationLotDetailsID)
+                        @Html.HiddenFor(Model => Model.trnExportStufingWOID)
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.CHA) : <span>@Model.CHA</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.Forwarder) : <span>@Model.Forwarder</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.Consoler) : <span>@Model.Consoler</span>
+                        </div>
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.BillToParty, new { @for = "BillToParty" }) : <span>@Model.BillToParty</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.BillToAddress, new { @for = "BillToAddress" }) : <span>@Model.BillToAddress</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.BillToCustomerGSTNo, new { @for = "BillToCustomerGSTNo" })  : <span>@Model.GSTINNo</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.GSTTypeName, new { @for = "GSTTypeName" })  : <span>@Model.SEZStatus</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.StateName, new { @for = "StateName" })  : <span>@Model.StateName</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.PaymentMode, new { @for = "PaymentMode" }) : <span>@Model.PaymentMode</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" }) : <span>@Model.Remarks</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            @if (Model != null && Model.ExportInvoiceID > 0)
+            {
+                <div class="row">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h4>Shiping Bill Details</h4>
+                        </div>
+                        <div class="box-body" style="overflow:auto;">
+                            <table class="table table-bordered" style="white-space:nowrap;">
+                                <thead>
+                                    <tr>
+                                        <th>SB No</th>
+                                        <th>SB Date</th>
+                                        <th>SB Packages</th>
+                                        <th>SB Pieces</th>
+                                        <th>SB Weight</th>
+                                        <th>Stuffed Pkgs</th>
+                                        <th>Stuffed Pieces</th>
+                                        <th>Stuffed Weight</th>
+                                        <th>CHA</th>
+                                        <th>Forwarder</th>
+                                        <th>Exporter</th>
+                                        <th>Sub Commodity</th>
+                                        <th>Cargo Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.dtShipingDetails != null && Model.dtShipingDetails.Rows.Count > 0)
+                                    {
+                                        for (int i = 0; i < Model.dtShipingDetails.Rows.Count; i++)
+                                        {
+                                    <tr>
+                                        <td>@Model.dtShipingDetails.Rows[i]["SBNo"]</td>
+                                        @if (!string.IsNullOrEmpty(Model.dtShipingDetails.Rows[i]["SBDate"].ToString()))
+                                        {
+                                            <td>@Convert.ToDateTime(Model.dtShipingDetails.Rows[i]["SBDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat)</td>
+                                        }
+                                        else
+                                        {
+                                            <td></td>
+                                        }
+
+                                        <td>@Model.dtShipingDetails.Rows[i]["SBPkg"]</td>
+                                        <td>@Model.dtShipingDetails.Rows[i]["SBPieces"]</td>
+                                        <td>@Model.dtShipingDetails.Rows[i]["SBWt"]</td>
+                                        <td>@Model.dtShipingDetails.Rows[i]["StuffPkg"]</td>
+                                        <td>@Model.dtShipingDetails.Rows[i]["StuffPieces"]</td>
+                                        <td>@Model.dtShipingDetails.Rows[i]["StuffWt"]</td>
+                                        <td>@Model.dtShipingDetails.Rows[i]["CHAName"]</td>
+                                        <td>@Model.dtShipingDetails.Rows[i]["ForwarderName"]</td>
+                                        <td>@Model.dtShipingDetails.Rows[i]["ExporterNAME"]</td>
+                                        <td>@Model.dtShipingDetails.Rows[i]["SubCommodity"]</td>
+                                        <td>@Model.dtShipingDetails.Rows[i]["CargoDesc"]</td>
+                                    </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h4>IN-BOE Details:</h4>
+                        </div>
+                        <div class="box-body" style="overflow:auto;">
+                            <table class="table table-bordered" style="white-space:nowrap;">
+                                <thead>
+                                    <tr>
+                                        <th>NOC No</th>
+                                        <th>NOC Date</th>
+                                        <th>NOC Storage Valid Upto</th>
+                                        <th>In BOE No</th>
+                                        <th>In BOE Date</th>
+                                        <th>Bond No</th>
+                                        <th>Bond Date</th>
+                                        <th>CP No</th>
+                                        <th>CP Date</th>
+                                        <th>BL No</th>
+                                        <th>BL Date</th>
+                                        <th>IGM No</th>
+                                        <th>Item No</th>
+                                        <th>Hold Status</th>
+                                        <th>AV</th>
+                                        <th>Enhanced AV</th>
+                                        <th>DV</th>
+                                        <th>Enhanced DV</th>
+                                        <th>CHA</th>
+                                        <th>Forwarder</th>
+                                        <th>Consoler</th>
+                                        <th>Importer</th>
+                                        <th>Packages</th>
+                                        <th>Pieces</th>
+                                        <th>Weight</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.dtInBOEDetails != null && Model.dtInBOEDetails.Rows.Count > 0)
+                                    {
+                                        for (int i = 0; i < Model.dtInBOEDetails.Rows.Count; i++)
+                                        {
+                                            <tr>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["NOCNo"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["NOCDate"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["NOCValidDate"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["InBOENo"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["InBOEDate"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["BondNo"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["BondDate"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["CPNo"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["CPDate"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["BLNo"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["BLDate"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["IGMNo"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["ItemNo"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["HoldStatus"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["AssessableValue"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["EnhanceAssembleValue"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["Dutyvalue"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["EnhanceDutyvalue"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["SubCHA"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["Forwarder"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["Consolidator"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["IMPORTERNAME"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["NOOFPKGS"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["NOOFPIECES"]</td>
+                                                <td>@Model.dtInBOEDetails.Rows[i]["WEIGHT"]</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h4>Biiling Details</h4>
+                            <div style="display: inline-flex">
+                                <span class="badge bg-aqua" style="font-size:15px;"> 20 : @Model.noof20count</span>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                <span class="badge bg-aqua" style="font-size:15px;"> 40 : @Model.noof40count</span>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                <span class="badge bg-aqua" style="font-size:15px;"> 45 : @Model.noof45count</span>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                            </div>
+                        </div>
+                        <div class="box-body" style="overflow:auto;">
+                            <table class="table table-bordered" style="white-space:nowrap;">
+                                <thead>
+                                    <tr>
+                                        <th>Cont No</th>
+                                        <th>Size</th>
+                                        <th>Type</th>
+                                        <th>Line</th>
+                                        <th>Stuff Date</th>
+                                        <th>SB No</th>
+                                        <th>Cargo Type</th>
+                                        <th>Bill Commodity</th>
+                                        <th>From Date</th>
+                                        <th>To Date</th>
+                                        <th>Weight</th>
+                                        <th>Billable Head</th>
+                                        <th>QTY</th>
+                                        <th>Rate</th>
+                                        <th>Taxable Amt</th>
+                                        <th>GST</th>
+                                        <th>GST Amt</th>
+                                        <th>Total Amt</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.ConsolidatorChargeDatatable != null && Model.ConsolidatorChargeDatatable.Rows.Count > 0)
+                                    {
+                                        for (int i = 0; i < Model.ConsolidatorChargeDatatable.Rows.Count; i++)
+                                        {
+                                    <tr>
+                                        <td>@Model.ConsolidatorChargeDatatable.Rows[i]["ContainerNumber"]</td>
+                                        <td>@Model.ConsolidatorChargeDatatable.Rows[i]["ISOCodeSize"]</td>
+                                        <td>@Model.ConsolidatorChargeDatatable.Rows[i]["ISOCodeType"]</td>
+                                        <td>@Model.ConsolidatorChargeDatatable.Rows[i]["Line"]</td>
+                                        @if (!string.IsNullOrEmpty(Model.ConsolidatorChargeDatatable.Rows[i]["StuffDate"].ToString()))
+                                        {
+                                            <td>@CFS.Com.ClsCommon.ConvertDateNullToBlank(Convert.ToDateTime(Model.ConsolidatorChargeDatatable.Rows[i]["StuffDate"]))</td>
+                                        }
+                                        else
+                                        {
+                                            <td></td>
+                                        }
+                                        <td>@Model.ConsolidatorChargeDatatable.Rows[i]["SBNo"]</td>
+                                        <td>@Model.ConsolidatorChargeDatatable.Rows[i]["CargoType"]</td>
+                                        <td>@Model.ConsolidatorChargeDatatable.Rows[i]["BillCommodity"]</td>
+                                        @if (!string.IsNullOrEmpty(Model.ConsolidatorChargeDatatable.Rows[i]["FromDate"].ToString()))
+                                        {
+                                            <td> @CFS.Com.ClsCommon.ConvertDateNullToBlank(Convert.ToDateTime(Model.ConsolidatorChargeDatatable.Rows[i]["FromDate"]))</td>
+                                        }
+                                        else
+                                        {
+                                            <td></td>
+                                        }
+                                        @if (!string.IsNullOrEmpty(@Model.ConsolidatorChargeDatatable.Rows[i]["ToDate"].ToString()))
+                                        {
+                                            <td>@CFS.Com.ClsCommon.ConvertDateNullToBlank(Convert.ToDateTime(Model.ConsolidatorChargeDatatable.Rows[i]["ToDate"]))</td>
+                                        }
+                                        else
+                                        {
+                                            <td></td>
+                                        }
+                                        <td>@Model.ConsolidatorChargeDatatable.Rows[i]["Weight"]</td>
+                                        <td>@Model.ConsolidatorChargeDatatable.Rows[i]["TariffHead"]</td>
+                                        <td>@Model.ConsolidatorChargeDatatable.Rows[i]["Qty"]</td>
+                                        <td>@Convert.ToDecimal(Model.ConsolidatorChargeDatatable.Rows[i]["Rate"]).ToString("0.00")</td>
+                                        <td>@Convert.ToDecimal(Model.ConsolidatorChargeDatatable.Rows[i]["TaxableAmount"]).ToString("0.00")</td>
+                                        <td>@Convert.ToDecimal(Model.ConsolidatorChargeDatatable.Rows[i]["GST"]).ToString("0.00")</td>
+                                        <td>@Convert.ToDecimal(Model.ConsolidatorChargeDatatable.Rows[i]["GSTAmount"]).ToString("0.00")</td>
+                                        <td>@Convert.ToDecimal(Model.ConsolidatorChargeDatatable.Rows[i]["TotalAmount"]).ToString("0.00")</td>
+                                    </tr>
+                                        }
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h4>
+                                <b> Discount Details </b>
+                                <div class="pull-right">
+                                    <button type="button" class="btn btn-primary" onclick="openOtherTariff()">Add</button>
+                                </div>
+                            </h4>
+                        </div>
+                        @{ decimal TaxableAmount = 0, NetTaxableAmount = 0, GSTAmount = 0, DiscountAmount = 0, TotalAmount = 0, RoundOff = 0, NetAmount = 0; }
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Tariff Head </th>
+                                                <th>Taxable Amount </th>
+                                                <th>Discount Amt </th>
+                                                <th>Net Taxable Amount </th>
+                                                <th>GST(%) </th>
+                                                <th>GST Amount </th>
+                                                <th>Net amount </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.DiscountDatatable != null && Model.DiscountDatatable.Rows.Count > 0)
+                                            {
+                                                for (int L = 0; L < Model.DiscountDatatable.Rows.Count; L++)
+                                                {
+
+                                                    if (Model.doaction == "view")
+                                                    {
+                                                        TaxableAmount += Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["TaxableAmount"]);
+                                                        NetTaxableAmount += Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["NetTaxableAmount"]);
+                                                        GSTAmount += Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["GSTAmount"]);
+                                                        DiscountAmount += Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["Discount"]);
+                                                        TotalAmount += Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["TotalAmount"]);
+                                                        <tr>
+                                                            <td>@Model.DiscountDatatable.Rows[L]["TariffHead"]</td>
+                                                            <td>@(Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["TaxableAmount"]).ToString("0.00"))</td>
+                                                            <td>@(Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["Discount"]).ToString("0.00"))</td>
+                                                            <td>@(Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["NetTaxableAmount"]).ToString("0.00"))</td>
+                                                            <td>@(Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["GST"]).ToString("0.00"))</td>
+                                                            <td>@(Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["GSTAmount"]).ToString("0.00"))</td>
+                                                            <td>@(Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["TotalAmount"]).ToString("0.00"))</td>
+                                                        </tr>
+                                                    }
+                                                    else
+                                                    {
+                                                        TaxableAmount += Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["Rate"]);
+                                                        NetTaxableAmount += Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["TaxableAmount"]);
+                                                        GSTAmount += Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["GSTAmount"]);
+                                                        DiscountAmount += Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["Discount"]);
+                                                        TotalAmount += Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["TotalAmount"]);
+                                                        <tr>
+                                                            <td>@Model.DiscountDatatable.Rows[L]["TariffHead"]</td>
+                                                            <td>@(Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["TaxableAmount"]).ToString("0.00"))</td>
+                                                            <td>@(Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["Discount"]).ToString("0.00"))</td>
+                                                            <td id="txtNetTaxableAmount">@(Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["TaxableAmount"]).ToString("0.00"))</td>
+                                                            <td>@(Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["GST"]).ToString("0.00"))</td>
+                                                            <td>@(Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["GSTAmount"]).ToString("0.00"))</td>
+                                                            <td>@(Convert.ToDecimal(Model.DiscountDatatable.Rows[L]["TotalAmount"]).ToString("0.00"))</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <br />
+                            @if (Model.PaymentMode.ToLower() == "cash")
+                            {
+
+                                <div class="box-header with-border">
+                                    <h4>
+                                        <b> Receipt Details </b>
+                                    </h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Mode Of Payment</th>
+                                                    <th>Amount</th>
+                                                    <th>Cheque/DD/NEFT NO</th>
+                                                    <th>Cheque/DD/NEFT Date</th>
+                                                    <th>Bank Details</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>@Model.PaymentModeOfReceipt</td>
+                                                    <td>@Model.AmountOfReceipt.ToString("0.00")</td>
+                                                    <td>@Model.ChequeDDNeftNoOfReceipt</td>
+                                                    <td>@Model.ChequeDDNeftDateOfReceipt</td>
+                                                    <td>@Model.BankDetailsOfReceipt</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            }
+                            <div class="box-body row">
+                                <div class="table-responsive">
+                                    <table id="example4" class="table-bordered table-hover" style="float:right ;margin-left:3%">
+                                        <tbody>
+                                            <tr class="text-right">
+                                                <td><b> Taxable Amount :</b></td>
+                                                <td id="FinalTaxableAmount">@(Convert.ToDecimal(TaxableAmount).ToString("0.00")) </td>
+                                            </tr>
+                                            <tr class="text-right">
+                                                <td><b> Discount Amount :</b></td>
+                                                <td id="FinalDiscountAmount">@(Convert.ToDecimal(DiscountAmount).ToString("0.00")) </td>
+                                            </tr>
+                                            <tr class="text-right">
+                                                <td><b>Net Taxable Amount :</b></td>
+                                                <td id="FinalNetTaxableAmount">@(Convert.ToDecimal(NetTaxableAmount).ToString("0.00")) </td>
+                                            </tr>
+                                            <tr class="text-right">
+                                                <td><b> GST Amount :</b></td>
+                                                <td id="FinalGSTAmount">@(Convert.ToDecimal(GSTAmount).ToString("0.00"))</td>
+                                            </tr>
+                                            <tr class="text-right">
+                                                <td><b> Total Amount :</b></td>
+                                                <td id="FinalTotalAmount">@(Convert.ToDecimal(TotalAmount).ToString("0.00")) </td>
+                                            </tr>
+                                            <tr class="text-right">
+                                                <td><b> Round Amount :</b></td>
+                                                <td id="FinalRoundAmount">@((Math.Round(Convert.ToDecimal(TotalAmount)) - Convert.ToDecimal(TotalAmount)).ToString("0.00")) </td>
+                                            </tr>
+                                            <tr class="text-right">
+                                                <td><b> Net Amount :</b></td>
+                                                <td id="FinalNetAmount">@(Math.Round(Convert.ToDecimal(TotalAmount)).ToString("0.00")) </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade in" id="AddOtherTariffHead" style="display: none; padding-right: 17px;" data-backdrop="static" data-keyboard="false">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" onclick="RefreshPage()" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title">Add Other Tariff Head</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    @Html.HiddenFor(Model => Model.OtherTariffDetails.ExportInvoiceOtherTariffDetailsID, new { @id = "ExportInvoiceOtherTariffDetailsID", @name = "ExportInvoiceOtherTariffDetailsID" })
+                                </div>
+                                <div class="col-md-12" style="overflow: scroll;">
+                                    <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Tariff Head </th>
+                                                <th>Qty </th>
+                                                <th>Rate </th>
+                                                <th>Total</th>
+                                                <th>Discount </th>
+                                                <th>Discount Amount </th>
+                                                <th>Taxable Amount </th>
+                                                <th>GST (%) </th>
+                                                <th>GST Amount </th>
+                                                <th>Net Amount </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="OtherTariffDetailsDetails"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default pull-right" onclick="RefreshPage()" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+            }
+        </div>
+    </section>
+}
+<script>
+    var VCNDeatails = '@Model.HtmlVCNDeatails';
+    var IsSearch = '@Model.IsSearch.ToString().ToLower()';
+</script>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/ExportInvoice.js")"></script>

@@ -1,0 +1,170 @@
+﻿@model  CFS.Models.trnExportStufingWO
+@{
+    ViewBag.Title = "Export Stuffing Work Order";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                <a href="@Url.Action("Action", "trnExportStufingWO" , new { doaction="add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Work Order "><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+
+                <div class="box-body">
+                    <div style="overflow-x:scroll">
+                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnExportStufingWO" , new { pg=Model.pagger.CurrentPage, search=Model.pagger.Search,SortColumn ="ESWO.trnExportStufingWONo" , SortOrder=(Model.pagger.SortColumn.ToLower() =="eswo.trnexportstufingwono" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" )} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == " eswo.trnexportstufingwono" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" ).ToString().ToLower())"></i> Work Order No</a>
+                                    </th>
+                                    <th><a class="text-black" href="@Url.Action("index", "trnExportStufingWO" , new { pg=Model.pagger.CurrentPage, search=Model.pagger.Search,SortColumn ="ESWO.WorkOrderDate" , SortOrder=(Model.pagger.SortColumn.ToLower() =="eswo.workorderdate" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" )} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == " eswo.workorderdate" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" ).ToString().ToLower())"></i> Work Order Date</a></th>
+
+                                    <th><a class="text-black" href="@Url.Action("index", "trnExportStufingWO" , new { pg=Model.pagger.CurrentPage, search=Model.pagger.Search,SortColumn ="ESWO.BOENo" , SortOrder=(Model.pagger.SortColumn.ToLower() =="eswo.boeno" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" )} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == " eswo.boeno" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" ).ToString().ToLower())"></i> SB No</a></th>
+                                    <th><a class="text-black" href="@Url.Action("index", "trnExportStufingWO" , new { pg=Model.pagger.CurrentPage, search=Model.pagger.Search,SortColumn ="ESWO.ContainerName" , SortOrder=(Model.pagger.SortColumn.ToLower() =="eswo.containername" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" )} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == " eswo.containername" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" ).ToString().ToLower())"></i> Container No</a></th>
+                                    <th><a class="text-black" href="@Url.Action("index", "trnExportStufingWO" , new { pg=Model.pagger.CurrentPage, search=Model.pagger.Search,SortColumn ="ESWO.BLNo" , SortOrder=(Model.pagger.SortColumn.ToLower() =="eswo.blno" .ToLower() && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" )} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == " eswo.blno".ToLower() && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" ).ToString().ToLower())"></i> INV No</a></th>
+                                    <th><a class="text-black" href="@Url.Action("index", "trnExportStufingWO" , new { pg=Model.pagger.CurrentPage, search=Model.pagger.Search,SortColumn ="ESWO.BLDate" , SortOrder=(Model.pagger.SortColumn.ToLower() =="eswo.bldate" .ToLower() && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" )} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == " eswo.bldate".ToLower() && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" ).ToString().ToLower())"></i> INV Date</a></th>
+                                    <th class="freezeLastColumn">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.dtExportStuffTable != null && Model.dtExportStuffTable.Rows.Count > 0)
+                                {
+                                    for (int i = 0; i < Model.dtExportStuffTable.Rows.Count; i++)
+                                    {
+                                        <tr>
+                                            <td>@Model.dtExportStuffTable.Rows[i]["ESWoWithPrefix"]</td>
+                                            <td>@Model.dtExportStuffTable.Rows[i]["WorkOrderDate"]</td>
+                                            <td>@Model.dtExportStuffTable.Rows[i]["BOENO"]</td>
+                                            <td>@Model.dtExportStuffTable.Rows[i]["ContainerName"]</td>
+                                            <td>@Model.dtExportStuffTable.Rows[i]["BLNo"]</td>
+                                            <td>@Model.dtExportStuffTable.Rows[i]["BLDate"]</td>
+                                            <td class="freezeLastColumnwithWhite">
+                                                <a><i data-toggle="modal" data-target="#viewExportContainerDetails" onclick="GetExportContainerDetails('@Model.dtExportStuffTable.Rows[i]["trnExportStufingWOID"]')" title="Container Details" style=" font-size: x-large; cursor: pointer; vertical-align: middle" class="fa fa-plus-square"></i></a>
+                                                @if (ViewBag.gblBlnEdit && Convert.ToInt32(Model.dtExportStuffTable.Rows[i]["IsFinished"]) == 0)
+                                                {
+                                                    <a href="@Url.Action("Action", "trnExportStufingWO" , new { id=Model.dtExportStuffTable.Rows[i]["trnExportStufingWOID"], pg=Model.pagger.CurrentPage, search=Model.pagger.Search, doaction="edit" , @IsSearch=true })"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                                }
+                                                @if (ViewBag.gblBlnView)
+                                                {
+                                                    <a href="@Url.Action("View","trnExportStufingWO",new { id=Model.dtExportStuffTable.Rows[i]["trnExportStufingWOID"],pg =Model.pagger.CurrentPage,search =Model.pagger.Search,doaction ="view" ,@IsSearch=true})"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                                }
+                                                <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('trnExportStufingWO','@Model.dtExportStuffTable.Rows[i]["trnExportStufingWOID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                                @if (ViewBag.gblBlnDelete && Convert.ToInt32(Model.dtExportStuffTable.Rows[i]["IsFinished"]) == 0)
+                                                {
+                                                    <a><i data-toggle="modal" data-target="#DeleteESWorkOrder" onclick="DeleteReason('@Model.dtExportStuffTable.Rows[i]["trnExportStufingWOID"]')" title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                                }
+                                                <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", "trnExportStufingWO", new { id = Model.dtExportStuffTable.Rows[i]["trnExportStufingWOID"], format = "pdf" })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    @Html.Partial("_pagination")
+                </div>
+            </div>
+            <div class="modal fade in" id="DeleteESWorkOrder" style="display: none; padding-right: 17px;">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            <h4 class="modal-title">Delete Work Order</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row" style="padding:15px;">
+                                @Html.HiddenFor(Model => Model.trnExportStuffingWOID, new { @id = "trnExportStuffingWOID", @name = "trnExportStuffingWOID" })
+                                <div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.DeleteReason, new { @for = "DeleteReason" })  @Html.ValidationMessageFor(Model => Model.DeleteReason, String.Empty, new { @id = "spn_DeleteReason", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.DeleteReason, new { @id = "DeleteReason", @name = "DeleteReason", @class = "form-control", @placeholder = "Enter Delete Reason" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-danger pull-right margin-r-5" onclick="DeleteESWorkOrder();" id="delete">Delete</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+        </div>
+    </div>
+</section>
+<div class="modal fade in" id="viewExportContainerDetails" style="display: none; padding-right: 17px;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">Container Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="box" style="max-height: 300px;overflow-y: scroll;">
+                            <div class="box-body">
+                                <table width="50%" class="table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:140px"> &nbsp;&nbsp;&nbsp;&nbsp;Container No</th>
+                                            <th style="width:110px"> &nbsp;&nbsp;&nbsp;&nbsp;CLP Status</th>                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblContdetail"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Okay</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<script>
+    var doaction = '@Model.doaction';
+</script>
+<script>
+    var IsEdit = '@ViewBag.IsEdit';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnExportStufingWO.js")"></script>

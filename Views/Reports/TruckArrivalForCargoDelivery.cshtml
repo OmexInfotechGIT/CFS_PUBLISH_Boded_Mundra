@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "Truck Arrival For Cargo Delivery";
+}
+@using (Html.BeginForm("TruckArrivalForCargoDelivery", "Reports", FormMethod.Post))
+{
+    <div class="">
+        <div class="box">
+            <div class="box-body">
+                <input type="hidden" id="msg" name="msg" value="@ViewBag.Msg">
+                @Html.Partial("_ReportsModalDate")
+                @Html.Partial("_ReportsModalCHA")
+                @Html.Partial("_ReportsModalImporter")
+                @Html.Partial("_ReportsModalForwarder")
+                @Html.Partial("_ReportsModalSearchClearButton")
+            </div>
+        </div>
+    </div>
+}
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/ReportsModal.js")"></script>

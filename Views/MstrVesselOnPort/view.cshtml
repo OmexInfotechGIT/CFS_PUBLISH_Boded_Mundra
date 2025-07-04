@@ -1,0 +1,55 @@
+﻿@model CFS.Models.MstrVesselOnPort
+@{
+    ViewBag.Title = "View Vessel On Port";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrVesselOnPort","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrVesselOnPort", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>VCN No: </label> <span>@Model.VCNNo</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Vessel Name: </label> <span>@Model.VesselName</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Voy No: </label> <span>@Model.VOYNo</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Date Of Cut Off: </label> <span>@Model.DateOfCutOff</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Port Name: </label> <span>@Model.PortName</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Status: </label> <span>@(Model.IsActive == true ? "Active" : "InActive")</span>
+                        </div>
+                        @if (!Model.IsActive)
+                        {
+                            <div class="form-group">
+                                <label>Inactivate Reason: </label> <span>@Model.InActiveReason</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

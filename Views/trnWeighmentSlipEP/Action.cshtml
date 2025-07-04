@@ -1,0 +1,13 @@
+﻿@model CFS.Models.trnWeighmentSlip
+@{
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Weighment Slip";
+    }
+    else
+    {
+        ViewBag.Title = "Add New Weighment Slip";
+    }
+}
+
+@Html.Partial("../trnWeighmentSlip/action")

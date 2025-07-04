@@ -1,0 +1,295 @@
+﻿@model CFS.Models.trnEmptyContainerInWO
+@{
+
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    bool isEdit = false;
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Empty Container In Work Order";
+        isEdit = true;
+        if (!ViewBag.gblBlnEdit && !ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add new Empty Container In Work Order";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+<section class="content">
+
+    @using (Html.BeginForm("Action", "trnEmptyContainerInWO", FormMethod.Post))
+    {
+        @*@Html.HiddenFor(Model => Model.step, new { @value = Model.step })*@
+        <input type="hidden" id="IsChangeStep" name="IsChangeStep" value="0" />
+        @Html.HiddenFor(Model => Model.IsFinished, new { @id = "IsFinished", @name = "IsFinished" })
+        <input type="hidden" id="trnEmptyContainerInWOID" name="trnEmptyContainerInWOID" value="@Model.trnEmptyContainerInWOID" />
+        <input type="hidden" id="trnEmptyContainerInWOPrefix" name="trnEmptyContainerInWOPrefix" value="@Model.trnEmptyContainerInWOPrefix" />
+        <input type="hidden" id="trnEmptyContainerInWONO" name="trnEmptyContainerInWONO" value="@Model.trnEmptyContainerInWONO" />
+        @Html.HiddenFor(Model => Model.doaction)
+        @Html.HiddenFor(Model => Model.page)
+        @Html.HiddenFor(Model => Model.filter)
+        <div class="row" id="step-1">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-body">
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <h4>
+                                    <b>
+                                        Basic Details ?
+
+                                        @if (Model != null && Model.IsFinished)
+                                        {
+                                            <span class="badge bg-light-blue" style="font-size:15px;">Work Order NO : @CFS.Com.ClsCommon.AddhtmlSpace(3)@Model.trnEmptyContainerInWOPrefix@Model.trnEmptyContainerInWONO</span>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">User : @Model.User</span> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                            <span class="badge bg-light-blue" style="font-size:15px;">Date and time : @Model.trnEmptyContainerInWODate</span>
+                                        }
+                                    </b>
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                <a href="@Url.Action("Index","trnEmptyContainerInWO", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+
+                    <div class="box-body" id="step-1-body">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.CHAName, new { @for = "CHAName" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CHAID, String.Empty, new { @id = "spn_CHAID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.CHAName, new { @id = "CHAName", @name = "CHAName", @class = "form-control clsReadOnly", @placeholder = "Enter Customs Broker/Customer" })
+                                @Html.HiddenFor(Model => Model.CHAID, new { @id = "CHAID", @name = "CHAID" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.ForwarderName, new { @for = "ForwarderName" })
+                                @Html.TextBoxFor(Model => Model.ForwarderName, new { @id = "ForwarderName", @name = "ForwarderName", @class = "form-control clsReadOnly", @placeholder = "Enter Forwarder" })
+                                @Html.HiddenFor(Model => Model.ForwarderID, new { @id = "ForwarderID", @name = "ForwarderID" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Exporter, new { @id = "lblExporter", @for = "Exporter" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ExporterID, String.Empty, new { @id = "spn_ExporterID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.Exporter, new { @id = "Exporter", @name = "Exporter", @class = "form-control clsReadOnly", @placeholder = "Enter Exporter" })
+                                @Html.HiddenFor(Model => Model.ExporterID, new { @id = "ExporterID", @name = "ExporterID" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.ConsolerName, new { @for = "ConsolerName" })
+                                @Html.TextBoxFor(Model => Model.ConsolerName, new { @id = "ConsolerName", @name = "ConsolerName", @class = "form-control clsReadOnly", @placeholder = "Enter Consoler" })
+                                @Html.HiddenFor(Model => Model.ConsolerID, new { @id = "ConsolerID", @name = "ConsolerID" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.FromLocation, new { @for = "FromLocation" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.FromLocationID, String.Empty, new { @id = "spn_FromLocationID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.FromLocation, new { @id = "FromLocation", @name = "FromLocation", @class = "form-control clsReadOnly", @placeholder = "Enter From Location" })
+                                @Html.HiddenFor(Model => Model.FromLocationID, new { @id = "FromLocationID", @name = "FromLocationID" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.LiftOnBy, new { @for = "LiftOnBy" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.LiftOnBy, String.Empty, new { @id = "spn_LiftOnBy", @class = "help-inline text-red" })
+                                @Html.DropDownListFor(Model => Model.LiftOnBy, Model.DDLcommonlift, new { @id = "LiftOnBy", @name = "LiftOnBy", @class = "form-control clsReadOnly", @onchange = "onchangeLift()" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.LiftOffBy, new { @for = "LiftOffBy" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.LiftOffBy, String.Empty, new { @id = "spn_LiftOffBy", @class = "help-inline text-red" })
+                                @Html.DropDownListFor(Model => Model.LiftOffBy, Model.DDLcommonlift, new { @id = "LiftOffBy", @name = "LiftOffBy", @class = "form-control clsReadOnly", @onchange = "onchangeLift()" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" })
+                                @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control clsReadOnly", @placeholder = "Enter Remarks" })
+                            </div>
+                        </div>
+                        <div id="dvSaveAndNext" class="col-md-3 pull-right">
+                            <div class="form-group pull-right">
+                                <br />
+                                <button type="submit" class="btn btn-primary" onclick="return validate()">Save & Next</button>
+                                <a href="@Url.Action("Index","trnEmptyContainerInWO", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div id="dvContainerDetails" style="display:none;" class="box">
+                    <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <h4>
+                                    <b>Add Container Details</b>
+                                </h4>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+
+                    <div class="box-body" id="step-1-body">
+                        @Html.HiddenFor(Model => Model.trnEmptyContainerInWOContainerDetails.trnEmptyContainerInWOContainerDetailsID, new { @id = "trnEmptyContainerInWOContainerDetailsID", @name = "trnEmptyContainerInWOContainerDetailsID" })
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnEmptyContainerInWOContainerDetails.ContNo, new { @for = "ContNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyContainerInWOContainerDetails.ContNo, String.Empty, new { @id = "spn_ContNo", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.trnEmptyContainerInWOContainerDetails.ContNo, new { @id = "ContNo", @name = "ContNo", @class = "form-control", @placeholder = "Enter Container No", @MaxLength = "11" })
+                                @Html.HiddenFor(Model => Model.trnEmptyContainerInWOContainerDetails.trnDocumentContainerID, new { @id = "trnDocumentContainerID", @name = "trnDocumentContainerID" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnEmptyContainerInWOContainerDetails.ISOCode, new { @for = "ISOCode" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyContainerInWOContainerDetails.ISOCodeID, String.Empty, new { @id = "spn_ISOCodeID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.trnEmptyContainerInWOContainerDetails.ISOCode, new { @id = "ISOCode", @name = "ISOCode", @class = "form-control", @placeholder = "Enter ISO Code" })
+                                @Html.HiddenFor(Model => Model.trnEmptyContainerInWOContainerDetails.ISOCodeID, new { @id = "ISOCodeID", @name = "ISOCodeID" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnEmptyContainerInWOContainerDetails.ISOCodeSize, new { @for = "ISOCodeSize" }) <span class="form-control-lable" id="spanISOCodeSize"></span>
+                                @Html.HiddenFor(Model => Model.trnEmptyContainerInWOContainerDetails.ISOCodeSize, new { @id = "ISOCodeSize", @name = "ISOCodeSize" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnEmptyContainerInWOContainerDetails.ISOCodeType, new { @for = "ISOCodeType" }) <span class="form-control-lable" id="spanISOCodeType"></span>
+                                @Html.HiddenFor(Model => Model.trnEmptyContainerInWOContainerDetails.ISOCodeType, new { @id = "ISOCodeType", @name = "ISOCodeType" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnEmptyContainerInWOContainerDetails.Agent, new { @for = "Agent" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyContainerInWOContainerDetails.AgentID, String.Empty, new { @id = "spn_AgentID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.trnEmptyContainerInWOContainerDetails.Agent, new { @id = "Agent", @name = "Agent", @class = "form-control", @placeholder = "Enter Agent" })
+                                @Html.HiddenFor(Model => Model.trnEmptyContainerInWOContainerDetails.AgentID, new { @id = "AgentID", @name = "AgentID" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnEmptyContainerInWOContainerDetails.Line, new { @for = "line" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyContainerInWOContainerDetails.LineID, String.Empty, new { @id = "spn_LineID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.trnEmptyContainerInWOContainerDetails.Line, new { @id = "Line", @name = "Line", @class = "form-control", @placeholder = "Enter Line" })
+                                @Html.HiddenFor(Model => Model.trnEmptyContainerInWOContainerDetails.LineID, new { @id = "LineID", @name = "LineID " })
+                            </div>
+                        </div>                       
+                        <div class="col-md-2 pull-right">
+                            <div class="form-group pull-right">
+                                <br />
+                                <button type="button" onclick="return ValidateContainerDetails();" class="btn btn-primary">Add</button>
+                                <button type="button" onclick="ClearContainerDetails();" class="btn btn-danger">Clear</button>
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="overflow:scroll">
+                            <hr>
+                            <div class="pull-right">
+                                <div style="display: inline-flex">
+                                    <div class="input-group input-group-sm">
+                                        <input id="txtContainerdetail" name="txtContainerdetail" type="text" class="form-control" onkeyup="DataTableSeachEngine('txtContainerdetail','tblContainerdetail','btnContainerdetail')" placeholder="Search for Common" value="">
+                                        <span class="input-group-btn">
+                                            <button type="button" id="btnContainerdetail" onclick="DataTableSeachEngine('txtContainerdetail','tblContainerdetail','btnContainerdetail','yes')" class="btn btn-primary btn-flat">Search</button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <table id="tblContainerdetail" style="white-space: nowrap;" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Container Number</th>
+                                        <th>ISO Code</th>
+                                        <th>Size</th>
+                                        <th>Type</th>
+                                        <th>Agent</th>
+                                        <th>Line</th>
+                                        <th>Gate In Date</th>
+                                        <th>Gate Out Date</th>
+                                        <th>Event</th>
+                                        <th>Empty In Invoice No</th>
+                                        <th>Empty In Invoice Date</th>
+                                        <th>Empty Out Invoice No</th>
+                                        <th>Empty Out Invoice Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblContainerDetails"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="dvFinalSave" class="col-md-3 pull-right">
+                        <div class="form-group pull-right">
+                            <br />
+                            <button type="submit" class="btn btn-primary" onclick="return Finalsave()">Save</button>
+                            <a href="@Url.Action("Index","trnEmptyContainerInWO", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade in" id="DeleteContainerDetails" style="display: none; padding-right: 17px;">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title">Delete Container Details</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row" style="padding:15px;">
+                            @Html.HiddenFor(Model => Model.trnEmptyContainerInWOContainerDetails.trnEmptyContainerInWOContainerDetailsID, new { @id = "DeletetrnEmptyContainerInWOContainerDetailsID", @name = "DeletetrnEmptyContainerInWOContainerDetailsID" })
+                            <div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyContainerInWOContainerDetails.DeleteRemarks, new { @for = "DeleteRemarks" })  @Html.ValidationMessageFor(Model => Model.trnEmptyContainerInWOContainerDetails.DeleteRemarks, String.Empty, new { @id = "spn_DeleteRemarks", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyContainerInWOContainerDetails.DeleteRemarks, new { @id = "DeleteRemarks", @name = "DeleteRemarks", @class = "form-control", @placeholder = "Enter Delete Remarks" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger pull-right margin-r-5" onclick="DeleteContainerDetails();" id="delete">Delete</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    }
+
+</section>
+<script>
+    var IsFinished = '@Model.IsFinished';
+    var doaction = '@Model.doaction';
+
+    function Finalsave() {
+        $("#IsFinished").val(true);
+        return validate();
+    }
+</script>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnEmptyContainerInWO.js")"></script>

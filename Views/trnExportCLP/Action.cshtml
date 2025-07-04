@@ -1,0 +1,586 @@
+﻿@model CFS.Models.trnExportCLP
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Export CLP";
+        if (!ViewBag.gblBlnEdit && !ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Export CLP";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            @using (Html.BeginForm("Action", "trnExportCLP", FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+            {
+                <div class="box">
+                    <div class="box-body">
+                        @if (Model != null && Model.doaction == "edit")
+                        {
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4>
+                                        <b>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">CLP Reference No: @Model.trnExportCLPNo</span>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">CLP Reference Date : @Model.CreatedDate</span>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">User : @Model.CreatedUser</span>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">Stuffing Wo No : @Model.StuffingWONo</span>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">Stuffing Wo Date : @Model.StuffingWODate</span>
+                                        </b>
+                                    </h4>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div id="dvStuffingWODate" class="pull-left" style="display:none">
+                                <div style="display: inline-flex">
+                                    <h4>
+                                        <b>
+                                            <span id="spnStuffingWODate" class="badge bg-light-blue" style="font-size:15px;">StuffWoDate : @Model.StuffingWODate</span>
+                                        </b>
+                                    </h4>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                <a href="@Url.Action("Index","trnExportCLP", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="box-body">
+                                @Html.HiddenFor(Model => Model.pagger.Search)
+                                @Html.HiddenFor(Model => Model.doaction)
+                                @Html.HiddenFor(Model => Model.page)
+                                @Html.HiddenFor(Model => Model.filter)
+                                @Html.HiddenFor(Model => Model.IsSearch)
+                                @Html.HiddenFor(Model => Model.StuffingWODate)
+                                @Html.HiddenFor(Model => Model.IsFinished, new { @id = "IsFinished", @name = "IsFinished" })
+                                @Html.HiddenFor(Model => Model.trnExportCLPNo, new { @id = "trnExportCLPNo", @name = "trnExportCLPNo" })
+                                @Html.HiddenFor(Model => Model.trnExportCLPNewNo, new { @id = "trnExportCLPNewNo", @name = "trnExportCLPNewNo" })
+                                @Html.HiddenFor(Model => Model.trnExportCLPPrefix, new { @id = "trnExportCLPPrefix", @name = "trnExportCLPPrefix" })
+                                @Html.HiddenFor(Model=>Model.IsEmptyContWT)
+                                @Html.HiddenFor(Model=>Model.IsBondOrCPExpired)
+                                <input type="hidden" id="trnExportCLPID" name="trnExportCLPID" value="@Model.trnExportCLPID" />
+                                <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>                                
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ContNo)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnExportStufingWOContainerDetailsID, String.Empty, new { @id = "spn_trnExportStufingWOContainerDetailsID", @class = "help-inline text-red" })
+                                        @if (Model.IsFinished)
+                                        {
+                                            @Html.TextBoxFor(Model => Model.ContNo, new { @id = "ContNo", @name = "ContNo", @class = "form-control", @placeholder = "SELECT ContNo",@readonly=true })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(Model => Model.ContNo, new { @id = "ContNo", @name = "ContNo", @class = "form-control", @placeholder = "SELECT ContNo" })
+                                        }
+                                        @Html.HiddenFor(Model => Model.trnExportStufingWOContainerDetailsID, new { @id = "trnExportStufingWOContainerDetailsID", @name = "trnExportStufingWOContainerDetailsID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.GrossCapacity)
+                                        @Html.TextBoxFor(Model => Model.GrossCapacity, new { @id = "GrossCapacity", @name = "GrossCapacity", @class = "form-control", @placeholder = "GrossCapacity", @readonly = true })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.EmptyContTareWeight)
+                                        @Html.TextBoxFor(Model => Model.EmptyContTareWeight, new { @id = "EmptyContTareWeight", @name = "EmptyContTareWeight", @class = "form-control", @placeholder = "EmptyContTareWeight", @readonly = true })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.PayloadCapacity)
+                                        @Html.TextBoxFor(Model => Model.PayloadCapacity, new { @id = "PayloadCapacity", @name = "PayloadCapacity", @class = "form-control", @placeholder = "PayloadCapacity", @readonly = true })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.WeighmentSlipNo)
+                                        @Html.TextBoxFor(Model => Model.WeighmentSlipNo, new { @id = "WeighmentSlipNo", @name = "WeighmentSlipNo", @class = "form-control", @placeholder = "WeighmentSlipNo", @readonly = true })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.WeighmentDate)
+                                        @Html.TextBoxFor(Model => Model.WeighmentDate, new { @id = "WeighmentDate", @name = "WeighmentDate", @class = "form-control", @placeholder = "WeighmentDate", @readonly = true })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.GrossWeight)
+                                        @Html.TextBoxFor(Model => Model.GrossWeight, new { @id = "GrossWeight", @name = "GrossWeight", @class = "form-control", @placeholder = "GrossWeight", @readonly = true })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.TruckTareWeight)
+                                        @Html.TextBoxFor(Model => Model.TruckTareWeight, new { @id = "TruckTareWeight", @name = "TruckTareWeight", @class = "form-control", @placeholder = "TruckTareWeight", @readonly = true })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ContTareWeight)
+                                        @Html.TextBoxFor(Model => Model.ContTareWeight, new { @id = "ContTareWeight", @name = "ContTareWeight", @class = "form-control", @placeholder = "ContTareWeight", @readonly = true })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.NetWeight)
+                                        @Html.TextBoxFor(Model => Model.NetWeight, new { @id = "NetWeight", @name = "NetWeight", @class = "form-control", @placeholder = "NetWeight", @readonly = true })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.InvoiceNo)
+                                        @Html.TextBoxFor(Model => Model.InvoiceNo, new { @id = "InvoiceNo", @name = "InvoiceNo", @class = "form-control", @placeholder = "InvoiceNo", @readonly = true })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.InvoiceDate)
+                                        @Html.TextBoxFor(Model => Model.InvoiceDate, new { @id = "InvoiceDate", @name = "InvoiceDate", @class = "form-control", @placeholder = "InvoiceDate", @readonly = true })
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    @Html.LabelFor(Model => Model.Size) : <span class="form-control-lable" id="Size">@Model.Size</span>
+                                    @Html.HiddenFor(Model => Model.hdnSize, new { @id = "hdnSize", @name = "hdnSize" })
+                                    @Html.HiddenFor(Model => Model.PayloadCapacity, new { @id = "hdnpayload", @name = "hdnpayload" })
+                                    @Html.HiddenFor(Model => Model.StuffingWODate, new { @id = "StuffingWODate", @name = "StuffingWODate" })
+                                </div>
+                                <div class="col-md-1">
+                                    @Html.LabelFor(Model => Model.Type) : <span class="form-control-lable" id="Type">@Model.Type</span>
+                                    @Html.HiddenFor(Model => Model.hdnType, new { @id = "hdnType", @name = "hdnType" })
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.VCNNo)
+                                        @if (Model.IsFinished)
+                                        {
+                                            @Html.TextBoxFor(Model => Model.VCNNo, new { @id = "VCNNo", @name = "VCNNo", @class = "form-control", @placeholder = "SELECT Cont No",@readonly=true })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(Model => Model.VCNNo, new { @id = "VCNNo", @name = "VCNNo", @class = "form-control", @placeholder = "SELECT Cont No" })
+                                        }
+
+                                        @Html.HiddenFor(Model => Model.VCNID, new { @id = "VCNID", @name = "VCNID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.VOYNo) : <span class="form-control-lable" id="VOYNo">@Model.VOYNo</span>
+                                        @Html.HiddenFor(Model => Model.hdnVOYNo, new { @id = "hdnVOYNo", @name = "hdnVOYNo" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.VesselName) : <span class="form-control-lable" id="VesselName">@Model.VesselName</span>
+                                        @Html.HiddenFor(Model => Model.hdnVesselName, new { @id = "hdnVesselName", @name = "hdnVesselName" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.CutoffDate) : <span class="form-control-lable" id="CutoffDate">@Model.CutoffDate</span>
+                                        @Html.HiddenFor(Model => Model.hdnCutoffDate, new { @id = "hdnCutoffDate", @name = "hdnCutoffDate" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.AgentSealNo)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.AgentSealNo, String.Empty, new { @id = "spn_AgentSealNo", @class = "help-inline text-red" })
+                                        @if (Model.IsFinished)
+                                        {
+                                            @Html.TextBoxFor(Model => Model.AgentSealNo, new { @id = "AgentSealNo", @name = "AgentSealNo", @class = "form-control", @placeholder = "SELECT Agent Seal No",@readonly=true })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(Model => Model.AgentSealNo, new { @id = "AgentSealNo", @name = "AgentSealNo", @class = "form-control", @placeholder = "SELECT Agent Seal No" })
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.CustomsSealNo)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CustomsSealNo, String.Empty, new { @id = "spn_CustomsSealNo", @class = "help-inline text-red" })
+                                        @if (Model.IsFinished)
+                                        {
+                                            @Html.TextBoxFor(Model => Model.CustomsSealNo, new { @id = "CustomsSealNo", @name = "CustomsSealNo", @class = "form-control", @placeholder = "SELECT Customs Seal No" ,@readonly=true})
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(Model => Model.CustomsSealNo, new { @id = "CustomsSealNo", @name = "CustomsSealNo", @class = "form-control", @placeholder = "SELECT Customs Seal No" })
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.CLPBeginDateAndTime, new { @id = "lblShipingBillDate", @for = "CLPBeginDateAndTime" })  @Html.ValidationMessageFor(Model => Model.CLPBeginDateAndTime, String.Empty, new { @id = "spn_CLPBeginDateAndTime", @class = "help-inline text-red" })
+                                        @if (Model.IsFinished)
+                                        {
+                                            @Html.TextBoxFor(Model => Model.CLPBeginDateAndTime, new { @id = "CLPBeginDateAndTime", @name = "CLPBeginDateAndTime", @class = "form-control DateTimePicker" ,@readonly=true})
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(Model => Model.CLPBeginDateAndTime, new { @id = "CLPBeginDateAndTime", @name = "CLPBeginDateAndTime", @class = "form-control DateTimePicker"})
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.CLPEndDateAndTime, new { @id = "lblShipingBillDate", @for = "CLPEndDateAndTime" })  @Html.ValidationMessageFor(Model => Model.CLPEndDateAndTime, String.Empty, new { @id = "spn_CLPEndDateAndTime", @class = "help-inline text-red" })
+                                        @if (Model.IsFinished)
+                                        {
+                                            @Html.TextBoxFor(Model => Model.CLPEndDateAndTime, new { @id = "CLPEndDateAndTime", @name = "CLPEndDateAndTime", @class = "form-control DateTimePicker",@readonly=true })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(Model => Model.CLPEndDateAndTime, new { @id = "CLPEndDateAndTime", @name = "CLPEndDateAndTime", @class = "form-control DateTimePicker" })
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Contractor)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Contractor, String.Empty, new { @id = "spn_ContractorID", @class = "help-inline text-red" })
+                                        @if (Model.IsFinished)
+                                        {
+                                            @Html.TextBoxFor(Model => Model.Contractor, new { @id = "Contractor", @name = "Contractor", @class = "form-control", @placeholder = "SELECT Contractor" ,@readonly=true})
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(Model => Model.Contractor, new { @id = "Contractor", @name = "Contractor", @class = "form-control", @placeholder = "SELECT Contractor" })
+                                        }
+                                        @Html.HiddenFor(Model => Model.ContractorID, new { @id = "ContractorID", @name = "ContractorID" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Surveyor)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Surveyor, String.Empty, new { @id = "spn_SurveyorID", @class = "help-inline text-red" })
+                                        @if (Model.IsFinished)
+                                        {
+                                            @Html.TextBoxFor(Model => Model.Surveyor, new { @id = "Surveyor", @name = "Surveyor", @class = "form-control", @placeholder = "SELECT Surveyor",@readonly=true })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(Model => Model.Surveyor, new { @id = "Surveyor", @name = "Surveyor", @class = "form-control", @placeholder = "SELECT Surveyor" })
+                                        }
+                                        @Html.HiddenFor(Model => Model.SurveyorID, new { @id = "SurveyorID", @name = "SurveyorID" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.CargoType)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Surveyor, String.Empty, new { @id = "spn_CargoTypeID", @class = "help-inline text-red" })
+                                        @if (Model.IsFinished)
+                                        {
+                                            @Html.TextBoxFor(Model => Model.CargoType, new { @id = "CargoType", @name = "CargoType", @class = "form-control", @placeholder = "SELECT Cargo Type",@readonly=true })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(Model => Model.CargoType, new { @id = "CargoType", @name = "CargoType", @class = "form-control", @placeholder = "SELECT Cargo Type" })
+                                        }
+                                        @Html.HiddenFor(Model => Model.CargoTypeID, new { @id = "CargoTypeID", @name = "CargoTypeID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.BillCommodity)@Html.ValidationMessageFor(Model => Model.BillCommodity, String.Empty, new { @id = "spn_BillCommodityID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.BillCommodity, new { @id = "BillCommodity", @name = "BillCommodity", @class = "form-control", @placeholder = "Enter BillCommodity" ,@Readonly=true})
+                                        @Html.HiddenFor(Model => Model.BillCommodityID, new { @id = "BillCommodityID", @name = "BillCommodityID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ShortShipmentPackages)@*<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ShortShipmentPackages, String.Empty, new { @id = "spn_ShortShipmentPackages", @class = "help-inline text-red" })*@
+                                        @if (Model.IsFinished)
+                                        {
+                                            @Html.TextBoxFor(Model => Model.ShortShipmentPackages, new { @id = "ShortShipmentPackages", @name = "ShortShipmentPackages", @class = "form-control", @placeholder = "SELECT Short Shipment Packages", @onkeypress = "return isonlynumber(event)" ,@readonly=true})
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(Model => Model.ShortShipmentPackages, new { @id = "ShortShipmentPackages", @name = "ShortShipmentPackages", @class = "form-control", @placeholder = "SELECT Short Shipment Packages", @onkeypress = "return isonlynumber(event)" })
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ShortShipmentPieces)@*<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Surveyor, String.Empty, new { @id = "spn_ShortShipmentPieces", @class = "help-inline text-red" })*@
+                                        @if (Model.IsFinished)
+                                        {
+                                            @Html.TextBoxFor(Model => Model.ShortShipmentPieces, new { @id = "ShortShipmentPieces", @name = "ShortShipmentPieces", @class = "form-control", @placeholder = "SELECT Short Shipment Pieces", @onkeypress = "return isonlynumber(event)" ,@readonly=true})
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(Model => Model.ShortShipmentPieces, new { @id = "ShortShipmentPieces", @name = "ShortShipmentPieces", @class = "form-control", @placeholder = "SELECT Short Shipment Pieces", @onkeypress = "return isonlynumber(event)" })
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ShortShipmentWeight)@*<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Surveyor, String.Empty, new { @id = "spn_ShortShipmentWeight", @class = "help-inline text-red" })*@
+                                        @if (Model.IsFinished)
+                                        {
+                                            @Html.TextBoxFor(Model => Model.ShortShipmentWeight, new { @id = "ShortShipmentWeight", @name = "ShortShipmentWeight", @class = "form-control", @placeholder = "SELECT Short Shipment Weight", @onkeypress = "return isonlynumber(event)" ,@readonly=true})
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(Model => Model.ShortShipmentWeight, new { @id = "ShortShipmentWeight", @name = "ShortShipmentWeight", @class = "form-control", @placeholder = "SELECT Short Shipment Weight", @onkeypress = "return isonlynumber(event)" })
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @if (Model.IsWeighmentDone == true)
+                                        {
+                                            @Html.LabelFor(Model => Model.WEIGHMENTREQUIRED, new { @for = "WEIGHMENTREQUIRED" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.WEIGHMENTREQUIRED, String.Empty, new { @id = "spn_WEIGHMENTREQUIRED", @class = "help-inline text-red" })
+                                            @Html.DropDownListFor(Model => Model.WEIGHMENTREQUIRED, Model.DDLWEIGHMENTREQUIRED, "SELECT", new { @id = "WEIGHMENTREQUIRED", @name = "WEIGHMENTREQUIRED", @class = "form-control", @readonly = "true", @style = "pointer-events:none;" })
+                                        }
+                                        else
+                                        {
+                                            @Html.LabelFor(Model => Model.WEIGHMENTREQUIRED, new { @for = "WEIGHMENTREQUIRED" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.WEIGHMENTREQUIRED, String.Empty, new { @id = "spn_WEIGHMENTREQUIRED", @class = "help-inline text-red" })
+                                            if (Model.IsFinished)
+                                            {
+                                                @Html.DropDownListFor(Model => Model.WEIGHMENTREQUIRED, Model.DDLWEIGHMENTREQUIRED, "SELECT", new { @id = "WEIGHMENTREQUIRED", @name = "WEIGHMENTREQUIRED", @class = "form-control", @readonly = "true", @style = "pointer-events:none;" })
+                                            }
+                                            else
+                                            {
+                                                if (Model.IsEmptyContWT>0)
+                                                {
+                                                    @Html.DropDownListFor(Model => Model.WEIGHMENTREQUIRED, Model.DDLWEIGHMENTREQUIRED, "SELECT", new { @id = "WEIGHMENTREQUIRED", @name = "WEIGHMENTREQUIRED", @class = "form-control", @readonly = "true", @style = "pointer-events:none;" })
+                                                }
+                                                else
+                                                {
+                                                    @Html.DropDownListFor(Model => Model.WEIGHMENTREQUIRED, Model.DDLWEIGHMENTREQUIRED, "SELECT", new { @id = "WEIGHMENTREQUIRED", @name = "WEIGHMENTREQUIRED", @class = "form-control" })
+                                                }
+                                            }
+
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" }) @Html.ValidationMessageFor(Model => Model.Remarks, String.Empty, new { @id = "spn_Remarks", @class = "help-inline text-red" })
+                                        @if (Model.IsFinished)
+                                        {
+                                            @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control", @placeholder = "Enter Remarks" ,@readonly=true})
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control", @placeholder = "Enter Remarks" })
+                                        }
+                                    </div>
+                                </div>
+                                @if (Model.doaction != "edit")
+                                {
+                                    <div class="col-md-2 pull-right">
+                                        <div class="form-group">
+                                            <br />
+                                            <button type="submit" class="btn btn-primary" onclick="return Validation()">Save</button>
+                                            <a href="@Url.Action("index",  "trnExportCLP")" class="btn btn-danger">Cancel</a>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                if (Model.doaction == "edit")
+                {
+                    <div class="box">
+                        <div class="box-header with-border" data-widget="collapse">
+                            <h4><b>SB Details</b></h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="col-md-12" style="overflow:scroll">
+                                <table id="SBDetails" style="white-space: nowrap;" class="table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>SB No</th>
+                                            <th>SB Date</th>
+                                            <th>INV No</th>
+                                            <th>INV Date</th>
+                                            <th>Bulk/Non-Bulk</th>
+                                            <th>CHA/Customer</th>
+                                            <th>Forwarder</th>
+                                            <th>Exporter</th>
+                                            <th>Cargo</th>
+                                            <th>FOB</th>
+                                            <th>Cargo Type</th>
+                                            <th>Bill Commodity</th>
+                                            <th>Sub Commodity</th>
+                                            <th>POD</th>
+                                            <th>Class</th>
+                                            <th>UN</th>
+                                            <th>Temp</th>
+                                            <th>Declared Packages</th>
+                                            <th>Declared Pieces</th>
+                                            <th>Declared Weight</th>
+                                            <th>Stuff Request Packages</th>
+                                            <th>Stuff Request Pieces</th>
+                                            <th>Stuff Request Weight</th>
+                                            <th>CLP Balance Packages</th>
+                                            <th>CLP Balance Pieces</th>
+                                            <th>CLP Balance Weight</th>
+                                            <th>CLP Packages</th>
+                                            <th>CLP Pieces</th>
+                                            <th>CLP Weight</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblSBDetails">
+                                        @if (Model.dtSBDetails != null && Model.dtSBDetails.Rows.Count > 0)
+                                        {
+                                            for (int i = 0; i < Model.dtSBDetails.Rows.Count; i++)
+                                            {
+                                                decimal CLPBalPkgs = 0, CLPBalPcs = 0, CLPBalWt = 0;
+
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.dtSBDetails.Rows[i]["NOOFPKGS"])) && !string.IsNullOrEmpty(Convert.ToString(Model.dtSBDetails.Rows[i]["CLPPackages"])))
+                                                {
+                                                    CLPBalPkgs = Convert.ToDecimal(Model.dtSBDetails.Rows[i]["NOOFPKGS"]) - Convert.ToDecimal(Model.dtSBDetails.Rows[i]["CLPPackages"]);
+                                                }
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.dtSBDetails.Rows[i]["NOOFPCS"])) && !string.IsNullOrEmpty(Convert.ToString(Model.dtSBDetails.Rows[i]["CLPPieces"])))
+                                                {
+                                                    CLPBalPcs = Convert.ToDecimal(Model.dtSBDetails.Rows[i]["NOOFPCS"]) - Convert.ToDecimal(Model.dtSBDetails.Rows[i]["CLPPieces"]);
+                                                }
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.dtSBDetails.Rows[i]["NOOFWT"])) && !string.IsNullOrEmpty(Convert.ToString(Model.dtSBDetails.Rows[i]["CLPWeight"])))
+                                                {
+                                                    CLPBalWt = Convert.ToDecimal(Model.dtSBDetails.Rows[i]["NOOFWT"]) - Convert.ToDecimal(Model.dtSBDetails.Rows[i]["CLPWeight"]);
+                                                }
+
+                                                decimal CLPPkgs = 0, CLPPcs = 0, CLPWt = 0;
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.dtSBDetails.Rows[i]["CLPPackages"])))
+                                                {
+                                                    CLPPkgs = Convert.ToDecimal(Model.dtSBDetails.Rows[i]["CLPPackages"]);
+                                                }
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.dtSBDetails.Rows[i]["CLPPieces"])))
+                                                {
+                                                    CLPPcs = Convert.ToDecimal(Model.dtSBDetails.Rows[i]["CLPPieces"]);
+                                                }
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.dtSBDetails.Rows[i]["CLPWeight"])))
+                                                {
+                                                    CLPWt = Convert.ToDecimal(Model.dtSBDetails.Rows[i]["CLPWeight"]);
+                                                }
+
+
+
+                                        <tr>
+                                            <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["SBNo"])</td>
+                                            @if (!string.IsNullOrEmpty(Model.dtSBDetails.Rows[i]["SBDate"].ToString()))
+                                            {
+                                                <td>@CFS.Com.ClsCommon.ConvertDateNullToBlank(Convert.ToDateTime(Model.dtSBDetails.Rows[i]["SBDate"]))</td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+                                            
+                                            <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["INVNo"])</td>
+                                                @if (!string.IsNullOrEmpty(Model.dtSBDetails.Rows[i]["InvDate"].ToString()))
+                                                {
+                                                    <td>@CFS.Com.ClsCommon.ConvertDateNullToBlank(Convert.ToDateTime(Model.dtSBDetails.Rows[i]["InvDate"]))</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                            
+                                            <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["BULKSTATUS"])</td>
+                                            <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["CHAName"])</td>
+                                            <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["ForwarderName"])</td>
+                                            <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["ExporterName"])</td>
+                                            <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["CARGODESC"])</td>
+                                            <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["FOB"])</td>
+                                            <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["CargoType"])</td>
+                                            <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["GroupCommodity"])</td>
+                                            <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["COMMODITYNAME"])</td>
+                                            <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["POD"])</td>
+                                            <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["IMO"])</td>
+                                            <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["UN"])</td>
+                                            <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["Temp"])</td>
+                                            <td>@Convert.ToDecimal(Model.dtSBDetails.Rows[i]["NoOfPackages"]).ToString("0.00")</td>
+                                            <td>@Convert.ToDecimal(Model.dtSBDetails.Rows[i]["NoOfPieces"]).ToString("0.00")</td>
+                                            <td>@Convert.ToDecimal(Model.dtSBDetails.Rows[i]["Weight"]).ToString("0.00")</td>
+                                            <td>@Convert.ToDecimal(Model.dtSBDetails.Rows[i]["NOOFPKGS"]).ToString("0.00")</td>
+                                            <td>@Convert.ToDecimal(Model.dtSBDetails.Rows[i]["NOOFPCS"]).ToString("0.00")</td>
+                                            <td>@Convert.ToDecimal(Model.dtSBDetails.Rows[i]["NOOFWT"]).ToString("0.00")</td>
+                                            <td>@CLPBalPkgs.ToString("0.00")</td>
+                                            <td>@CLPBalPcs.ToString("0.00")</td>
+                                            <td>@CLPBalWt.ToString("0.00")</td>
+                                            <td>@CLPPkgs.ToString("0.00")</td>
+                                            <td>@CLPPcs.ToString("0.00")</td>
+                                            <td>@CLPWt.ToString("0.00")</td>
+
+                                            <td>
+                                                <a style=" cursor: pointer;" href="@Url.Action("Index","trnExportCLPBOEItems"
+                                                                                                        , new {  @trnExportCLPID=Model.trnExportCLPID
+                                                                                                                    ,@trnDocumentLotDetailsID = Model.dtSBDetails.Rows[i]["trnDocumentLotDetailsID"]
+                                                                                                                    ,@BOENo = Model.dtSBDetails.Rows[i]["SBNo"]
+                                                                                                                    ,@trnExportDocumentDeclarationLotDetailsID = Model.dtSBDetails.Rows[i]["trnExportDocumentDeclarationLotDetailsID"]
+                                                                                                                    ,@trnExportDocumentDeclarationID = Convert.ToString(Model.dtSBDetails.Rows[i]["trnExportDocumentDeclarationID"])
+                                                                                                                    ,@WHLocation =""
+                                                                                                                    ,@WHLocationID = "0"
+                                                                                                                    ,@WHPackages=Model.dtSBDetails.Rows[i]["NOOFPKGS"]
+                                                                                                                    ,@WHPieces=Model.dtSBDetails.Rows[i]["NOOFPCS"]
+                                                                                                                    ,@WHWeight=Model.dtSBDetails.Rows[i]["NOOFWT"]
+                                                                                                                    ,@trnDocumentID=Model.dtSBDetails.Rows[i]["trnDocumentID"]
+                                                                                                                    ,@ContNo=Model.ContNo
+                                                                                                                    ,@contSize=Model.Size
+                                                                                                                    ,@contType=Model.Type
+                                                                                                                    ,@cargoType=Model.CargoType
+                                                                                                                    ,@trnexportstufingwoSBDetailsID =  Model.dtSBDetails.Rows[i]["trnexportstufingwoSBDetailsID"]
+                                                                                                                    ,@IsBulk=Model.dtSBDetails.Rows[i]["BULKSTATUS"]
+                                                                                                                    ,@trnExBondDocumentEntryDetailsID=Model.dtSBDetails.Rows[i]["trnExBondDocumentEntryDetailsID"]
+                                                                                                                    ,@IsView=false,@IsFinished=Model.IsFinished})" target="_blank" class="btn btn-primary"><i class="fa fa-plus"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <a><i data-toggle="modal" data-target="#ReExportDetails" onclick="GetReExportDetails(@Model.dtSBDetails.Rows[i]["trnExportDocumentDeclarationLotDetailsID"])" title="ReExport Details"  class="fa fa-arrows-alt fa-spin" style="font-size: x-large; cursor: pointer; vertical-align: middle;color:#3c8dbc"></i></a>
+                                            </td>
+
+                                        </tr>
+                                            }
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 pull-right">
+                        <div class="form-group">
+                            <br />
+                            <button type="submit" class="btn btn-primary" onclick="return Validation()">Save</button>
+                            <a href="@Url.Action("index",  "trnExportCLP", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnExportCLP.js")"></script>

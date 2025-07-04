@@ -1,0 +1,158 @@
+﻿@model CFS.Models.trnContainerGateIn
+@using System.Globalization;
+@{
+    ViewBag.Title = "Container Gate In List";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a href="@Url.Action("Action", "trnContainerGateIn", new { doaction = "add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Container Gate In"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+
+
+                    <div style="overflow-x:scroll">
+                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerGateIn", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.trnContainerGateInNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.trncontainergateinno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.trncontainergateinno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Container Gate In No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerGateIn", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.CreatedDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.createddate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.createddate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Container Gate In Date</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerGateIn", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.ContNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.contno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.contno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Container Number</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerGateIn", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.ISOCode", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.isocode" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.isocode" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> ISO Code</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerGateIn", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.ISOCodeSize", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.isocodesize" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.isocodesize" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Size</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerGateIn", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.ISOCodeType", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.isocodetype" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.isocodetype" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Type</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerGateIn", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.NatureofCargoName", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.natureofcargoname" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.natureofcargoname" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Cargo Type</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerGateIn", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.DeliveryMode", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.deliverymode" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.deliverymode" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Del. Mode</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerGateIn", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.BOENo", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.boeno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.boeno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> In-BOE No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerGateIn", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.weighmentStatus", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.weighmentstatus" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.weighmentstatus" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Weighment Status</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerGateIn", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.TruckNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.truckno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.truckno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Truck No</a>
+                                    </th>
+                                    <th>Status</th>
+                                    <th class="freezeLastColumn">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.MyDatatable != null && Model.MyDatatable.Rows.Count > 0)
+                                {
+                                    for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                    {
+                                        <tr>
+                                            <td>@Model.MyDatatable.Rows[i]["trnContainerGateInNo"]</td>
+
+                                            @{
+                                                string CreatedDate = "";
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.MyDatatable.Rows[i]["CreatedDate"])))
+                                                {
+                                                    CreatedDate = Convert.ToDateTime(Model.MyDatatable.Rows[i]["CreatedDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat, CultureInfo.InvariantCulture);
+                                                }
+                                            }
+                                            <td>@CreatedDate</td>
+                                            <td>@Model.MyDatatable.Rows[i]["ContNo"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["ISOCode"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["ISOCodeSize"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["ISOCodeType"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["NatureofCargoName"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["DeliveryMode"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["BOENo"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["weighmentStatus"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["TruckNo"]</td>
+                                            <td>@(Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]) ? "Approved" : "UnApproved")</td>
+                                            <td class="freezeLastColumnwithWhite">
+                                                @if (!Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]) && ViewBag.gblBlnApprove && Convert.ToInt32(Model.MyDatatable.Rows[i]["UsedCounter"]) == 0)
+                                                {
+                                                    <a href="@Url.Action("Confirmation", "trnContainerGateIn", new { id = Model.MyDatatable.Rows[i]["trnContainerGateInID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true })"><i title="Click to Approve" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i></a>
+                                                }
+                                                else if (ViewBag.gblBlnUnapprove && Convert.ToInt32(Model.MyDatatable.Rows[i]["UsedCounter"]) == 0 && Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]))
+                                                {
+                                                    <a href="@Url.Action("Confirmation", "trnContainerGateIn", new { id = Model.MyDatatable.Rows[i]["trnContainerGateInID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true})"><i title="Click to Unapprove" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-down"></i></a>
+                                                }
+                                                @if (ViewBag.gblBlnEdit && !Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]) && Convert.ToInt32(Model.MyDatatable.Rows[i]["UsedCounter"]) == 0)
+                                                {
+                                                    <a href="@Url.Action("Action", "trnContainerGateIn", new { id = Model.MyDatatable.Rows[i]["trnContainerGateInID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true})"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                                }
+                                                @if (ViewBag.gblBlnView)
+                                                {
+                                                    <a href="@Url.Action("view", "trnContainerGateIn", new { id = Model.MyDatatable.Rows[i]["trnContainerGateInID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true })"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                                }
+                                                @if (ViewBag.gblBlnDelete && !Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]) && Convert.ToInt32(Model.MyDatatable.Rows[i]["UsedCounter"]) == 0)
+                                                {
+                                                    <a href="@Url.Action("delete", "trnContainerGateIn", new { id = Model.MyDatatable.Rows[i]["trnContainerGateInID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                                }
+                                                @if (ViewBag.gblBlnApprove)
+                                                {
+                                                    <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", "trnContainerGateIn", new { id = Model.MyDatatable.Rows[i]["trnContainerGateInID"], format = "pdf" })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                                }
+
+                                                @if (Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]))
+                                                {
+                                                    <a target="_blank" href="@Url.Action("GenerateAndDisplayConfirmationReport", "trnContainerGateIn", new { id = Model.MyDatatable.Rows[i]["trnContainerGateInID"], format = "pdf" })"><i title="Click to Confirm Gate Pass Print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-floppy-o"></i></a>
+                                                }
+                                                <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('trnContainerGateIn','@Model.MyDatatable.Rows[i]["trnContainerGateInID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    @Html.Partial("_pagination")
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+ var IsSearch = '@Model.IsSearch.ToString().ToLower()'; var doaction = '@Model.doaction';</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnContainerGateIn.js")"></script>

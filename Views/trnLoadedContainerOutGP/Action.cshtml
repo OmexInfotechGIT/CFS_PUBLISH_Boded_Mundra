@@ -1,0 +1,378 @@
+﻿@model CFS.Models.trnLoadedContainerOutGP
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    bool IsEdit = false;
+    if (Model.doaction == "edit")
+    {
+        IsEdit = true;
+        ViewBag.Title = "Update Loaded Container Out Gatepass";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Loaded Container Out Gatepass";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    System.Text.StringBuilder StrAutocomplete = new System.Text.StringBuilder();
+}
+
+<style>
+    .ui-autocomplete {
+        z-index: 10000;
+    }
+
+    input, select {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+</style>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            @using (Html.BeginForm("Action", CFS.Com.ClsCommon.Controller(), FormMethod.Post))
+            {
+
+                <div class="box">
+                    <div class="box-header">
+                        @if (Model.doaction == "edit")
+                        {
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <span class="badge bg-light-blue" style="font-size:15px;">Gatepass No : @Model.ReferenceNo</span>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                    <span class="badge bg-light-blue" style="font-size:15px;">User : @Model.User</span> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                    <span class="badge bg-light-blue" style="font-size:15px;">Datetime : @Model.CreatedDateTime</span>
+                                </div>
+                            </div>
+                        }
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                <a href="@Url.Action("Index",CFS.Com.ClsCommon.Controller(), new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.TruckNo)<span class="text-red">*</span>
+                                @if (!Model.IsSearch)
+                                {
+                                    @Html.TextBoxFor(Model => Model.TruckNo, new { @id = "TruckNo", @name = "TruckNo", @class = "form-control", @placeholder = "Truck No. " })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(Model => Model.TruckNo, new { @id = "TruckNo", @name = "TruckNo", @class = "form-control", @placeholder = "Truck No. ", @readonly = "true" })
+
+                                }
+                                @Html.HiddenFor(Model => Model.trnEmptyTruckGateInID, new { @id = "trnEmptyTruckGateInID", @name = "trnEmptyTruckGateInID" })
+                                @Html.HiddenFor(Model => Model.TransactionType, new { @id = "TransactionType", @name = "TransactionType" })
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="pull-left">
+                                <br />
+                                @if (!Model.IsSearch)
+                                {
+                                    <button type="button" onclick="return SearchwithCargoGateIn()" class="btn btn-primary">Search</button>
+                                }
+                                @if (!IsEdit)
+                                {
+                                    <a onclick="ClearSearchDetails()" class="btn btn-danger">Clear</a>
+                                }
+                            </div>
+                        </div>
+                        @if (Model.IsSearch)
+                        {
+                            @Html.HiddenFor(Model => Model.pagger.Search)
+                            @Html.HiddenFor(Model => Model.doaction)
+                            @Html.HiddenFor(Model => Model.IsSearch)
+                            <input type="hidden" id="trnLoadedContainerOutGPTab" name="trnLoadedContainerOutGPTab" value="@Model.trnLoadedContainerOutGPTab" />
+                            <input type="hidden" id="trnEmptyTruckGateInID" name="trnEmptyTruckGateInID" value="@Model.trnEmptyTruckGateInID" />
+                            @Html.HiddenFor(Model => Model.trnLoadedContainerOutGPNo)
+                            @Html.HiddenFor(Model => Model.trnLoadedContainerOutGPID)
+                            @Html.HiddenFor(Model => Model.trnLoadedContainerOutGPPrifix)
+
+                            <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.Transporter, new { @for = "txtTransporter" }) : <span>@Model.Transporter</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.VehicleType, new { @for = "txtVehicleType" }) : <span>@Model.VehicleType</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.LicNo, new { @for = "LicNo" }) : <span>@Model.LicNo</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.DriverName, new { @for = "DriverName" }) : <span>@Model.DriverName</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.MobileNo, new { @for = "MobileNo" }) : <span>@Model.MobileNo</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.Address, new { @for = "Address" }) : <span>@Model.Address</span>
+                            </div>
+                            <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" })
+                                    @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control", @placeholder = "Enter Remarks" })
+                                </div>
+                            </div>
+                            if (Model.MyDatatable != null && Model.MyDatatable.Rows.Count > 0)
+                            {
+                                <div class="col-md-12" style="overflow:scroll">
+                                    <table id="example2" style="white-space: nowrap;" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Cont No</th>
+                                                <th>ISO Code</th>
+                                                <th>Size</th>
+                                                <th>Type</th>
+                                                <th>Cargo Terminal Seal No</th>
+                                                <th>e-seal No</th>
+                                                <th>Move to Location</th>
+                                                <th>Cargo Type</th>
+                                                <th>Line</th>
+                                                <th>Agent</th>
+                                                <th>Container Status</th>
+                                                <th>Temp</th>
+                                                <th>No. of Packages</th>
+                                                <th>Weight</th>
+                                                <th>NOC No</th>
+                                                <th>Gate in date</th>
+                                                <th>Plug in Date</th>
+                                                <th>Plug off date</th>
+                                                <th>Weighment Status</th>
+                                                <th>Weighment Slip No</th>
+                                                <th>Gross Weight</th>
+                                                <th>Truck Tare Weight</th>
+                                                <th>Cont Tare Weight</th>
+                                                <th>Net Wt</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                int count1 = 0;
+
+                                                StrAutocomplete.Append(@" <script> setTimeout(function () {");
+
+                                                count1 = Model.MyDatatable.Rows.Count;
+
+                                                Model.CargoTerminalSealNo = new string[Model.MyDatatable.Rows.Count];
+                                                Model.ESealNo = new string[Model.MyDatatable.Rows.Count];
+                                                Model.MovetoLocation = new string[Model.MyDatatable.Rows.Count];
+                                                Model.MovetoLocationID = new int[Model.MyDatatable.Rows.Count];
+                                                Model.trnLoadedContainerOutWOID = new int[Model.MyDatatable.Rows.Count];
+                                                if (Model.Categroy == "Export")
+                                                {
+                                                    Model.trnexportmovementWOContainerDetailsID = new int[Model.MyDatatable.Rows.Count];
+                                                }
+                                                else
+                                                {
+                                                    Model.trnDocumentContainerID = new int[Model.MyDatatable.Rows.Count];
+                                                }
+                                                Model.trnLoadedContainerOutGPDetailsID = new int[Model.MyDatatable.Rows.Count];
+                                            }
+                                            @for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                            {
+                                                Model.CargoTerminalSealNo[i] = Convert.ToString(Model.MyDatatable.Rows[i]["CargoTerminalSealNo"]);
+                                                Model.ESealNo[i] = Convert.ToString(Model.MyDatatable.Rows[i]["ESealNo"]);
+                                                Model.MovetoLocation[i] = Convert.ToString(Model.MyDatatable.Rows[i]["MovetoLocation"]);
+                                                Model.MovetoLocationID[i] = Convert.ToInt32(Model.MyDatatable.Rows[i]["MovetoLocationID"]);
+                                                Model.trnLoadedContainerOutGPDetailsID[i] = Convert.ToInt32(Model.MyDatatable.Rows[i]["trnLoadedContainerOutGPDetailsID"]);
+                                                if (Model.Categroy == "Export")
+                                                {
+                                                    Model.trnexportmovementWOContainerDetailsID[i] = Convert.ToInt32(Model.MyDatatable.Rows[i]["trnexportmovementWOContainerDetailsID"]);
+                                                }
+                                                else
+                                                {
+                                                    Model.trnDocumentContainerID[i] = Convert.ToInt32(Model.MyDatatable.Rows[i]["trnDocumentContainerID"]);
+                                                }
+                                                Model.trnLoadedContainerOutWOID[i] = Convert.ToInt32(Model.MyDatatable.Rows[i]["trnLoadedContainerOutWOID"]);
+                                                StrAutocomplete.Append(@" $('#Remarks').val('" + Convert.ToString(Model.MyDatatable.Rows[i]["Remarks"]) + "'); Autocompletebox('MovetoLocation" + i + @"', 'MovetoLocationID" + i + @"', 'trnLoadedContainerOutGP', 'GetLocation'); ");
+                                            <tr>
+                                                <td>@Model.MyDatatable.Rows[i]["ContNo"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["ISOCode"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["Size"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["ContType"]</td>
+                                                <td>@Html.TextBoxFor(Model => Model.CargoTerminalSealNo[i], new { @id = "CargoTerminalSealNo" + i, @style = "background: rgb(255, 255, 255);", @placeholder = "Enter Cargo Terminal Seal No" })</td>
+                                                <td>@Html.TextBoxFor(Model => Model.ESealNo[i], new { @id = "ESealNo" + i, @style = "background: rgb(255, 255, 255);", @placeholder = "Enter E - Seal No" })</td>
+                                                <td>
+                                                    @Html.TextBoxFor(Model => Model.MovetoLocation[i], new { @id = "MovetoLocation" + i, @style = "background: rgb(255, 255, 255);", @placeholder = "Enter Move to Location" })
+                                                    @Html.HiddenFor(Model => Model.MovetoLocationID[i], new { @id = "MovetoLocationID" + i, @class = "form-control" })
+                                                    @Html.HiddenFor(Model => Model.trnLoadedContainerOutWOID[i], new { @id = "trnLoadedContainerOutWOID" + i, @class = "form-control" })
+                                                    @if (Model.Categroy == "Export")
+                                                    {
+                                                        @Html.HiddenFor(Model => Model.trnexportmovementWOContainerDetailsID[i], new { @id = "trnexportmovementWOContainerDetailsID" + i, @class = "form-control" })
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.HiddenFor(Model => Model.trnDocumentContainerID[i], new { @id = "trnDocumentLotDetailsID" + i, @class = "form-control" })
+                                                    }
+                                                    @Html.HiddenFor(Model => Model.trnLoadedContainerOutGPDetailsID[i], new { @id = "trnLoadedContainerOutGPDetailsID" + i, @class = "form-control" })
+                                                </td>
+                                                <td>@Model.MyDatatable.Rows[i]["CargoType"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["Line"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["Agent"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["ContainerStatus"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["Temp"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["PKG"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["Weight"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["trnDocumentNo"]</td>
+                                                @if (Model.MyDatatable.Rows[i]["GateInDate"] != null && Model.MyDatatable.Rows[i]["GateInDate"].ToString() != "")
+                                                {
+                                                    <td>@(Convert.ToDateTime(Model.MyDatatable.Rows[i]["GateInDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat))</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                @if (Model.MyDatatable.Rows[i]["PluginDate"] != null && Model.MyDatatable.Rows[i]["PluginDate"].ToString() != "")
+                                                {
+                                                    <td>@(Convert.ToDateTime(Model.MyDatatable.Rows[i]["PluginDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat))</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                @if (Model.MyDatatable.Rows[i]["PlugOffDate"] != null && Model.MyDatatable.Rows[i]["PlugOffDate"].ToString() != "")
+                                                {
+                                                    <td>@(Convert.ToDateTime(Model.MyDatatable.Rows[i]["PlugOffDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat))</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                <td>@Model.MyDatatable.Rows[i]["WeighmentRequired"]</td>
+                                                <td>@Model.MyDatatable.Rows[i]["trnWeighmentSlipNo"]</td>
+                                                <td>@Convert.ToDecimal(Model.MyDatatable.Rows[i]["GrossWeight"]).ToString("0.00")</td>
+                                                <td>@Convert.ToDecimal(Model.MyDatatable.Rows[i]["TruckTareWeight"]).ToString("0.00")</td>
+                                                <td>@Convert.ToDecimal(Model.MyDatatable.Rows[i]["ContainerTareWeight"]).ToString("0.00")</td>
+                                                <td>@Convert.ToDecimal(Model.MyDatatable.Rows[i]["NetWeight"]).ToString("0.00")</td>
+                                            </tr>
+                                            }
+                                            @{
+                                                StrAutocomplete.Append(@"  }, 1000);</script> ");
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                Model.RowCount = Model.MyDatatable.Rows.Count;
+                            }
+                            @Html.HiddenFor(Model => Model.RowCount, new { @id = "RowCount", @name = "RowCount" })
+                        }
+                    </div>
+                </div>
+                if (Model.IsSearch && Model != null && Model.dtNocDetails != null)
+                {
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h4><b>NOC Details</b></h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="col-md-12" style="overflow:scroll">
+                                <table id="example2" class="table table-bordered table-hover" style="white-space: nowrap;">
+                                    <thead>
+                                        <tr>
+                                            <th>NOC No</th>                                            
+                                            <th>SB No</th>
+                                            <th>SB Date</th>
+                                            <th>INV No</th>
+                                            <th>INV Date</th>
+                                            <th>SB Pkgs</th>
+                                            <th>SB Weight</th>
+                                            <th>BILLING PARTY</th>
+                                            <th>CHA/BROKER</th>
+                                            <th>IMPORTER/PARTY</th>
+                                            <th>BULK/NB STATUS</th>
+                                            <th>CARGO TYPE</th>
+                                            <th>PACKING TYPE</th>
+                                            <th>LOADING WO NO</th>
+                                            <th>Temp</th>
+                                            <th>UN No.</th>
+                                            <th>Class</th>
+                                            <th>Cargo Desc.</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.dtNocDetails.Rows.Count; i++)
+                                        {
+                                        <tr>
+                                            <td>@Model.dtNocDetails.Rows[i]["trnDocumentNo"]</td>
+                                            <td>@Model.dtNocDetails.Rows[i]["BOENo"]</td>
+                                            @if (!string.IsNullOrEmpty(Model.dtNocDetails.Rows[i]["BOEDate"].ToString()))
+                                            {
+                                                <td>@CFS.Com.ClsCommon.ConvertDateNullToBlank(Convert.ToDateTime(Model.dtNocDetails.Rows[i]["BOEDate"]))</td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+                                            <td>@Model.dtNocDetails.Rows[i]["BLNo"]</td>
+                                            @if (!string.IsNullOrEmpty(Model.dtNocDetails.Rows[i]["BLDate"].ToString()))
+                                            {
+                                                <td>@CFS.Com.ClsCommon.ConvertDateNullToBlank(Convert.ToDateTime(Model.dtNocDetails.Rows[i]["BLDate"]))</td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+                                            <td>@Model.dtNocDetails.Rows[i]["NOOFPKGS"]</td>
+                                            <td>@Model.dtNocDetails.Rows[i]["WEIGHT"]</td>
+                                            <td>@Model.dtNocDetails.Rows[i]["BillToCustomerName"]</td>
+                                            <td>@Model.dtNocDetails.Rows[i]["SubCHA"]</td>
+                                            <td>@Model.dtNocDetails.Rows[i]["IMPORTERNAME"]</td>
+                                            <td>@Model.dtNocDetails.Rows[i]["BULKSTATUS"]</td>
+                                            <td>@Model.dtNocDetails.Rows[i]["CargoType"]</td>
+                                            <td>@Model.dtNocDetails.Rows[i]["PACKAGETYPE"]</td>
+                                            <td>@Model.dtNocDetails.Rows[i]["trnLoadedContainerOutWONo"]</td>
+                                            <td>@Model.dtNocDetails.Rows[i]["temp"]</td>
+                                            <td>@Model.dtNocDetails.Rows[i]["UN"]</td>
+                                            <td>@Model.dtNocDetails.Rows[i]["IMO"]</td>
+                                            <td>@Model.dtNocDetails.Rows[i]["CARGODESC"]</td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+                if (Model.IsSearch)
+                {
+                    <div class="pull-right">
+                        <div class="form-group">
+                            <br />
+                            <button type="submit" style="margin-right: 5px;" class="btn btn-primary" id="SaveDocument" onclick="return validateModel()"> Save </button>
+                            <a href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {pg = Request.Params["pg"], search = Request.Params["search"] })" style="margin-right: 5px;" class="btn btn-danger pull-right">Cancel</a>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+</section>
+<script>
+    var doaction = '@Model.doaction';
+    var IsView = false;
+    var ControllerName='@CFS.Com.ClsCommon.Controller()';
+</script>
+@{
+
+    System.Web.HtmlString HtmlDeatails = new HtmlString(StrAutocomplete.ToString());
+}
+@HtmlDeatails
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnLoadedContainerOutGP.js")"></script>
+

@@ -1,0 +1,429 @@
+﻿@model CFS.Models.trnContainerDestuffing
+@using System.Globalization;
+@{
+    ViewBag.Title = "View Container Destuffing";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+@using (Html.BeginForm("Action", "trnContainerDestuffing", FormMethod.Post))
+{
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        @if (Model.doaction == "edit")
+                        {
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <span class="badge bg-light-blue" style="font-size:15px;">Container Destuffing No : @Model.DestuffReferenceNo</span>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                    <span class="badge bg-light-blue" style="font-size:15px;">User : @Model.User</span> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                    <span class="badge bg-light-blue" style="font-size:15px;">Destuff Date and time : @Model.DestuffDateTime</span>
+                                </div>
+                            </div>
+                        }
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                @if (Request.Params["IsWorkOrderOrGateIn"].ToString() == "True")
+                                {
+                                    <a href="@Url.Action("index", "trnContainerGateIn", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("Index", "trnContainerDestuffing", new { pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.ContNo, new { @for = "ContNo" })<span class="text-red">*</span>
+                                @if (Model.IsSearch)
+                                {
+                                    @Html.TextBoxFor(Model => Model.ContNo, new { @id = "ContNo", @name = "ContNo", @class = "form-control", @placeholder = "Enter Cont No", @readonly = "true" })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(Model => Model.ContNo, new { @id = "ContNo", @name = "ContNo", @class = "form-control", @placeholder = "Enter Cont No" })
+                                }
+                                @Html.HiddenFor(Model => Model.trnContainerGateInDetailsID, new { @id = "trnContainerGateInDetailsID", @name = "trnContainerGateInDetailsID" })
+                            </div>
+                        </div>
+
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.IsSearch)
+                        @Html.HiddenFor(Model => Model.trnContainerDestuffingID, new { @id = "trnContainerDestuffingID", @name = "trnContainerDestuffingID" })
+                        <input type="hidden" id="trnContainerGateInDetailsID" name="trnContainerGateInDetailsID" value="@Model.trnContainerGateInDetailsID" />
+                        <input type="hidden" id="ContNo" name="ContNo" value="@Model.ContNo" />
+                        @if (Model.IsSearch)
+                        {
+                            <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.ContSize, new { @for = "txtContSize" }) : <span>@Model.ContSize</span>
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.ContType, new { @for = "txtContType" }) : <span>@Model.ContType</span>
+
+                            </div>
+                            <div class="col-md-6">
+
+                                @Html.LabelFor(Model => Model.BillCommodity, new { @for = "txtBillCommodity" }) : <span>@Model.BillCommodity</span>
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.CargoType, new { @for = "txtCargoType" }) : <span>@Model.CargoType</span>
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.TEMP, new { @for = "txtTemp" }) : <span>@Model.TEMP</span>
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.IMO, new { @for = "txtIMO" }) : <span>@Model.IMO</span>
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.UN, new { @for = "txtUN" }) : <span>@Model.UN</span>
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.HighValueStatus, new { @for = "txtHighValueStatus" }) : <span>@Model.HighValueStatus</span>
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.VehicleNo, new { @for = "txtVehicleNo" }) : <span>@Model.VehicleNo</span>
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.WeighmentStatus, new { @for = "txtWeighmentStatus" }) :
+                                @{
+                                    if (Convert.ToBoolean(Model.WeighmentStatus) == true)
+                                    {
+                                        <span>Yes</span>
+                                    }
+                                    else
+                                    {
+                                        <span>No</span>
+                                    }
+                                }
+
+
+                            </div>
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.DestuffWODate, new { @for = "DestuffWODate" }) : <span>@Model.DestuffWODate</span>
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.PlugIndate, new { @for = "PlugIndate" }) : <span>@Model.PlugIndate</span>
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.PlugOffDate, new { @for = "PlugOffDate" }) : <span>@Model.PlugOffDate</span>
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.GrossWeight, new { @for = "txtGrossWeight" }) : <span>@Model.GrossWeight</span>
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.ContTareWeight, new { @for = "txtContTareWeight" }) : <span>@Model.ContTareWeight</span>
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.TruckTareWeight, new { @for = "txtTruckTareWeight" }) : <span>@Model.TruckTareWeight</span>
+
+                            </div>
+
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.NetWeight, new { @for = "txtNetWeight" }) : <span>@Model.NetWeight</span>
+
+                            </div>
+
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.Agent, new { @for = "txtAgent" }) : <span>@Model.Agent</span>
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.Line, new { @for = "txtLine" }) : <span>@Model.Line</span>
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.NoofPackages, new { @for = "txtNoofPackages" }) : <span>@Model.NoofPackages</span>
+
+                            </div>
+
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.NoofPieces, new { @for = "txtNoofPieces" }) : <span>@Model.NoofPieces</span>
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.Weight, new { @for = "txtWeight" }) : <span>@Model.Weight</span>
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.DoNo, new { @for = "txtDoNo" }) : <span>@Model.DoNo</span>
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.LabelFor(Model => Model.DoDateTime, new { @for = "txtDoDateTime" }) : <span>@Model.DoDateTime</span>
+
+                            </div>
+                            <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.Surveyor, new { @for = "Surveyor" }) : <span>@Model.Surveyor</span>
+
+                            </div>
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.Contractor, new { @for = "Contractor" }) : <span>@Model.Contractor</span>
+
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.BeginActualDestuffDateandTime, new { @for = "BeginActualDestuffDateandTime" }) : <span>@Model.BeginActualDestuffDateandTime</span>
+
+
+
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.EndActualDestuffDateandTime, new { @for = "EndActualDestuffDateandTime" }) : <span>@Model.EndActualDestuffDateandTime</span>
+                            </div>
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.ContainerCondition, new { @for = "ContainerCondition" })  : <span>@Model.ContainerCondition</span>
+
+                            </div>
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.DamageRemarks, new { @for = "DamageRemarks" })  : <span>@Model.DamageRemarks</span>
+
+                            </div>
+
+
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.IsDestuffed, new { @for = "IsDestuffed" })  : <span>@(Convert.ToBoolean(Model.IsDestuffed) ? "Yes" : "No")</span>
+
+                            </div>
+                            <div class="col-md-6">
+
+                                @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" }) : <span>@Model.Remarks</span>
+
+                            </div>
+                        }
+
+                    </div>
+                </div>
+                @if (Model.IsSearch)
+                {
+                    <div class="box">
+                        <div class="box-header with-border" data-widget="collapse">
+                            <h4><b>NOC Details</b></h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="col-md-12" style="overflow:scroll;">
+                                <table id="NOC-detail" style="white-space: nowrap;" class="table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>NOC no</th>
+                                            <th>NOC Date</th>
+                                            <th>In-BOE No.</th>
+                                            <th>In-BOE Date</th>
+                                            <th>IGM No.</th>
+                                            <th>IGM Date</th>
+                                            <th>ItemNo</th>
+                                            <th>Last Truck Cargo</th>
+                                            <th>Bulk-Non</th>
+                                            <th>Document Declared Packages</th>
+                                            <th>Document Declared Pieces</th>
+                                            <th>Document Declared Weight</th>
+                                            <th>Wo Packages</th>
+                                            <th>Wo Pieces</th>
+                                            <th>Wo Weight</th>
+                                            <th>Destuffed Packages</th>
+                                            <th>Destuffed Pieces</th>
+                                            <th>Destuffed Weight</th>
+                                            <th>AreaRequired</th>
+                                            <th>Button</th>
+                                            <th>Short/Excess Packages</th>
+                                            <th>Short/Excess Pieces</th>
+                                            <th>Short/Excess Weight</th>
+                                            <th>Total Destuffed Packages</th>
+                                            <th>Total Destuffed Pieces</th>
+                                            <th>Total Destuffed Weight</th>
+                                            <th>Billing Party</th>
+                                            <th>Importer/Exporter</th>
+                                            <th>CHA</th>
+                                            <th>Forwarder</th>
+                                            <th>Cargo Desc</th>
+                                            <th>Sub Commodity</th>
+                                            <th>Package Type</th>
+                                            <th>Cargo Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (CFS.Com.ClsCommon.DocDatatable != null && CFS.Com.ClsCommon.DocDatatable.Rows.Count > 0)
+                                        {
+                                            for (int i = 0; i < CFS.Com.ClsCommon.DocDatatable.Rows.Count; i++)
+                                            {
+                                                <tr>
+                                                    <td><input type="hidden" id="hdnDocumentNo_@i" name="hdnDocumentNo_@i" value="@CFS.Com.ClsCommon.DocDatatable.Rows[i]["DocumentNo"]" />@CFS.Com.ClsCommon.DocDatatable.Rows[i]["DocumentNo"]</td>
+                                                    <td><input type="hidden" id="hdnDocDate_@i" name="hdnDocDate_@i" value="@(Convert.ToDateTime(CFS.Com.ClsCommon.DocDatatable.Rows[i]["DocDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture))">@(Convert.ToDateTime(CFS.Com.ClsCommon.DocDatatable.Rows[i]["DocDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture))</td>
+                                                    <td><input type="hidden" id="hdnBOENo_@i" name="hdnBOENo_@i" value="@CFS.Com.ClsCommon.DocDatatable.Rows[i]["BOENo"]" />@CFS.Com.ClsCommon.DocDatatable.Rows[i]["BOENo"]</td>
+                                                    <td><input type="hidden" id="hdnBOEDate_@i" name="hdnBOEDate_@i" value="@CFS.Com.ClsCommon.DocDatatable.Rows[i]["BOEDate"]" />@CFS.Com.ClsCommon.ConvertDateNullToBlank(Convert.ToDateTime(CFS.Com.ClsCommon.DocDatatable.Rows[i]["BOEDate"]))</td>
+                                                    <td><input type="hidden" id="hdnIGMNo_@i" name="hdnIGMNo_@i" value="@CFS.Com.ClsCommon.DocDatatable.Rows[i]["IGMNo"]" />@CFS.Com.ClsCommon.DocDatatable.Rows[i]["IGMNo"]</td>
+                                                    <td><input type="hidden" id="hdnIGMDate_@i" name="hdnIGMDate_@i" value="@CFS.Com.ClsCommon.DocDatatable.Rows[i]["IGMDate"]" />@CFS.Com.ClsCommon.ConvertDateNullToBlank(Convert.ToDateTime(CFS.Com.ClsCommon.DocDatatable.Rows[i]["IGMDate"]))</td>
+                                                    <td><input type="hidden" id="hdnItemNo_@i" name="hdnItemNo_@i" value="@CFS.Com.ClsCommon.DocDatatable.Rows[i]["ItemNo"]" />@CFS.Com.ClsCommon.DocDatatable.Rows[i]["ItemNo"]</td>
+                                                    <td><input type="hidden" id="hdnLastTruckCargoLocation_@i" name="hdnLastTruckCargoLocation_@i" value="@CFS.Com.ClsCommon.DocDatatable.Rows[i]["LastTruckCargoLocation"]" />@CFS.Com.ClsCommon.DocDatatable.Rows[i]["LastTruckCargoLocation"]</td>
+                                                    <td><input type="hidden" id="hdnBULKSTATUS_@i" name="hdnBULKSTATUS_@i" value="@CFS.Com.ClsCommon.DocDatatable.Rows[i]["BULKSTATUS"]" />@CFS.Com.ClsCommon.DocDatatable.Rows[i]["BULKSTATUS"]</td>
+                                                    <td><input type="hidden" id="hdnNoOfPackageForContainer_@i" name="hdnNoOfPackageForContainer_@i" value="@CFS.Com.ClsCommon.DocDatatable.Rows[i]["NoOfPackageForContainer"]" />@CFS.Com.ClsCommon.DocDatatable.Rows[i]["NoOfPackageForContainer"]</td>
+                                                    <td><input type="hidden" id="hdnNoOfPiecesForContainer_@i" name="hdnNoOfPiecesForContainer_@i" value="@CFS.Com.ClsCommon.DocDatatable.Rows[i]["NoOfPiecesForContainer"]" />@CFS.Com.ClsCommon.DocDatatable.Rows[i]["NoOfPiecesForContainer"]</td>
+                                                    <td><input type="hidden" id="hdnWeightForContainer_@i" name="hdnWeightForContainer_@i" value="@CFS.Com.ClsCommon.DocDatatable.Rows[i]["WeightForContainer"]" />@CFS.Com.ClsCommon.DocDatatable.Rows[i]["WeightForContainer"]</td>
+                                                    <td><input type="hidden" id="hdnWoPkg_@i" name="hdnWoPkg_@i" value="@(Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["WoPkg"]).ToString("0"))" />@(Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["WoPkg"]).ToString("0"))</td>
+                                                    <td><input type="hidden" id="hdnWopcs_@i" name="hdnWopcs_@i" value="@(Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["Wopcs"]).ToString("0"))" />@(Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["Wopcs"]).ToString("0"))</td>
+                                                    <td><input type="hidden" id="hdnWowgt_@i" name="hdnWowgt_@i" value="@CFS.Com.ClsCommon.DocDatatable.Rows[i]["Wowgt"]" />@CFS.Com.ClsCommon.DocDatatable.Rows[i]["Wowgt"]</td>
+                                                    <td><input type="hidden" id="hdnDestuffPkg_@i" name="hdnDestuffPkg_@i" value="@(Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["DestuffPkg"]).ToString("0"))" />@(Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["DestuffPkg"]).ToString("0"))</td>
+                                                    <td><input type="hidden" id="hdnDestuffpcs_@i" name="hdnDestuffpcs_@i" value="@(Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["Destuffpcs"]).ToString("0"))" />@(Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["Destuffpcs"]).ToString("0"))</td>
+                                                    <td><input type="hidden" id="hdnDestuffwgt_@i" name="hdnDestuffwgt_@i" value="@CFS.Com.ClsCommon.DocDatatable.Rows[i]["Destuffwgt"]" />@CFS.Com.ClsCommon.DocDatatable.Rows[i]["Destuffwgt"]</td>
+                                                    <td><input type="hidden" id="hdnAreaRequired_@i" name="hdnAreaRequired_@i" value="@CFS.Com.ClsCommon.DocDatatable.Rows[i]["AreaRequired"]" />@CFS.Com.ClsCommon.DocDatatable.Rows[i]["AreaRequired"]</td>
+                                                    <td>
+                                                        @if (Model.doaction == "edit" && Model.trnContainerDestuffingID > 0)
+                                                        {
+                                                            <a style=" cursor: pointer;" href="@Url.Action("Index", "trnBOEItems", new { @id = CFS.Com.ClsCommon.DocDatatable.Rows[i]["trnDocumentLotDetailsID"], @trnTruckDestuffingID = Model.trnContainerDestuffingID, @TruckNo = Model.ContNo, @BOENo = Convert.ToString(CFS.Com.ClsCommon.DocDatatable.Rows[i]["BOENo"]), @GatePassNOOFPKGS = CFS.Com.ClsCommon.DocDatatable.Rows[i]["NoOfPackageForContainer"], @GatePassNOOFPIECES = CFS.Com.ClsCommon.DocDatatable.Rows[i]["NoOfPiecesForContainer"], @GatePassWEIGHT = CFS.Com.ClsCommon.DocDatatable.Rows[i]["WeightForContainer"], @type = 'C', @SearchID = Model.trnContainerDestuffWorkOrderDetailsID, @SearchNO = Model.ContNo, @Bulk = CFS.Com.ClsCommon.DocDatatable.Rows[i]["BULKSTATUS"], @AreaRequired = CFS.Com.ClsCommon.DocDatatable.Rows[i]["AreaRequired"], @trnDocumentID = CFS.Com.ClsCommon.DocDatatable.Rows[i]["trnDocumentID"], @IsWorkOrderOrGateIn = Request.Params["IsWorkOrderOrGateIn"],@trnDocumentContainerID=CFS.Com.ClsCommon.DocDatatable.Rows[i]["trnDocumentContainerID"] ,@Isview=true })" target="_blank" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+                                                        }
+                                                    </td>
+                                                    @if (Model.IsRecord)
+                                                    {
+                                                        <td>@((Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["DestuffPkg"]) - Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["WoPkg"])).ToString("0"))</td>
+                                                        <td>@((Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["Destuffpcs"]) - Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["Wopcs"])).ToString("0"))</td>
+                                                        <td>@(Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["Destuffwgt"]) - Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["Wowgt"]))</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>0</td>
+                                                        <td>0</td>
+                                                        <td>0</td>
+                                                    }
+                                                    <td>@(Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["DestuffPkg"]).ToString("0"))</td>
+                                                    <td>@(Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["Destuffpcs"]).ToString("0"))</td>
+                                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["Destuffwgt"]</td>
+                                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["BillToCustomerName"]</td>
+                                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["ImporterName"]</td>
+                                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["SubCHA"]</td>
+                                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["Forwarder"]</td>
+                                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["CARGODESC"]</td>
+                                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["SUBCOMMODITY"]</td>
+                                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["PACKAGETYPE"]</td>
+                                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["CargoType"]</td>
+                                                </tr>
+                                            }
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade in" id="AddContainerDestuffingGWItems" style="display: none; padding-right: 17px;">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">Add Container Destuffing Items</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        @Html.HiddenFor(Model => Model.trnContainerDestuffingItems.trnContainerDestuffingItemsID, new { @id = "trnContainerDestuffingItemsID", @name = "trnContainerDestuffingItemsID" })
+                                        @Html.HiddenFor(Model => Model.trnContainerDestuffingItems.trnDocumentLotDetailsID, new { @id = "trnDocumentLotDetailsID", @name = "trnDocumentLotDetailsID" })
+                                        <div class="col-md-12" style="overflow:scroll">
+                                            <br />
+                                            <div class="pull-right">
+                                                <div style="display: inline-flex">
+                                                    <div class="input-group input-group-sm">
+                                                        <input id="txtCargoDetail" name="txtCargoDetail" type="text" class="form-control" onkeyup="DataTableSeachEngine('txtCargoDetail','CargoDetail','btnCargoDetail')" placeholder="Search for Common" value="">
+                                                        <span class="input-group-btn">
+                                                            <button type="button" id="btnCargoDetail" onclick="DataTableSeachEngine('txtCargoDetail','CargoDetail','btnCargoDetail','yes')" class="btn btn-primary btn-flat">Search</button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <table id="CargoDetail" style="white-space: nowrap;" class="table-bordered table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No Of Pallets</th>
+                                                        <th>Pkgs</th>
+                                                        <th>Pieces</th>
+                                                        <th>Weight</th>
+                                                        <th>WH Location</th>
+                                                        <th>Packing Type</th>
+                                                        <th>Bill Commodity</th>
+                                                        <th>Equipment</th>
+                                                        <th>Chamber Type</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="ContainerDestuffingGWItems"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+<script>
+    var doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnContainerDestuffing.js")"></script>
+<script>
+    function hideaction() {
+        setTimeout(function () {
+            $(".trnviewAction").hide();
+        }, 500);
+    }
+</script>

@@ -1,0 +1,169 @@
+﻿@model CFS.Models.MstrTariffHead
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    bool IsEdit = false;
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Tariff Head";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+        IsEdit = true;
+    }
+    else
+    {
+        IsEdit = false;
+        ViewBag.Title = "Add new Tariff Head";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (Model.doaction == "edit")
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">Tariff Head Code: @Model.TariffHeadCode</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrTariffHead", "index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("index","MstrTariffHead", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "MstrTariffHead", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.MstrTariffHeadID)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.TariffHeadCode)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.TariffHeadName, new { @for = "txtTariffHeadName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TariffHeadName, String.Empty, new { @class = "help-inline text-red" })
+                                    @if (IsEdit)
+                                    {
+                                        @Html.TextBoxFor(Model => Model.TariffHeadName, new { @id = "txtTariffHeadName", @name = "txtTariffHeadName", @class = "form-control", @placeholder = "Enter Tariff Head Name",@readonly=true })
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBoxFor(Model => Model.TariffHeadName, new { @id = "txtTariffHeadName", @name = "txtTariffHeadName", @class = "form-control", @placeholder = "Enter Tariff Head Name" })
+                                    }
+                                    @Html.HiddenFor(Model => Model.RefID)
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(Model => Model.NatureofHead, new { @for = "rdNatureofHead" }) @Html.ValidationMessageFor(Model => Model.NatureofHead, String.Empty, new { @class = "help-inline text-red" })
+                                    </div>
+                                    @Html.RadioButtonFor(Model => Model.NatureofHead, "Receipt", new { @id = "rdNatureofHeadReceipt", @name = "rdNatureofHead", @class = "form-control", @checked = "checked" })
+                                    @Html.LabelFor(Model => Model.NatureofHead, "Receipt", new { @for = "rdNatureofHeadReceipt", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                    @Html.RadioButtonFor(Model => Model.NatureofHead, "Payment", new { @id = "rdNatureofHeadPayment", @name = "rdNatureofHead", @class = "form-control", })
+                                    @Html.LabelFor(Model => Model.NatureofHead, "Payment", new { @for = "rdNatureofHeadPayment", @style = "font-weight: 400;" })
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(Model => Model.TariffActivity, new { @for = "txtTariffActivity" }) @Html.ValidationMessageFor(Model => Model.TariffActivity, String.Empty, new { @class = "help-inline text-red" })
+                                    </div>
+                                    @Html.RadioButtonFor(Model => Model.TariffActivity, "Handling", new { @id = "txtTariffActivityHandling", @name = "txtTariffActivity", @class = "form-control", @checked = "checked" })
+                                    @Html.LabelFor(Model => Model.TariffActivity, "Handling", new { @for = "txtTariffActivityHandling", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                    @Html.RadioButtonFor(Model => Model.TariffActivity, "Storage", new { @id = "txtTariffActivityStorage", @name = "txtTariffActivity", @class = "form-control" })
+                                    @Html.LabelFor(Model => Model.TariffActivity, "Storage", new { @for = "txtTariffActivityStorage", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;</b>
+                                    @Html.RadioButtonFor(Model => Model.TariffActivity, "Empty", new { @id = "txtTariffActivityEmpty", @name = "txtTariffActivity", @class = "form-control" })
+                                    @Html.LabelFor(Model => Model.TariffActivity, "Empty", new { @for = "txtTariffActivityEmpty", @style = "font-weight: 400;" })
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(Model => Model.TariffType, new { @for = "txtTariffType" }) @Html.ValidationMessageFor(Model => Model.TariffType, String.Empty, new { @class = "help-inline text-red" })
+                                    </div>
+                                    @Html.RadioButtonFor(Model => Model.TariffType, "Cargo Handling", new { @id = "txtTariffTypeCargo", @name = "txtTariffType", @class = "form-control", @checked = "checked" })
+                                    @Html.LabelFor(Model => Model.TariffType, "Cargo Handling", new { @for = "txtTariffTypeCargo", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                    @Html.RadioButtonFor(Model => Model.TariffType, "Container Handling", new { @id = "txtTariffTypeContainer", @name = "txtTariffType", @class = "form-control" })
+                                    @Html.LabelFor(Model => Model.TariffType, "Container Handling", new { @for = "txtTariffTypeContainer", @style = "font-weight: 400;" })
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(Model => Model.Cycle, new { @for = "txtCycle" }) @Html.ValidationMessageFor(Model => Model.Cycle, String.Empty, new { @class = "help-inline text-red" })
+                                    </div>
+                                    @Html.RadioButtonFor(Model => Model.Cycle, "Warehouse", new { @id = "txtCycleWarehouse", @name = "txtCycle", @class = "form-control", @checked = "checked" })
+                                    @Html.LabelFor(Model => Model.Cycle, "Warehouse", new { @for = "txtCycleWarehouse", @style = "font-weight: 400;" })<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                    @Html.RadioButtonFor(Model => Model.Cycle, "Export", new { @id = "txtCycleExport", @name = "txtCycle", @class = "form-control" })
+                                    @Html.LabelFor(Model => Model.Cycle, "Export", new { @for = "txtCycleExport", @style = "font-weight: 400;" })
+                                    @Html.RadioButtonFor(Model => Model.Cycle, "Empty", new { @id = "txtCycleEmpty", @name = "txtCycle", @class = "form-control" })
+                                    @Html.LabelFor(Model => Model.Cycle, "Empty", new { @for = "txtCycleEmpty", @style = "font-weight: 400;" })
+                                    @Html.RadioButtonFor(Model => Model.Cycle, "All", new { @id = "txtCycleAll", @name = "txtCycle", @class = "form-control" })
+                                    @Html.LabelFor(Model => Model.Cycle, "All", new { @for = "txtCycleAll", @style = "font-weight: 400;" })
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.LabelFor(Model => Model.UnitType, new { @for = "txtUnitType" }) @Html.ValidationMessageFor(Model => Model.UnitType, String.Empty, new { @class = "help-inline text-red" })
+                                    </div>
+                                    @Html.RadioButtonFor(Model => Model.UnitType, "Unit Based", new { @id = "txtUnitTypeUnitBased", @name = "txtUnitType", @class = "form-control", @checked = "checked" })
+                                    @Html.LabelFor(Model => Model.UnitType, "Unit Based", new { @for = "txtUnitTypeUnitBased", @style = "font-weight: 400;" }) @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                    @Html.RadioButtonFor(Model => Model.UnitType, "Weight Based", new { @id = "txtUnitTypeWeightBased", @name = "txtUnitType", @class = "form-control" })
+                                    @Html.LabelFor(Model => Model.UnitType, "Weight Based", new { @for = "txtUnitTypeWeightBased", @style = "font-weight: 400;" })@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                    @Html.RadioButtonFor(Model => Model.UnitType, "Storage Based", new { @id = "txtUnitTypeStorageBased", @name = "txtUnitType", @class = "form-control" })
+                                    @Html.LabelFor(Model => Model.UnitType, "Storage Based", new { @for = "txtUnitTypeStorageBased", @style = "font-weight: 400;" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.HSNSACCode, new { @for = "txtHSNSACCode" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.RefHSNSACCode, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.HSNSACCode, new { @id = "txtHSNSACCode", @name = "txtHSNSACCode", @class = "form-control", @placeholder = "Enter HSN/SAC Code", @onPaste = "javascript: return false;" })
+                                    @Html.HiddenFor(Model => Model.RefHSNSACCode)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.SequenceCode, new { @for = "txtSequenceCode" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.SequenceCode, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.SequenceCode, new { @id = "txtSequenceCode", @name = "txtSequenceCode", @class = "form-control", @placeholder = "Enter Sequence Code" })
+                                </div>
+                                <div class="form-group">
+                                    <label>Last Sequence Code : </label> <span>@ViewBag.LastSequenceCode</span>
+                                </div>
+                                <div class="form-group">
+                                    <br />
+                                    @Html.CheckBoxFor(Model => Model.IsActive, new { @class = "form-control" })
+                                    @Html.Label("IsActive") @Html.ValidationMessageFor(Model => Model.IsActive, String.Empty, new { @class = "help-inline text-red" })
+                                </div>
+                                <div class="form-group" id="dvInActiveReason">
+                                    @Html.LabelFor(Model => Model.InActiveReason, new { @for = "InActiveReason" }) @Html.ValidationMessageFor(Model => Model.InActiveReason, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.InActiveReason, new { @class = "form-control", @placeholder = "Enter InActivate Reason" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a href="@Url.Action("index", "MstrTariffHead", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrTariffHead.js")"></script>
+

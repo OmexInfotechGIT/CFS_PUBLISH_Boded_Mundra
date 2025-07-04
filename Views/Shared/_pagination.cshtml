@@ -1,0 +1,40 @@
+﻿@{
+    CFS.Models.pagger pagger = new CFS.Models.pagger();
+    if (ViewBag.pagger != null)
+    {
+        pagger = ViewBag.pagger;
+    }
+}
+@if (pagger.TotalPages > 0)
+{
+
+    <div style="float:right">
+        <ul class="pagination justify-content-end">
+            @if (pagger.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action( pagger.Action, pagger.Controller , new { pg="1" ,search=pagger.Search,SortColumn =pagger.SortColumn, SortOrder = pagger.SortOrder})">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action(pagger.Action,  pagger.Controller , new { pg=(pagger.CurrentPage-1),search=pagger.Search,SortColumn =pagger.SortColumn, SortOrder = pagger.SortOrder})">Previous</a>
+                </li>
+            }
+            @for (int pge = pagger.StartPage; pagger.TotalItems > pagger.PageSize && pge <= pagger.EndPage; pge++)
+            {
+                <li class="page-item @(pge == pagger.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="@Url.Action(pagger.Action,  pagger.Controller , new { pg=pge,search=pagger.Search,SortColumn =pagger.SortColumn, SortOrder = pagger.SortOrder})">@pge</a>
+                </li>
+            }
+            @if (pagger.CurrentPage < pagger.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action(pagger.Action,  pagger.Controller , new { pg=(pagger.CurrentPage+1),search=pagger.Search,SortColumn =pagger.SortColumn, SortOrder = pagger.SortOrder})">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action(pagger.Action,  pagger.Controller , new { pg=(pagger.TotalPages),search=pagger.Search,SortColumn =pagger.SortColumn, SortOrder = pagger.SortOrder})">Last</a>
+                </li>
+            }
+        </ul>
+    </div>
+
+}

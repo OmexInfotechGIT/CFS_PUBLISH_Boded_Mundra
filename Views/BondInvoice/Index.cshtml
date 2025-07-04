@@ -1,0 +1,145 @@
+﻿@model CFS.Models.BondInvoice
+@{
+
+    if (Model.IsPreProforma)
+    {
+        ViewBag.Title = "Pre Proforma Invoice";
+    }
+    else
+    {
+        ViewBag.Title = "Bond Invoice";
+    }
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+
+    string InvoiceScreen = "";
+
+    if (Model.IsPreProforma == true)
+    {
+        InvoiceScreen = "PreProforma";
+    }
+    else
+    {
+        InvoiceScreen = "Storage";
+    }
+
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <select class="form-control" id="invoieType" onchange="SearchData()">
+                                    <option value="Bond"> Bond Invoice</option>
+                                    <option value="PreProforma"> Pre Proforma Invoice</option>
+                                </select>
+                            </div>
+                            <div>&nbsp;&nbsp;</div>
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a href="@Url.Action("Action", "BondInvoice", new { doaction = "add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New CargoGateIn GW"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                @Html.HiddenFor(Model => Model.IsPreProforma, new {@id = "IsPreProforma", name= "IsPreProforma" })
+                <div class="box-body">
+                    <div style="overflow-x:scroll">
+                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "BondInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "BondInvoiceNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "bondinvoiceno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc"), invoiceType = InvoiceScreen} )"> <i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "bondinvoiceno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> @InvoiceScreen.ToString()InvoiceNo No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "BondInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "BondInvoiceDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "bondinvoicedate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc"), invoiceType = InvoiceScreen} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "bondinvoicedate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Invoice Date</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "BondInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "InBOENo", SortOrder = (Model.pagger.SortColumn.ToLower() == "inboeno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc"), invoiceType = InvoiceScreen} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "inboeno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> InBOENo No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "BondInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "InBOEDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "inboedate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc"), invoiceType = InvoiceScreen} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "inboedate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> InBOE Date</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "BondInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "NOCNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "nocno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc"), invoiceType = InvoiceScreen} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "nocno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> NOC No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "BondInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "BillToParty", SortOrder = (Model.pagger.SortColumn.ToLower() == "billtoparty" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc"), invoiceType = InvoiceScreen} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "billtoparty" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Billing Party</a>
+                                    </th>
+                                    <th class="freezeLastColumn">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.MyDatatable != null && Model.MyDatatable.Rows.Count > 0)
+                                {
+                                    for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                    {
+                                        <tr>
+                                            <td>@Model.MyDatatable.Rows[i]["BondInvoiceNo"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["BondInvoiceDate"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["InBOENo"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["InBOEDate"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["NOCNo"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["BillToParty"]</td>
+                                            <td style="text-align:center" class="freezeLastColumnwithWhite">
+                                                @if (!(Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"])) && ViewBag.gblBlnApprove && Convert.ToInt32(Model.MyDatatable.Rows[i]["IsFinished"]) == 1 && !Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsPreProforma"]))
+                                                {
+                                                    <a href="@Url.Action("Confirmation", "BondInvoice", new { id = Model.MyDatatable.Rows[i]["BondInvoiceID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "Confirmation", @IsSearch = true, @trnDocumentLotDetailsID=Convert.ToInt32(Model.MyDatatable.Rows[i]["trnDocumentLotDetailsID"]), @InBOENO=Convert.ToString(Model.MyDatatable.Rows[i]["InBOENo"]),@InBOEDate=Convert.ToString(Model.MyDatatable.Rows[i]["InBOEDate"]), @IsPreProforma = Model.MyDatatable.Rows[i]["IsPreProforma"].ToString() })"><i title="Click to Approve" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i></a>
+                                                }
+                                                else if (ViewBag.gblBlnUnapprove && Convert.ToInt32(Model.MyDatatable.Rows[i]["IsFinished"]) == 1 && Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]) && !Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsPreProforma"]))
+                                                {
+                                                    <a href="@Url.Action("Confirmation", "BondInvoice", new { id = Model.MyDatatable.Rows[i]["BondInvoiceID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "Confirmation", @IsSearch = true, @trnDocumentLotDetailsID=Convert.ToInt32(Model.MyDatatable.Rows[i]["trnDocumentLotDetailsID"]), @InBOENO=Convert.ToString(Model.MyDatatable.Rows[i]["InBOENo"]),@InBOEDate=Convert.ToString(Model.MyDatatable.Rows[i]["InBOEDate"]), @IsPreProforma = Model.MyDatatable.Rows[i]["IsPreProforma"].ToString() })"><i title="Click to Unapprove" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-down"></i></a>
+                                                }
+                                                @*@if (ViewBag.gblBlnEdit && !(Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"])))
+                                        {
+                                            <a href="@Url.Action("Action", "BondInvoice", new { id = Model.MyDatatable.Rows[i]["BondInvoiceID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true, @trnDocumentLotDetailsID=Convert.ToInt32(Model.MyDatatable.Rows[i]["trnDocumentLotDetailsID"]), @InBOENO=Convert.ToString(Model.MyDatatable.Rows[i]["InBOENo"]),@InBOEDate=Convert.ToString(Model.MyDatatable.Rows[i]["InBOEDate"]) })"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                        }*@
+                                                @if (ViewBag.gblBlnView)
+                                                {
+                                                    <a href="@Url.Action("view", "BondInvoice", new { id = Model.MyDatatable.Rows[i]["BondInvoiceID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "view", @IsSearch = true, @trnDocumentLotDetailsID=Convert.ToInt32(Model.MyDatatable.Rows[i]["trnDocumentLotDetailsID"]), @InBOENO=Convert.ToString(Model.MyDatatable.Rows[i]["InBOENo"]),@InBOEDate=Convert.ToString(Model.MyDatatable.Rows[i]["InBOEDate"]), @IsPreProforma = Model.MyDatatable.Rows[i]["IsPreProforma"].ToString() })"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                                }
+                                                <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('BondInvoice','@Model.MyDatatable.Rows[i]["BondInvoiceID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                                @if (Convert.ToInt32(Model.MyDatatable.Rows[i]["IsFinished"]) == 1)
+                                                {
+                                                    <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", "BondInvoice", new { id = Model.MyDatatable.Rows[i]["BondInvoiceID"], format = "pdf" ,@IsSearch = true , @trnDocumentLotDetailsID=Convert.ToInt32(Model.MyDatatable.Rows[i]["trnDocumentLotDetailsID"]), @NOCID=Convert.ToInt32(Model.MyDatatable.Rows[i]["NOCID"]),doaction = "view" ,ConsolerID=Convert.ToInt32(Model.MyDatatable.Rows[i]["ConsolerID"]), @IsPreProforma = Model.MyDatatable.Rows[i]["IsPreProforma"].ToString() })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                                }
+                                                @if (ViewBag.gblBlnDelete && !(Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"])))
+                                                {
+                                                    <a href="@Url.Action("delete", "BondInvoice", new { id = Model.MyDatatable.Rows[i]["BondInvoiceID"], @IsPreProforma = Model.MyDatatable.Rows[i]["IsPreProforma"].ToString() })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    @Html.Partial("_pagination")
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/BondInvoice.js")"></script>

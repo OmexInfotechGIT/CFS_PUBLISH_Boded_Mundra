@@ -1,0 +1,142 @@
+﻿@using System.Globalization;
+@if (CFS.Com.ClsCommon.DocDatatable != null && CFS.Com.ClsCommon.DocDatatable.Rows.Count > 0)
+{
+    <div class="">
+        <div class="box">
+            <div class="box-header with-border" data-widget="collapse">
+                <h4><b>NOC Details </b></h4>
+            </div>
+            <div class="box-body">
+                <div class="col-md-12" style="overflow:scroll;">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtNOC-detail" name="txtNOC-detail" type="text" class="form-control" onkeyup="DataTableSeachEngine('txtNOC-detail','NOC-detail','btnNOC-detail')" placeholder="Search for Common" value="">
+                                <span class="input-group-btn">
+                                    <button type="button" id="btnNOC-detail" onclick="DataTableSeachEngine('txtNOC-detail','NOC-detail','btnNOC-detail','yes')" class="btn btn-primary btn-flat">Search</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <table id="NOC-detail" style="width:100%;white-space:nowrap;" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>NOC no</th>
+                                <th>NOC Date</th>
+                                <th>IGM No.</th>
+                                <th>IGM Date</th>
+                                <th>In-BOE No.</th>
+                                <th>In-BOE Date</th>
+                                <th>EX-BOE No.</th>
+                                <th>EX-BOE Date</th>
+                                <th>Item No</th>
+                                <th>Last Truck Cargo</th>
+                                <th>Bulk-Non</th>
+                                @if (!CFS.Com.ClsCommon.IsContainer)
+                                {
+                                    <th>Total EX-BOE Packages</th>
+                                    <th>Total EX-BOE Pieces</th>
+                                    <th>Total EX-BOE Weight</th>
+                                    <th>Balance WO Packages</th>
+                                    <th>Balance WO Pieces</th>
+                                    <th>Balance WO Weight</th>
+                                    <th>Gatepass Packages</th>
+                                    <th>Gatepass Pieces</th>
+                                    <th>Gatepass Weight</th>
+                                }
+                                @if (!CFS.Com.ClsCommon.IsGW)
+                                {
+                                    <th>Chamber Type</th>
+                                }
+                                <th>Billing Party</th>
+                                <th>Importer</th>
+                                <th>CHA</th>
+                                <th>Forwarder</th>
+                                <th>Cargo Desc</th>
+                                <th>Sub Commodity</th>
+                                <th>Package Type</th>
+                                <th>Cargo Type</th>
+                                <th>IMO</th>
+                                <th>UN</th>
+                                <th>Temp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < CFS.Com.ClsCommon.DocDatatable.Rows.Count; i++)
+                            {
+                                <tr>
+                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["DocumentNo"]</td>
+                                    <td>@(Convert.ToDateTime(CFS.Com.ClsCommon.DocDatatable.Rows[i]["DocDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture))</td>
+                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["IGMNo"]</td>
+                                    @if (CFS.Com.ClsCommon.DocDatatable.Rows[i]["IGMDate"] != null && CFS.Com.ClsCommon.DocDatatable.Rows[i]["IGMDate"].ToString() != "")
+                                    {
+                                        <td>@(Convert.ToDateTime(CFS.Com.ClsCommon.DocDatatable.Rows[i]["IGMDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture))</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["InBOENo"]</td>
+                                    @if (!string.IsNullOrEmpty(CFS.Com.ClsCommon.DocDatatable.Rows[i]["InBOEDate"].ToString()))
+                                    {
+                                        <td>@(Convert.ToDateTime(CFS.Com.ClsCommon.DocDatatable.Rows[i]["InBOEDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture))</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>}
+
+                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["EXBOENo"]</td>
+                                    @if (!string.IsNullOrEmpty(CFS.Com.ClsCommon.DocDatatable.Rows[i]["EXBOEDate"].ToString()))
+                                    {
+                                        <td>@(Convert.ToDateTime(CFS.Com.ClsCommon.DocDatatable.Rows[i]["EXBOEDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture))</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>}
+
+                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["ItemNo"]</td>
+                                    @if (CFS.Com.ClsCommon.IsContainer)
+                                    {
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["LastTruckContainerLocation"]</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["LastTruckCargoLocation"]</td>
+                                    }
+                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["BULKSTATUS"]</td>
+                                    @if (!CFS.Com.ClsCommon.IsContainer)
+                                    {
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["TotalNOOFPKGS"]</td>
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["TotalNOOFPIECES"]</td>
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["TotalWEIGHT"]</td>
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["BalWONOOFPKGS"]</td>
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["BalWONOOFPIECES"]</td>
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["BalWOWEIGHT"]</td>
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["GatePassNOOFPKGS"]</td>
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["GatePassNOOFPIECES"]</td>
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["GatePassWEIGHT"]</td>
+                                    }
+                                    @if (!CFS.Com.ClsCommon.IsGW)
+                                    {
+                                        <td></td>
+                                    }
+                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["BillToCustomerName"]</td>
+                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["ImporterName"]</td>
+                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["SubCHA"]</td>
+                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["Forwarder"]</td>
+                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["CARGODESC"]</td>
+                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["SUBCOMMODITY"]</td>
+                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["PACKAGETYPE"]</td>
+                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["CargoType"]</td>
+                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["IMO"]</td>
+                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["UN"]</td>
+                                    <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["Temp"]</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}

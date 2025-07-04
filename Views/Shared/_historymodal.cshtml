@@ -1,0 +1,276 @@
+﻿@{
+    Layout = null;
+}
+<div class="modal fade in" id="myModal" style="display: none; padding-right: 17px;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">History</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="box" style="max-height: 274px;overflow-y: scroll;">
+                            <div class="box-body">
+                                @*<iframe id="ShowHistory" src="" style="width:100%;border:none;"></iframe>*@
+                                <table id="example2" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: center; width: 16%;">Action</th>
+                                            <th style="text-align: center; width: 16%;">User</th>
+                                            <th style="text-align: center; width: 30%;">Date & Time</th>
+                                            <th style="text-align: center; width: 38%;">Action Details / Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="GetHistory"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade in" id="DetailHistory" style="display: none; padding-right: 17px;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">Detail History</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="box" style="max-height: 274px;overflow-y: scroll;">
+                            <div class="box-body">
+                                @*<iframe id="ShowMoreHistory" src="" style="width:100%;border:none;"></iframe>*@
+                                <table id="example2" class="table table-bordered table-hover">
+
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: center; width: 16%;">Field</th>
+                                            <th style="text-align: center; width: 16%;">Old Value</th>
+                                            <th style="text-align: center; width: 30%;">New Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="GetMoreHistory"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+@using (Html.BeginForm("updatestatus", "History", FormMethod.Post))
+{
+    <div class="modal fade in" id="myModalActiveInactive" style="display: none; padding-right: 17px;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Update Status</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="box">
+                                <div class="box-body">
+                                    <div class="col-md-6">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label>Inactivate Reason</label>
+                                                <input type="text" id="Inactivereason" name="Inactivereason" class="form-control" style="width:400px;" />
+                                                <input type="hidden" id="TableName" name="TableName" />
+                                                <input type="hidden" id="TableID" name="TableID" />
+                                                <input type="hidden" id="IsActive" name="IsActive" />
+                                                <span class="text-red" id="txtvalidatemessage" style="display:none;">Inactivate Reason is Required</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="UpdateStatusInActive()" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+}
+
+@using (Html.BeginForm("Confirmation", CFS.Com.ClsCommon.Controller(), FormMethod.Post))
+{
+    <div class="modal fade in" id="myModalConfirmation" style="display: none; padding-right: 17px;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Confirmation</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+
+                        <div class="box-body">
+                            <div class="col-md-11">
+                                <div class="box-body">
+                                    <div class="form-group">
+                                        <label>Remarks<span class="text-red"> *</span></label>
+                                        <input type="text" id="txtRemarks" name="txtRemarks" class="form-control" />
+                                        <input type="hidden" id="TableName" name="TableName" />
+                                        <input type="hidden" id="TableID" name="TableID" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="ModelAddConfirmation" onclick="return validateremarks();" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal" id="ModalClearConfirmation">Close</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    //ModalForeInvoice
+    <div class="modal fade in" id="myModalConfirmationWithEinvoice" style="display: none; padding-right: 17px;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Confirmation</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+
+                        <div class="box-body">
+                            <div class="col-md-11">
+                                <div class="box-body">
+                                    <div class="col-sm-12" id="IRNAlert" style="display:none;">
+                                        <label style="color:red"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> eInvoice has been generated for this invoice,if unapproved ,eInvoice will be cancelled and invoice will be deleted!</label>
+                                      </div>
+                                    <div class="col-sm-12" id="IRNTaxAlert" style="display:none;">
+                                        <label style="color:red"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> When you approved this invoice, the system will generate eInvoice automatically.!</label>
+                                        <br />
+                                        <br />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Remarks<span class="text-red"> *</span></label>
+                                        <input type="text" id="txtRemarks1" name="txtRemarks1" class="form-control" />
+                                        <input type="hidden" id="TableName1" name="TableName1" />
+                                        <input type="hidden" id="TableID1" name="TableID1" />
+                                        <input type="hidden" id="InvoiceId" name="InvoiceId" />
+                                        <input type="hidden" id="InvoiceNo" name="InvoiceNo" />
+                                        <input type="hidden" id="InvoiceType" name="InvoiceType" />
+                                        <input type="hidden" id="action" name="action" />
+                                        <input type="hidden" id="IsIRN" name="IsIRN" />
+                                        <input type="hidden" id="hdnIRNSpaceCertificateGWID" name="hdnIRNSpaceCertificateGWID" />
+                                        <input type="hidden" id="hdnIRNReferenceInvoiceId" name="hdnIRNReferenceInvoiceId" />
+                                        <input type="hidden" id="hdnIRNReferenceInvoiceType" name="hdnIRNReferenceInvoiceType" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnModelAddConfirmationInvoice" onclick="return validateremarksForIRN();" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal" id="btnModelClearConfirmationInvoice">Close</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+}
+
+    <div class="modal fade in" id="ReExportDetails" style="display: none; padding-right: 17px;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Re-Export Deails</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12" style="margin-bottom: 5px;"></div>
+                    <div class="row">                        
+                        <div class="col-md-12" style="overflow:scroll;margin-top:20px;">                           
+                            <table id="tblReExportDetails" style="white-space:nowrap;overflow:scroll;" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>In-BOE No</th>
+                                        <th>In-BOE Date</th>
+                                        <th>NOC ValidUpto Date</th>
+                                        <th>No of Package</th>
+                                        <th>No of Pieces</th>
+                                        <th>Weight</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbReExportDetails"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+<script>
+
+    function validateremarks() {
+        var txtRemarks = $("#txtRemarks").val().trim();
+        if (txtRemarks == null || txtRemarks == "" || txtRemarks == undefined) {
+            $("#txtRemarks").addClass("redborder");
+            TosterAlert("error", "Please enter Remarks", "Required!");
+            return false;
+        }
+
+        var butt = document.getElementById('ApproveAndUnApproveBtn');
+
+        butt.addEventListener('click', function (event) {
+            event.target.disabled = true;
+        });
+
+        return true;
+    }
+</script>

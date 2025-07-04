@@ -1,0 +1,107 @@
+﻿@model CFS.Models.MstrPallet
+@{
+    ViewBag.Title = "View Pallet Details";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (ViewBag.gblBlnView)
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">Pallet Name: @Model.PalletName</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrPallet","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrPallet", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div class="col-md-6">
+
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>Chamber Name : </label> <span>@Model.ChamberName</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Floor No.: </label> <span>@Model.FloorNo</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Pallet Name: </label> <span>@Model.PalletName</span>
+                            </div>
+                            <div class="form-group">
+                                <label>No. Of Pallet: </label> <span>@Model.NoOfPallet</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Status: </label> <span>@(Model.IsActive == true ? "Active" : "InActive")</span>
+                            </div>
+                            @if (!Model.IsActive)
+                            {
+                                <div class="form-group">
+                                    <label>InActivate Reason: </label> <span>@Model.InActiveReason</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+        <div class="row" id="tblPallet">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th><a class="text-black"> Pallet No. </a></th>
+                                    <th><a class="text-black"> Pallet Code </a></th>
+                                    <th><a class="text-black"> Pallet Name </a></th>
+                                    <th><a class="text-black"> Status </a></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.MySubDatatable.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@Model.MySubDatatable.Rows[i]["PalletNo"]</td>
+                                        <td>@Model.MySubDatatable.Rows[i]["PalletCode"]</td>
+                                        <td>@Model.MySubDatatable.Rows[i]["PalletName"]</td>
+                                        <td>
+                                            @{
+                                                string Icon = "glyphicon glyphicon-remove-circle";
+                                                string click = "click to Active";
+                                                string isactive = "true";
+                                                if (Convert.ToBoolean(Model.MySubDatatable.Rows[i]["IsActive"]) == true)
+                                                {
+                                                    Icon = "glyphicon glyphicon-ok-circle";
+                                                    click = "click to InActive";
+                                                    isactive = "false";
+                                                }
+                                            }
+                                            <a><i title="@click" style=" font-size: x-large; cursor: pointer; vertical-align: middle;color:darkgray" class="@Icon"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+</section>

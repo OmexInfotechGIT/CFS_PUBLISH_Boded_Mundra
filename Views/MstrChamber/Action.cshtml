@@ -1,0 +1,190 @@
+﻿@model CFS.Models.MstrChamber
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Chamber";
+
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add new Chamber";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (Model.doaction == "edit")
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">Chamber Code: @Model.ChamberCode</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrChamber","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrChamber", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "MstrChamber", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.MstrChamberID)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+
+
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.BuildingName, new { @for = "txtBuildingName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.BuildingRefID, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.BuildingName, new { @id = "txtBuildingName", @name = "txtBuildingName", @class = "form-control", @placeholder = "Enter Building Name" })
+                                    @Html.HiddenFor(Model => Model.BuildingRefID, new { @id = "BuildingRefID" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.ChamberCode, new { @for = "txtChamberCode" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ChamberCode, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.ChamberCode, new { @id = "txtChamberCode", @name = "txtChamberCode", @class = "form-control", @placeholder = "Enter Chamber Code", @maxlength = "3", @onkeypress = "return alphaOnly(event)" })
+                                    @Html.HiddenFor(Model => Model.CodeRefID, new { @id = "CodeRefID" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.ChamberName, new { @for = "txtChamberName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ChamberName, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.ChamberName, new { @id = "txtChamberName", @name = "txtChamberName", @class = "form-control", @placeholder = "Enter Chamber Name" })
+                                    @Html.HiddenFor(Model => Model.RefID, new { @id = "RefID" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="col-sm-12">
+                                <div class="col-sm-3" style="padding-left:0px;">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Length, new { @for = "txtLength" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Length, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.Length, new { @id = "txtLength", @name = "txtLength", @class = "form-control", @placeholder = "Enter Length", @onkeyup = "javascript:calculateCBM();calculateSquareFT();", @maxlength = "5", @onkeypress = "return isNumber(event)" })
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Width, new { @for = "txtWidth" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Width, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.Width, new { @id = "txtWidth", @name = "txtWidth", @class = "form-control", @placeholder = "Enter Width", @onkeyup = "javascript:calculateCBM();calculateSquareFT();", @maxlength = "5", @onkeypress = "return isNumber(event)" })
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Height, new { @for = "txtHeight" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Height, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.Height, new { @id = "txtHeight", @name = "txtHeight", @class = "form-control", @placeholder = "Enter Height", @onkeyup = "javascript:calculateCBM();", @maxlength = "9", @onkeypress = "return isNumber(event)" })
+                                    </div>
+                                </div>
+                                <div class="col-sm-1">
+                                    <div style="padding-top:10px;">
+                                        <label></label><br />
+                                        <label style="padding-left:25px;">=</label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.CFT, new { @for = "txtCFT" })
+                                        @Html.TextBoxFor(Model => Model.CFT, new {  @id = "txtCFT", @name = "txtCFT", @class = "form-control", @placeholder = "Enter CFT", @readonly = "@readonly" })
+                                        @Html.HiddenFor(Model => Model.hdnCFT, new { @id = "hdnCFT", @name = "hdnCFT" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="box-body">
+                                <div class="col-sm-12">
+                                    <div class="col-sm-3" style="padding-left:0px;">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.ActualSize, new { @for = "txtActualSize" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ActualSize, String.Empty, new { @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.ActualSize, new { @id = "txtActualSize", @name = "txtActualSize", @class = "form-control", @placeholder = "Enter Actual Size", @maxlength = "15", @onkeypress = "return isNumber(event)" })
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.UseableSize, new { @for = "txtUseableSize" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.UseableSize, String.Empty, new { @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.UseableSize, new { @id = "txtUseableSize", @name = "txtUseableSize", @class = "form-control", @placeholder = "Enter Useable Size", @maxlength = "15", @onkeypress = "return isNumber(event)" })
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.Floor, new { @for = "txtFloor" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Floor, String.Empty, new { @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.Floor, new { @id = "txtFloor", @name = "txtFloor", @class = "form-control", @placeholder = "Enter Floor", @onkeyup = "calculateSquareFT();", @maxlength = "5", @onkeypress = "return isNumber(event)" })
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <div style="padding-top:10px;">
+                                            <label></label><br />
+                                            <label style="padding-left:25px;">=</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.SquareFeet, new { @for = "txtSquareFeet" })
+                                            @Html.TextBoxFor(Model => Model.SquareFeet, new { @id = "txtSquareFeet", @name = "txtSquareFeet", @class = "form-control", @placeholder = "Enter Square Feet", @readonly = "@readonly" })
+                                            @Html.HiddenFor(Model => Model.hdnSquareFeet, new { @id = "hdnSquareFeet", @name = "hdnSquareFeet" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <br />
+                            <div class="col-md-6">
+                                <div class="box-body">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.NoOfPallet, new { @for = "txtNoOfPallet" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.NoOfPallet, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.NoOfPallet, new { @id = "txtNoOfPallet", @name = "txtNoOfPallet", @class = "form-control", @placeholder = "Enter Number Of pallet", @maxlength = "5", @onkeypress = "return isNumber(event)" })
+                                    </div>
+                                    <div class="form-group">
+                                        <br />
+                                        @Html.CheckBoxFor(Model => Model.IsActive, new { @class = "form-control" })
+                                        @Html.Label("IsActive") @Html.ValidationMessageFor(Model => Model.IsActive, String.Empty, new { @class = "help-inline text-red" })
+                                    </div>
+                                    <div class="form-group" id="dvInActiveReason">
+                                        @Html.LabelFor(Model => Model.InActiveReason, new { @for = "InActiveReason" }) @Html.ValidationMessageFor(Model => Model.InActiveReason, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.InActiveReason, new { @class = "form-control", @placeholder = "Enter InActivate Reason" })
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="col-md-12">
+                                <div class="box-footer">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrChamber","Index")" class="btn btn-danger">Cancel</a>*@
+                                    <a href="@Url.Action("Index", "MstrChamber", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                                </div>
+                            </div>
+                            }
+                        </div>
+                    </div>
+        </div>
+    </div>
+</section>
+<script>
+    doaction = '@Model.doaction';
+ 
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrChamber.js")"></script>
+
+

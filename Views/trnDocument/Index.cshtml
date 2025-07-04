@@ -1,0 +1,248 @@
+﻿@model CFS.Models.trnDocument
+@{
+    ViewBag.Title = "Document Entry List";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header" id="divSearch">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat" id="btnSearch">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a id="btnAdd" href="@Url.Action("Action", "trnDocument", new { doaction = "add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Document Entry"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+
+
+                    <table id="example2" class="table table-bordered table-hover">
+
+                        <thead>
+                            <tr>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", "trnDocument", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.trnDocumentNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.trndocumentno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.trndocumentno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> NOC No</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", "trnDocument", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.CreatedDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.createddate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.createddate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> NOC Date</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", "trnDocument", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.BOENo", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.boeno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.boeno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> In BOE No</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", "trnDocument", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.GateInType", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.gateintype" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.gateintype" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Gate In Type</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", "trnDocument", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.LOCATIONFROM", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.locationfrom" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.locationfrom" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> LOCATION FROM</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", "trnDocument", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.NocStatus", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.nocstatus" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.nocstatus" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> NOC Status</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", "trnDocument", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.Status", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.status" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.status" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Change Status</a>
+                                </th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                            {
+                                <tr>
+                                    <td>@Model.MyDatatable.Rows[i]["trnDocumentNo"]</td>
+                                    <td>@Model.MyDatatable.Rows[i]["CreatedDate"]</td>
+                                    <td>@Model.MyDatatable.Rows[i]["BOENo"]</td>
+                                    <td>@Model.MyDatatable.Rows[i]["GateInType"]</td>
+                                    <td>@Model.MyDatatable.Rows[i]["LOCATIONFROM"]</td>
+                                    <td>@Model.MyDatatable.Rows[i]["NocStatus"]</td>
+                                    <td>
+                                        @{
+                                            string Icon = "glyphicon glyphicon-dashboard";
+                                            string Status = "";
+                                            if (!string.IsNullOrEmpty(Model.MyDatatable.Rows[i]["Status"].ToString()))
+                                            {
+                                                Status = Model.MyDatatable.Rows[i]["Status"].ToString();
+                                            }
+                                            if (Model.MyDatatable.Rows[i]["Status"].ToString() == "D")
+                                            {
+                                                Icon = "glyphicon glyphicon-ok-circle";
+                                            }
+                                            else if (Model.MyDatatable.Rows[i]["Status"].ToString() == "H")
+                                            {
+                                                Icon = "glyphicon glyphicon-minus-sign";
+                                            }
+                                            else if (Model.MyDatatable.Rows[i]["Status"].ToString() == "C")
+                                            {
+                                                Icon = "glyphicon glyphicon-ban-circle";
+                                            }
+                                            else if (Model.MyDatatable.Rows[i]["Status"].ToString() == "R")
+                                            {
+                                                Icon = "glyphicon glyphicon-step-forward";
+                                            }
+                                        }
+                                        <a><i onclick="ChangeStatus('@Status.Trim()','@Model.MyDatatable.Rows[i]["trnDocumentID"]','@Model.MyDatatable.Rows[i]["StatusRemarks"]','@Model.MyDatatable.Rows[i]["HoldAgency"]','@Model.MyDatatable.Rows[i]["HoldAgencyID"]')" title="Click to Change status" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="@Icon"></i></a>
+                                        @((Model.MyDatatable.Rows[i]["Status"].ToString() == "P") ? "Pending" : (Model.MyDatatable.Rows[i]["Status"].ToString() == "D") ? "Completed" : (Model.MyDatatable.Rows[i]["Status"].ToString() == "H") ? "Hold" : (Model.MyDatatable.Rows[i]["Status"].ToString() == "R") ? "Release" : "Cancelled")
+
+                                    </td>
+                                    
+                                    <td>
+                                        @if (ViewBag.gblBlnEdit)
+                                        {
+                                            <a href="@Url.Action("Action", "trnDocument", new { id = Model.MyDatatable.Rows[i]["trnDocumentID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true })"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                        }
+                                        @if (ViewBag.gblBlnView)
+                                        {
+                                            <a href="@Url.Action("view", "trnDocument", new { id = Model.MyDatatable.Rows[i]["trnDocumentID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true})"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                        }
+                                        <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('trnDocument','@Model.MyDatatable.Rows[i]["trnDocumentID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                        @if (ViewBag.gblBlnDelete && Convert.ToInt32(Model.MyDatatable.Rows[i]["IsBilldone"]) == 0)
+                                        {
+                                            <a><i data-toggle="modal" data-target="#DeleteDocumentEntry" onclick="DeleteReason('trnDocument','@Model.MyDatatable.Rows[i]["trnDocumentID"]')" title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                        }
+                                        <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", "trnDocument", new { id = Model.MyDatatable.Rows[i]["trnDocumentID"], format = "pdf" })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                    @Html.Partial("_pagination")
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("updatestatus", "trnDocument", FormMethod.Post))
+    {
+        <div class="modal fade in" id="ChangeStatus" style="display: none; padding-right: 17px;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title">Update Status</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="box">
+                                    <div class="box-body">
+                                        <div class="col-md-6">
+                                            <div class="box-body">
+                                                <div class="form-group">
+                                                    <label>Status</label>
+                                                    <select id="ddlStatus" name="ddlStatus" onchange="ReasonHideshow(this.value)" class="form-control" style="width:400px;">
+                                                        <option value="P">Pending</option>
+                                                        <option value="D">Completed</option>
+                                                        <option value="H">Hold</option>
+                                                        <option value="R">Release</option>
+                                                        <option value="C">Cancelled</option>
+                                                    </select>
+                                                    <label class="HoldAgencyHideshow">Hold Agency <span class="text-red">*</span></label>
+                                                    <input type="text" id="txtHoldAgency" name="txtHoldAgency" class="form-control HoldAgencyHideshow" style="width:400px;" />
+                                                    <input type="hidden" id="txtHoldAgencyID" name="txtHoldAgencyID" style="width:400px;" />
+                                                    <span class="text-red" id="txtHoldAgencymessage" style="display:none;">Hold Agency is Required</span><br />
+                                                    <input type="hidden" id="txttrnDocumentID" name="txttrnDocumentID" />
+                                                    <label class="ReasonHideshow">Reason <span class="text-red">*</span></label>
+                                                    <input type="text" id="txtreason" name="txtreason" class="form-control ReasonHideshow" style="width:400px;" />
+                                                    <span class="text-red" id="txtErrormessage" style="display:none;">Reason is Required</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" onclick="return validateReason()" class="btn btn-primary" id="btnStatusSave">Submit</button>
+                        <button type="button" class="btn btn-default pull-right" data-dismiss="modal" id="btnStatusClose">Close</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    }
+    <div class="modal fade in" id="DeleteDocumentEntry" style="display: none; padding-right: 17px;">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Delete Document Entry</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="padding:15px;">
+                        @Html.HiddenFor(Model => Model.trnDocumentID, new { @id = "trnDocumentID", @name = "trnDocumentID" })
+                        <div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.DeleteReason, new { @for = "DeleteReason" })  @Html.ValidationMessageFor(Model => Model.DeleteReason, String.Empty, new { @id = "spn_DeleteReason", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.DeleteReason, new { @id = "DeleteReason", @name = "DeleteReason", @class = "form-control", @placeholder = "Enter Delete Reason" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger pull-right margin-r-5" onclick="DeleteDocumentEntry();" id="delete">Delete</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</section>
+<script>
+     var doaction = '@Model.doaction';
+    var IsSearch = '@Model.IsSearch.ToString().ToLower()';
+    var VCNDeatails = '@Model.HtmlVCNDeatails';
+    var IsSearch = '@Model.IsSearch.ToString().ToLower()';
+    var ImporterExporter = '@Model.ImporterExporter';
+    var ImporterExporterID = '@Model.ImporterExporterID';
+    var CHAName = '@Model.CHAName';
+    var CHAID = '@Model.CHAID';
+    var IsBulk = '@Model.IsBulk';
+    var GroupCommodity = '@Model.GroupCommodity';
+    var BillCommodity = '@Model.BillCommodity';
+    var SubCommodity = '@Model.SubCommodity';
+    var GroupCommodityID = '@Model.GroupCommodityID';
+    var BillCommodityID = '@Model.BillCommodityID';
+    var SubCommodityID = '@Model.SubsCommodityID';
+    var PackageTypeID = '@Model.PackageTypeID';
+    var PackageType = '@Model.PackageType';
+    var ImporterCode = '@CFS.Com.ClsCommon.GetSettingValue("IMPTR", "1")';
+    var ExporterCode = '@CFS.Com.ClsCommon.GetSettingValue("EXPTR", "2")';
+    var DomesticCode = '@CFS.Com.ClsCommon.GetSettingValue("DMESC", "3")';
+    var GeneralCode = '@CFS.Com.ClsCommon.GetSettingValue("GENLC", "1")';
+    var HAZCode = '@CFS.Com.ClsCommon.GetSettingValue("HAZCT", "2")';
+    var ODCCode = '@CFS.Com.ClsCommon.GetSettingValue("ODCCT", "3")';
+    var ReeferCode = '@CFS.Com.ClsCommon.GetSettingValue("REFER", "4")';
+    var GateInType = '@Model.GateInType';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnDocument.js")"></script>
+

@@ -1,0 +1,212 @@
+﻿@model CFS.Models.trnReeferPluginOut
+
+@{
+
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+
+    ViewBag.Title = "Reefer Plug in And Plug Out List";
+
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>@CFS.Com.ClsCommon.AddhtmlSpace(1)</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a href="@Url.Action("Action", "trnReeferPluginOut", new { doaction = "add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Reefer Plug In Plug Out"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div style="overflow-x:scroll">
+                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnReeferPluginOut", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "ReeferWONo", SortOrder = (Model.pagger.SortColumn.ToLower() == "reeferwono".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "reeferwono".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Reefer WO No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnReeferPluginOut", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "ContNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "contno".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "contno".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Cont No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnReeferPluginOut", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "NOCNO", SortOrder = (Model.pagger.SortColumn.ToLower() == "nocno".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "nocno".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> NOC NO</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnReeferPluginOut", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "ShiipingBillNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "shiipingbillno".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "shiipingbillno".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> ShiipingBillNo</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnReeferPluginOut", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "Cycle", SortOrder = (Model.pagger.SortColumn.ToLower() == "cycle".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "cycle".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Cycle</a>
+                                    </th>
+                                    <th class="freezeLastColumn">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@Model.MyDatatable.Rows[i]["ContPrefix"]@Model.MyDatatable.Rows[i]["ReeferWONo"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["ContNo"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["NOCNO"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["ShiipingBillNo"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["Cycle"]</td>
+                                        <td class="freezeLastColumnwithWhite">
+                                            @if (ViewBag.gblBlnEdit && Convert.ToInt32(Model.MyDatatable.Rows[i]["IsContOut"])==0)
+                                            {
+                                                <a href="@Url.Action("Action", "trnReeferPluginOut", new {id = Model.MyDatatable.Rows[i]["trnReeferPluginOutID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", IsSearch = true, ContNoID = Model.MyDatatable.Rows[i]["ContNoID"], ContNo = Model.MyDatatable.Rows[i]["ContNo"]+"_"+Model.MyDatatable.Rows[i]["TypeOfCont"]})"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                            }
+                                            @if (ViewBag.gblBlnView)
+                                            {
+                                                <a href="@Url.Action("view", "trnReeferPluginOut", new { id = Model.MyDatatable.Rows[i]["trnReeferPluginOutID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", IsSearch = true, ContNoID = Model.MyDatatable.Rows[i]["ContNoID"], ContNo = Model.MyDatatable.Rows[i]["ContNo"]+"_"+Model.MyDatatable.Rows[i]["TypeOfCont"] })"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                            }
+                                            <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('trnReeferPluginOut','@Model.MyDatatable.Rows[i]["trnReeferPluginOutID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                            @if (ViewBag.gblBlnDelete && Convert.ToInt32(Model.MyDatatable.Rows[i]["PowerOnDateCount"]) == 0)
+                                            {
+                                                <a href="@Url.Action("delete", "trnReeferPluginOut", new { id = Model.MyDatatable.Rows[i]["trnReeferPluginOutID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                            }
+                                            @*<a target="_blank" href="@Url.Action("GenerateAndDisplayReport", "trnReeferPluginOut", new { id = Model.MyDatatable.Rows[i]["trnReeferPluginOutID"], format = "pdf" })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>*@
+                                            @if (ViewBag.gblBlnAdd && Convert.ToInt32(Model.MyDatatable.Rows[i]["PowerOffDateCount"]) > 0)
+                                            {
+                                                <a><i onclick="AddTemp('trnReeferPluginOut','@Model.MyDatatable.Rows[i]["trnReeferPluginOutID"]')" title="Monitoring" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-thermometer-half"></i></a>
+                                            }
+                                            @if (ViewBag.gblBlnAdd && Convert.ToInt32(Model.MyDatatable.Rows[i]["PowerOffDateCount"]) > 0)
+                                            {
+                                                <a><i onclick="PowerOff('trnReeferPluginOut','@Model.MyDatatable.Rows[i]["trnReeferPluginOutID"]')" title="Power_OFF" aria-hidden="true" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-power-off"></i></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+                    @Html.Partial("_pagination")
+                </div>
+                @if (ViewBag.gblBlnAdd)
+                {
+                    using (Html.BeginForm("Index", "trnReeferPluginOut", FormMethod.Post))
+                    {
+                        <div class="modal fade in" id="divtemp" style="display: none; padding-right: 17px;">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title">Monitoring</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="box">
+                                                    <div class="box-body">
+                                                        <div class="col-md-6">
+                                                            <div class="box-body">
+                                                                <div class="form-group">
+                                                                    <input type="hidden" id="TableID" name="TableID" />
+                                                                    <input type="hidden" id="TableName" name="TableName" />
+                                                                    <label>Temperature</label>
+                                                                    <input type="text" id="Temperature2" name="Temperature2" class="form-control" maxlength="6" style="width:400px;" />
+                                                                    <span class="text-red" id="txtvalidatemessage" style="display:none;">Temperature is Required</span>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Remarks</label>
+                                                                    <input type="text" id="Remarks_Monitor2" name="Remarks_Monitor2" class="form-control" style="width:400px;" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" onclick="AddDirectTemp()" class="btn btn-primary">Submit</button>
+                                        <button type="button" class="btn btn-default pull-right" onclick="CloseTempdiv()" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+
+
+                        <!--new modal for power off-->
+                        <div class="modal fade in" id="divtemp2" style="display: none; padding-right: 17px;">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title">Power_OFF</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="box">
+                                                    <div class="box-body">
+                                                        <div class="col-md-6">
+                                                            <div class="box-body">
+                                                                <div class="form-group">
+                                                                    <input type="hidden" id="trnReeferPluginOutID" name="trnReeferPluginOutID" value="">
+                                                                    <label for="PowerOnDate">Power On Date</label>
+                                                                    <div class="input-group">
+                                                                        <label id="lblPowerOnDate">  </label>
+                                                                        <input id="txtPowerOnDate" name="trnReeferPluginOutDetails.txtPowerOnDate" class="form-control" type="hidden" value="" />
+                                                                        <input id="txttrnReeferPluginOutDetailsID" name="trnReeferPluginOutDetailsID" class="form-control" type="hidden" value="" />
+                                                                        <input type="hidden" id="txtHiddenTempPowerOffDate" name="txtHiddenTempPowerOffDate" value="" />
+                                                                    </div>
+                                                                    <label for="PowerOffDate">Power Off Date</label>
+                                                                    <span class="text-red">*</span>
+                                                                    <div class="input-group">
+                                                                        <input class="form-control DateTimePicker" id="txtPoweroffdate" name="trnReeferPluginOutDetails.txtPoweroffdate" placeholder="Enter Power Off Date" type="text" value="@CFS.Com.ClsCommon.GetCurrentDateTime().ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat)">
+                                                                        <span class="input-group-addon" onclick="getElementById('txtPoweroffdate').focus()"><i class="fa fa-calendar"></i></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" onclick="PowerOffFromIndex()" data-dismiss="modal">Submit</button>
+                                        <button type="button" class="btn btn-default pull-right" onclick="CloseTempdivnew()" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</section>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnReeferPluginOut.js")"></script>

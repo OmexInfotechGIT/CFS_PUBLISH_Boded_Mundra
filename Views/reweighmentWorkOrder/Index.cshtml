@@ -1,0 +1,115 @@
+﻿@model CFS.Models.reweighmentWorkOrder
+@{
+    ViewBag.Title = "Re-Weighment Work Order";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a href="@Url.Action("Action", CFS.Com.ClsCommon.Controller(), new { doaction = "add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Weighment Cash Invoice"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div style="overflow-x:scroll">
+                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "trnReWeighmentWorkOrderNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "trnreweighmentworkorderno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "trnreweighmentworkorderno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Re-Weighment Work Order No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index",CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "CreatedDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "createddate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "createddate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Date</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "WHCreatedBy", SortOrder = (Model.pagger.SortColumn.ToLower() == "whcreatedby" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "whcreatedby" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Created by </a>
+                                    </th>
+                                    <th class="freezeLastColumn">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                {
+                                    <tr>
+
+                                        <td>
+                                            @if (ViewBag.gblBlnView)
+                                            {
+                                                <a href="@Url.Action("view", CFS.Com.ClsCommon.Controller(), new { id = Model.MyDatatable.Rows[i]["trnReWeighmentWorkOrderId"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true ,status = Model.status })">@(Model.MyDatatable.Rows[i]["trnReWeighmentWorkOrderPrefix"].ToString() + Model.MyDatatable.Rows[i]["trnReWeighmentWorkOrderNo"].ToString())</a>
+                                            }
+                                            else
+                                            {
+                                                @(Model.MyDatatable.Rows[i]["L"].ToString() + Model.MyDatatable.Rows[i]["trnReWeighmentWorkOrderNo"].ToString())
+                                            }
+                                        </td>
+                                        
+                                        <td>@Convert.ToDateTime(Model.MyDatatable.Rows[i]["CreatedDate"])</td>
+                                       
+                                        <td>@Model.MyDatatable.Rows[i]["WHCreatedBy"]</td>
+                                        
+
+                                        <td class="freezeLastColumnwithWhite">
+                                            @if (ViewBag.gblBlnEdit)
+                                            {
+                                                <a href="@Url.Action("Action", CFS.Com.ClsCommon.Controller(), new { id = Model.MyDatatable.Rows[i]["trnReWeighmentWorkOrderId"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit" , @IsSearch = true })"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                            }
+                                            @if (ViewBag.gblBlnView)
+                                            {
+                                                <a href="@Url.Action("view", CFS.Com.ClsCommon.Controller(), new { id = Model.MyDatatable.Rows[i]["trnReWeighmentWorkOrderId"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "view", @IsSearch = true, status = Model.status })"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                            }
+                                            <a href="@Url.Action("delete", "reweighmentWorkOrder", new { id = Model.MyDatatable.Rows[i]["trnReWeighmentWorkOrderId"] })" onclick="return confirm('Are you sure want to delete this record?');" ><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                            <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('trnReWeighmentWorkOrder','@Model.MyDatatable.Rows[i]["trnReWeighmentWorkOrderId"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    @Html.Partial("_pagination")
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</section>
+<script>
+    var doaction = '@Model.doaction';
+    var IsSearch = '@Model.IsSearch';
+    var IsEdit = 'false';
+    function searchStatus(value) {
+        if (value == 1) {
+            value = true;
+        }
+        else {
+
+            value = false;
+        }
+        window.location = "@Url.Action("Index", CFS.Com.ClsCommon.Controller())"+"?pg=@Model.pagger.CurrentPage&search=@Model.pagger.Search&SortColumn=@Model.pagger.SortColumn&SortOrder=@Model.pagger.SortOrder&status=" + value;
+    }
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/reweighmentWorkOrder.js")"></script>
+

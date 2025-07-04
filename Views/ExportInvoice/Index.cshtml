@@ -1,0 +1,113 @@
+﻿@model CFS.Models.ExportInvoice
+@{
+    ViewBag.Title = "Export Invoice";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">  
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                    {
+                                <a href="@Url.Action("Action", "ExportInvoice", new { doaction = "add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New CargoGateIn GW"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <table id="example2" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", "ExportInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "ExportInvoiceNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "exportinvoiceno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "exportinvoiceno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Export Invoice No</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", "ExportInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "ExportInvoiceDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "exportinvoicedate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "exportinvoicedate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> ExportInvoice Date</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", "ExportInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "SBNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "sbno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "sbno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> SB/INV NO</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", "ExportInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "SBDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "sbdate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "sbdate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> SB/INV Date</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", "ExportInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "trnExportStufingWONo", SortOrder = (Model.pagger.SortColumn.ToLower() == "trnexportstufingwono" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "trnexportstufingwono" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> ExportStufingWO No</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", "ExportInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "BillToParty", SortOrder = (Model.pagger.SortColumn.ToLower() == "billtoparty" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "billtoparty" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Billing To</a>
+                                </th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.MyDatatable != null && Model.MyDatatable.Rows.Count > 0)
+                            {
+                                for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@Model.MyDatatable.Rows[i]["ExportInvoiceNo"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["ExportInvoiceDate"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["SBNo"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["SBDate"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["trnExportStufingWONo"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["BillToParty"]</td>
+                                        <td style="text-align:center" class="freezeLastColumnwithWhite">
+                                            @if (!(Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"])) && ViewBag.gblBlnApprove && Convert.ToInt32(Model.MyDatatable.Rows[i]["IsFinished"]) == 1 )
+                                            {
+                                                <a href="@Url.Action("Confirmation", "ExportInvoice", new { id = Model.MyDatatable.Rows[i]["ExportInvoiceID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "Confirmation", @IsSearch = true, @trnExportStufingWOSBDetailsID=Convert.ToInt32(Model.MyDatatable.Rows[i]["trnExportStufingWOSBDetailsID"]), @SBInvoiceNo=Convert.ToString(Model.MyDatatable.Rows[i]["SBNo"]),@SBInvoiceDate=Convert.ToString(Model.MyDatatable.Rows[i]["SBDate"]) })"><i title="Click to Approve" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i></a>
+                                            }
+                                            else if (ViewBag.gblBlnUnapprove && Convert.ToInt32(Model.MyDatatable.Rows[i]["IsFinished"]) == 1 && Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]) )
+                                            {
+                                                <a href="@Url.Action("Confirmation", "ExportInvoice", new { id = Model.MyDatatable.Rows[i]["ExportInvoiceID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "Confirmation", @IsSearch = true, @trnExportStufingWOSBDetailsID=Convert.ToInt32(Model.MyDatatable.Rows[i]["trnExportStufingWOSBDetailsID"]), @SBInvoiceNo=Convert.ToString(Model.MyDatatable.Rows[i]["SBNo"]),@SBInvoiceDate=Convert.ToString(Model.MyDatatable.Rows[i]["SBDate"]) })"><i title="Click to Unapprove" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-down"></i></a>
+                                            }                                            
+                                            @if (ViewBag.gblBlnView)
+                                            {
+                                                <a href="@Url.Action("view", "ExportInvoice", new { id = Model.MyDatatable.Rows[i]["ExportInvoiceID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "view", @IsSearch = true, @trnExportStufingWOSBDetailsID=Convert.ToInt32(Model.MyDatatable.Rows[i]["trnExportStufingWOSBDetailsID"]), @SBInvoiceNo=Convert.ToString(Model.MyDatatable.Rows[i]["SBNo"]),@SBInvoiceDate=Convert.ToString(Model.MyDatatable.Rows[i]["SBDate"]) })"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                            }
+                                            <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('ExportInvoice','@Model.MyDatatable.Rows[i]["ExportInvoiceID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                            @if (Convert.ToInt32(Model.MyDatatable.Rows[i]["IsFinished"]) == 1)
+                                            {
+                                                <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", "ExportInvoice", new { id = Model.MyDatatable.Rows[i]["ExportInvoiceID"], format = "pdf" ,@IsSearch = true , @trnExportStufingWOSBDetailsID=Convert.ToInt32(Model.MyDatatable.Rows[i]["trnExportStufingWOSBDetailsID"]), @trnExportStufingWOID=Convert.ToInt32(Model.MyDatatable.Rows[i]["trnExportStufingWOID"]),doaction = "view" ,ConsolerID=Convert.ToInt32(Model.MyDatatable.Rows[i]["ConsolerID"]) })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                            }
+                                            @if (ViewBag.gblBlnDelete && !(Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"])))
+                                            {
+                                                <a href="@Url.Action("delete", "ExportInvoice", new { id = Model.MyDatatable.Rows[i]["ExportInvoiceID"] })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+
+                            }
+                        </tbody>
+                    </table>
+                    @Html.Partial("_pagination")
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+ var IsSearch = '@Model.IsSearch.ToString().ToLower()'; var doaction = '@Model.doaction';</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/ExportInvoice.js")"></script>

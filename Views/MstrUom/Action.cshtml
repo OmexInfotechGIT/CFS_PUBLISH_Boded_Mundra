@@ -1,0 +1,138 @@
+﻿@model CFS.Models.MstrUom
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update UOM Master";
+
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New UOM Master";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrUom","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrUom", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "MstrUom", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.MstrUomID)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+
+                        <div class="col-md-12">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.UomCode, new { @for = "txtUomCode" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.UomCode, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.UomCode, new { @id = "txtUomCode", @name = "txtUomCode", @class = "form-control", @placeholder = "Uom Code" })
+                                    @Html.HiddenFor(Model => Model.RefID)
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.UomName, new { @for = "txtUomName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.UomName, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.UomName, new { @id = "txtUomName", @name = "txtUomName", @class = "form-control", @placeholder = "Uom Name" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Length, new { @for = "txtLength" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Length, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.Length, new { onkeyup = "calculateCBM();", @id = "txtLength", @name = "txtLength", @class = "form-control", @placeholder = "Length", @maxlength = "5", @onkeypress = "return isNumber(event)" })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Width, new { @for = "txtWidth" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Width, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.Width, new { onkeyup = "calculateCBM();", @id = "txtWidth", @name = "txtWidth", @class = "form-control", @placeholder = "Width", @maxlength = "5", @onkeypress = "return isNumber(event)" })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Height, new { @for = "txtHeight" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Height, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.Height, new { onkeyup = "calculateCBM();", @id = "txtHeight", @name = "txtHeight", @class = "form-control", @placeholder = "Height", @maxlength = "5", @onkeypress = "return isNumber(event)" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1" style="text-align: left;width: 30px;">
+                                <div class="form-group">
+                                    <label for="" style="padding-top:31px;">=</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.CFT, new { @for = "txtCFT" }) @Html.ValidationMessageFor(Model => Model.CFT, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.CFT, new { disabled = "disabled", @id = "txtCFT", @name = "txtCFT", @class = "form-control test", @placeholder = "CFT" })
+                                    @Html.HiddenFor(Model => Model.hndCFT, new { @id = "hndCFT", @name = "hndCFT" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="box-body">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <br />
+                                    @Html.CheckBoxFor(Model => Model.IsOther, new { @class = "form-control" })
+                                    @Html.Label("IsOther") @Html.ValidationMessageFor(Model => Model.IsOther, String.Empty, new { @class = "help-inline text-red" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <br />
+                                    @Html.CheckBoxFor(Model => Model.IsActive, new { @class = "form-control" })
+                                    @Html.Label("IsActive") @Html.ValidationMessageFor(Model => Model.IsActive, String.Empty, new { @class = "help-inline text-red" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group" id="dvInActiveReason">
+                                    @Html.LabelFor(Model => Model.InActiveReason, new { @for = "InActiveReason" }) @Html.ValidationMessageFor(Model => Model.InActiveReason, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.InActiveReason, new { @class = "form-control", @placeholder = "Enter Inactivate Reason" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrUom","Index")" class="btn btn-danger">Cancel</a>*@
+                                <a href="@Url.Action("Index", "MstrUom", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrUom.js")"></script>
+
+

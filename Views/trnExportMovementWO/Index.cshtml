@@ -1,0 +1,182 @@
+﻿@model CFS.Models.trnExportMovementWO
+@using System.Globalization;
+@{
+    ViewBag.Title = "Export Movement Work Order - Operational";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a href="@Url.Action("Action", "trnExportMovementWO", new { doaction = "add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Export Movement Work Order "><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div style="overflow-x:scroll">
+                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnExportMovementWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "trnExportMovementWOno", SortOrder = (Model.pagger.SortColumn.ToLower() == "trnexportmovementwono" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.trnexportmovementwono" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Export Movement WO No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnExportMovementWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "createddate", SortOrder = (Model.pagger.SortColumn.ToLower() == "createddate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "createddate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Export Movement WO Date</a>
+                                    </th>
+
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnExportMovementWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "stuffrequestno", SortOrder = (Model.pagger.SortColumn.ToLower() == "stuffrequestno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "stuffrequestno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Stuff Request No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnExportMovementWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "containerno", SortOrder = (Model.pagger.SortColumn.ToLower() == "containerno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "containerno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Container No </a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnExportMovementWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "username", SortOrder = (Model.pagger.SortColumn.ToLower() == "username" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "username" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> User</a>
+                                    </th>
+
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnExportMovementWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "BOEBLNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "boeblno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "boeblno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> BOE/BL No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnExportMovementWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "Line", SortOrder = (Model.pagger.SortColumn.ToLower() == "line" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "line" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Line </a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnExportMovementWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "BilltoParty", SortOrder = (Model.pagger.SortColumn.ToLower() == "billtoparty" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "billtoparty" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Billing Party </a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnExportMovementWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "ConfirmationDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "confirmationdate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "confirmationdate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Confirmation Date</a>
+                                    </th>
+                                    <th class="freezeLastColumn">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.MyDatatable != null && Model.MyDatatable.Rows.Count > 0)
+                                {
+                                    for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (ViewBag.gblBlnView)
+                                                {
+                                                    <a href="@Url.Action("view", "trnExportMovementWO", new { id = Model.MyDatatable.Rows[i]["trnExportMovementWOID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true ,@SearchType=Model.MyDatatable.Rows[i]["SearchType"],@SearchID=Model.MyDatatable.Rows[i]["SearchID"],@SearchNo=Model.MyDatatable.Rows[i]["SearchNo"]})">@(Model.MyDatatable.Rows[i]["trnExportMovementWOPrefix"].ToString() + Model.MyDatatable.Rows[i]["trnExportMovementWONo"].ToString())</a>
+                                                }
+                                                else
+                                                {
+                                                    @(Model.MyDatatable.Rows[i]["trnExportMovementWOPrefix"].ToString() + Model.MyDatatable.Rows[i]["trnExportMovementWONo"].ToString())
+                                                }
+
+                                            </td>
+                                            <td>
+                                                @Convert.ToDateTime(Model.MyDatatable.Rows[i]["CreatedDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture)
+                                            </td>
+
+                                            <td>
+                                                @Model.MyDatatable.Rows[i]["stuffrequestno"]
+                                            </td>
+                                            <td>@Model.MyDatatable.Rows[i]["containerno"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["username"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["BOEBLNo"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["Line"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["BilltoParty"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["ConfirmationDate"]</td>
+
+                                            <td class="freezeLastColumnwithWhite">
+                                                @if (!(Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"])) && ViewBag.gblBlnApprove && Convert.ToInt32(Model.MyDatatable.Rows[i]["IsFinished"]) == 1)
+                                                {
+                                                    <a href="@Url.Action("Confirmation", "trnExportMovementWO", new { id = Model.MyDatatable.Rows[i]["trnExportMovementWOID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true , @SearchID = Model.MyDatatable.Rows[i]["SearchID"], @SearchNo = Model.MyDatatable.Rows[i]["SearchNo"] , @SearchType = Model.MyDatatable.Rows[i]["SearchType"] })"><i title="Click to Approve" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i></a>
+                                                }
+                                                else if (ViewBag.gblBlnUnapprove && Convert.ToInt32(Model.MyDatatable.Rows[i]["IsFinished"]) == 1 && Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]) && !Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsTruckApproved"]))
+                                                {
+                                                    <a href="@Url.Action("Confirmation", "trnExportMovementWO", new { id = Model.MyDatatable.Rows[i]["trnExportMovementWOID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true, @SearchID = Model.MyDatatable.Rows[i]["SearchID"], @SearchNo = Model.MyDatatable.Rows[i]["SearchNo"] , @SearchType = Model.MyDatatable.Rows[i]["SearchType"] })"><i title="Click to Unapprove" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-down"></i></a>
+                                                }
+                                                @if (ViewBag.gblBlnEdit && (!Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"])))
+                                                {
+                                                    <a href="@Url.Action("Action", "trnExportMovementWO", new { id = Model.MyDatatable.Rows[i]["trnExportMovementWOID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true, @SearchID = Model.MyDatatable.Rows[i]["SearchID"], @SearchNo = Model.MyDatatable.Rows[i]["SearchNo"] , @SearchType = Model.MyDatatable.Rows[i]["SearchType"] })"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                                }
+                                                @if (ViewBag.gblBlnView)
+                                                {
+                                                    <a href="@Url.Action("view", "trnExportMovementWO", new { id = Model.MyDatatable.Rows[i]["trnExportMovementWOID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true , @SearchID = Model.MyDatatable.Rows[i]["SearchID"], @SearchNo = Model.MyDatatable.Rows[i]["SearchNo"] , @SearchType = Model.MyDatatable.Rows[i]["SearchType"] })"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                                }
+                                                <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('trnExportMovementWO','@Model.MyDatatable.Rows[i]["trnExportMovementWOID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                                @if (ViewBag.gblBlnDelete && !Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]) && Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsInvoiceDone"]))
+                                                {
+                                                    <a><i data-toggle="modal" data-target="#DeleteExportmovementWO" onclick="CancelReason('trnExportMovementWO','@Model.MyDatatable.Rows[i]["trnExportMovementWOID"]')" title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                                }
+
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    @Html.Partial("_pagination")
+                </div>
+            </div>
+            <div class="modal fade in" id="DeleteExportmovementWO" style="display: none; padding-right: 17px;">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            <h4 class="modal-title">Delete Export Movement WO</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row" style="padding:15px;">
+                                @Html.HiddenFor(Model => Model.trnExportMovementWOID, new { @id = "trnExportMovementWOID", @name = "trnExportMovementWOID" })
+                                <div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.CancelRemarks, new { @for = "CancelRemarks" })  @Html.ValidationMessageFor(Model => Model.CancelRemarks, String.Empty, new { @id = "spn_CancelRemarks", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.CancelRemarks, new { @id = "CancelRemarks", @name = "CancelRemarks", @class = "form-control", @placeholder = "Enter Delete Remarks" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-danger pull-right margin-r-5" onclick="DeletetrnExportMovementWO();" id="delete">Delete</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    var doaction = '@Model.doaction';
+</script>
+<script>
+    var IsEdit = '@ViewBag.IsEdit';
+    var IsSearch = '@Model.IsSearch';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnExportMovementWO.js")"></script>

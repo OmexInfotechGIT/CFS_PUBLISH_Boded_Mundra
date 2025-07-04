@@ -1,0 +1,145 @@
+﻿@model CFS.Models.trnExportDocumentDeclaration
+@using System.Globalization;
+@{
+    ViewBag.Title = "View Export Document";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+@using (Html.BeginForm("Action", "trnExportDocumentDeclaration", FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+{
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <h4>
+                                    <b>
+                                        <span class="badge bg-light-blue" style="font-size:15px;">Document Ref. NO:@Model.DocRefPrefix@Model.DocRefNo </span>
+                                        <span class="badge bg-light-blue" style="font-size:15px;">Document Ref. Datetime :@Convert.ToDateTime(Model.CreatedDate).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat, CultureInfo.InvariantCulture) </span>
+                                        <span class="badge bg-light-blue" style="font-size:15px;">Document Ref. User : @Model.CreatedUser</span>
+                                    </b>
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                <a href="@Url.Action("Index", "trnExportDocumentDeclaration" , new {pg=Request.Params["pg"], search=Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12">
+                            @Html.HiddenFor(Model => Model.pagger.Search)
+                            @Html.HiddenFor(Model => Model.doaction, new { @id = "doaction" })
+                            @Html.HiddenFor(Model => Model.IsSearch)
+                            <input type="hidden" id="IsChangeStep" name="IsChangeStep" value="0" />
+                            <input type="hidden" id="trnExportDocumentDeclarationID" name="trnExportDocumentDeclarationID" value="@Model.trnExportDocumentDeclarationID" />
+                            <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.CHAName) : <span style="margin-right:50px">@Model.CHAName</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.ForwarderName) : <span id="CycleName">@Model.ForwarderName</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.ConsolerName) : <span>@Model.ConsolerName</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.CHARepresentativeName) : <span>@Model.CHARepresentativeName</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.ContactNumber) : <span>@Model.ContactNumber</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.Remarks, new { @for = "Forwarder" }) : <span>@Model.Remarks</span>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <hr />
+                        </div>
+
+                        <div class="col-md-12" style="overflow:scroll">
+                            <div class="pull-right">
+                                <div style="display: inline-flex">
+                                    <div class="input-group input-group-sm">
+                                        <input id="txtlotdetail" name="txtlotdetail" type="text" class="form-control" onkeyup="DataTableSeachEngine('txtlotdetail','tbllotdetail','btnlotdetail')" placeholder="Search for Common" value="">
+                                        <span class="input-group-btn">
+                                            <button type="button" id="btnlotdetail" onclick="DataTableSeachEngine('txtlotdetail','tbllotdetail','btnlotdetail','yes')" class="btn btn-primary btn-flat">Search</button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <table id="lotdetail" style="white-space: nowrap;" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>SB No</th>
+                                        <th>SB Date</th>
+                                        <th>Inv No</th>
+                                        <th>Inv Date</th>
+                                        <th>Cargo Type</th>
+                                        <th>Bulk/NonBulk Status</th>
+                                        <th>Document Balance Packages</th>
+                                        <th>Document Balance Pieces</th>
+                                        <th>Document Balance Weight</th>
+                                        <th>Document declared packages</th>
+                                        <th>Document declared pieces</th>
+                                        <th>Document declared weight</th>
+                                        <th>Exporter</th>
+                                        <th>Exporter Address</th>
+                                        <th>Consignee</th>
+                                        <th>Consignee Address</th>
+                                        <th>To Location</th>
+                                        <th>FOB</th>
+                                        <th>Marks and Nos</th>
+                                        <th>HAZ Class No</th>
+                                        <th>UN No</th>
+                                        <th>Temp</th>
+                                        <th>Bill Commodity</th>
+                                        <th>Group Commodity</th>
+                                        <th>Cargo Desc.</th>
+                                        <th>Sub Commodity</th>
+                                        <th>Package Type</th>
+                                        <th>ICEGATE Ref. No</th>
+                                        <th>ReExport Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblLotDetails"></tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+<script>
+    setTimeout(function () {
+        $(".hideinViewMode").hide();
+    }, 2000);
+    var trnExportDocumentDeclarationID = '@Model.trnExportDocumentDeclarationID';
+</script>
+@if (((Model != null && Model.doaction.ToLower() == "edit") || Model.trnExportDocumentDeclarationID > 0))
+{
+    <script>
+        $(".isDisplayOnlyinEdit").show();
+    </script>
+}
+else
+{
+    <script>
+        $(".isDisplayOnlyinEdit").hide();
+    </script>
+}
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnExportDocumentDeclaration.js")"></script>

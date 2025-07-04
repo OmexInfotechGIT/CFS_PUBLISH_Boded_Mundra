@@ -1,0 +1,1159 @@
+﻿@model CFS.Models.documentquery
+@using System.Globalization;
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.Title = "Bond Document Query List";
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="box-body">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.BondNo, new { @for = "BondNo" })
+                                    @Html.TextBoxFor(Model => Model.BondNo, new { @id = "BondNo", @name = "BondNo", @class = "form-control", @placeholder = "SELECT Bond No" })
+                                    @Html.HiddenFor(Model => Model.BondID, new { @id = "BondID", @name = "BondID" })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.InBoeNo, new { @for = "InBoeNo" }) <span class="text-red">*</span>
+                                    @Html.TextBoxFor(Model => Model.InBoeNo, new { @id = "InBoeNo", @name = "InBoeNo", @class = "form-control", @placeholder = "SELECT IN-BOE NO" })
+                                    @Html.HiddenFor(Model => Model.InBoeID, new { @id = "InBoeID", @name = "InBoeID" })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.ExBoeNo, new { @for = "ExBoeNo" })
+                                    @Html.TextBoxFor(Model => Model.ExBoeNo, new { @id = "ExBoeNo", @name = "ExBoeNo", @class = "form-control", @placeholder = "SELECT EX-BOE NO" })
+                                    @Html.HiddenFor(Model => Model.InBoeID, new { @id = "ExBoeID", @name = "ExBoeID" })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.IGMNo, new { @for = "IGMNo" })
+                                    @Html.TextBoxFor(Model => Model.IGMNo, new { @id = "IGMNo", @name = "IGMNo", @class = "form-control", @placeholder = "SELECT IGM NO" })
+                                    @Html.HiddenFor(Model => Model.IGMID, new { @id = "IGMID", @name = "IGMID" })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.ITEMNo, new { @for = "ITEMNo" })
+                                    @Html.TextBoxFor(Model => Model.ITEMNo, new { @id = "ITEMNo", @name = "ITEMNo", @class = "form-control", @placeholder = "SELECT ITEM NO" })
+                                    @Html.HiddenFor(Model => Model.ITEMID, new { @id = "ITEMID", @name = "ITEMID" })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.NocNo, new { @for = "NocNo" }) <span class="text-red">*</span>
+                                    @Html.TextBoxFor(Model => Model.NocNo, new { @id = "NocNo", @name = "NocNo", @class = "form-control", @placeholder = "SELECT NOC NO" })
+                                    @Html.HiddenFor(Model => Model.NocID, new { @id = "NocID", @name = "NocID" })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.SBNO, new { @for = "SBNO" })
+                                    @Html.TextBoxFor(Model => Model.SBNO, new { @id = "SBNO", @name = "SBNO", @class = "form-control", @placeholder = "SELECT SB NO" })
+                                    @Html.HiddenFor(Model => Model.SBID, new { @id = "SBID", @name = "SBID" })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.INVNO, new { @for = "INVNO" })
+                                    @Html.TextBoxFor(Model => Model.INVNO, new { @id = "INVNO", @name = "INVNO", @class = "form-control", @placeholder = "SELECT INV NO" })
+                                    @Html.HiddenFor(Model => Model.INVID, new { @id = "INVID", @name = "INVID" })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.ContNO, new { @for = "ContNO" })
+                                    @Html.TextBoxFor(Model => Model.ContNO, new { @id = "ContNO", @name = "ContNO", @class = "form-control", @placeholder = "SELECT CONT NO" })
+                                    @Html.HiddenFor(Model => Model.ContID, new { @id = "ContID", @name = "ContID" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <br />
+                                    @Html.CheckBoxFor(Model => Model.DownloadExcelFile, new { @class = "form-control", @id = "DownloadExcelFile" })
+                                    &nbsp;&nbsp;
+                                    @Html.Label("Dowanload Excel", new { @for = "DownloadExcelFile" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 pull-right">
+                                <div class="form-group pull-right">
+                                    <br />
+                                    <button type="button" style="margin-right:5px;" class="btn btn-danger pull-right" onclick="ClearSearchData()">Clear</button>
+                                    <button type="button" style="margin-right:5px;" onclick="SearchDocumentQuery()" class="btn btn-primary">Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            @if (Model.IsSearchDocQuery == true)
+            {
+                <div class="col-xs-12">
+                    <div class="box table-responsive">
+                        <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4><label>OVERALL STATUS</label></h4><hr />
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="box-body" id="step-1-body">
+                            <table class="table table-bordered table-hover" style="white-space:nowrap;">                                
+                                <tbody>
+                                    <tr>
+                                        <td style="font-weight:bold;width:20px;">A</td>
+                                        <td style="font-weight:bold;width:200px;">Received Packages</td>
+                                        <td>@Model.ReceivedPKGS</td>
+                                        <td style="font-weight:bold;width:200px;">Out Packages</td>
+                                        <td>@Model.OutPKGS</td>
+                                        <td style="font-weight:bold;width:200px;">Balance Packages</td>
+                                        <td>@Model.BalancePKGS</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bold;width:20px;">B</td>
+                                        <td style="font-weight:bold;width:200px;">Received Pieces</td>
+                                        <td>@Model.ReceivedPieces</td>
+                                        <td style="font-weight:bold;width:200px;">Out Pieces</td>
+                                        <td>@Model.OutPieces</td>
+                                        <td style="font-weight:bold;width:200px;">Balance Pieces</td>
+                                        <td>@Model.BalancePieces</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bold;width:20px;">C</td>
+                                        <td style="font-weight:bold;width:200px;">Received weight</td>
+                                        <td>@Model.ReceivedWeight</td>
+                                        <td style="font-weight:bold;width:200px;">Out weight</td>
+                                        <td>@Model.OutWeight</td>
+                                        <td style="font-weight:bold;width:200px;">Balance weight</td>
+                                        <td>@Model.BalanceWeight</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bold;width:20px;">D</td>
+                                        <td style="font-weight:bold;width:200px;">Total AV</td>
+                                        <td>@Model.TotalAV.ToString("0.00")</td>
+                                        <td style="font-weight:bold;width:200px;">Total DV</td>
+                                        <td>@Model.TotalDV.ToString("0.00")</td>
+                                        <td style="font-weight:bold;width:200px;">Released AV</td>
+                                        <td>@Model.ReleasedAV.ToString("0.00")</td>
+                                        <td style="font-weight:bold;width:200px;">Released DV</td>
+                                        <td>@Model.ReleasedDV.ToString("0.00")</td>
+                                        <td style="font-weight:bold;width:200px;">Balance AV</td>
+                                        <td>@Model.BalanceAV.ToString("0.00")</td>
+                                        <td style="font-weight:bold;width:200px;">Balance DV</td>
+                                        <td>@Model.BalanceDV.ToString("0.00")</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bold;width:20px;">E</td>
+                                        <td style="font-weight:bold;width:200px;">Total booked area</td>
+                                        <td>@Model.TotalBookArea</td>
+                                        <td style="font-weight:bold;width:200px;">Additional area occupied</td>
+                                        <td>@Model.AdditionalArea</td>
+                                        <td style="font-weight:bold;width:200px;">Total Area occupied</td>
+                                        <td>@Model.TotalOccuipedArea</td>
+                                        <td style="font-weight:bold;width:200px;">Released Area</td>
+                                        <td>@Model.ReleasedArea</td>
+                                        <td style="font-weight:bold;width:200px;">Balance Area</td>
+                                        <td>@Model.BalanceArea</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bold;width:20px;">F</td>
+                                        <td style="font-weight:bold;width:200px;">Total Loaded Cont</td>
+                                        <td>@Model.TotalLoadedCount</td>
+                                        <td style="font-weight:bold;width:200px;">Received loaded Cont</td>
+                                        <td>@Model.TotalReceiveLoadedCount</td>
+                                        <td style="font-weight:bold;width:200px;">Out loaded cont</td>
+                                        <td>@Model.TotalOutLoadedCount</td>
+                                        <td style="font-weight:bold;width:200px;">Balance LDD cont</td>
+                                        <td>@Model.TotalLoadedBalCount</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="box table-responsive">
+                        <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4><label>IN-BOND DETAILS :</label></h4><hr />
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="box-body" id="step-1-body">
+                            <div class="form-group col-md-12" style="overflow:scroll">
+                                <table class="table table-bordered table-hover" style="white-space:nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>In-BOE No</th>
+                                            <th>In-BOE Date</th>
+                                            <th>IGM No</th>
+                                            <th>ITEM No</th>
+                                            <th>IGM Date</th>
+                                            <th>BL No</th>
+                                            <th>BL Date</th>
+                                            <th>Bulk/Non-Bulk Status</th>
+                                            <th>CP Status</th>
+                                            <th>Bond/CP No</th>
+                                            <th>Bond/CP Date</th>
+                                            <th>Bond Expiry Date</th>
+                                            <th>NOC No</th>
+                                            <th>NOC Date</th>
+                                            <th>NOC Valid From</th>
+                                            <th>NOC Valid Upto</th>
+                                            <th>Gate In Mode</th>
+                                            <th>From Location</th>
+                                            <th>Cargo In Type</th>
+                                            <th>CHA</th>
+                                            <th>Forwarder</th>
+                                            <th>Consoler</th>
+                                            <th>Importer</th>
+                                            <th>Importer Address</th>
+                                            <th>Package Type</th>
+                                            <th>Cargo Desc</th>
+                                            <th>BOE Packages</th>
+                                            <th>BOE Pieces</th>
+                                            <th>BOE Weight</th>
+                                            <th>BOE Assessble Value</th>
+                                            <th>BOE Duty Value</th>
+                                            @if (Model.dtInBondDetails != null && Model.dtInBondDetails.Rows.Count > 0)
+                                            {
+
+
+                                                <th>BOE REQ. Area (@Model.dtInBondDetails.Rows[0]["ADDITIONAL SPACE OCCUPIED(SQR MTR)"])</th>
+                                                <th>Additional Space Occupied(@Model.dtInBondDetails.Rows[0]["ADDITIONAL SPACE OCCUPIED(SQR MTR)"])</th>
+                                            }
+                                            else
+                                            {
+                                                <th>BOE REQ. Area ()</th>
+                                                <th>Additional Space Occupied()</th>
+                                            }
+                                            <th>Hold Status</th>
+                                            <th>Released Status</th>
+                                            <th>NOC Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.dtInBondDetails != null && Model.dtInBondDetails.Rows.Count > 0)
+                                        {
+                                            for (int i = 0; i < Model.dtInBondDetails.Rows.Count; i++)
+                                            {
+                                                <tr>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["IN-BOE NO"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["IN-BOE DATE"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["IGM NO"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["ITEM NO"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["IGM DATE"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["BL NO"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["BL DATE"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["BULK/NON-BULK STATUS"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["CP STATUS"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["BOND/CP NO"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["BOND/CP DATE"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["BOND EXPIRY DATE"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["NOC NO"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["NOC DATE"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["NOC VALID FROM"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["NOC VALID UPTO"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["GATE IN MODE"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["FROM LOCATION"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["CARGO IN TYPE"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["CHA"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["FORWARDER"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["CONSOLER"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["IMPORTER"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["IMPORTER ADDRESS"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["PACKAGE TYPE"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["CARGO DESC"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["BOE PACKAGES"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["BOE PIECES"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["BOE WEIGHT"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["BOE ASSESSBLE VALUE"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["BOE DUTY VALUE"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["BOE REQ. AREA (SQR MTR)"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["ADDITIONAL SPACE OCCUPIED(SQR MTR)"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["HOLD STATUS"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["RELEASED STATUS"]</td>
+                                                    <td>@Model.dtInBondDetails.Rows[i]["NOC STATUS"]</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+
+                                            <tr><td style="text-align:left" colspan="35">No Records Found.</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="box table-responsive">
+                        <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4>
+                                        <label> IN-BOND CONTAINER DETAILS :</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <div style="display: inline-flex">
+                                            @if (Model.dtInBondCotainerDetails != null && Model.dtInBondCotainerDetails.Rows.Count > 0)
+                                            {
+                                                int NoOF20 = 0, NoOF40 = 0, NoOF45 = 0;
+
+                                                for (int i = 0; i < Model.dtInBondCotainerDetails.Rows.Count; i++)
+                                                {
+                                                    NoOF20 += Convert.ToInt32(Model.dtInBondCotainerDetails.Rows[i]["NoOf20"]);
+                                                    NoOF40 += Convert.ToInt32(Model.dtInBondCotainerDetails.Rows[i]["NoOf40"]);
+                                                    NoOF45 += Convert.ToInt32(Model.dtInBondCotainerDetails.Rows[i]["NoOf45"]);
+                                                }
+
+                                                <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;">In Mode : <span></span>@Model.dtInBondCotainerDetails.Rows[0]["InType"]</span>
+                                                <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 20 : <span></span>@NoOF20</span>
+                                                <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 40 : <span></span>@NoOF40</span>
+                                                <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 45 : <span></span>@NoOF45</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> In Mode : <span></span></span>
+                                                <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 20 : <span>0</span></span>
+                                                <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 40 : <span>0</span></span>
+                                                <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 45 : <span>0</span></span>
+                                            }
+                                        </div>
+                                    </h4><hr />
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="box-body" id="step-1-body">
+                            <div class="form-group col-md-12" style="overflow:scroll">
+                                <table class="table table-bordered table-hover" style="white-space:nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>Cont No/Truck No</th>
+                                            <th>Cont Size</th>
+                                            <th>Cont Type</th>
+                                            <th>ISO Code</th>
+                                            <th>Cargo Type</th>
+                                            <th>Bill Commodity</th>
+                                            <th>Truck/Cont Gate In Date</th>
+                                            <th>Truck/Cont Gate Out Date</th>
+                                            <th>Delivery Mode</th>
+                                            <th>In Gatepass No</th>
+                                            <th>Truck No</th>
+                                            <th>Transporter</th>
+                                            <th>Agent</th>
+                                            <th>Line</th>
+                                            <th>Seal 1</th>
+                                            <th>Seal 2</th>
+                                            <th>Manifested Packages</th>
+                                            <th>Manifested Pieces</th>
+                                            <th>Manifested Weight</th>
+                                            <th>Space Required</th>
+                                            <th>Space Occupied</th>
+                                            <th>FCL/LCL</th>
+                                            <th>P/S</th>
+                                            <th>High Value Status</th>
+                                            <th>IMO</th>
+                                            <th>UN</th>
+                                            <th>TEMP</th>
+                                            <th>Plug In Date</th>
+                                            <th>Plug Off Date</th>
+                                            <th>Final Weighment</th>
+                                            <th>Hold Status</th>
+                                            <th>Released Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.dtInBondCotainerDetails != null && Model.dtInBondCotainerDetails.Rows.Count > 0)
+                                        {
+                                            for (int i = 0; i < Model.dtInBondCotainerDetails.Rows.Count; i++)
+                                            {
+                                                <tr>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["CONT NO/TRUCK NO"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["CONT SIZE"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["CONT TYPE"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["ISO Code"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["CARGO TYPE"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["BILL COMMODITY"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["TRUCK/CONT GATE IN DATE"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["TRUCK/CONT GATE OUT DATE"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["DELIVERY MODE"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["IN GATEPASS NO"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["TRUCK NO"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["TRANSPORTER"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["AGENT"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["LINE"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["SEAL 1"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["SEAL 2"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["MANIFESTED PACKAGES"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["MANIFESTED PIECES"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["MANIFESTED WEIGHT"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["SPACE REQUIRED"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["SPACE OCCUPIED"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["FCL/LCL"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["P/S"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["HIGH VALUE STATUS"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["IMO"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["UN"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["TEMP"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["PLUG IN DATE"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["PLUG OFF DATE"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["FINAL WEIGHMENT"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["HOLD STATUS"]</td>
+                                                    <td>@Model.dtInBondCotainerDetails.Rows[i]["RELEASED STATUS"]</td>
+
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+
+                                            <tr><td style="text-align:left" colspan="32">No Records Found.</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="box table-responsive">
+                        <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4>
+                                        <label>LOADED OUT CONTAINER DETAILS : </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @if (Model.dtLoadedOutContainerDetails != null && Model.dtLoadedOutContainerDetails.Rows.Count > 0)
+                                        {
+                                            int NoOF20 = 0, NoOF40 = 0, NoOF45 = 0;
+
+                                            for (int i = 0; i < Model.dtLoadedOutContainerDetails.Rows.Count; i++)
+                                            {
+                                                NoOF20 += Convert.ToInt32(Model.dtLoadedOutContainerDetails.Rows[i]["NoOf20"]);
+                                                NoOF40 += Convert.ToInt32(Model.dtLoadedOutContainerDetails.Rows[i]["NoOf40"]);
+                                                NoOF45 += Convert.ToInt32(Model.dtLoadedOutContainerDetails.Rows[i]["NoOf45"]);
+                                            }
+
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 20 : <span></span>@NoOF20</span>
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 40 : <span></span>@NoOF40</span>
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 45 : <span></span>@NoOF45</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 20 : <span>0</span></span>
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 40 : <span>0</span></span>
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 45 : <span>0</span></span>
+                                        }
+                                    </h4><hr />
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="box-body" id="step-1-body">
+                            <div class="form-group col-md-12" style="overflow:scroll">
+                                <table class="table table-bordered table-hover" style="white-space:nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>Cont No</th>
+                                            <th>Cont Size</th>
+                                            <th>Gate In Date</th>
+                                            <th>Gate Out Date</th>
+                                            <th>Gatepass No</th>
+                                            <th>Gatepass Date</th>
+                                            <th>Truck No</th>
+                                            <th>Transporter</th>
+                                            <th>Condition</th>
+                                            <th>To Location</th>
+                                            <th>Released AV</th>
+                                            <th>Released DV</th>
+                                            <th>Release Area</th>
+                                            <th>Packages</th>
+                                            <th>Pieces</th>
+                                            <th>Weight</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.dtLoadedOutContainerDetails != null && Model.dtLoadedOutContainerDetails.Rows.Count > 0)
+                                        {
+                                            for (int i = 0; i < Model.dtLoadedOutContainerDetails.Rows.Count; i++)
+                                            {
+                                                <tr>
+                                                    <td>@Model.dtLoadedOutContainerDetails.Rows[i]["CONT NO"]</td>
+                                                    <td>@Model.dtLoadedOutContainerDetails.Rows[i]["CONT SIZE"]</td>
+                                                    <td>@Model.dtLoadedOutContainerDetails.Rows[i]["GATE IN DATE"]</td>
+                                                    <td>@Model.dtLoadedOutContainerDetails.Rows[i]["GATE OUT DATE"]</td>
+                                                    <td>@Model.dtLoadedOutContainerDetails.Rows[i]["GATEPASS NO"]</td>
+                                                    <td>@Model.dtLoadedOutContainerDetails.Rows[i]["GATEPASS DATE"]</td>
+                                                    <td>@Model.dtLoadedOutContainerDetails.Rows[i]["TRUCK NO"]</td>
+                                                    <td>@Model.dtLoadedOutContainerDetails.Rows[i]["TRANSPORTER"]</td>
+                                                    <td>@Model.dtLoadedOutContainerDetails.Rows[i]["CONDITION"]</td>
+                                                    <td>@Model.dtLoadedOutContainerDetails.Rows[i]["TO LOCATION"]</td>
+                                                    <td>@Model.dtLoadedOutContainerDetails.Rows[i]["RELEASED AV"]</td>
+                                                    <td>@Model.dtLoadedOutContainerDetails.Rows[i]["RELEASED DV"]</td>
+                                                    <td>@Model.dtLoadedOutContainerDetails.Rows[i]["RELEASE AREA"]</td>
+                                                    <td>@Model.dtLoadedOutContainerDetails.Rows[i]["PACKAGES"]</td>
+                                                    <td>@Model.dtLoadedOutContainerDetails.Rows[i]["PIECES"]</td>
+                                                    <td>@Model.dtLoadedOutContainerDetails.Rows[i]["WEIGHT"]</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr><td style="text-align:left" colspan="16">No Records Found.</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="box table-responsive">
+                        <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4>
+                                        <label>RECEIVED CONTAINER/TRUCK DETAILS : </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @if (Model.dtReceivedContainerOrTruckDetails != null && Model.dtReceivedContainerOrTruckDetails.Rows.Count > 0)
+                                        {
+                                            int NoOF20 = 0, NoOF40 = 0, NoOF45 = 0;
+
+                                            for (int i = 0; i < Model.dtReceivedContainerOrTruckDetails.Rows.Count; i++)
+                                            {
+                                                NoOF20 += Convert.ToInt32(Model.dtReceivedContainerOrTruckDetails.Rows[i]["NoOf20"]);
+                                                NoOF40 += Convert.ToInt32(Model.dtReceivedContainerOrTruckDetails.Rows[i]["NoOf40"]);
+                                                NoOF45 += Convert.ToInt32(Model.dtReceivedContainerOrTruckDetails.Rows[i]["NoOf45"]);
+                                            }
+
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;">In Mode : <span></span>@Model.dtReceivedContainerOrTruckDetails.Rows[0]["InType"]</span>
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 20 : <span></span>@NoOF20</span>
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 40 : <span></span>@NoOF40</span>
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 45 : <span></span>@NoOF45</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> In Mode : <span></span></span>
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 20 : <span>0</span></span>
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 40 : <span>0</span></span>
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 45 : <span>0</span></span>
+                                        }
+                                    </h4><hr />
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="box-body" id="step-1-body">
+                            <div class="form-group col-md-12" style="overflow:scroll">
+                                <table class="table table-bordered table-hover" style="white-space:nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>Cont No/Truck No</th>
+                                            <th>Cont Size</th>
+                                            <th>Gate In Date</th>
+                                            <th>Gate Out Date</th>
+                                            <th>Destuff Tally Ref No</th>
+                                            <th>Destuff Packages</th>
+                                            <th>Destuff Pieces</th>
+                                            <th>Destuff Weight</th>
+                                            <th>Occupied Area</th>
+                                            <th>Short Pkgs</th>
+                                            <th>Short Wt</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.dtReceivedContainerOrTruckDetails != null && Model.dtReceivedContainerOrTruckDetails.Rows.Count > 0)
+                                        {
+                                            for (int i = 0; i < Model.dtReceivedContainerOrTruckDetails.Rows.Count; i++)
+                                            {
+                                                <tr>
+                                                    <td>@Model.dtReceivedContainerOrTruckDetails.Rows[i]["CONT NO/TRUCK NO"]</td>
+                                                    <td>@Model.dtReceivedContainerOrTruckDetails.Rows[i]["CONT SIZE"]</td>
+                                                    <td>@Model.dtReceivedContainerOrTruckDetails.Rows[i]["GATE IN DATE"]</td>
+                                                    <td>@Model.dtReceivedContainerOrTruckDetails.Rows[i]["GATE OUT DATE"]</td>
+                                                    <td>@Model.dtReceivedContainerOrTruckDetails.Rows[i]["DESTUFF TALLY REF NO"]</td>
+                                                    <td>@Model.dtReceivedContainerOrTruckDetails.Rows[i]["DESTUFF PACKAGES"]</td>
+                                                    <td>@Model.dtReceivedContainerOrTruckDetails.Rows[i]["DESTUFF PIECES"]</td>
+                                                    <td>@Model.dtReceivedContainerOrTruckDetails.Rows[i]["DESTUFF WEIGHT"]</td>
+                                                    <td>@Model.dtReceivedContainerOrTruckDetails.Rows[i]["OCCUPIED AREA"]</td>
+                                                    <td>@Model.dtReceivedContainerOrTruckDetails.Rows[i]["Short Pkgs"]</td>
+                                                    <td>@Model.dtReceivedContainerOrTruckDetails.Rows[i]["Short Wt"]</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+
+                                            <tr><td style="text-align:left" colspan="11">No Records Found.</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="box table-responsive">
+                        <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4><label>EX-BOND/RE-EXPORT DETAILS :</label></h4><hr />
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="box-body" id="step-1-body">
+                            <div class="form-group col-md-12" style="overflow:scroll">
+                                <table class="table table-bordered table-hover" style="white-space:nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>EX-Bond Ref. No</th>
+                                            <th>Document Date And Time</th>
+                                            <th>Release Type</th>
+                                            <th>CHA</th>
+                                            <th>Forwarder</th>
+                                            <th>Importer/Exporter</th>
+                                            <th>Importer Address</th>
+                                            <th>Consoler</th>
+                                            <th>EX-BOE/SB No</th>
+                                            <th>EX-BOE/SB Date</th>
+                                            <th>INV No</th>
+                                            <th>INV. Date</th>
+                                            <th>EX-Bond/RE-Export Released PKGS</th>
+                                            <th>EX-Bond/RE-Export Released Pieces</th>
+                                            <th>EX-Bond/RE-Export Released Weight</th>
+                                            <th>RE-Export Released Area</th>
+                                            <th>Balance EX-Bond PKGS</th>
+                                            <th>Balance EX-Bond Pieces</th>
+                                            <th>Balance EX-Bond WT</th>
+                                            <th>Balance Area</th>
+                                            <th>EX-Bond Document Assessed Value</th>
+                                            <th>EX-Bond Document Duty Value</th>
+                                            <th>EX-Bond/RE-Export Assessable Value</th>
+                                            <th>EX-Bond/RE-Export Duty Value</th>
+                                            <th>Duty Challan No</th>
+                                            <th>Duty Chllan Date</th>
+                                            <th>OOC Date</th>
+                                            <th>Out Cargo Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.dtExBondReExportDetails != null && Model.dtExBondReExportDetails.Rows.Count > 0)
+                                        {
+                                            for (int i = 0; i < Model.dtExBondReExportDetails.Rows.Count; i++)
+                                            {
+                                                <tr>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["EX-BOND REF. NO"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["DOCUMENT DATE AND TIME"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["RELEASE TYPE"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["CHA"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["FORWARDER"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["IMPORTER/EXPORTER"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["IMPORTER ADDRESS"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["CONSOLER"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["EX-BOE/SB NO"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["EX-BOE/SB DATE"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["SB INV NO"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["SB INV. DATE"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["EX-BOND/RE-EXPORT RELEASED PKGS"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["EX-BOND/RE-EXPORT released PIECES"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["EX-BOND/RE-EXPORT released WEIGHT"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["RE-EXPORT RELEASED AREA"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["BALANCE EX-BOND PKGS"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["BALANCE EX-BOND PIECES"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["BALANCE EX-BOND WT"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["BALANCE AREA"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["EX-BOND DOCUMENT ASSESSED VALUE"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["EX-BOND DOCUMENT DUTY VALUE"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["EX-BOND/RE-EXPORT ASSESSABLE VALUE"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["EX-BOND/RE-EXPORT DUTY VALUE"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["DUTY CHALLAN NO"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["DUTY CHLLAN DATE"]</td>
+                                                    <td>@Model.dtExBondReExportDetails.Rows[i]["OOC DATE"]</td>
+                                                    <td>
+                                                        <a><i data-toggle="modal" data-target="#OutCargoDetails" onclick="GetOutCargoDetails(@Model.dtExBondReExportDetails.Rows[i]["trnExBondDocumentEntryDetailsID"])" title="Out Cargo Detail" style="font-size: x-large; cursor: pointer; vertical-align: middle;color:#3c8dbc" class="fa fa-arrows-alt fa-spin"></i></a>&nbsp;&nbsp;
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+
+                                            <tr><td style="text-align:left" colspan="27">No Records Found.</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="box table-responsive">
+                        <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4>
+                                        <label>RE-EXPORT CONT DETAILS :</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @if (Model.dtReExportContDetails != null && Model.dtReExportContDetails.Rows.Count > 0)
+                                        {
+                                            int NoOF20 = 0, NoOF40 = 0, NoOF45 = 0;
+
+                                            for (int i = 0; i < Model.dtReExportContDetails.Rows.Count; i++)
+                                            {
+                                                NoOF20 += Convert.ToInt32(Model.dtReExportContDetails.Rows[i]["NoOf20"]);
+                                                NoOF40 += Convert.ToInt32(Model.dtReExportContDetails.Rows[i]["NoOf40"]);
+                                                NoOF45 += Convert.ToInt32(Model.dtReExportContDetails.Rows[i]["NoOf45"]);
+                                            }
+
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 20 : <span></span>@NoOF20</span>
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 40 : <span></span>@NoOF40</span>
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 45 : <span></span>@NoOF45</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 20 : <span>0</span></span>
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 40 : <span>0</span></span>
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 45 : <span>0</span></span>
+                                        }
+                                    </h4><hr />
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="box-body" id="step-1-body">
+                            <div class="form-group col-md-12" style="overflow:scroll">
+                                <table class="table table-bordered table-hover" style="white-space:nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>SB No</th>
+                                            <th>SB Date</th>
+                                            <th>INV No</th>
+                                            <th>INV Date</th>
+                                            <th>CONT No</th>
+                                            <th>CONT Size</th>
+                                            <th>CONT Type</th>
+                                            <th>ISO</th>
+                                            <th>Cargo Type</th>
+                                            <th>Stuffed Packages</th>
+                                            <th>Stuffed Weight</th>
+                                            <th>Transfer Date</th>
+                                            <th>Stuf Req Date</th>
+                                            <th>Stuffing Date</th>
+                                            <th>Movement Date</th>
+                                            <th>Invoice Date</th>
+                                            <th>Out Date</th>
+                                            <th>Truck No</th>
+                                            <th>Transporter</th>
+                                            <th>GP No</th>
+                                            <th>GP Date</th>
+                                            <th>Vcn No</th>
+                                            <th>Vessel</th>
+                                            <th>Voy No</th>
+                                            <th>Move To</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.dtReExportContDetails != null && Model.dtReExportContDetails.Rows.Count > 0)
+                                        {
+                                            for (int i = 0; i < Model.dtReExportContDetails.Rows.Count; i++)
+                                            {
+                                                <tr>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["SB NO"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["SB DATE"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["INV NO"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["INV DATE"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["CONT NO"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["CONT SIZE"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["CONT TYPE"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["ISO"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["CARGO TYPE"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["STUFFED PACKAGES"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["STUFFED WEIGHT"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["TRANSFER DATE"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["STUF REQ DATE"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["STUFFING DATE"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["MOVEMENT DATE"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["INVOICE DATE"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["OUT DATE"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["TRUCK NO"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["TRANSPORTER"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["GP NO"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["GP DATE"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["VCN NO"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["VESSEL"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["VOY NO"]</td>
+                                                    <td>@Model.dtReExportContDetails.Rows[i]["MOVE TO"]</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+
+                                            <tr><td style="text-align:left" colspan="25">No Records Found.</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="box table-responsive">
+                        <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4>
+                                        <label>EXCESS CARGO REMOVAL :</label>
+                                    </h4><hr />
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="box-body" id="step-1-body">
+                            <div class="form-group col-md-12" style="overflow:scroll">
+                                <table class="table table-bordered table-hover" style="white-space:nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>GATEPASS NO</th>
+                                            <th>GATEPASS DATE</th>
+                                            <th>TRUCK NO</th>
+                                            <th>TRANSPORTER</th>
+                                            <th>RELEASED PACKAGES</th>
+                                            <th>RELEASED PIECES</th>
+                                            <th>RELEASED WEIGHT</th>
+                                            <th>RELEASED AV</th>
+                                            <th>RELEASED DV</th>
+                                            <th>RELEASED AREA</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td style="text-align:left" colspan="10">No Records Found.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="box table-responsive">
+                        <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4>
+                                        <label>EMPTY CONTAINER DETAILS :</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @if (Model.dtEmptyContainerDetails != null && Model.dtEmptyContainerDetails.Rows.Count > 0)
+                                        {
+                                            int NoOf20 = 0, NoOf40 = 0, NoOf45 = 0;
+
+                                            for (int i = 0; i < Model.dtEmptyContainerDetails.Rows.Count; i++)
+                                            {
+                                                NoOf20 += Convert.ToInt32(Model.dtEmptyContainerDetails.Rows[i]["NoOf20"]);
+                                                NoOf40 += Convert.ToInt32(Model.dtEmptyContainerDetails.Rows[i]["NoOf40"]);
+                                                NoOf45 += Convert.ToInt32(Model.dtEmptyContainerDetails.Rows[i]["NoOf45"]);
+                                            }
+
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 20 : <span></span>@NoOf20</span>
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 40 : <span></span>@NoOf40</span>
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 45 : <span></span>@NoOf45</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 20 : <span>0</span></span>
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 40 : <span>0</span></span>
+                                            <span class="badge bg-light-blue" style="font-size:15px; margin-left: 10px;"> 45 : <span>0</span></span>
+                                        }
+                                    </h4><hr />
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="box-body" id="step-1-body">
+                            <div class="form-group col-md-12" style="overflow:scroll">
+                                <table class="table table-bordered table-hover" style="white-space:nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>Cont No</th>
+                                            <th>Size</th>
+                                            <th>Type</th>
+                                            <th>ISO</th>
+                                            <th>Movement Type</th>
+                                            <th>Gate In Date</th>
+                                            <th>Gate Out Date</th>
+                                            <th>Out Mode</th>
+                                            <th>Lift On By</th>
+                                            <th>Lift Off By</th>
+                                            <th>Transport By</th>
+                                            <th>Agent</th>
+                                            <th>Line</th>
+                                            <th>CHA</th>
+                                            <th>Forwarder</th>
+                                            <th>GP Date</th>
+                                            <th>Truck No</th>
+                                            <th>Transporter</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.dtEmptyContainerDetails != null && Model.dtEmptyContainerDetails.Rows.Count > 0)
+                                        {
+                                            for (int i = 0; i < Model.dtEmptyContainerDetails.Rows.Count; i++)
+                                            {
+                                                <tr>
+                                                    <td>@Model.dtEmptyContainerDetails.Rows[i]["CONT NO"]</td>
+                                                    <td>@Model.dtEmptyContainerDetails.Rows[i]["SIZE"]</td>
+                                                    <td>@Model.dtEmptyContainerDetails.Rows[i]["TYPE"]</td>
+                                                    <td>@Model.dtEmptyContainerDetails.Rows[i]["ISO"]</td>
+                                                    <td>@Model.dtEmptyContainerDetails.Rows[i]["MOVEMENT TYPE"]</td>
+                                                    <td>@Model.dtEmptyContainerDetails.Rows[i]["GATE IN DATE"]</td>
+                                                    <td>@Model.dtEmptyContainerDetails.Rows[i]["GATE OUT DATE"]</td>
+                                                    <td>@Model.dtEmptyContainerDetails.Rows[i]["OUT MODE"]</td>
+                                                    <td>@Model.dtEmptyContainerDetails.Rows[i]["LIFT ON BY"]</td>
+                                                    <td>@Model.dtEmptyContainerDetails.Rows[i]["LIFT OFF BY"]</td>
+                                                    <td>@Model.dtEmptyContainerDetails.Rows[i]["TRANSPORT BY"]</td>
+                                                    <td>@Model.dtEmptyContainerDetails.Rows[i]["AGENT"]</td>
+                                                    <td>@Model.dtEmptyContainerDetails.Rows[i]["LINE"]</td>
+                                                    <td>@Model.dtEmptyContainerDetails.Rows[i]["CHA"]</td>
+                                                    <td>@Model.dtEmptyContainerDetails.Rows[i]["FORWARDER"]</td>
+                                                    <td>@Model.dtEmptyContainerDetails.Rows[i]["GP DATE"]</td>
+                                                    <td>@Model.dtEmptyContainerDetails.Rows[i]["TRUCK NO"]</td>
+                                                    <td>@Model.dtEmptyContainerDetails.Rows[i]["TRANSPORTER"]</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+
+                                            <tr><td style="text-align:left" colspan="18">No Records Found.</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="box table-responsive">
+                        <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4>
+                                        <label>SSR DETAILS :</label>
+                                    </h4><hr />
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="box-body" id="step-1-body">
+                            <div class="form-group col-md-12" style="overflow:scroll">
+                                <table class="table table-bordered table-hover" style="white-space:nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>SSR Ref No</th>
+                                            <th>SSR Ref Date</th>
+                                            <th>Operation</th>
+                                            <th>Manual SSR No</th>
+                                            <th>Bill Item</th>
+                                            <th>Cont No</th>
+                                            <th>Cont Size</th>
+                                            <th>QTY</th>
+                                            <th>Weight</th>
+                                            <th>Invoice No</th>
+                                            <th>Invoice Date</th>
+                                            <th>SSR Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.dtSSRDetails != null && Model.dtSSRDetails.Rows.Count > 0)
+                                        {
+                                            for (int i = 0; i < Model.dtSSRDetails.Rows.Count; i++)
+                                            {
+                                                <tr>
+                                                    <td>@Model.dtSSRDetails.Rows[i]["SSR REF NO"]</td>
+                                                    <td>@Model.dtSSRDetails.Rows[i]["SSR REF DATE"]</td>
+                                                    <td>@Model.dtSSRDetails.Rows[i]["OPERATION"]</td>
+                                                    <td>@Model.dtSSRDetails.Rows[i]["MANUAL SSR NO"]</td>
+                                                    <td>@Model.dtSSRDetails.Rows[i]["BILL ITEM"]</td>
+                                                    <td>@Model.dtSSRDetails.Rows[i]["CONT NO"]</td>
+                                                    <td>@Model.dtSSRDetails.Rows[i]["CONT SIZE"]</td>
+                                                    <td>@Model.dtSSRDetails.Rows[i]["QTY"]</td>
+                                                    <td>@Model.dtSSRDetails.Rows[i]["WEIGHT"]</td>
+                                                    <td>@Model.dtSSRDetails.Rows[i]["INVOICE NO"]</td>
+                                                    <td>@Model.dtSSRDetails.Rows[i]["INVOICE DATE"]</td>
+                                                    <td>@Model.dtSSRDetails.Rows[i]["SSR STATUS"]</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+
+                                            <tr><td style="text-align:left" colspan="12">No Records Found.</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="box table-responsive">
+                        <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4>
+                                        <label>INVOICE DETAILS :</label>
+                                    </h4><hr />
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="box-body" id="step-1-body">
+                            <div class="form-group col-md-12" style="overflow:scroll">
+                                <table class="table table-bordered table-hover" style="white-space:nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>Invoice Ref No</th>
+                                            <th>Invoice Date</th>
+                                            <th>Invoice Type</th>
+                                            <th>Final Invoice Amount</th>
+                                            <th>Payment Mode</th>
+                                            <th>Cheque/DD/NEFT</th>
+                                            <th>NOC Pattern</th>
+                                            <th>NOC Valid From</th>
+                                            <th>NOC Valid Upto</th>
+                                            <th>Operation Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.dtInvoiceDetails != null && Model.dtInvoiceDetails.Rows.Count > 0)
+                                        {
+                                            for (int i = 0; i < Model.dtInvoiceDetails.Rows.Count; i++)
+                                            {
+                                                <tr>
+                                                    <td>@Model.dtInvoiceDetails.Rows[i]["INVOICE REF NO"]</td>
+                                                    <td>@Model.dtInvoiceDetails.Rows[i]["INVOICE DATE"]</td>
+                                                    <td>@Model.dtInvoiceDetails.Rows[i]["INVOICE TYPE"]</td>
+                                                    <td>@Model.dtInvoiceDetails.Rows[i]["FINAL INVOICE AMOUNT"]</td>
+                                                    <td>@Model.dtInvoiceDetails.Rows[i]["PAYMENT MODE"]</td>
+                                                    <td>@Model.dtInvoiceDetails.Rows[i]["CHEQUE/DD/NEFT"]</td>
+                                                    <td>@Model.dtInvoiceDetails.Rows[i]["NOC PATTERN"]</td>
+                                                    <td>@Model.dtInvoiceDetails.Rows[i]["NOC VALID FROM"]</td>
+                                                    <td>@Model.dtInvoiceDetails.Rows[i]["NOC VALID UPTO"]</td>
+                                                    <td>@Model.dtInvoiceDetails.Rows[i]["OPERATION TYPE"]</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+
+                                            <tr><td style="text-align:left" colspan="10">No Records Found.</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    
+</section>
+<div class="modal fade in" id="OutCargoDetails" style="display: none; padding-right: 17px;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">Out Cargo Deails</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12" style="margin-bottom: 5px;"></div>
+                <div class="row">
+                    <div class="col-md-12" style="overflow:scroll;margin-top:20px;">
+                        <table id="tbOutCargoDetails" style="white-space:nowrap;overflow:scroll;" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>OUT GATEPASS NO</th>
+                                    <th>OUT GP DATE AND TIME</th>
+                                    <th>TRUCK NO</th>
+                                    <th>TRANSPORTER</th>
+                                    <th>OUT PACKAGES</th>
+                                    <th>OUT PIECES</th>
+                                    <th>OUT WEIGHT</th>
+                                    <th>RELEASED AV</th>
+                                    <th>RELEASED DV</th>
+                                    <th>RELEASED AREA</th>
+                                    <th>TO LOCATION</th>
+                                    <th>ContainerNo</th>
+                                    <th>Size</th>
+                                    <th>Seal No</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblOutCargoDetails"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/documentquery.js")"></script>

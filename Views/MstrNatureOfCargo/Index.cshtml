@@ -1,0 +1,114 @@
+﻿@model CFS.Models.MstrNatureOfCargo
+
+@{
+    ViewBag.Title = "Cargo Type List";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a href="@Url.Action("Action", "MstrNatureOfCargo", new { pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "add" })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Cargo Type"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+
+
+                    <div style="overflow-x:scroll">
+                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("Index", "MstrNatureOfCargo", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "natureofcargocode", SortOrder = (Model.pagger.SortColumn.ToLower() == "natureofcargocode" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "natureofcargocode" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Cargo Type Code </a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("Index", "MstrNatureOfCargo", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "natureofcargoname", SortOrder = (Model.pagger.SortColumn.ToLower() == "natureofcargoname" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "natureofcargoname" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Cargo Type Name </a>
+                                    </th>
+                                    @if (ViewBag.gblBlnEdit)
+                                    {
+                                        <th>
+                                            <a class="text-black" href="@Url.Action("Index", "MstrNatureOfCargo", new { pg = Model.pagger.CurrentPage, search = Model.pagger.Search, SortColumn = "isactive", SortOrder = (Model.pagger.SortColumn.ToLower() == "isactive" && Model.pagger.SortOrder.ToLower() == "asc" ? "desc" : "asc") })"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "isactive" && Model.pagger.SortOrder.ToLower() == "asc" ? "desc" : "asc").ToString().ToLower())"></i> Status </a>
+                                        </th>
+                                    }
+                                    <th class="freezeLastColumn">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@Model.MyDatatable.Rows[i]["NatureofCargoCode"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["NatureofCargoName"]</td>
+                                        @if (ViewBag.gblBlnEdit)
+                                        {
+                                            <td>
+                                                @{
+                                                    string Icon = "glyphicon glyphicon-remove-circle";
+                                                    string click = "click to Active";
+                                                    string isactive = "true";
+                                                    if (Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsActive"]) == true)
+                                                    {
+                                                        Icon = "glyphicon glyphicon-ok-circle";
+                                                        click = "click to InActive";
+                                                        isactive = "false";
+                                                    }
+                                                }
+                                                <a><i onclick="ValidateUpdateStatus('mstrnatureofcargo','@isactive','@Model.MyDatatable.Rows[i]["MstrNatureOfCargoID"]')" title="@click" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="@Icon"></i></a>
+                                            </td>
+                                        }
+                                        <td class="freezeLastColumnwithWhite">
+                                            @if (ViewBag.gblBlnEdit)
+                                            {
+                                                <a href="@Url.Action("Action", "MstrNatureOfCargo", new {  id = Model.MyDatatable.Rows[i]["MstrNatureOfCargoID"],pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit" } )"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                            }
+                                            @if (ViewBag.gblBlnView)
+                                            {
+                                                <a href="@Url.Action("view", "MstrNatureOfCargo", new { id = Model.MyDatatable.Rows[i]["MstrNatureOfCargoID"],pg = Model.pagger.CurrentPage, search = Model.pagger.Search })"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                            }
+                                            <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('MstrNatureOfCargo','@Model.MyDatatable.Rows[i]["MstrNatureOfCargoID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                            @if (ViewBag.gblBlnDelete)
+                                            {
+                                                <a href="@Url.Action("delete", "MstrNatureOfCargo", new { id = Model.MyDatatable.Rows[i]["MstrNatureOfCargoID"],pg = Model.pagger.CurrentPage, search = Model.pagger.Search })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+                        @Html.Partial("_pagination")
+                    </div>
+                </div>
+        </div>
+    </div>
+</section>
+<script>
+    var doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrNatureOfCargo.js")"></script>
+

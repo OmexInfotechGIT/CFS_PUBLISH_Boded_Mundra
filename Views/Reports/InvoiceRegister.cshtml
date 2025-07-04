@@ -1,0 +1,27 @@
+﻿@{
+    CFS.Models.ReportsModal ReportsModal = new CFS.Models.ReportsModal();
+    if (ViewBag.ReportsModal != null)
+    {
+        ReportsModal = ViewBag.ReportsModal;
+    }
+    ViewBag.Title = "Invoice Register";
+}
+@using (Html.BeginForm("InvoiceRegister", "Reports", FormMethod.Post))
+{
+    <div class="">
+        <div class="box">
+            <div class="box-body">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => ReportsModal.InvoiceType, new { @for = "InvoiceType" })
+                        @Html.DropDownListFor(Model => ReportsModal.InvoiceType, ReportsModal.DDLInvoiceType, "SELECT", new { @id = "InvoiceType", @name = "InvoiceType", @class = "form-control" })
+                    </div>
+                </div>
+                @Html.Partial("_ReportsModalDate")
+                @Html.Partial("_ReportsModalSearchClearButton")
+            </div>
+        </div>
+    </div>
+}
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/ReportsModal.js")"></script>
+

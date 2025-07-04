@@ -1,0 +1,708 @@
+﻿@model CFS.Models.trnBOEItemsOut
+@using System.Globalization;
+@{
+
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update BOE Items";
+        //if (!ViewBag.gblBlnEdit)
+        //{
+        //    Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        //}
+    }
+    else if (Model.doaction == "view")
+    {
+        ViewBag.Title = "View BOE Items";
+        //if (!ViewBag.gblBlnEdit)
+        //{
+        //    Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        //}
+    }
+    else
+    {
+        ViewBag.Title = "Add New BOE Items";
+
+    }
+    string heading = "";
+    System.Text.StringBuilder StrAutocomplete = new System.Text.StringBuilder();
+}
+
+<style>
+    th, td {
+        padding: 3px;
+    }
+
+    th {
+        background: lightgray;
+    }
+
+    input, select {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+
+    .ui-autocomplete {
+        z-index: 9999;
+    }
+</style>
+<!-- Main content -->
+<section class="">
+
+    @using (Html.BeginForm("Index", "trnBOEItemsOut", FormMethod.Post))
+    {
+        @Html.HiddenFor(Model => Model.trnDocumentLotDetailsID)
+        @Html.HiddenFor(Model => Model.trnExBondDocumentEntryDetailsID)
+        @Html.HiddenFor(Model => Model.trnCargoTruckOutwardCumGatepassID)
+        @Html.HiddenFor(Model => Model.ModelTruckNo)
+        @Html.HiddenFor(Model => Model.ModelBOENo)
+        @Html.HiddenFor(Model => Model.ModelGatePassPackages)
+        @Html.HiddenFor(Model => Model.ModelGatePassPieces)
+        @Html.HiddenFor(Model => Model.ModelGatePassWeight)
+        @Html.HiddenFor(Model => Model.type)
+        @Html.HiddenFor(Model => Model.searchID)
+        @Html.HiddenFor(Model => Model.searchNo)
+        @Html.HiddenFor(Model=>Model.IsBulk)
+        @Html.HiddenFor(Model=>Model.IsGroupArea)
+        <div class="row" id="step-1">
+
+            <div class="col-xs-12">
+
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h4>
+                            <b>BOE Items</b>
+
+                            <div class="pull-right">
+                                <div style="display: inline-flex">
+                                    @if (Model.type == "T")
+                                    {
+                                        <a href="@Url.Action("Action", "trnCargoTruckOutwardCumGatepass", new { @id = Model.trnCargoTruckOutwardCumGatepassID, @doaction = "edit", @IsSearch = "True", @TruckNo = ViewBag.SearchNo, @trnEmptyTruckGateInsearchID = Model.searchID })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("Action", "trnContainerDestuffing", new { @id = Model.trnCargoTruckOutwardCumGatepassID, @doaction = "edit", @IsSearch = "True", @ContNo = ViewBag.SearchNo, @trnContainerGateInDetailsID = Model.searchID })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                                    }
+                                </div>
+
+                            </div>
+                        </h4>
+                    </div>
+                    <div class="box-body">
+                        @if (Model.type == "T")
+                        {
+                            <div class="col-md-2">
+                                @Html.LabelFor(Model => Model.ModelTruckNo) : <span>@Model.ModelTruckNo</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-md-2">
+                                @Html.Label("Container No") : <span>@Model.ModelTruckNo</span>
+                            </div>
+                        }
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.ModelBOENo) : <span>@Model.ModelBOENo</span>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.ModelGatePassPackages) : <span class="bg-red">@(Convert.ToDecimal(Model.ModelGatePassPackages).ToString("0"))</span>
+                            @Html.HiddenFor(Model => Model.ModelGatePassPackages, new { @id = "WorkOrderPackages" })
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.ModelGatePassPieces) : <span class="bg-red">@(Convert.ToDecimal(Model.ModelGatePassPieces).ToString("0"))</span>
+                            @Html.HiddenFor(Model => Model.ModelGatePassPieces, new { @id = "WorkOrderPieces" })
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.ModelGatePassWeight) : <span class="bg-red">@Model.ModelGatePassWeight</span>
+                            @Html.HiddenFor(Model => Model.ModelGatePassWeight, new { @id = "WorkOrderWeight" })
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model=>Model.ExBoeNO) : <span>@Model.ExBoeNO</span>                           
+                            @Html.HiddenFor(Model => Model.ExBoeNO, new { @id= "ExBoeNO" })
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model=>Model.BalPkg) : <span>@Model.BalPkg</span>
+                            @Html.HiddenFor(Model => Model.BalPkg, new { @id= "BalPkg" })
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model=>Model.BalPices) : <span>@Model.BalPices</span>
+                            @Html.HiddenFor(Model=>Model.BalPices,new { @id= "BalPices" })
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model=>Model.BalWt) : <span>@Model.BalWt</span>
+                            @Html.HiddenFor(Model => Model.BalWt, new { @id= "BalWt" })
+                        </div>
+                        <div class="col-md-2">
+                            @Html.Label("Total Area Booked") : <span id="txtBookingArea">@Model.dtAreaDetails.Rows[0]["BookingArea"].ToString()</span>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.Label("Total Area Received") : <span id="txtTotalReceivedArea">@Model.dtAreaDetails.Rows[0]["TotalReceivedArea"].ToString()</span>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.Label("Total Area Released") : <span id="txtTotalOutwadArea">@Model.dtAreaDetails.Rows[0]["TotalOutwadArea"].ToString()</span>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.Label("Total Balance Area") : <span id="txtTotalBalanceArea">@((Convert.ToDecimal(Model.dtAreaDetails.Rows[0]["TotalReceivedArea"].ToString()) - Convert.ToDecimal(Model.dtAreaDetails.Rows[0]["TotalOutwadArea"].ToString())) - Model.AreaRequired)</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.AreaRequired) :  @Html.TextBoxFor(Model => Model.AreaRequired, new { @id = "txtAreaRequired", @name = "txtAreaRequired", @onkeypress = "return isNumberWithTwoDecimal(event,'txtAreaRequired')", @class = (Model.doaction == "view" ? "clsDisabled" : "") })
+                        </div>
+
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                        <div class="col-md-12" style="overflow-x:scroll">
+                            @if (Model != null && Model.MyDatatable != null)
+                            {
+
+                                <table id="tblterifftable" style="width: 150%; border: 1px solid #dfdada" border="1">
+                                    <thead>
+                                        <tr>
+                                            <th width="100px">Cargo</th>
+                                            <th>Destuff Date</th>
+                                            <th>Destuff (Truck/Container) No.</th>
+                                            <th>Book Pkgs</th>
+                                            <th>Book Pics</th>
+                                            <th>Book Wgt</th>
+                                            <th>Rcv. Pkgs</th>
+                                            <th>Rcv. Pics</th>
+                                            <th>Rcv. Wgt</th>
+                                            <th>Total Out. Pkgs</th>
+                                            <th>Total Out. Pics</th>
+                                            <th>Total Out. Wgt</th>
+                                            <th>Bal. Pkgs</th>
+                                            <th>Bal. Pics</th>
+                                            <th>Bal. Wgt</th>
+                                            <th>Pkgs</th>
+                                            <th>Pics</th>
+                                            <th>Wgt</th>
+                                            <th>WH Location</th>
+                                            <th>Packing Type</th>
+                                            <th>Bill Commodity</th>
+                                            <th>Equipment</th>
+                                            @if (Model.doaction != "view")
+                                            {
+                                                <th>Clear</th>
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            int count1 = 0;
+                                        }
+
+                                        @{
+                                            StrAutocomplete.Append(@" <script> setTimeout(function () {");
+                                            count1 = Model.MyDatatable.Rows.Count;
+                                            Model.CargoName = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.trnDestuffingID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.trnDocumentContainerID = new long[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.Types = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.EndDestuffDate = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.TruckDestuffNo = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.BookNoOfPackage = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.BookNoOfPieces = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.BookWeight = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.RcvNoOfPackage = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.RcvNoOfPieces = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.RcvWeight = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.TotalOutPackage = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.TotalOutPieces = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.TotalOutWeight = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.RemNoOfPackage = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.RemNoOfPieces = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.RemWeight = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.Package = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.Pieces = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.Weight = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.WHLocation = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.WHLocationID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.PackingType = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.PackingTypeID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.BillCommodity = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.BillCommodityAlias = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.BillCommodityID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.Equipment = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.EquipmentID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.trnDocumentBoiItemsID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.trnCargoTruckOutwardCumGatepassDetailsID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.hdnIsGroupArea = new long[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        }
+
+                                        @if (Model.MyDatatable != null && Model.MyDatatable.Rows.Count > 0)
+                                        {
+                                            for (int Q = 0; Q < Model.MyDatatable.Rows.Count; Q++)
+                                            {
+
+                                                Model.CargoName[Q] = Model.MyDatatable.Rows[Q]["CargoName"].ToString();
+                                                Model.trnDestuffingID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["trnDestuffingID"].ToString());
+                                                Model.trnDocumentContainerID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["trnDocumentContainerID"].ToString());
+                                                Model.Types[Q] = Model.MyDatatable.Rows[Q]["Type"].ToString();
+                                                Model.EndDestuffDate[Q] = Model.MyDatatable.Rows[Q]["EndDestuffDate"].ToString();
+                                                Model.TruckDestuffNo[Q] = Model.MyDatatable.Rows[Q]["TruckDestuffNo"].ToString();
+                                                Model.BookNoOfPackage[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["BookNoOfPackage"].ToString());
+                                                Model.BookNoOfPieces[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["BookNoOfPieces"]);
+                                                Model.BookWeight[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["BookWeight"]);
+                                                Model.RcvNoOfPackage[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["RcvNoOfPackage"].ToString());
+                                                Model.RcvNoOfPieces[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["RcvNoOfPieces"]);
+                                                Model.RcvWeight[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["RcvWeight"]);
+                                                Model.TotalOutPackage[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["TotalOutPackage"].ToString());
+                                                Model.TotalOutPieces[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["TotalOutPieces"].ToString());
+                                                Model.TotalOutWeight[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["TotalOutWeight"].ToString());
+                                                Model.RemNoOfPackage[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["RemNoOfPackage"].ToString());
+                                                Model.RemNoOfPieces[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["RemNoOfPieces"]);
+                                                Model.RemWeight[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["RemWeight"]);
+                                                Model.WHLocation[Q] = Convert.ToString(Model.MyDatatable.Rows[Q]["WHLocation"]);
+                                                Model.WHLocationID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["WHLocationID"]);
+                                                Model.PackingType[Q] = Convert.ToString(Model.MyDatatable.Rows[Q]["PackagingType"]);
+                                                Model.PackingTypeID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["PackagingTypeID"]);
+                                                Model.BillCommodity[Q] = Convert.ToString(Model.MyDatatable.Rows[Q]["BillCommodity"]);
+                                                Model.BillCommodityAlias[Q] = Convert.ToString(Model.MyDatatable.Rows[Q]["BillCommodityalias"]);
+                                                Model.BillCommodityID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["BillCommodityID"]);
+                                                Model.trnDocumentBoiItemsID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["trnDocumentBoiItemsID"]);
+
+                                                StrAutocomplete.Append(@" Autocompletebox('Equipment" + Q + @"', 'EquipmentID" + Q + @"', 'trnCargoTruckOutwardCumGatepass', 'GetEquipment'); ");
+
+                                                if (Model != null && Model.MyGridDatatable != null && Model.MyGridDatatable.Rows.Count > 0)
+                                                {
+                                                    System.Data.DataView dv = new System.Data.DataView(Model.MyGridDatatable);
+
+                                                    if (Model.trnDocumentContainerID[Q] > 0)
+                                                    {
+                                                        dv.RowFilter = "trnDocumentBoiItemsID = '" + Model.trnDocumentBoiItemsID[Q] + "'" + " and WHLocationID = '" + Model.WHLocationID[Q] + "'" + " and PackagingTypeID = '" + Model.PackingTypeID[Q] + "'" + " and BillCommodityID = '" + Model.BillCommodityID[Q] + "'  and trnDestuffingID = '" + Model.trnDestuffingID[Q] + "' AND trnDocumentContainerID='"+Model.trnDocumentContainerID[Q]+"'";
+                                                    }
+                                                    else
+                                                    {
+                                                        dv.RowFilter = "trnDocumentBoiItemsID = '" + Model.trnDocumentBoiItemsID[Q] + "'" + " and WHLocationID = '" + Model.WHLocationID[Q] + "'" + " and PackagingTypeID = '" + Model.PackingTypeID[Q] + "'" + " and BillCommodityID = '" + Model.BillCommodityID[Q] + "'  and trnDestuffingID = '" + Model.trnDestuffingID[Q] + "' ";
+                                                    }
+
+                                                    System.Data.DataTable dt = dv.ToTable();
+
+                                                    if (dt != null && dt.Rows.Count > 0)
+                                                    {
+                                                        Model.AreaRequired = Convert.ToDecimal(dt.Rows[0]["AreaRequired"]);
+                                                        Model.Package[Q] = Convert.ToDecimal(dt.Rows[0]["Packages"]);
+                                                        Model.Pieces[Q] = Convert.ToDecimal(dt.Rows[0]["Pieces"]);
+                                                        Model.Weight[Q] = Convert.ToDecimal(dt.Rows[0]["Weight"]);
+                                                        Model.Equipment[Q] = dt.Rows[0]["EquipmentUsed"].ToString();
+                                                        Model.EquipmentID[Q] = Convert.ToInt32(dt.Rows[0]["EquipmentUsedID"]);
+                                                        Model.trnCargoTruckOutwardCumGatepassDetailsID[Q] = Convert.ToInt32(dt.Rows[0]["trnCargoTruckOutwardCumGatepassDetailsID"]);
+                                                        if (!string.IsNullOrEmpty(dt.Rows[0]["IsAreaGroup"].ToString()))
+                                                        {
+                                                            Model.hdnIsGroupArea[Q] = Convert.ToInt64(dt.Rows[0]["IsAreaGroup"]);
+                                                        }
+                                                        else
+                                                        {
+                                                            Model.hdnIsGroupArea[Q] = 0;
+                                                        }
+
+                                                    }
+                                                }
+
+                                        <tr>
+                                            <td style="display:none;">@Html.HiddenFor(Model => Model.WHLocationID[Q], new { @id = "WHLocationID" + Q })</td>
+                                            <td style="display:none;">@Html.HiddenFor(Model => Model.PackingTypeID[Q], new { @id = "PackingTypeID" + Q })</td>
+                                            <td style="display:none;">@Html.TextBoxFor(Model => Model.BillCommodityID[Q], new { @id = "BillCommodityID" + Q, @class = (Model.doaction == "view" ? "clsDisabled" : "") })</td>
+                                            <td style="display:none;">@Html.TextBoxFor(Model => Model.EquipmentID[Q], new { @id = "EquipmentID" + Q, @class = (Model.doaction == "view" ? "clsDisabled" : "") })</td>
+                                            <td style="display:none;">@Html.TextBoxFor(Model => Model.trnDocumentBoiItemsID[Q], new { @id = "trnDocumentBoiItemsID" + Q, @class = (Model.doaction == "view" ? "clsDisabled" : "") })</td>
+                                            <td style="display:none;">@Html.TextBoxFor(Model => Model.trnCargoTruckOutwardCumGatepassDetailsID[Q], new { @id = "trnCargoTruckOutwardCumGatepassDetailsID" + Q, @class = (Model.doaction == "view" ? "clsDisabled" : "") })</td>
+                                            <td style="display:none;">@Html.HiddenFor(Model => Model.hdnIsGroupArea[Q], new { @id = "hdnIsGroupArea" + Q })</td>
+
+                                            <td>
+                                                @Html.HiddenFor(Model => Model.CargoName[Q], new { @id = "CargoName" + Q, @placeholder = "CargoName", @readonly = "true", @style = "background:#eee;width: 130px;" }) @Model.CargoName[Q]
+                                                @Html.HiddenFor(Model => Model.trnDestuffingID[Q], new { @id = "trnDestuffingID" + Q, @placeholder = "trnDestuffingID", @readonly = "true", @style = "background:#eee;width: 130px;" })
+                                                @Html.HiddenFor(Model => Model.trnDocumentContainerID[Q], new { @id = "trnDocumentContainerID" + Q, @placeholder = "trnDocumentContainerID", @readonly = "true", @style = "background:#eee;width: 130px;" })
+                                                @Html.HiddenFor(Model => Model.Types[Q], new { @id = "Types" + Q, @placeholder = "Types", @readonly = "true", @style = "background:#eee;width: 130px;" })
+                                            </td>
+                                            <td>@Html.HiddenFor(Model => Model.EndDestuffDate[Q], new { @id = "EndDestuffDate" + Q, @placeholder = "EndDestuffDate", @readonly = "true", @style = "background:#eee;width: 130px;" }) @Convert.ToDateTime(Model.EndDestuffDate[Q]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture)</td>
+                                            <td>@Html.HiddenFor(Model => Model.TruckDestuffNo[Q], new { @id = "TruckDestuffNo" + Q, @placeholder = "TruckDestuffNo", @readonly = "true", @style = "background:#eee;width: 130px;" }) @Model.TruckDestuffNo[Q]</td>
+                                            <td align="right">@Html.HiddenFor(Model => Model.BookNoOfPackage[Q], new { @id = "BookNoOfPackage" + Q, @style = "width: 50px;background:#eee", @readonly = "true" }) @(Convert.ToDecimal(Model.BookNoOfPackage[Q]).ToString("0"))</td>
+                                            <td align="right">@Html.HiddenFor(Model => Model.BookNoOfPieces[Q], new { @id = "BookNoOfPieces" + Q, @placeholder = "BookNoOfPieces", @style = "width: 50px;background:#eee", @readonly = "true" }) @(Convert.ToDecimal(Model.BookNoOfPieces[Q]).ToString("0"))</td>
+                                            <td align="right">@Html.HiddenFor(Model => Model.BookWeight[Q], new { @id = "BookWeight" + Q, @placeholder = "BookWeight", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.BookWeight[Q]</td>
+                                            <td align="right">@Html.HiddenFor(Model => Model.RcvNoOfPackage[Q], new { @id = "RcvNoOfPackage" + Q, @style = "width: 50px;background:#eee", @readonly = "true" }) @(Convert.ToDecimal(Model.RcvNoOfPackage[Q]).ToString("0"))</td>
+                                            <td align="right">@Html.HiddenFor(Model => Model.RcvNoOfPieces[Q], new { @id = "RcvNoOfPieces" + Q, @placeholder = "RcvNoOfPieces", @style = "width: 50px;background:#eee", @readonly = "true" }) @(Convert.ToDecimal(Model.RcvNoOfPieces[Q]).ToString("0"))</td>
+                                            <td align="right">@Html.HiddenFor(Model => Model.RcvWeight[Q], new { @id = "RcvWeight" + Q, @placeholder = "RcvWeight", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.RcvWeight[Q]</td>
+                                            <td align="right">@Html.HiddenFor(Model => Model.TotalOutPackage[Q], new { @id = "TotalOutPackage" + Q, @style = "width: 50px;background:#eee", @readonly = "true" }) @(Convert.ToDecimal(Model.TotalOutPackage[Q]).ToString("0"))</td>
+                                            <td align="right">@Html.HiddenFor(Model => Model.TotalOutPieces[Q], new { @id = "TotalOutPieces" + Q, @placeholder = "TotalOutPieces", @style = "width: 50px;background:#eee", @readonly = "true" }) @(Convert.ToDecimal(Model.TotalOutPieces[Q]).ToString("0"))</td>
+                                            <td align="right">@Html.HiddenFor(Model => Model.TotalOutWeight[Q], new { @id = "TotalOutWeight" + Q, @placeholder = "TotalOutWeight", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.TotalOutWeight[Q]</td>
+                                            <td align="right">@Html.HiddenFor(Model => Model.RemNoOfPackage[Q], new { @id = "RemNoOfPackage" + Q, @style = "width: 50px;background:#eee", @readonly = "true" }) @(Convert.ToDecimal(Model.RemNoOfPackage[Q]).ToString("0"))</td>
+                                            <td align="right">@Html.HiddenFor(Model => Model.RemNoOfPieces[Q], new { @id = "RemNoOfPieces" + Q, @placeholder = "RemNoOfPieces", @style = "width: 50px;background:#eee", @readonly = "true" }) @(Convert.ToDecimal(Model.RemNoOfPieces[Q]).ToString("0"))</td>
+                                            <td align="right">@Html.HiddenFor(Model => Model.RemWeight[Q], new { @id = "RemWeight" + Q, @placeholder = "RemWeight", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.RemWeight[Q]</td>
+                                            <td align="right">@Html.TextBoxFor(Model => Model.Package[Q], new { @id = "Package" + Q, @class = (Model.doaction == "view" ? " calPackage clsDisabled" : "calPackage"), @style = "width: 50px;", @placeholder = "Package", @onkeypress = "return isNumberWithTwoDecimal(event,'Package" + Q + "')", @onblur = "checkitems('Package','" + Q + "')" })</td>
+                                            <td align="right">@Html.TextBoxFor(Model => Model.Pieces[Q], new { @id = "Pieces" + Q, @class = (Model.doaction == "view" ? " calPieces clsDisabled" : "calPieces"), @placeholder = "Pieces", @style = "width: 50px;", @onkeypress = "return isNumberWithTwoDecimal(event,'Pieces" + Q + "')", @onblur = "checkitems('Pieces','" + Q + "')" })</td>
+                                            <td align="right">@Html.TextBoxFor(Model => Model.Weight[Q], new { @id = "Weight" + Q, @class = (Model.doaction == "view" ? " calWeight clsDisabled" : "calWeight"), @placeholder = "Weight", @style = "width: 70px;", @onkeypress = "return isNumberWithTwoDecimal(event,'Weight" + Q + "')", @onblur = "checkitems('Weight','" + Q + "')" })</td>
+                                            <td>@Html.HiddenFor(Model => Model.WHLocation[Q], new { @id = "WHLocation" + Q, @placeholder = "WHLocation", @readonly = "true", @style = "background:#eee;width: 130px;" }) @Model.WHLocation[Q]</td>
+                                            <td>@Html.HiddenFor(Model => Model.PackingType[Q], new { @id = "PackingType" + Q, @placeholder = "PackingType", @readonly = "true", @style = "background:#eee;width: 130px;" }) @Model.PackingType[Q]</td>
+                                            <td>
+                                                @Html.HiddenFor(Model => Model.BillCommodityAlias[Q], new { @id = "BillCommodityAlias" + Q, @placeholder = "BillCommodityAlias", @readonly = "true", @style = "background:#eee;width: 130px;" })
+                                                @Html.HiddenFor(Model => Model.BillCommodity[Q], new { @id = "BillCommodity" + Q, @placeholder = "BillCommodity", @readonly = "true", @style = "background:#eee;width: 130px;" }) @Model.BillCommodityAlias[Q]
+                                            </td>
+                                            <td>@Html.TextBoxFor(Model => Model.Equipment[Q], new { @id = "Equipment" + Q, @placeholder = "Equipment", @style = "width: 100px;", @class = (Model.doaction == "view" ? "clsDisabled" : "") })</td>
+                                            @if (Model.doaction != "view")
+                                            {
+                                                if (Model.trnCargoTruckOutwardCumGatepassDetailsID[Q] > 0)
+                                                {
+                                                    <td><a class="" href="@Url.Action("delete", "trnBOEItemsOut", new { id = Model.trnCargoTruckOutwardCumGatepassDetailsID[Q], trnDocumentLotDetailsID = Model.trnDocumentLotDetailsID, trnCargoTruckOutwardCumGatepassID = Model.trnCargoTruckOutwardCumGatepassID, TruckNo = Model.ModelTruckNo, BOENo = Model.ModelBOENo, GatePassNOOFPKGS = Model.ModelGatePassPackages, GatePassNOOFPIECES = Model.ModelGatePassPieces, GatePassWEIGHT = Model.ModelGatePassWeight, type = Model.type, SearchID = Model.searchID, SearchNo = Model.searchNo })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Clear" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red;" class="fa fa-trash"></i></a></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><a class="" onclick="ClearGridDate('@Q')"><i title="Click to Clear" style="font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-refresh"></i></a></td>
+                                                }
+                                            }
+
+                                        </tr>
+                                            }
+
+                                        }
+                                        @{
+                                            Model.hdnGridCount = Model.MyDatatable.Rows.Count;
+
+                                        }
+                                        @{
+                                            StrAutocomplete.Append(@" }, 1000); $('#AreaRequired').val('" + Model.AreaRequired + "');</script> ");
+                                        }
+                                        @Html.HiddenFor(Model => Model.hdnGridCount, new { @id = "hdnGridCount", @name = "hdnGridCount" })
+
+
+                                        <tr>
+                                            <td colspan="3" align="right"> <b>Total : </b> </td>
+                                            <td align="right"><b>@(Convert.ToDecimal(Model.BookNoOfPackage[0]).ToString("0"))</b></td>
+                                            <td align="right"><b>@(Convert.ToDecimal(Model.BookNoOfPieces[0]).ToString("0"))</b></td>
+                                            <td align="right"><b>@(Convert.ToDecimal(Model.BookWeight[0]))</b></td>
+                                            <td align="right"><b>@(Convert.ToDecimal(Model.RcvNoOfPackage.Sum()).ToString("0"))</b></td>
+                                            <td align="right"><b>@(Convert.ToDecimal(Model.RcvNoOfPieces.Sum()).ToString("0"))</b></td>
+                                            <td align="right"><b>@(Convert.ToDecimal(Model.RcvWeight.Sum()))</b></td>
+                                            <td align="right"><b>@(Convert.ToDecimal(Model.TotalOutPackage.Sum()).ToString("0"))</b></td>
+                                            <td align="right"><b>@(Convert.ToDecimal(Model.TotalOutPieces.Sum()).ToString("0"))</b></td>
+                                            <td align="right"><b>@(Convert.ToDecimal(Model.TotalOutWeight.Sum()))</b></td>
+                                            <td align="right"><b>@(Convert.ToDecimal(Model.RemNoOfPackage.Sum()).ToString("0"))</b></td>
+                                            <td align="right"><b>@(Convert.ToDecimal(Model.RemNoOfPieces.Sum()).ToString("0"))</b></td>
+                                            <td align="right"><b>@(Convert.ToDecimal(Model.RemWeight.Sum()))</b></td>
+                                            <td align="right" id="ttlpkg"><b>@(Convert.ToDecimal(Model.Package.Sum()).ToString("0"))</b></td>
+                                            <td align="right" id="ttlpcs"><b>@(Convert.ToDecimal(Model.Pieces.Sum()).ToString("0"))</b></td>
+                                            <td align="right" id="ttlwgt"><b>@(Convert.ToDecimal(Model.Weight.Sum()))</b></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                        @if (Model.doaction != "view")
+                        {
+                            <div class="col-md-12 box-footer">
+                                <div class="pull-right">
+                                    <button type="submit" onclick="return validateForm()" class="btn btn-primary">Submit</button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+
+</section>
+<script>
+    var doaction = '@Model.doaction';
+
+    $(document).ready(function ()
+    {
+        Autocompletebox("ModelEquipmentUsed", "ModelEquipmentUsedID", "trnCargoTruckOutwardCumGatepass", "GetEquipment");
+
+        $("#txtAreaRequired").blur(function ()
+        {            
+            var area = $("#txtTotalReceivedArea").text() - +$("#txtTotalOutwadArea").text();
+            var AddArea = $("#txtAreaRequired").val();
+
+            if (parseFloat(area) > 0) {
+
+                if (parseFloat(AddArea) > area) {                    
+                    $("#txtAreaRequired").val(" ");
+                    TosterAlert("warning", "Please enter area less than balance area", "warning!");
+                    $("#txtTotalBalanceArea").text(area);
+                }
+                else {
+                    var totalreceivedarea = +$("#txtTotalReceivedArea").text() - +$("#txtTotalOutwadArea").text() - +$("#txtAreaRequired").val();
+
+                    $("#txtTotalBalanceArea").text(totalreceivedarea);
+                }
+            }
+            
+        });
+
+        if (doaction == "view") {
+        $(".clsDisabled").attr("disabled", true);
+        }
+        else
+        $(".clsDisabled").attr("disabled", false);
+
+    });
+
+
+    function ChangeAllforfields(i) {
+        var Package = $("#Package" + i).val();
+        var Pieces = $("#Pieces" + i).val();
+        var Weight = $("#Weight" + i).val();
+        var isneedtoadd = false;
+        if (Package > 0 || Pieces > 0 || Weight > 0) {
+            isneedtoadd = true;
+        }
+
+    }
+
+    $('[id^=Package]').each(function () {
+        var Pkg = parseInt($(this).val());
+        if (Pkg == 0) {
+            $(this).val('');
+        }
+
+    });
+
+    $('[id^=Pieces]').each(function () {
+        var Pices = parseInt($(this).val());
+        if (Pices == 0) {            
+            $(this).val('');
+        }
+
+    });
+
+    $('[id^=Weight]').each(function () {
+        var wt = parseInt($(this).val());
+        if (wt == 0) {
+            $(this).val('');
+        }
+
+    });    
+    var AreaRequired = $("#txtAreaRequired").val();
+    if (parseFloat(AreaRequired) == 0) {        
+        $("#txtAreaRequired").val('');
+    }
+
+    function validateForm() {
+
+        var isvalid = true;
+        var msg = "";
+        var areareq = $('#txtAreaRequired').val();
+        var WorkOrderPackages = $("#WorkOrderPackages").val();
+        var WorkOrderPieces = $("#WorkOrderPieces").val();
+        var WorkOrderWeight = $("#WorkOrderWeight").val();
+        var ttlPackages = $("#ttlpkg").text();
+        var ttlPieces = $("#ttlpcs").text();
+        var ttlWeight = $("#ttlwgt").text();
+        var count = 0;
+        
+
+        if (WorkOrderPackages == null && WorkOrderPackages == undefined && WorkOrderPackages == "") {
+            WorkOrderPackages = 0;
+        }
+
+        if (WorkOrderPieces == null && WorkOrderPieces == undefined && WorkOrderPieces == "") {
+            WorkOrderPieces = 0;
+        }
+        if (WorkOrderWeight == null && WorkOrderWeight == undefined && WorkOrderWeight == "") {
+            WorkOrderWeight = 0;
+        }
+
+        if (ttlPackages == null && ttlPackages == undefined && ttlPackages == "") {
+            ttlPackages = 0;
+        }
+
+        if (ttlPieces == null && ttlPieces == undefined && ttlPieces == "") {
+            ttlPieces = 0;
+        }
+        if (ttlWeight == null && ttlWeight == undefined && ttlWeight == "") {
+            ttlWeight = 0;
+        }
+
+        if (parseFloat(WorkOrderPackages) < parseFloat(ttlPackages)) {
+            msg += "Please Enter Packages, less than GatePass Packages<br/>";
+            count++;
+            isvalid = false;
+        }
+        if (parseFloat(WorkOrderPieces) < parseFloat(ttlPieces)) {
+            msg += "Please Enter Pieces, less than GatePass Pieces<br/>";
+            count++;
+            isvalid = false;
+        }
+        if (parseFloat(WorkOrderWeight) < parseFloat(ttlWeight)) {
+            msg += "Please Enter Weight, less than GatePass Weight<br/>";
+            count++;
+            isvalid = false;
+        }
+        if (!isvalid) {
+            $('.calPackage').val(0);
+            $('.calPieces').val(0);
+            $('.calWeight').val(0);
+            var ttlPackages = $("#ttlpkg").text(0);
+            var ttlPieces = $("#ttlpcs").text(0);
+            var ttlWeight = $("#ttlwgt").text(0);
+            TosterAlert("warning", msg, "Warning!");
+        }
+        
+        var AddArea = 0;        
+        var Total_Balance_Area = $("#txtTotalReceivedArea").text() - +$("#txtTotalOutwadArea").text();
+        var AddArea = $("#txtAreaRequired").val();
+        
+        if (Total_Balance_Area != "" && Total_Balance_Area != null && Total_Balance_Area != "0") {
+            Total_Balance_Area = parseFloat(Total_Balance_Area);
+            if (Total_Balance_Area > 0) {
+                if (parseFloat(AddArea) > Total_Balance_Area) {
+                    msg += "Please Enter Area less than Balance Area.<br/>";
+                    count++;
+                    isvalid = false;
+                    $("#txtAreaRequired").val("");
+                }
+            }
+        }
+        if (isvalid == true) {
+            if (((areareq == 0 && confirm('Area Outward is Zero, Are you sure want to save this record?')) || areareq > 0) && parseInt(count) == 0) {
+
+                $.ajax({
+                    url: GetRootPath + "trnBOEItemsOut/validateModel",
+                    type: "Post",
+                    data: $("form").serialize(),
+                    dataType: "text",
+                    async: false,
+                    success: function (data) {
+                        $(".redborder").removeClass("redborder");
+                        if (data != "") {
+                            isvalid = false;
+                            var Errormsg = data.split("|")[0];
+                            var ErrorFields = data.split("|")[1].split(",");
+
+                            if (ErrorFields != null && ErrorFields.length > 0) {
+                                for (var Q = 0; Q < ErrorFields.length; Q++) {
+                                    if (ErrorFields[Q] != "") {
+                                        $("#" + ErrorFields[Q]).addClass("redborder");
+                                    }
+                                }
+                            }
+                            if (Errormsg != "") {
+                                TosterAlert("error", Errormsg, "Required!");
+                            }
+                        }
+                    }
+                });
+
+            }
+            //else {
+            //    isvalid = false;
+            //}
+        }
+
+
+        if (!(isvalid) && msg != "") {            
+            TosterAlert("warning", msg, "Warning!");
+        }
+    return isvalid;
+    }
+
+    function ClearGridDate(num) {
+        $("#Package" + num).val('0');
+        $("#Pieces" + num).val('0');
+        $("#Weight" + num).val('0');
+        $("#WHLocation" + num).val('');
+        $("#PackingType" + num).val('');
+        $("#BillCommodity" + num).val('');
+        $("#Equipment" + num).val('');
+        $("#EquipmentID" + num).val('0');
+        $("#BillCommodityID" + num).val('0');
+        $("#PackingTypeID" + num).val('0');
+        $("#WHLocationID" + num).val('0');
+                                        }
+
+function findTotal(Name, ID) {
+    var arr = document.getElementsByClassName(Name);
+    var tot = 0;
+    for (var i = 0; i < arr.length; i++) {
+        if (parseFloat(arr[i].value))
+            tot += parseFloat(arr[i].value);
+    }
+    document.getElementById(ID).innerText = tot;
+}
+
+    function checkitems(type, num) {
+    var msg = "";
+    var isvalid = true;
+        var Weight = 0;
+    if (type == "Package") {
+        var RemNoOfPackage = $("#RemNoOfPackage" + num).val();
+
+        if (RemNoOfPackage == null && RemNoOfPackage == undefined && RemNoOfPackage == "") {
+            RemNoOfPackage = 0;
+        }
+        var Package = $("#Package" + num).val();
+
+        if (Package == null && Package == undefined && Package == "") {
+            Package = 0;
+        }
+
+        if (parseFloat(RemNoOfPackage) < parseFloat(Package)) {
+            $("#Package" + num).val(0);
+            msg += "Enter Package is grater then remaining Package";
+            isvalid = false;
+        }
+        findTotal("calPackage", "ttlpkg");
+        WeightCalculation("Package" + num, "Pieces" + num, "RcvNoOfPackage" + num, "RcvWeight" + num, "Weight" + num);
+
+        $("#ttlpcs").text($("#Pieces" + num).val())
+        $("#ttlwgt").text($("#Weight" + num).val())
+
+        findTotal("calPieces", "ttlpcs");
+        findTotal("calWeight", "ttlwgt");
+    }
+    else if (type == "Pieces") {
+        var RemNoOfPieces = $("#RemNoOfPieces" + num).val();
+
+        if (RemNoOfPieces == null && RemNoOfPieces == undefined && RemNoOfPieces == "") {
+            RemNoOfPieces = 0;
+        }
+        var Pieces = $("#Pieces" + num).val();
+
+        if (Pieces == null && Pieces == undefined && Pieces == "") {
+            Pieces = 0;
+        }
+
+        if (parseFloat(RemNoOfPieces) < parseFloat(Pieces)) {
+            $("#Pieces" + num).val(0);
+            msg += "Enter Pieces is grater then remaining Pieces";
+            isvalid = false;
+        }
+        findTotal("calPieces", "ttlpcs");
+    }
+    else if (type == "Weight") {
+        var RemWeight = $("#RemWeight" + num).val();
+
+        if (RemWeight == null && RemWeight == undefined && RemWeight == "") {
+            RemWeight = 0;
+        }
+        var Weight = $("#Weight" + num).val();
+
+        if (Weight == null && Weight == undefined && Weight == "") {
+            Weight = 0;
+        }
+
+        if (parseFloat(RemWeight) < parseFloat(Weight)) {
+            $("#Weight" + num).val(0);
+            msg += "Enter Weight is grater then remaining Weight";
+            isvalid = false;
+        }
+        findTotal("calWeight", "ttlwgt");
+    }
+
+    ChangeAllforfields(num);
+    if (!isvalid) {
+        TosterAlert("warning", msg, "Warning!");
+    }
+}
+
+</script>
+
+@{
+
+    System.Web.HtmlString HtmlDeatails = new HtmlString(StrAutocomplete.ToString());
+}
+@HtmlDeatails
+@*<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnBOEItemsOut.js")"></script>*@
+<style>
+    .ui-menu-item {
+        font-size: 12px !important;
+    }
+</style>

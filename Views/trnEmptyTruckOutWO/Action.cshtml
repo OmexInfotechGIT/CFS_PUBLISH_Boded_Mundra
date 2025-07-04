@@ -1,0 +1,316 @@
+﻿@model CFS.Models.trnEmptyTruckOutWO
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    Boolean IsEdit = false;
+    if (Model.doaction == "edit")
+    {
+        IsEdit = true;
+        ViewBag.Title = "Update Empty Truck Out";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+        
+    }
+    else
+    {
+        ViewBag.Title = "Add new Empty Truck Out";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+@using (Html.BeginForm("Action", CFS.Com.ClsCommon.Controller(), FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+{
+<section class="content">
+    <div class="row">
+        <div class="box">
+            <div class="box-body">
+                @if (Model != null && Model.doaction == "edit")
+                {
+                    <div class="pull-left">
+                        <div style="display: inline-flex">
+                            <span class="badge bg-light-blue" style="font-size:15px;"> Empty Truck Out No. : @Model.trnEmptyTruckOutWONo</span>&nbsp;
+                            <span class="badge bg-light-blue" style="font-size:15px;"> Datetime. : @Model.trnEmptyTruckOutWODate</span>&nbsp;
+                            <span class="badge bg-light-blue" style="font-size:15px;"> User. : @Model.User</span>
+                        </div>
+                    </div>
+                }
+                <div class="pull-right">
+                    <div style="display: inline-flex">
+                        <a href="@Url.Action("Index",CFS.Com.ClsCommon.Controller(), new {pg = Request.Params["pg"], search = Request.Params["search"] })" onclick="DeleteEmptyTruckOutWOContainer();" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-12"></div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => Model.TruckNo)<span class="text-red">*</span>
+                        @if (Model.IsSearch)
+                        {
+                            @Html.TextBoxFor(Model => Model.TruckNo, new { @id = "TruckNo", @name = "TruckNo", @class = "form-control", @placeholder = "SELECT TruckNo", @readonly = "true" })
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(Model => Model.TruckNo, new { @id = "TruckNo", @name = "TruckNo", @class = "form-control", @placeholder = "SELECT TruckNo" })
+                        }
+                        @Html.HiddenFor(Model => Model.WorkOrderID, new { @id = "WorkOrderID", @name = "WorkOrderID" })
+                        @Html.HiddenFor(Model => Model.TruckInfoType, new { @id = "TruckInfoType", @name = "TruckInfoType" })
+                    </div>
+                </div>
+                @if (!Model.IsSearch)
+                {
+
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <br />
+                            <button type="button" class="btn btn-primary" onclick="SearchwithTruckNo()">Search</button>
+                        </div>
+                    </div>
+                }
+                @if (!IsEdit)
+                {
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <br />
+                            <a href="@Url.Action("index",  CFS.Com.ClsCommon.Controller())" class="btn btn-danger">Clear</a>
+                        </div>
+                    </div>
+                }
+
+                @if (Model.IsSearch)
+                {
+
+                    @Html.HiddenFor(Model => Model.pagger.Search)
+                    @Html.HiddenFor(Model => Model.doaction)
+                    @Html.HiddenFor(Model => Model.page)
+                    @Html.HiddenFor(Model => Model.filter)
+                    @Html.HiddenFor(Model => Model.IsSearch)
+                    @Html.HiddenFor(Model => Model.IsFinished, new { @id = "IsFinished", @name = "IsFinished" })
+                    @Html.HiddenFor(Model => Model.trnEmptyTruckOutWONo,new { @id= "trnEmptyTruckOutWONo",@name= "trnEmptyTruckOutWONo" })
+                    @Html.HiddenFor(Model => Model.trnEmptyTruckOutWONumber, new { @id= "trnEmptyTruckOutWONumber", @name= "trnEmptyTruckOutWONumber" })
+                    @Html.HiddenFor(Model => Model.trnEmptyTruckOutWOPrefix, new { @id= "trnEmptyTruckOutWOPrefix", @name= "trnEmptyTruckOutWOPrefix" })
+                    <input type="hidden" id="trnEmptyTruckOutWOID" name="trnEmptyTruckOutWOID" value="@Model.trnEmptyTruckOutWOID" />
+                    <input type="hidden" id="TruckNo" name="TruckNo" value="@Model.TruckNo" />
+                    <input type="hidden" id="WorkOrderID" name="WorkOrderID" value="@Model.WorkOrderID" />
+                    <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                    <div class="col-md-3">
+
+                        @Html.LabelFor(Model => Model.CycleName) : <span>@Model.CycleName</span>@CFS.Com.ClsCommon.AddhtmlSpace(10)
+
+                    </div>
+                    <div class="col-md-3">
+
+
+                        @Html.LabelFor(Model => Model.User) : <span>@Model.User</span>@CFS.Com.ClsCommon.AddhtmlSpace(10)
+                    </div>
+                    <div class="col-md-3">
+
+
+                        @Html.LabelFor(Model => Model.TransportationType) : <span>@Model.TransportationType</span>@CFS.Com.ClsCommon.AddhtmlSpace(10)
+                        @Html.HiddenFor(Model => Model.TransportationType, new { @id = "TransportationType", @name = "TransportationType" })
+                    </div>
+                    <div class="col-md-3">
+
+
+                        @Html.LabelFor(Model => Model.Transporter) : <span>@Model.Transporter</span>@CFS.Com.ClsCommon.AddhtmlSpace(10)
+                        @Html.HiddenFor(Model => Model.TransporterID, new { @id = "TransporterID", @name = "TransporterID" })
+                    </div>
+
+                    <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.LicenceNo, new { @for = "LicenceNo" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.LicenceNo, String.Empty, new { @id = "spn_LicenceNo", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.LicenceNo, new { @id = "LicenceNo", @name = "LicenceNo", @class = "form-control", @placeholder = "Enter Licence No" })
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.Driver, new { @for = "Driver" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.DriverID, String.Empty, new { @id = "spn_DriverID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.Driver, new { @id = "Driver", @name = "Driver", @class = "form-control", @placeholder = "Select Driver" })
+                            @Html.HiddenFor(Model => Model.DriverID, new { @id = "DriverID", @name = "DriverID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.MobileNo, new { @for = "MobileNo" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.MobileNo, String.Empty, new { @id = "spn_MobileNo", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.MobileNo, new { @id = "MobileNo", @name = "MobileNo", @class = "form-control", @placeholder = "Enter Mobile No", @maxlength = "10", @onkeypress = "return isonlynumber(event)" })
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.Address, new { @for = "Address" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Address, String.Empty, new { @id = "spn_Address", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.Address, new { @id = "Address", @name = "Address", @class = "form-control", @placeholder = "Enter Address No" })
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <br />
+                            @Html.CheckBoxFor(Model => Model.Containerplacedontruck, new { @id = "Containerplacedontruck", @name = "Containerplacedontruck", @class = "form-control" })
+                            @Html.LabelFor(Model => Model.Containerplacedontruck, new { @for = "Containerplacedontruck" }) <span class="text-red">*</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" })
+                            @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control", @placeholder = "Enter Remarks" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 pull-right" style="@(Model.Containerplacedontruck?"display:none;":"")" id="dvSave1">
+                        <div class="form-group">
+                            <br />
+                            <button type="submit" class="btn btn-primary" id="SaveDoc" onclick="return GatePassValidation()">Submit</button>
+
+                            <a href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {pg = Request.Params["pg"], search = Request.Params["search"] })" onclick="DeleteEmptyTruckOutWOContainer();" class="btn btn-danger">Cancel</a>
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+        @if (Model.doaction == "edit")
+        {
+            <div id="dvWeighmentDetails" class="box" style="@(!Model.Containerplacedontruck ? "display:none" : "")">
+                <div class="box-body">
+                    <div id="dvContainerNo1">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnEmptyTruckOutWOContainer.ContNo, new { @for = "ContNo" }) @Html.ValidationMessageFor(Model => Model.trnEmptyTruckOutWOContainer.ContNo, String.Empty, new { @id = "spn_ContID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.trnEmptyTruckOutWOContainer.ContNo, new { @id = "ContNo", @name = "ContNo", @class = "form-control", @placeholder = "Enter Vehicle No." })
+                                @Html.HiddenFor(Model => Model.trnEmptyTruckOutWOContainer.ContID, new { @id = "ContID", @name = "ContID" })
+                                @Html.HiddenFor(Model => Model.trnEmptyTruckOutWOContainer.trnEmptyTruckOutWOContainerID, new { @id = "trnEmptyTruckOutWOContainerID", @name = "trnEmptyTruckOutWOContainerID" })
+                                @Html.HiddenFor(Model => Model.trnEmptyTruckOutWOContainer.Size, new { @id = "Size", @name = "Size" })
+                                @Html.HiddenFor(Model => Model.trnEmptyTruckOutWOContainer.Type, new { @id = "Type", @name = "Type" })
+                                @Html.HiddenFor(Model => Model.trnEmptyTruckOutWOContainer.CargoType, new { @id = "CargoType", @name = "CargoType" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnEmptyTruckOutWOContainer.Size)      <span class="form-control-lable" id="spn_Size">@Model.trnEmptyTruckOutWOContainer.Size</span>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnEmptyTruckOutWOContainer.Type)      <span class="form-control-lable" id="spn_Type">@Model.trnEmptyTruckOutWOContainer.Type</span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.trnEmptyTruckOutWOContainer.CargoType)      <span class="form-control-lable" id="spn_CargoType">@Model.trnEmptyTruckOutWOContainer.CargoType</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.trnEmptyTruckOutWOContainer.RemarksForContainer, new { @for = "RemarksForContainer" })  @Html.ValidationMessageFor(Model => Model.trnEmptyTruckOutWOContainer.RemarksForContainer, String.Empty, new { @id = "spn_RemarksForContainer", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.trnEmptyTruckOutWOContainer.RemarksForContainer, new { @id = "RemarksForContainer", @name = "RemarksForContainer", @class = "form-control", @placeholder = "Enter Remarks" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 pull-right">
+                        <div class="form-group">
+                            <br />
+                            <button type="button" style="margin-right: 5px;" class="btn btn-danger pull-right" id="ClearEmptyTruckOutContainerGW" onclick="ClearEmptyTruckOutContainerDetails();">Clear</button>
+                            <button type="button" style="margin-right: 5px;" class="btn btn-primary pull-right" id="SaveEmptyTruckOutContainerGW" onclick="return validateContainerModel();">Add</button>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-top:10px;">
+                        <table id="example2" style="white-space: nowrap" class="table-bordered table-hover tblFontSize tblBorderBottom">
+                            <thead>
+                                <tr>
+                                    <th>Cont No</th>
+                                    <th>Size</th>
+                                    <th>Type</th>
+                                    <th>Cargo Type</th>
+                                    <th>Remarks</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblContainerDetails"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+            @if (Model.IsSearch && CFS.Com.ClsCommon.DocDatatable != null && CFS.Com.ClsCommon.DocDatatable.Rows.Count > 0)
+            {
+                @Html.Partial("_DOCDetailsCard");
+
+            }
+            @if (Model.doaction == "edit")
+            {
+                <div class="col-md-2 pull-right" style="@(Model.Containerplacedontruck?"":"display:none;")" id="dvSave">
+                    <div class="form-group">
+                        <br />
+                        <button type="submit" class="btn btn-primary" id="SaveDoc" onclick="return FinishedRecord()">Submit</button>
+
+                        <a href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {pg = Request.Params["pg"], search = Request.Params["search"] })" onclick="DeleteEmptyTruckOutWOContainer();" class="btn btn-danger">Cancel</a>
+                    </div>
+                </div>
+            }
+        </div>
+</section>
+}
+<script>
+    var VCNDeatails = '@Model.HtmlVCNDeatails';
+    var IsSearch = '@Model.IsSearch.ToString().ToLower()';
+    var doaction = '@Model.doaction.ToString().ToLower()';
+
+    function changestepValue(tabNo) {
+        $("#DocumentGWTab").val(tabNo);
+        if (tabNo != "1") {
+            if (tabNo == "5") {
+                $("#IsChangeStep").val(2);
+            }
+        }
+        //$("frmpost").submit();
+    }
+
+    function FinishedRecord() {
+        var IsSaved = confirm("Are you sure to save the record?");
+        if (IsSaved)
+        {
+            $("#IsFinished").val(true);
+            return GatePassValidation();
+        }
+    }
+    function DeleteEmptyTruckOutWOContainer() {
+        var ContainerPlacedOnTruck = '@Model.Containerplacedontruck';
+        var ID = $("#trnEmptyTruckOutWOID").val();
+        if (ContainerPlacedOnTruck == "False") {
+        $.ajax({
+            url: GetRootPath + "trnEmptyTruckOutWO/DeleteEmptyTruckOutWOContainer/" + ID,
+            type: "GET",
+            dataType: "text",
+            success: function (data) {
+                //success
+            }
+        });
+        }
+    }
+</script>
+@if (((Model != null && Model.doaction.ToLower() == "edit") || Model.trnEmptyTruckOutWOID > 0))
+{
+    <script>
+        $(".isDisplayOnlyinEdit").show();
+    </script>
+}
+else
+{
+    <script>
+        $(".isDisplayOnlyinEdit").hide();
+    </script>
+}
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnEmptyTruckOutWO.js")"></script>

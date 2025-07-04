@@ -1,0 +1,896 @@
+﻿@model CFS.Models.trnEmptyTruckGateIn
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    bool needtoDisabledMasterData = false;
+    bool IsEdit = false;
+    if (Model.doaction == "edit")
+    {
+        needtoDisabledMasterData = true;
+        IsEdit = true;
+        ViewBag.Title = "Update Empty truck Gate in";
+        if (!ViewBag.gblBlnEdit && !ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+
+        if (Model != null)
+        {
+            if (Model.IsApproved && (Model.Category != "Export"))
+            {
+                Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+            }
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add new Empty truck Gate in";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+@using (Html.BeginForm("Action", CFS.Com.ClsCommon.Controller(), FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+{
+    <section class="content">
+        <div class="row">
+            <div class="box">
+                <div class="box-body">
+                    @if (Model != null && Model.doaction == "edit")
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <h4>
+                                    <b>
+                                        <span class="badge bg-light-blue" style="font-size:15px;"> Empty Truck Gate In No: @Model.trnEmptyTruckGateInNo</span>
+                                        <span class="badge bg-light-blue" style="font-size:15px;"> Datetime : @Model.CreatedDate</span>
+                                        <span class="badge bg-light-blue" style="font-size:15px;"> User : @Model.CreatedUser</span>
+                                    </b>
+                                </h4>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <a href="@Url.Action("Index", CFS.Com.ClsCommon.Controller(), new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-12"></div>
+                    @Html.HiddenFor(Model => Model.pagger.Search)
+                    @Html.HiddenFor(Model => Model.doaction)
+                    @Html.HiddenFor(Model => Model.page)
+                    @Html.HiddenFor(Model => Model.filter)
+                    @Html.HiddenFor(Model => Model.IsTruckUsed)
+                    <input type="hidden" id="trnEmptyTruckGateInID" name="trnEmptyTruckGateInID" value="@Model.trnEmptyTruckGateInID" />
+                    @if (IsEdit)
+                    {
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.CycleName) : <span>@Model.CycleName</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.GatepassDate) : <span>@Model.GatepassDate</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.ActualGateInDate) : <span>@Model.ActualGateInDate</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.User) : <span>@Model.User</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.WeighmentStatus) : <span>@Model.WeighmentStatus</span>
+                        </div>
+                        if (Model.WeighmentStatus != "" && Model.WeighmentStatus == "No")
+                        {
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.NonweighmentReason) : <span>@Model.NonweighmentReason</span>
+                            </div>
+                        }
+
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.WeighmentPaymentMode) : <span>@Model.WeighmentPaymentMode@(Model.WeighmentPaymentMode == "SSR" ? "(" + Model.ManualSSRNo + ")" : "")</span>
+                        </div>
+
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.WeighmentInvoiceNo) : <span>@Model.WeighmentInvoiceNo</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.WeighmentSlipNo) : <span>@Model.WeighmentSlipNo</span>
+                        </div>
+
+                    }
+                    else
+                    {
+                        <div class="row" id="WeighmentLabel" style="display:none">
+
+                        </div>
+                    }
+                    @*@if (IsEdit)
+                {*@
+                    <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                    @*}*@
+                    @Html.HiddenFor(Model => Model.WeighmentStatus, new { @id = "WeighmentStatus", @name = "WeighmentStatus" })
+                    @Html.HiddenFor(Model => Model.NonweighmentReason, new { @id = "NonweighmentReason", @name = "NonweighmentReason" })
+                    @Html.HiddenFor(Model => Model.WeighmentPaymentStatus, new { @id = "WeighmentPaymentStatus", @name = "WeighmentPaymentStatus" })
+                    @Html.HiddenFor(Model => Model.ManualSSRNo, new { @id = "ManualSSRNo", @name = "ManualSSRNo" })
+                    @Html.HiddenFor(Model => Model.WeighmentInvoiceNo, new { @id = "WeighmentInvoiceNo", @name = "WeighmentInvoiceNo" })
+                    @Html.HiddenFor(Model => Model.WeighmentSlipNo, new { @id = "WeighmentSlipNo", @name = "WeighmentSlipNo" })
+                    @Html.HiddenFor(Model => Model.IsFinished, new { @id = "IsFinished", @name = "IsFinished" })
+                    @Html.HiddenFor(Model => Model.trnEmptyTruckGateInNo, new { @id = "trnEmptyTruckGateInNo", @name = "trnEmptyTruckGateInNo" })
+
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.Category, new { @for = "Category" }) @Html.ValidationMessageFor(Model => Model.VehicleType, String.Empty, new { @id = "spn_Category", @class = "help-inline text-red" })
+                            @Html.DropDownListFor(Model => Model.Category, Model.SelectCategory, new { @id = "Category", @name = "Category", @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.Type, new { @for = "Type" }) @Html.ValidationMessageFor(Model => Model.Type, String.Empty, new { @id = "spn_Type", @class = "help-inline text-red" })
+                            @Html.DropDownListFor(Model => Model.Type, Model.SelectType, new { @id = "Type", @name = "Type", @class = "form-control", @onchange = "ShowLabelForWeighment()" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.TransportationType, new { @for = "TransportationType" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TransportationType, String.Empty, new { @id = "spn_TransportationType", @class = "help-inline text-red" })
+                            @Html.DropDownListFor(Model => Model.TransportationType, Model.SelectTransportationType, new { @id = "TransportationType", @name = "TransportationType", @class = "form-control", @readonly = true, @onchange = "onchangeTransportationBy()" })
+                            @Html.HiddenFor(Model => Model.TransportationRefType, new { @id = "TransportationRefType", @name = "TransportationRefType" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.Transporter, new { @for = "Transporter" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TransporterID, String.Empty, new { @id = "spn_Transporter", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.Transporter, new { @id = "Transporter", @name = "Transporter", @class = "form-control", @placeholder = "Select Transporter" })
+                            @Html.HiddenFor(Model => Model.TransporterID, new { @id = "TransporterID", @name = "TransporterID" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.TruckNo, new { @for = "TruckNo" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TruckID, String.Empty, new { @id = "spn_TruckNo", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.TruckNo, new { @id = "TruckNo", @name = "TruckNo", @class = "form-control", @placeholder = "Select Truck No", onblur = "CheckTruckInUsed()" })
+                            @Html.HiddenFor(Model => Model.TruckID, new { @id = "TruckID", @name = "TruckID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.LicenceNo, new { @for = "LicenceNo" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.LicenceNo, String.Empty, new { @id = "spn_LicenceNo", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.LicenceNo, new { @id = "LicenceNo", @name = "LicenceNo", @class = "form-control", @placeholder = "Enter Licence No" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.Driver, new { @for = "Driver" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.DriverID, String.Empty, new { @id = "spn_Driver", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.Driver, new { @id = "Driver", @name = "Driver", @class = "form-control", @placeholder = "Select Driver" })
+                            @Html.HiddenFor(Model => Model.DriverID, new { @id = "DriverID", @name = "DriverID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.MobileNo, new { @for = "MobileNo" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.MobileNo, String.Empty, new { @id = "spn_MobileNo", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.MobileNo, new { @id = "MobileNo", @name = "MobileNo", @class = "form-control", @placeholder = "Enter Mobile No", @MaxLength = "10", @onkeypress = "return isNumber(event)" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.Address, new { @for = "Address" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Address, String.Empty, new { @id = "spn_Address", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.Address, new { @id = "Address", @name = "Address", @class = "form-control", @placeholder = "Enter Address No" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.VehicleType, new { @for = "VehicleType" }) @Html.ValidationMessageFor(Model => Model.VehicleType, String.Empty, new { @id = "spn_VehicleType", @class = "help-inline text-red" })
+                            @Html.DropDownListFor(Model => Model.VehicleType, Model.SelectVehicleType, new { @id = "VehicleType", @name = "VehicleType", @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" }) @Html.ValidationMessageFor(Model => Model.Remarks, String.Empty, new { @id = "spn_Remarks", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control", @placeholder = "Enter Remarks" })
+                            @Html.HiddenFor(Model => Model.Category)
+                        </div>
+                    </div>
+                    <div class="col-md-2" id="dvwt">
+                        <div class="form-group">
+                            <br />
+                            @Html.CheckBoxFor(Model => Model.EXWEIGHMENTREQUIRED, new { @id = "WEIGHMENTREQUIRED", @class = "form-control" })
+                            @Html.Label("Weighment Required", new { @for = "WEIGHMENTREQUIRED" }) @Html.ValidationMessageFor(Model => Model.EXWEIGHMENTREQUIRED, String.Empty, new { @class = "help-inline text-red" })
+                        </div>
+                    </div>
+                    <div class="col-md-2" id="dvInActiveReason">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.EXNONWEIGHMENTREASON, new { @for = "NONWEIGHMENTREASON" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.EXNONWEIGHMENTREASON, String.Empty, new { @id = "spn_EXNONWEIGHMENTREASON", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.EXNONWEIGHMENTREASON, new { @id = "NONWEIGHMENTREASON", @class = "form-control", @placeholder = "Enter Non-Weighment Reason" })
+                        </div>
+                    </div>
+                    @if (Model.Type == "Cargo" && Model.Category == "WarehouseLoaded")
+                    {
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <br />
+                                <br />
+                                @Html.CheckBoxFor(Model => Model.DomesticContainerStatus, new { @id = "DomesticContainerStatus", @name = "DomesticContainerStatus", @class = "form-control" })
+                                @Html.LabelFor(Model => Model.DomesticContainerStatus, new { @for = "DomesticContainerStatus" }) <span class="text-red">*</span>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-4" id="PlaceonTruck" style="display:none;">
+                            <div class="form-group">
+                                <br />
+                                <br />
+                                @Html.CheckBoxFor(Model => Model.DomesticContainerStatus, new { @id = "DomesticContainerStatus", @name = "DomesticContainerStatus", @class = "form-control" })
+                                @Html.LabelFor(Model => Model.DomesticContainerStatus, new { @for = "DomesticContainerStatus" }) <span class="text-red">*</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="col-md-2 pull-right">
+                        <div class="form-group pull-right">
+                            <br />
+                            @if (!IsEdit)
+                            {
+                                <button type="submit" class="btn btn-primary" id="SaveDoc" onclick="return GatePassValidation()">Continue</button>
+                                <a href="@Url.Action("index", CFS.Com.ClsCommon.Controller())" class="btn btn-danger">Cancel</a>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            @if (Model.Type != "Cargo")
+            {
+                if (IsEdit && ((Model.Category == "WarehouseLoaded" && Model.Type == "Domestic Container") || (Model.Category == "Empty" && Model.Type == "Domestic Container")))
+                {
+                    @Html.HiddenFor(Model => Model.trnEmptyTruckGateInDomestic.trnEmptyTruckGateInDomesticID, new { @id = "trnEmptyTruckGateInDomesticID", @name = "trnEmptyTruckGateInDomesticID" })
+                    <div class="box">
+                        <div class="box-header with-border" data-widget="collapse">
+                            <h4><b>Domestic Container Details</b></h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="isfullthenhide">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInDomestic.ContNo)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInDomestic.ContNo, String.Empty, new { @id = "spn_ContNo", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInDomestic.ContNo, new { @id = "DomesticContNo", @name = "DomesticContNo", @class = "form-control", @placeholder = "Enter Cont No", @maxlength = "11" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInDomestic.trnCargoGateInContainerDetailsID, new { @id = "trnCargoGateInContainerDetailsID", @name = "trnCargoGateInContainerDetailsID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInDomestic.ISOCode)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInDomestic.ISOCodeID, String.Empty, new { @id = "spn_ISOCodeID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInDomestic.ISOCode, new { @id = "ISOCode", @name = "ISOCode", @class = "form-control", @placeholder = "Enter ISOCode", @maxlength = "5", @readonly = "readonly" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInDomestic.ISOCodeID, new { @id = "ISOCodeID", @name = "ISOCodeID" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInDomestic.SizeID, new { @id = "Size", @name = "Size" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInDomestic.ContTypeID, new { @id = "ContType", @name = "ContType" })
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInDomestic.Size)      <span class="form-control-lable" id="DISOCodeSizes"></span>
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInDomestic.Size, new { @id = "ISOCodeSizes" })
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInDomestic.ContType)     <span class="form-control-lable" id="DISOCodeTypes"></span>
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInDomestic.ContType, new { @id = "ISOCodeTypes" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInDomestic.CargoType)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInDomestic.CargoTypeID, String.Empty, new { @id = "spn_CargoTypeID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInDomestic.CargoType, new { @id = "CargoType", @name = "CargoType", @class = "form-control", @placeholder = "Enter Cargo Type " })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInDomestic.CargoTypeID, new { @id = "CargoTypeID", @name = "CargoTypeID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInDomestic.IsContainerplacedontruck, new { @for = "IsContainerplacedontruck" }) @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInDomestic.IsContainerplacedontruck, String.Empty, new { @id = "spn_IsContainerplacedontruck", @class = "help-inline text-red" })
+                                        @Html.DropDownListFor(Model => Model.trnEmptyTruckGateInDomestic.IsContainerplacedontruck, Model.trnEmptyTruckGateInDomestic.SelectContainerplacedontruck, new { @id = "IsContainerplacedontruck", @name = "IsContainerplacedontruck", @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2 pull-right">
+                                    <div class="form-group pull-right">
+                                        <br />
+                                        <button type="button" onclick="return AddDomesticContainerdetails()" id="btnDomestic" class="btn btn-primary">Add</button>
+                                        <a onclick="ClearDomesticContainerdetails()" class="btn btn-danger">Clear</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Cont No</th>
+                                            <th>ISO Code</th>
+                                            <th>Size</th>
+                                            <th>Cont Type</th>
+                                            <th>Cargo Type </th>
+                                            <th>Container placed on truck?</th>
+                                            <th>Action </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="DomesticContainerdetails"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+                if (IsEdit && (Model.Category == "Empty" && (Model.Type == "Regular Container" || Model.Type == "Export Container")))
+                {
+                    @Html.HiddenFor(Model => Model.trnEmptyTruckGateInEmpty.trnEmptyTruckGateInEmptyID, new { @id = "trnEmptyTruckGateInEmptyID", @name = "trnEmptyTruckGateInEmptyID" })
+                    <div class="box">
+                        <div class="box-header with-border" data-widget="collapse">
+                            <h4><b>Empty Container Details</b></h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="isfullthenhideEmpty">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInEmpty.ContNo)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInEmpty.trnEmptyContainerOutWODetailsID, String.Empty, new { @id = "spn_trnEmptyContainerOutWODetailsID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInEmpty.ContNo, new { @id = "txtContNo", @name = "ContNo", @class = "form-control", @placeholder = "Enter Cont No", @maxlength = "11" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInEmpty.trnEmptyContainerOutWODetailsID, new { @id = "trnEmptyContainerOutWODetailsID", @name = "trnEmptyContainerOutWODetailsID", @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInEmpty.ISOCode)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInEmpty.ISOCodeID, String.Empty, new { @id = "spn_ISOCodeID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInEmpty.ISOCode, new { @id = "ISOCode", @name = "ISOCode", @class = "form-control", @placeholder = "Enter ISOCode", @maxlength = "5", @readonly = "true" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInEmpty.ISOCodeID, new { @id = "ISOCodeID", @name = "ISOCodeID" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInEmpty.Size, new { @id = "Size", @name = "Size" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInEmpty.ContType, new { @id = "ContType", @name = "ContType" })
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInEmpty.Size)      <span class="form-control-lable" id="ISOCodeSizes"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInEmpty.ContType)     <span class="form-control-lable" id="ISOCodeTypes"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInEmpty.CargoType)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInEmpty.CargoTypeID, String.Empty, new { @id = "spn_CargoTypeID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInEmpty.CargoType, new { @id = "CargoType", @name = "CargoType", @class = "form-control", @placeholder = "Enter Cargo Type ", @readonly = "true" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInEmpty.CargoTypeID, new { @id = "CargoTypeID", @name = "CargoTypeID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInEmpty.Agent)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInEmpty.Agent, String.Empty, new { @id = "spn_Agent", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInEmpty.Agent, new { @id = "Agent", @name = "Agent", @class = "form-control", @placeholder = "Enter Agent ", @readonly = "true" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInEmpty.Line)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInEmpty.Line, String.Empty, new { @id = "spn_Line", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInEmpty.Line, new { @id = "Line", @name = "Line", @class = "form-control", @placeholder = "Enter Line ", @readonly = "true" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInEmpty.ContainerStatus)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInEmpty.ContainerStatus, String.Empty, new { @id = "spn_ContainerStatus", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInEmpty.ContainerStatus, new { @id = "ContainerStatus", @name = "ContainerStatus", @class = "form-control", @placeholder = "Enter Container Status ", @readonly = "true" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2 pull-right">
+                                    <div class="form-group pull-right">
+                                        <br />
+                                        <button type="button" onclick="return AddEmptyContainerdetails()" id="btnEmpty" class="btn btn-primary">Add</button>
+                                        <a onclick="ClearEmptyContainerdetails()" class="btn btn-danger">Clear</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Cont No</th>
+                                            <th>ISO Code</th>
+                                            <th>Size</th>
+                                            <th>Cont Type</th>
+                                            <th>Cargo Type </th>
+                                            <th>Agent</th>
+                                            <th>Line</th>
+                                            <th>Container Status</th>
+                                            <th>Action </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="EmptyContainerdetails"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }                
+                if (IsEdit && (Model.Category == "WarehouseLoaded" && Model.Type == "Regular Container"))
+                {
+                    @Html.HiddenFor(Model => Model.trnEmptyTruckGateInLoaded.trnEmptyTruckGateInLoadedID, new { @id = "trnEmptyTruckGateInLoadedID", @name = "trnEmptyTruckGateInLoadedID" })
+                    <div class="box">
+                        <div class="box-header with-border" data-widget="collapse">
+                            <h4><b>Loaded Container Details</b></h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="isfullthenhideEmpty">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInLoaded.ContNo)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInLoaded.trnDocumentContainerID, String.Empty, new { @id = "spn_trnDocumentContainerID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInLoaded.ContNo, new { @id = "LoadedContNo", @name = "ContNo", @class = "form-control", @placeholder = "Enter Cont No", @maxlength = "11" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInLoaded.trnDocumentContainerID, new { @id = "trnDocumentContainerID", @name = "trnDocumentContainerID", @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInLoaded.ISOCode)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInLoaded.ISOCodeID, String.Empty, new { @id = "spn_ISOCodeID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInLoaded.ISOCode, new { @id = "ISOCode", @name = "ISOCode", @class = "form-control", @placeholder = "Enter ISOCode", @maxlength = "5", @readonly = "true" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInLoaded.ISOCodeID, new { @id = "ISOCodeID", @name = "ISOCodeID" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInLoaded.Size, new { @id = "Size", @name = "Size" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInLoaded.ContType, new { @id = "ContType", @name = "ContType" })
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInLoaded.Size)      <span class="form-control-lable" id="ISOCodeSizes"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInLoaded.ContType)     <span class="form-control-lable" id="ISOCodeTypes"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInLoaded.CargoType)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInLoaded.CargoTypeID, String.Empty, new { @id = "spn_CargoTypeID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInLoaded.CargoType, new { @id = "CargoType", @name = "CargoType", @class = "form-control", @placeholder = "Enter Cargo Type ", @readonly = "true" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInLoaded.CargoTypeID, new { @id = "CargoTypeID", @name = "CargoTypeID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInLoaded.Agent)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInLoaded.Agent, String.Empty, new { @id = "spn_Agent", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInLoaded.Agent, new { @id = "Agent", @name = "Agent", @class = "form-control", @placeholder = "Enter Agent ", @readonly = "true" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInLoaded.Line)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInLoaded.Line, String.Empty, new { @id = "spn_Line", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInLoaded.Line, new { @id = "Line", @name = "Line", @class = "form-control", @placeholder = "Enter Line ", @readonly = "true" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInLoaded.ContainerStatus)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInLoaded.ContainerStatus, String.Empty, new { @id = "spn_ContainerStatus", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInLoaded.ContainerStatus, new { @id = "ContainerStatus", @name = "ContainerStatus", @class = "form-control", @placeholder = "Enter Container Status ", @readonly = "true" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInLoaded.Temp)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInLoaded.Temp, String.Empty, new { @id = "spn_Temp", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInLoaded.Temp, new { @id = "Temp", @name = "Temp", @class = "form-control", @placeholder = "Enter Temp", @readonly = "true" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInLoaded.UN)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInLoaded.UN, String.Empty, new { @id = "spn_UN", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInLoaded.UN, new { @id = "UN", @name = "UN", @class = "form-control", @placeholder = "Enter UN ", @readonly = "true" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInLoaded.Class)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInLoaded.Class, String.Empty, new { @id = "spn_Class", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInLoaded.Class, new { @id = "Class", @name = "Class", @class = "form-control", @placeholder = "Enter Class ", @readonly = "true" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2 pull-right">
+                                    <div class="form-group pull-right">
+                                        <br />
+                                        <button type="button" onclick="return AddLoadedContainerdetails()" id="btnLoaded" class="btn btn-primary">Add</button>
+                                        <a onclick="ClearLoadedContainerdetails()" class="btn btn-danger">Clear</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Cont No</th>
+                                            <th>ISO Code</th>
+                                            <th>Size</th>
+                                            <th>Cont Type</th>
+                                            <th>Cargo Type </th>
+                                            <th>Agent</th>
+                                            <th>Line</th>
+                                            <th>Container Status</th>
+                                            <th>Temp</th>
+                                            <th>UN</th>
+                                            <th>Class</th>
+                                            <th>Action </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="LoadedContainerdetails"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+                if (IsEdit && (Model.Category == "Export" && Model.Type == "Regular Container"))
+                {
+                    @Html.HiddenFor(Model => Model.trnEmptyTruckGateInExportLoaded.trnEmptyTruckGateInLoadedID, new { @id = "trnEmptyTruckGateInLoadedID", @name = "trnEmptyTruckGateInLoadedID" })
+                    <div class="box">
+                        <div class="box-header with-border" data-widget="collapse">
+                            <h4><b>Loaded Container Details</b></h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="isfullthenhideEmpty">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInExportLoaded.ContNo)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInExportLoaded.trnexportmovementWOContainerDetailsID, String.Empty, new { @id = "spn_ExptrnexportmovementWOContainerDetailsID", @class = "help-inline text-red" })
+                                        @if (Model.IsTruckUsed)
+                                        {
+                                            @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInExportLoaded.ContNo, new { @id = "ExpLoadedContNo", @name = "ExpLoadedContNo", @class = "form-control", @placeholder = "Enter Cont No", @maxlength = "11", @readonly = "true" })
+                                            @Html.HiddenFor(Model => Model.trnEmptyTruckGateInExportLoaded.trnexportmovementWOContainerDetailsID, new { @id = "trnexportmovementWOContainerDetailsID", @name = "trnexportmovementWOContainerDetailsID", @class = "form-control" })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInExportLoaded.ContNo, new { @id = "ExpLoadedContNo", @name = "ExpLoadedContNo", @class = "form-control", @placeholder = "Enter Cont No", @maxlength = "11" })
+                                            @Html.HiddenFor(Model => Model.trnEmptyTruckGateInExportLoaded.trnexportmovementWOContainerDetailsID, new { @id = "trnexportmovementWOContainerDetailsID", @name = "trnexportmovementWOContainerDetailsID", @class = "form-control" })
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInExportLoaded.ISOCode)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInExportLoaded.ISOCodeID, String.Empty, new { @id = "spn_ExpISOCodeID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInExportLoaded.ISOCode, new { @id = "ExpISOCode", @name = "ExpISOCode", @class = "form-control", @placeholder = "Enter ISOCode", @maxlength = "5", @readonly = "true" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInExportLoaded.ISOCodeID, new { @id = "ExpISOCodeID", @name = "ExpISOCodeID" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInExportLoaded.Size, new { @id = "ExpSize", @name = "ExpSize" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInExportLoaded.ContType, new { @id = "ExpContType", @name = "ExpContType" })
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInExportLoaded.Size)      <span class="form-control-lable" id="ExpISOCodeSizes"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInExportLoaded.ContType)     <span class="form-control-lable" id="ExpISOCodeTypes"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInExportLoaded.CargoType)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInExportLoaded.CargoTypeID, String.Empty, new { @id = "spn_ExpCargoTypeID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInExportLoaded.CargoType, new { @id = "ExpCargoType", @name = "ExpCargoType", @class = "form-control", @placeholder = "Enter Cargo Type ", @readonly = "true" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInExportLoaded.CargoTypeID, new { @id = "ExpCargoTypeID", @name = "ExpCargoTypeID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInExportLoaded.Agent)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInExportLoaded.Agent, String.Empty, new { @id = "spn_ExpAgent", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInExportLoaded.Agent, new { @id = "ExpAgent", @name = "ExpAgent", @class = "form-control", @placeholder = "Enter Agent ", @readonly = "true" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInExportLoaded.Line)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInExportLoaded.Line, String.Empty, new { @id = "spn_ExpLine", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInExportLoaded.Line, new { @id = "ExpLine", @name = "ExpLine", @class = "form-control", @placeholder = "Enter Line ", @readonly = "true" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInExportLoaded.ContainerStatus)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInExportLoaded.ContainerStatus, String.Empty, new { @id = "spn_ExpContainerStatus", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInExportLoaded.ContainerStatus, new { @id = "ExpContainerStatus", @name = "ExpContainerStatus", @class = "form-control", @placeholder = "Enter Container Status ", @readonly = "true" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInExportLoaded.Temp)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInExportLoaded.Temp, String.Empty, new { @id = "spn_ExpTemp", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInExportLoaded.Temp, new { @id = "ExpTemp", @name = "ExpTemp", @class = "form-control", @placeholder = "Enter Temp", @readonly = "true" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInExportLoaded.UN)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInExportLoaded.UN, String.Empty, new { @id = "spn_ExpUN", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInExportLoaded.UN, new { @id = "ExpUN", @name = "ExpUN", @class = "form-control", @placeholder = "Enter UN ", @readonly = "true" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInExportLoaded.Class)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInExportLoaded.Class, String.Empty, new { @id = "spn_ExpClass", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInExportLoaded.Class, new { @id = "ExpClass", @name = "ExpClass", @class = "form-control", @placeholder = "Enter Class ", @readonly = "true" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2 pull-right">
+                                    <div class="form-group pull-right">
+                                        <br />
+                                        @if (Model.IsTruckUsed)
+                                        {
+                                            <button type="button" onclick="return AddExportLoadedContainerdetails()" id="btnLoaded" class="btn btn-primary" disabled>Add</button>
+                                            <a onclick="ClearExportLoadedContainerdetails()" class="btn btn-danger" style="pointer-events:none;">Clear</a>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" onclick="return AddExportLoadedContainerdetails()" id="btnLoaded" class="btn btn-primary">Add</button>
+                                            <a onclick="ClearExportLoadedContainerdetails()" class="btn btn-danger">Clear</a>
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Cont No</th>
+                                            <th>ISO Code</th>
+                                            <th>Size</th>
+                                            <th>Cont Type</th>
+                                            <th>Cargo Type </th>
+                                            <th>Agent</th>
+                                            <th>Line</th>
+                                            <th>Container Status</th>
+                                            <th>Temp</th>
+                                            <th>UN</th>
+                                            <th>Class</th>
+                                            <th>Action </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ExportLoadedContainerdetails"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            @if (IsEdit && ((Model.Category == "WarehouseLoaded" && Model.Type == "Cargo")))
+            {
+                <div id="dvDomesticContainer">
+                    @Html.HiddenFor(Model => Model.trnEmptyTruckGateInDomestic.trnEmptyTruckGateInDomesticID, new { @id = "trnEmptyTruckGateInDomesticID", @name = "trnEmptyTruckGateInDomesticID" })
+                    <div class="box">
+                        <div class="box-header with-border" data-widget="collapse">
+                            <h4><b>Domestic Container Details</b></h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="isfullthenhide">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInDomestic.ContNo)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInDomestic.ContNo, String.Empty, new { @id = "spn_ContNo", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInDomestic.ContNo, new { @id = "ContNo", @name = "ContNo", @class = "form-control", @placeholder = "Enter Cont No", @maxlength = "11", @onkeypress = "return AlphaNumber(event);" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInDomestic.trnCargoGateInContainerDetailsID, new { @id = "trnCargoGateInContainerDetailsID", @name = "trnCargoGateInContainerDetailsID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInDomestic.ISOCode)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInDomestic.ISOCodeID, String.Empty, new { @id = "spn_ISOCodeID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInDomestic.ISOCode, new { @id = "DISOCode", @name = "DISOCode", @class = "form-control", @placeholder = "Enter ISOCode", @maxlength = "5" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInDomestic.ISOCodeID, new { @id = "DISOCodeID", @name = "DISOCodeID" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInDomestic.SizeID, new { @id = "Size", @name = "Size" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInDomestic.ContTypeID, new { @id = "ContType", @name = "ContType" })
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInDomestic.Size)
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInDomestic.Size, new { @id = "ISOCodeSizes", @name = "ISOCodeSizes", @class = "form-control", @placeholder = "Size", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInDomestic.ContType)
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInDomestic.ContType, new { @id = "ISOCodeTypes", @name = "ISOCodeTypes", @class = "form-control", @placeholder = "Types", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInDomestic.CargoType)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInDomestic.CargoTypeID, String.Empty, new { @id = "spn_CargoTypeID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInDomestic.CargoType, new { @id = "CargoType", @name = "CargoType", @class = "form-control", @placeholder = "Enter Cargo Type " })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInDomestic.CargoTypeID, new { @id = "CargoTypeID", @name = "CargoTypeID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInDomestic.PhysicalSeal, new { @for = "PhysicalSeal" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInDomestic.PhysicalSeal, String.Empty, new { @id = "spn_PhysicalSeal", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInDomestic.PhysicalSeal, new { @id = "PhysicalSeal", @name = "PhysicalSeal", @class = "form-control", @placeholder = "Enter Physical Seal" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInDomestic.PhysicalSeal, new { @id = "PhysicalSeal", @name = "PhysicalSeal" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInDomestic.DeclaredSeal, new { @for = "DeclaredSeal" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInDomestic.DeclaredSeal, String.Empty, new { @id = "spn_DeclaredSeal", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnEmptyTruckGateInDomestic.DeclaredSeal, new { @id = "DeclaredSeal", @name = "DeclaredSeal", @class = "form-control", @placeholder = "Enter Declared Seal" })
+                                        @Html.HiddenFor(Model => Model.trnEmptyTruckGateInDomestic.DeclaredSeal, new { @id = "DeclaredSeal", @name = "DeclaredSeal" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2" style="display:none;">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnEmptyTruckGateInDomestic.IsContainerplacedontruck, new { @for = "IsContainerplacedontruck" }) @Html.ValidationMessageFor(Model => Model.trnEmptyTruckGateInDomestic.IsContainerplacedontruck, String.Empty, new { @id = "spn_IsContainerplacedontruck", @class = "help-inline text-red" })
+                                        @Html.DropDownListFor(Model => Model.trnEmptyTruckGateInDomestic.IsContainerplacedontruck, Model.trnEmptyTruckGateInDomestic.SelectContainerplacedontruck, new { @id = "IsContainerplacedontruck", @name = "IsContainerplacedontruck", @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2 pull-right">
+                                    <div class="form-group pull-right">
+                                        <br />
+                                        <button type="button" onclick="return AddDomesticContainerdetails()" id="btnDomestic" class="btn btn-primary">Add</button>
+                                        <a onclick="ClearDomesticContainerdetails()" class="btn btn-danger">Clear</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Cont No</th>
+                                            <th>ISO Code</th>
+                                            <th>Size</th>
+                                            <th>Cont Type</th>
+                                            <th>Cargo Type </th>
+                                            <th>PhysicalSeal </th>
+                                            <th>DeclaredSeal </th>
+                                            @*<th>Container placed on truck?</th>*@
+                                            <th>Action </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="DomesticContainerdetails"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (IsEdit && Model.dtDocDetails != null && Model.dtDocDetails.Rows.Count > 0)
+            {
+                <div class="box">
+                    <div class="box-header">
+                        <h4><span>NOC Details</span></h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12" style="overflow:scroll;">
+                            <table id="example2" class="table table-bordered table-hover" style="white-space:nowrap;">
+                                <thead>
+                                    <tr>
+                                        <th>NOC No.</th>
+                                        <th>NOC Date.</th>
+                                        @if (Model.Category == "Export")
+                                        {
+                                            <th>Doc Dec.BOE No.</th>
+                                            <th>Doc Dec.BOE Date</th>
+                                        }
+                                        else
+                                        {
+                                            <th>In-BOE No.</th>
+                                            <th>In-BOE Date</th>
+                                        }
+
+                                        <th>EX-BOE No.</th>
+                                        <th>EX-BOE Date</th>
+                                        <th>IGM No.</th>
+                                        <th>IGM Date</th>
+                                        <th>Item No</th>
+                                        <th>Billing Party</th>
+                                        <th> CHA</th>
+                                        <th>Importer</th>
+                                        <th>Bulk</th>
+                                        <th>Cargo Type</th>
+                                        <th>Pkge Type</th>
+                                        <th>Loading Wo No.</th>
+                                        <th>Temp</th>
+                                        <th>UN No.</th>
+                                        <th>Class</th>
+                                        <th>Cargo Desc.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.dtDocDetails != null)
+                                    {
+                                        for (int i = 0; i < Model.dtDocDetails.Rows.Count; i++)
+                                        {
+                                            <tr>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["DocumentNo"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["DOCDate"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["InBOENo"])</td>
+                                                <td>@Model.dtDocDetails.Rows[i]["InBOEDate"]</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["EXBOENo"])</td>
+                                                <td>@Model.dtDocDetails.Rows[i]["EXBOEDate"]</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["IGMNo"])</td>
+                                                <td>@Model.dtDocDetails.Rows[i]["IGMDate"]</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["ItemNo"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["BillToCustomerName"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["SubCHA"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["ImporterName"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["BULKSTATUS"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["CargoType"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["PACKAGETYPE"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["LoadinONo"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["Temp"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["UN"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["Class"])</td>
+                                                <td>@Convert.ToString(Model.dtDocDetails.Rows[i]["CARGODESC"])</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="col-md-2 pull-right">
+                <div class="form-group pull-right">
+                    @if (IsEdit)
+                    {
+                        <button type="submit" class="btn btn-primary" id="SaveDoc" onclick="return EmptyTruckGateInFinished()">Save</button>
+                        <a href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+@if (((Model != null && Model.doaction.ToLower() == "edit") || Model.trnEmptyTruckGateInID > 0))
+{
+    <script>
+         var IsTruckUsed = '@Model.IsTruckUsed';
+        $(".isDisplayOnlyinEdit").show();
+
+        //$('#Category').attr('readonly', true)
+        $("#Category").css("pointer-events", "none");
+        $("#Category").css("background-color", "#eee");
+        //$('#Type').attr('readonly', true)
+        $("#Type").css("pointer-events", "none");
+        $("#Type").css("background-color", "#eee");
+
+        //$('#TransportationType').attr('readonly', true)
+        $("#TransportationType").css("pointer-events", "none");
+        $("#TransportationType").css("background-color", "#eee");
+        $('#Transporter').attr('readonly', true)
+        if ((IsTruckUsed == "true" || IsTruckUsed == "True" || IsTruckUsed == true) && catagory == "Export") {
+            $('#TruckNo').attr('readonly', true)
+        }
+        else {
+            $('#TruckNo').attr('readonly', false)
+        }
+        $('#LicenceNo').attr('readonly', true)
+        $('#Driver').attr('readonly', true)
+        $('#MobileNo').attr('readonly', true)
+        $('#Address').attr('readonly', true)
+    </script>
+}
+else
+{
+    <script>
+        $(".isDisplayOnlyinEdit").hide();
+
+        $('#Category').attr('readonly', false)
+        $('#Type').attr('readonly', false)
+        $('#TransportationType').attr('readonly', false)
+        $('#Transporter').attr('readonly', false)
+        $('#TruckNo').attr('readonly', false)
+    </script>
+}
+<script>
+    var IsView = false;
+    var IsEdit = '@((IsEdit)? 1 : 0)';
+    var ID = '@Model.trnEmptyTruckGateInID';
+
+
+    function EmptyTruckGateInFinished()
+    {
+        $("#IsFinished").val(true);
+        return GatePassValidation();
+    }
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnEmptyTruckGateIn.js")"></script>

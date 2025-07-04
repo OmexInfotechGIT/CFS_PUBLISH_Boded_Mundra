@@ -1,0 +1,244 @@
+﻿@model CFS.Models.trnExportDocumentDeclaration
+@{
+    ViewBag.Title = "Export Document Declaration List";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                <a href="@Url.Action("Action", "trnExportDocumentDeclaration" , new { doaction="add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Document Entry GW "><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+
+
+                    <div style="overflow-x:scroll">
+                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnExportDocumentDeclaration" , new { pg=Model.pagger.CurrentPage, search=Model.pagger.Search,SortColumn ="A.DocumentRefNo" , SortOrder=(Model.pagger.SortColumn.ToLower() =="a.documentrefno" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" )} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == " a.documentrefno" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" ).ToString().ToLower())"></i> Doc. Ref. No.</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnExportDocumentDeclaration" , new { pg=Model.pagger.CurrentPage, search=Model.pagger.Search,SortColumn ="A.CHAName" , SortOrder=(Model.pagger.SortColumn.ToLower() =="a.chaname" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" )} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == " a.chaname" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" ).ToString().ToLower())"></i> CHA Name</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnExportDocumentDeclaration" , new { pg=Model.pagger.CurrentPage, search=Model.pagger.Search,SortColumn ="A.ForwarderName" , SortOrder=(Model.pagger.SortColumn.ToLower() =="a.forwardername" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" )} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == " a.forwardername" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" ).ToString().ToLower())"></i> Forwarder</a>
+                                    </th>
+
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnExportDocumentDeclaration" , new { pg=Model.pagger.CurrentPage, search=Model.pagger.Search,SortColumn ="A.SBNo" , SortOrder=(Model.pagger.SortColumn.ToLower() =="a.sbno" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" )} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == " a.sbno" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" ).ToString().ToLower())"></i> SB No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnExportDocumentDeclaration" , new { pg=Model.pagger.CurrentPage, search=Model.pagger.Search,SortColumn ="A.INVNo" , SortOrder=(Model.pagger.SortColumn.ToLower() =="a.invno" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" )} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == " a.invno" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" ).ToString().ToLower())"></i> INV No</a>
+                                    </th>                                    
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnExportDocumentDeclaration" , new { pg=Model.pagger.CurrentPage, search=Model.pagger.Search,SortColumn ="A.Status" , SortOrder=(Model.pagger.SortColumn.ToLower() =="a.status" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" )} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == " a.status" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" ).ToString().ToLower())"></i> Change Status</a>
+                                    </th>
+                                    <th class="freezeLastColumn">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.MyDatatable != null && Model.MyDatatable.Rows.Count > 0)
+                                {
+                                    for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                    {
+                                         <tr>
+                                            <td>@Model.MyDatatable.Rows[i]["DocumentRefNo"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["CHAName"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["ForwarderName"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["SBNo"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["INVNo"]</td>                                            
+                                            <td>
+
+                                                @{
+                                                    string Icon = "glyphicon glyphicon-dashboard fa-spin";
+                                                    string Status = "";
+                                                    if (!string.IsNullOrEmpty(Model.MyDatatable.Rows[i]["Status"].ToString()))
+                                                    {
+                                                        Status = Model.MyDatatable.Rows[i]["Status"].ToString();
+                                                    }
+                                                    if (Model.MyDatatable.Rows[i]["Status"].ToString() == "D")
+                                                    {
+                                                        Icon = "glyphicon glyphicon-ok-circle";
+                                                    }
+                                                    else if (Model.MyDatatable.Rows[i]["Status"].ToString() == "H")
+                                                    {
+                                                        Icon = "glyphicon glyphicon-minus-sign";
+                                                    }
+                                                    else if (Model.MyDatatable.Rows[i]["Status"].ToString() == "C")
+                                                    {
+                                                        Icon = "glyphicon glyphicon-ban-circle";
+                                                    }
+                                                    else if (Model.MyDatatable.Rows[i]["Status"].ToString() == "R")
+                                                    {
+                                                        Icon = "glyphicon glyphicon-step-forward";
+                                                    }
+                                                }
+                                                <a><i onclick="ChangeStatus('@Status.Trim()','@Model.MyDatatable.Rows[i]["trnExportDocumentDeclarationID"]','@Model.MyDatatable.Rows[i]["StatusRemarks"]','@Model.MyDatatable.Rows[i]["HoldAgency"]','@Model.MyDatatable.Rows[i]["HoldAgencyID"]')" title="Click to Change status" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="@Icon"></i></a>
+                                                @((Model.MyDatatable.Rows[i]["Status"].ToString() == "P") ? "Pending" : (Model.MyDatatable.Rows[i]["Status"].ToString() == "D") ? "Completed" : (Model.MyDatatable.Rows[i]["Status"].ToString() == "H") ? "Hold" : (Model.MyDatatable.Rows[i]["Status"].ToString() == "R") ? "Release" : "Cancelled")
+
+                                            </td>
+                                            <td class="freezeLastColumnwithWhite">
+                                                <a><i data-toggle="modal" data-target="#viewExportLotDetails" onclick="GetExportLotDetails('@Model.MyDatatable.Rows[i]["trnExportDocumentDeclarationID"]')" title="LOT Details" style=" font-size: x-large; cursor: pointer; vertical-align: middle;color:forestgreen" class="fa fa-arrows-alt fa-spin"></i></a>&nbsp;
+                                                @if (ViewBag.gblBlnEdit)
+                                                {
+                                                    <a href="@Url.Action("Action", "trnExportDocumentDeclaration" , new { id=Model.MyDatatable.Rows[i]["trnExportDocumentDeclarationID"], pg=Model.pagger.CurrentPage, search=Model.pagger.Search, doaction="edit" , @IsFinished=Model.MyDatatable.Rows[i]["IsFinished"]})"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                                }
+                                                @if (ViewBag.gblBlnView)
+                                                {
+                                                    <a href="@Url.Action("view", "trnExportDocumentDeclaration" , new { id=Model.MyDatatable.Rows[i]["trnExportDocumentDeclarationID"], pg=Model.pagger.CurrentPage, search=Model.pagger.Search ,doaction="View" })"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                                }
+                                                @if (ViewBag.gblBlnDelete && !Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsStuffFinished"]))
+                                                {
+                                                    <a href="@Url.Action("delete", "trnExportDocumentDeclaration" , new { id=Model.MyDatatable.Rows[i]["trnExportDocumentDeclarationID"], pg=Model.pagger.CurrentPage, search=Model.pagger.Search })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                                }
+                                                <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('trnExportDocumentDeclaration','@Model.MyDatatable.Rows[i]["trnExportDocumentDeclarationID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>                                               
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                    @Html.Partial("_pagination")
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("updatestatus", "trnExportDocumentDeclaration", FormMethod.Post))
+    {
+    <div class="modal fade in" id="ChangeStatus" style="display: none; padding-right: 17px;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Update Status</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="box">
+                                <div class="box-body">
+                                    <div class="col-md-6">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label>Status</label>
+                                                <select id="ddlStatus" name="ddlStatus" onchange="ReasonHideshow(this.value)" class="form-control" style="width:400px;">
+                                                    <option value="P">Pending</option>
+                                                    <option value="D">Completed</option>
+                                                    <option value="H">Hold</option>
+                                                    <option value="R">Release</option>
+                                                    <option value="C">Cancelled</option>
+                                                </select>
+                                                <label class="HoldAgencyHideshow">Hold Agency <span class="text-red">*</span></label>
+                                                <input type="text" id="txtHoldAgency" name="txtHoldAgency" class="form-control HoldAgencyHideshow" style="width:400px;" />
+                                                <input type="hidden" id="txtHoldAgencyID" name="txtHoldAgencyID" style="width:400px;" />
+                                                <span class="text-red" id="txtHoldAgencymessage" style="display:none;">Hold Agency is Required</span><br />
+                                                <input type="hidden" id="txttrnExportDocumentDeclarationID" name="txttrnExportDocumentDeclarationID" />
+                                                <label class="ReasonHideshow">Reason <span class="text-red">*</span></label>
+                                                <input type="text" id="txtreason" name="txtreason" class="form-control ReasonHideshow" style="width:400px;" />
+                                                <span class="text-red" id="txtErrormessage" style="display:none;">Reason is Required</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" onclick="return validateReason()" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    }
+</section>
+<script>
+    var doaction = '@Model.doaction';
+    var IsSearch = '@Model.IsSearch.ToString().ToLower()';
+</script>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnExportDocumentDeclaration.js")"></script>
+
+<div class="modal fade in" id="viewExportLotDetails" style="display: none; padding-right: 17px;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">Lot Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="box" style="max-height: 300px;overflow-y: scroll;">
+                            <div class="box-body">
+                                <table width="150%" class="table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:140px"> &nbsp;&nbsp;&nbsp;&nbsp;Document Ref No</th>
+                                            <th style="width:110px"> &nbsp;&nbsp;&nbsp;&nbsp;SB No</th>
+                                            <th style="width:110px"> &nbsp;&nbsp;&nbsp;&nbsp;SB Date</th>                                            
+                                            <th style="width:110px"> &nbsp;&nbsp;&nbsp;&nbsp;INV No</th>
+                                            <th style="width:90px"> &nbsp;&nbsp;&nbsp;&nbsp;INV Date</th>
+                                            <th style="width:110px"> &nbsp;&nbsp;&nbsp;&nbsp;No Of Packages</th>
+                                            <th style="width:110px"> &nbsp;&nbsp;&nbsp;&nbsp;No Of Pieces</th>
+                                            <th style="width:110px"> &nbsp;&nbsp;&nbsp;&nbsp;Weight</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbllotdetail"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Okay</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<script>
+    var trnExportDocumentDeclarationID = '@Model.trnExportDocumentDeclarationID';
+</script>

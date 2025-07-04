@@ -1,0 +1,185 @@
+﻿@model CFS.Models.MstrPallet
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Pallet";
+
+        if (!ViewBag.gblBlnEdit && !ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add new Pallet";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (Model.doaction == "edit")
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">Pallet Name: @Model.PalletName</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrPallet","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrPallet", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "MstrPallet", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.MstrPalletID)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+                        @Html.HiddenFor(Model => Model.PalletCode)
+
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.ChamberName, new { @for = "txtChamberName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ChamberName, String.Empty, new {@id= "spn_ChamberName", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.ChamberName, new { @id = "txtChamberName", @name = "txrChamberName", @class = "form-control", @placeholder = "Enter Chamber Name" })
+                                    @Html.HiddenFor(Model => Model.ChamberID, new { @id = "txtChamberID", @name = "txtChamberID" })
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.PalletName, new { @for = "txtPalletName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.PalletName, String.Empty, new { @id = "spn_PalletName", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.PalletName, new { @id = "txrPalletName", @name = "txtPalletName", @class = "form-control", @placeholder = "Pallet Name" })
+                                    @Html.HiddenFor(Model => Model.RefID)
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.NoOfPallet, new { @for = "txtNoOfPallet" }) @Html.ValidationMessageFor(Model => Model.NoOfPallet, String.Empty, new { @id = "spn_NoOfPallet", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.NoOfPallet, new { @id = "txtNoOfPallet", @name = "txtNoOfPallet", @class = "form-control", @placeholder = "Enter No. Of Pallet", @onkeypress = "return isonlynumber(event);" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @if (Model.doaction.ToLower() == "edit")
+                                    {
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.FloorNo, new { @for = "FloorNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.FloorNo, String.Empty, new { @id = "spn_FloorNo", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.FloorNo, new { @id = "txtFloorNo", @name = "txtFloorNo", @class = "form-control", @placeholder = "Enter Floor No" })
+                                            @Html.HiddenFor(Model => Model.FloorID, new { @id = "txtFloorID", @name = "txtFloorID" })
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.FromFloorName, new { @for = "txtFromFloorName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.FromFloorName, String.Empty, new { @id = "spn_FromFloorName", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.FromFloorName, new { @id = "txtFromFloorName", @name = "txtFromFloorName", @class = "form-control", @placeholder = "Enter From Floor Name" })
+                                            @Html.HiddenFor(Model => Model.FromFloorID, new { @id = "txtFloorID", @name = "txtFloorID" })
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.ToFloorName, new { @for = "txtToFloorName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ToFloorName, String.Empty, new { @id = "spn_ToFloorName", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.ToFloorName, new { @id = "txtToFloorName", @name = "txtToFloorName", @class = "form-control", @placeholder = "Enter To Floor Name" })
+                                            @Html.HiddenFor(Model => Model.ToFloorID)
+                                        </div>
+                                    }
+                                    <br />
+                                    @Html.CheckBoxFor(Model => Model.IsActive, new { @class = "form-control" })
+                                    @Html.Label("IsActive") @Html.ValidationMessageFor(Model => Model.IsActive, String.Empty, new { @class = "help-inline text-red" })
+                                </div>
+                                <div class="form-group" id="dvInActiveReason">
+                                    @Html.LabelFor(Model => Model.InActiveReason, new { @for = "InActiveReason" }) @Html.ValidationMessageFor(Model => Model.InActiveReason, String.Empty, new { @id = "spn_InActiveReason", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.InActiveReason, new { @class = "form-control", @placeholder = "Enter Inactivate Reason" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrPallet","Index")" class="btn btn-danger">Cancel</a>*@
+                                <a href="@Url.Action("Index", "MstrPallet", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @if (Model.doaction == "edit")
+    {
+        <div class="row" id="tblPallet">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th><a class="text-black"> Pallet No. </a></th>
+                                    <th><a class="text-black"> Pallet Code </a></th>
+                                    <th><a class="text-black"> Pallet Name </a></th>
+                                    <th><a class="text-black"> Status </a></th>
+                                    <th><a class="text-black"> Action </a></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.MySubDatatable.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@Model.MySubDatatable.Rows[i]["PalletNo"]</td>
+                                        <td>@Model.MySubDatatable.Rows[i]["PalletCode"]</td>
+                                        <td>@Model.MySubDatatable.Rows[i]["PalletName"]</td>
+                                        <td>
+                                            @{
+                                                string Icon = "glyphicon glyphicon-remove-circle";
+                                                string click = "click to Active";
+                                                string isactive = "true";
+                                                if (Convert.ToBoolean(Model.MySubDatatable.Rows[i]["IsActive"]) == true)
+                                                {
+                                                    Icon = "glyphicon glyphicon-ok-circle";
+                                                    click = "click to InActive";
+                                                    isactive = "false";
+                                                }
+                                            }
+                                            <a><i onclick="ValidateUpdateStatus('mstrpallet','@isactive','@Model.MySubDatatable.Rows[i]["MstrPalletID"]')" title="@click" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="@Icon"></i></a>
+                                        </td>
+                                        <td>
+                                            @if (ViewBag.gblBlnDelete)
+                                            {
+                                                <a href="@Url.Action("deletepallet", "MstrPallet" , new { id=Model.MySubDatatable.Rows[i]["MstrPalletID"] })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</section>
+<script>
+    var doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrPallet.js")"></script>
+
+

@@ -1,0 +1,227 @@
+﻿@model CFS.Models.TariffCombinations
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Tariff Combinations";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Tariff Combinations";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+
+<section class="content">
+    @using (Html.BeginForm("Action", "TariffCombinations", FormMethod.Post))
+    {
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                <a href="@Url.Action("Index", "TariffCombinations", new { pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+                    <div class="box-body">
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+
+                        <div class="col-md-3">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.CycleName, new { @for = "CycleName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CycleName, String.Empty, new { @class = "help-inline text-red", @id = "spn_CycleName" })
+                                    @Html.TextBoxFor(Model => Model.CycleName, new { @id = "CycleName", @name = "CycleName", @class = "form-control", @placeholder = "Select Cycle Name" })
+                                    @Html.HiddenFor(Model => Model.CycleID, new { @id = "CycleID" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <br />
+                                    @Html.CheckBoxFor(Model => Model.IsActive, new { @class = "form-control" })
+                                    @Html.Label("IsActive") @Html.ValidationMessageFor(Model => Model.IsActive, String.Empty, new { @class = "help-inline text-red" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="box-body" style="margin-left: -80px;">
+                                <div class="form-group" id="dvInActiveReason">
+                                    @Html.LabelFor(Model => Model.InActiveReason, new { @for = "InActiveReason" }) @Html.ValidationMessageFor(Model => Model.InActiveReason, String.Empty, new { @class = "help-inline text-red", @id = "spn_InActiveReason" })
+                                    @Html.TextBoxFor(Model => Model.InActiveReason, new { id = "InActiveReason", @class = "form-control", @placeholder = "Enter Inactivate Reason" })
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (Model.doaction == "add")
+                        {
+                            <br />
+                            <div class="col-md-3 pull-right">
+                                <div class="box-body pull-right">
+                                    <button type="submit" class="btn btn-primary" onclick="return GatePassValidationStep1()">Save & Next</button>
+                                    <a href="@Url.Action("Index", "TariffCombinations", new { pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        if (Model.doaction == "edit")
+        {
+                <div class="row" id="step-2">
+                    <div class="col-xs-12">
+                        <div class="box">
+                            <div class="box-body" id="step-2-body">
+
+                                <div class="col-md-3">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.LineName, new { @for = "LineName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.LineName, String.Empty, new { @class = "help-inline text-red", @id = "spn_LineName" })
+                                            @Html.TextBoxFor(Model => Model.LineName, new { @id = "LineName", @name = "LineName", @class = "form-control", @placeholder = "Enter Line Name" })
+                                            @Html.HiddenFor(Model => Model.LineID, new { @id = "LineID" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.AgentName, new { @for = "AgentName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.AgentName, String.Empty, new { @class = "help-inline text-red", @id = "spn_AgentName" })
+                                            @Html.TextBoxFor(Model => Model.AgentName, new { @id = "AgentName", @name = "AgentName", @class = "form-control", @placeholder = "Enter Agent Name" })
+                                            @Html.HiddenFor(Model => Model.AgentID, new { @id = "AgentID" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.CHAName, new { @for = "CHAName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CHAName, String.Empty, new { @class = "help-inline text-red", @id = "spn_CHAName" })
+                                            @Html.TextBoxFor(Model => Model.CHAName, new { @id = "CHAName", @name = "CHAName", @class = "form-control", @placeholder = "Enter CHA Name" })
+                                            @Html.HiddenFor(Model => Model.CHAID, new { @id = "CHAID" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.ForwarderName, new { @for = "ForwarderName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ForwarderName, String.Empty, new { @class = "help-inline text-red", @id = "spn_ForwarderName" })
+                                            @Html.TextBoxFor(Model => Model.ForwarderName, new { @id = "ForwarderName", @name = "ForwarderName", @class = "form-control", @placeholder = "Enter Forwarder Name" })
+                                            @Html.HiddenFor(Model => Model.ForwarderID, new { @id = "ForwarderID" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.ImporterExporter, new { @for = "ImporterExporter" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ImporterExporter, String.Empty, new { @class = "help-inline text-red", @id = "spn_ImporterExporter" })
+                                            @Html.TextBoxFor(Model => Model.ImporterExporter, new { @id = "ImporterExporter", @name = "ImporterExporter", @class = "form-control", @placeholder = "Enter Importer Exporter" })
+                                            @Html.HiddenFor(Model => Model.ImporterExporterID, new { @id = "ImporterExporterID", @name = "ImporterExporterID" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.ConsolerName, new { @for = "ConsolerName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ConsolerName, String.Empty, new { @class = "help-inline text-red", @id = "spn_ConsolerName" })
+                                            @Html.TextBoxFor(Model => Model.ConsolerName, new { @id = "ConsolerName", @name = "ConsolerName", @class = "form-control", @placeholder = "Enter Consoler Name" })
+                                            @Html.HiddenFor(Model => Model.ConsolerID, new { @id = "ConsolerID" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <br />
+                                    <div class="box-body">
+                                        <button type="submit" class="btn btn-primary" onclick="return GatePassValidationStep2()">Add</button>
+                                        @*<a href="@Url.Action("Action", "TariffCombinations", new { pg = Request.Params["pg"], search = Request.Params["search"], doaction = Model.doaction })" class="btn btn-primary" onclick="return GatePassValidationStep2()">Add</a>*@
+                                    </div>
+                                </div>
+
+                                @if (Model.MySubDatatable != null && Model.MySubDatatable.Rows.Count > 0)
+                                {
+                                    int counter = 1;
+
+                                    <div class="col-md-12 row">
+                                        <div class="box-body">
+
+                                            <div style="overflow-x:scroll">
+                                                <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Sequence</th>
+                                                            <th>Line Name</th>
+                                                            <th>Agent Name</th>
+                                                            <th>CHA Name</th>
+                                                            <th>Forwarder Name</th>
+                                                            <th>Import Exporter Name</th>
+                                                            <th>Consoler Name</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @for (int i = 0; i < Model.MySubDatatable.Rows.Count; i++)
+                                                        {
+                                                            <tr>
+                                                                <td id="SequenceID_@counter">@counter</td>
+                                                                <td id="txtLineName_@Model.MySubDatatable.Rows[i]["LineName"]">@Model.MySubDatatable.Rows[i]["LineName"]</td>
+                                                                <td id="txtTariffHeadName_@Model.MySubDatatable.Rows[i]["AgentName"]">@Model.MySubDatatable.Rows[i]["AgentName"]</td>
+                                                                <td id="txtCHAName_@Model.MySubDatatable.Rows[i]["CHAName"]">@Model.MySubDatatable.Rows[i]["CHAName"]</td>
+                                                                <td id="txtForwarder_@Model.MySubDatatable.Rows[i]["Forwarder"]">@Model.MySubDatatable.Rows[i]["Forwarder"]</td>
+                                                                <td id="txtImporterExporter_@Model.MySubDatatable.Rows[i]["ImporterExporter"]">@Model.MySubDatatable.Rows[i]["ImporterExporter"]</td>
+                                                                <td id="txtConsolerName_@Model.MySubDatatable.Rows[i]["ConsolerName"]">@Model.MySubDatatable.Rows[i]["ConsolerName"]</td>
+                                                            </tr>
+                                                            counter++;
+                                                        }
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="box-body">
+                                            <a href="@Url.Action("Index", "TariffCombinations", new { pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary" onclick="return FinalSave()">Save</a>
+                                            <a href="@Url.Action("Index", "TariffCombinations", new { pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                                        </div>
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+    }
+
+</section>
+<script>
+    doaction = '@Model.doaction';
+    $("#IsFinished").val(true);
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/TariffCombinations.js")"></script>
+

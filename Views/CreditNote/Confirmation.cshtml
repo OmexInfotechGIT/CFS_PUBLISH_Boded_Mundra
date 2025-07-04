@@ -1,0 +1,426 @@
+﻿@model CFS.Models.CreditNote
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+
+    ViewBag.Title = "Confirmation Credit Note";
+    if (!ViewBag.gblBlnAdd)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+@using (Html.BeginForm("Action", "CreditNote", FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+{
+    <section class="content">
+        <div class="row">
+            <div class="box">
+                <div class="box-body">
+                    @if (Model.doaction == "view")
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;"> Credit Note No: @Model.CreditNoteNumber</span> @CFS.Com.ClsCommon.AddhtmlSpace(2)
+                                <span class="badge bg-light-blue" style="font-size:15px;"> Credit Note Date: @Model.CreditNoteDate</span>@CFS.Com.ClsCommon.AddhtmlSpace(2)
+                                <span class="badge bg-light-blue" style="font-size:15px;"> Created By: @Model.Username</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @if (!Model.IsApproved)
+                            {
+                                if (Model.GSTTypeName.ToUpper() == "REGISTERED" && Model.ISIRN)
+                                {
+                                    <a class="btn btn-block btn-primary" data-toggle="modal" data-target="#myModalConfirmationWithEinvoice" onclick="return ApproveInvoice('true','approve','@Model.CreditNoteID','@Model.CreditNoteNumber','creditnote' ,'@Model.InvoiceNumberID','@Model.InvoiceType')">
+                                        <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a class="btn btn-block btn-primary" data-toggle="modal" data-target="#myModalConfirmationWithEinvoice" onclick="return ApproveInvoice('false','approve','@Model.CreditNoteID','@Model.CreditNoteNumber','creditnote' ,'@Model.InvoiceNumberID','@Model.InvoiceType')">
+                                        <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                    </a>
+                                }
+                            }
+                            else
+                            {
+                                if (Model.GSTTypeName.ToUpper() == "REGISTERED" && Model.IsEInvoiceGenerated && Model.IsCancelEInvoice && Model.ISIRN)
+                                {
+                                    <a class="btn btn-block btn-primary" data-toggle="modal" data-target="#myModalConfirmationWithEinvoice" onclick="return ApproveInvoice('true','unapprove','@Model.CreditNoteID','@Model.CreditNoteNumber','creditnote'  ,'@Model.InvoiceNumberID','@Model.InvoiceType')">
+                                        <i title="Click to UnApprove" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-down"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a class="btn btn-block btn-primary" data-toggle="modal" data-target="#myModalConfirmationWithEinvoice" onclick="return ApproveInvoice('false','unapprove','@Model.CreditNoteID','@Model.CreditNoteNumber','creditnote'  ,'@Model.InvoiceNumberID','@Model.InvoiceType')">
+                                        <i title="Click to UnApprove" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-down"></i>
+                                    </a>
+                                }
+                            }
+
+                            @CFS.Com.ClsCommon.AddhtmlSpace(5)
+                            <a href="@Url.Action("index", "CreditNote", new { pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-12"></div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.InvoiceType)<span class="text-red">*</span>
+                            @if (Model.IsSearch)
+                            {
+                                @Html.DropDownListFor(Model => Model.InvoiceType, Model.SelectInvoiceType, new { @id = "SelectInvoiceType", @name = "SelectInvoiceType", @class = "form-control", @placeholder = "Enter Billing to party", @onchange = "changeInvoice()", @disabled = "disabled" })
+                            }
+                            else
+                            {
+                                @Html.DropDownListFor(Model => Model.InvoiceType, Model.SelectInvoiceType, new { @id = "SelectInvoiceType", @name = "SelectInvoiceType", @class = "form-control", @placeholder = "Enter Billing to party", @onchange = "changeInvoice()" })
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.InvoiceNumber, new { @for = "InvoiceNumer" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.InvoiceNumber, String.Empty, new { @id = "spn_InvoiceNumber", @class = "help-inline text-red" })
+                            @if (Model.IsSearch)
+                            {
+                                @Html.TextBoxFor(Model => Model.InvoiceNumber, new { @id = "InvoiceNumer", @name = "InvoiceNumer", @class = "form-control", @placeholder = "Select Invoice Number", @readonly = "true" })
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(Model => Model.InvoiceNumber, new { @id = "InvoiceNumer", @name = "InvoiceNumer", @class = "form-control", @placeholder = "Select Invoice Number" })
+                            }
+                            @Html.HiddenFor(Model => Model.InvoiceNumberID, new { @id = "InvoiceNumerID", @name = "InvoiceNumerID" })
+                        </div>
+                    </div>
+
+                    @if (Model.IsSearch)
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.IsSearch)
+                        @Html.HiddenFor(Model => Model.CreditNoteID)
+                        @Html.HiddenFor(Model => Model.Balance)
+                        <div class="col-md-12" style="margin-top:20px;">
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.NOCDATE) : <span>@Model.NOCDATE</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.IMPORTERNAME) : <span>@Model.IMPORTERNAME</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.CHA) : <span>@Model.CHA</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.Forwarder) : <span>@Model.Forwarder</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.ConsolerName) : <span>@Model.ConsolerName</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.StorageStartDate) : <span>@Model.StorageStartDate</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.NoOfStoragePeriod) : <span>@Model.NoOfStoragePeriod</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.StoragePeriod) : <span>@Model.StoragePeriod</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.InvoiceValidUptoDate) : <span>@Model.InvoiceValidUptoDate</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.BillToCustomerName) : <span>@Model.BillToCustomerName</span>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.LabelFor(Model => Model.BillToCustomerAddress) : <span>@Model.BillToCustomerAddress</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.BillToCustomerGSTNo) : <span>@Model.BillToCustomerGSTNo</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.GSTTypeName) : <span>@Model.GSTTypeName</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.StateName) : <span>@Model.StateName</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.PaymentTypeName) : <span>@Model.PaymentTypeName</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.Remarks) : <span>@Model.Remarks</span>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4><b>Previous CreditNote Details</b></h4>
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12" style="overflow:scroll">
+
+                        @if (Model.InvoiceType != "")
+                        {
+                            <table id="example2" style="white-space: nowrap;" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Previous Credit Note No</th>
+                                        <th>Previous Credit Note  Date</th>
+                                        <th>Credit Note Amount</th>
+                                        <th>Credit Note Amount Tax</th>
+                                        <th>Credit Note Total Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.PrevCreditNoteDetails != null && Model.PrevCreditNoteDetails.Rows.Count > 0)
+                                    {
+                                        for (int i = 0; i < Model.PrevCreditNoteDetails.Rows.Count; i++)
+                                        {
+                                            <tr>
+                                                <td>@Model.PrevCreditNoteDetails.Rows[i]["Previous Creditnote No"]</td>
+                                                <td>@Model.PrevCreditNoteDetails.Rows[i]["Previous Creditnote Date"]</td>
+                                                <td>@Model.PrevCreditNoteDetails.Rows[i]["Creditnote amount"]</td>
+                                                <td>@Model.PrevCreditNoteDetails.Rows[i]["Creditnote amountTax"]</td>
+                                                <td>@Model.PrevCreditNoteDetails.Rows[i]["Creditnote Totalamount"]</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+            @if (Model.InvoiceType.ToUpper() == "BOND")
+            {
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h4><b>BOE Details </b></h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12" style="overflow:scroll">
+                            <table id="example2" style="white-space: nowrap;" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>In BOE No</th>
+                                        <th>In BOE No Date</th>
+                                        <th>Bond No</th>
+                                        <th>Bond Date</th>
+                                        <th>CP No</th>
+                                        <th>CP Date</th>
+                                        <th>BL No</th>
+                                        <th>BL Date</th>
+                                        <th>IGM No</th>
+                                        <th>Item No</th>
+                                        <th>Hold Status</th>
+                                        <th>AV</th>
+                                        <th>Enhanced AV</th>
+                                        <th>DV</th>
+                                        <th>Enhanced DV</th>
+                                        <th>CHA</th>
+                                        <th>Forwarder</th>
+                                        <th>Consoler</th>
+                                        <th>Importer</th>
+                                        <th>Packages</th>
+                                        <th>Pieces</th>
+                                        <th>Weight</th>
+                                        <th>Package Type</th>
+                                        <th>Cargo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.DocumentDetails != null && Model.DocumentDetails.Rows.Count > 0)
+                                    {
+                                        for (int i = 0; i < Model.DocumentDetails.Rows.Count; i++)
+                                        {
+                                            <tr>
+                                                <td>@Model.DocumentDetails.Rows[i]["BOENo"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["BOEDate"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["BondNo"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["BondDate"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["CPNo"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["CPDate"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["BLNo"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["BLDate"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["IGMNo"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["ItemNo"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["HoldStatus"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["AssessableValue"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["EnhanceAssembleValue"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["Dutyvalue"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["EnhanceDutyvalue"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["SubCHA"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["Forwarder"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["Consoler"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["IMPORTERNAME"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["NOOFPKGS"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["NOOFPIECES"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["WEIGHT"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["PACKAGETYPE"]</td>
+                                                <td>@Model.DocumentDetails.Rows[i]["CARGODESC"]</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4>
+                        <b>Consolidated Charges </b>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                    </h4>
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12" style="overflow:scroll">
+                        <table id="example3" style="white-space: nowrap;" class="table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Cont No/Truck</th>
+                                    <th>Size</th>
+                                    <th>Type</th>
+                                    <th>Arrival Date</th>
+                                    <th>Cargo Type</th>
+                                    <th>Del. Mode</th>
+                                    <th>Bill Commodity</th>
+                                    <th>From Date</th>
+                                    <th>To Date</th>
+                                    <th>Weight</th>
+                                    <th>Billable Head</th>
+                                    <th>Qty/Area</th>
+                                    <th>Rate</th>
+                                    <th>Discount</th>
+                                    <th>Taxable Amt</th>
+                                    <th>GST</th>
+                                    <th>GST Amt</th>
+                                    <th>Total Amt</th>
+                                    <th>Credit Note Amount</th>
+                                    <th>Credit Note Tax</th>
+                                    <th>Total Credit Note Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    string ConsolidatorChargeDatatableRow = "";
+                                    string tblTypeName = "";
+                                }
+                                @if (Model.ConsolidatorChargeDatatable != null && Model.ConsolidatorChargeDatatable.Rows.Count > 0)
+                                {
+                                    for (int i = 0; i < Model.ConsolidatorChargeDatatable.Rows.Count; i++)
+                                    {
+                                        if (ConsolidatorChargeDatatableRow == "")
+                                        {
+                                            ConsolidatorChargeDatatableRow = Convert.ToString(Model.ConsolidatorChargeDatatable.Rows[i]["InvoiceConsolidatorChargeID"]);
+                                        }
+                                        else
+                                        {
+                                            ConsolidatorChargeDatatableRow = ConsolidatorChargeDatatableRow + "," + Convert.ToString(Model.ConsolidatorChargeDatatable.Rows[i]["InvoiceConsolidatorChargeID"]);
+                                        }
+                                        if (tblTypeName == "")
+                                        {
+                                            tblTypeName = Convert.ToString(Model.ConsolidatorChargeDatatable.Rows[i]["TypeName"]);
+                                        }
+                                        else
+                                        {
+                                            tblTypeName = tblTypeName + "," + Convert.ToString(Model.ConsolidatorChargeDatatable.Rows[i]["TypeName"]);
+                                        }
+                                        Model.InvoiceConsolidatorChargeID = new string[(Model.ConsolidatorChargeDatatable.Rows.Count + (10 - (Model.ConsolidatorChargeDatatable.Rows.Count % 10)))];
+                                        Model.InvoiceConsolidatorChargeID[i] = Convert.ToString(Model.ConsolidatorChargeDatatable.Rows[i]["InvoiceConsolidatorChargeID"]);
+                                        <tr>
+                                            <td>@Model.ConsolidatorChargeDatatable.Rows[i]["ContainerNumber"]</td>
+                                            <td>@Model.ConsolidatorChargeDatatable.Rows[i]["ISOCodeSize"]</td>
+                                            <td>@Model.ConsolidatorChargeDatatable.Rows[i]["ISOCodeType"]</td>
+                                            <td>@Model.ConsolidatorChargeDatatable.Rows[i]["ArrivalDate"]</td>
+                                            <td>@Model.ConsolidatorChargeDatatable.Rows[i]["CargoType"]</td>
+                                            <td>@Model.ConsolidatorChargeDatatable.Rows[i]["DeliveryMode"]</td>
+                                            <td>@Model.ConsolidatorChargeDatatable.Rows[i]["BillCommodityAlias"]</td>
+                                            <td>@Model.ConsolidatorChargeDatatable.Rows[i]["FromDate"]</td>
+                                            <td>@Model.ConsolidatorChargeDatatable.Rows[i]["EndDate"]</td>
+                                            <td>@Model.ConsolidatorChargeDatatable.Rows[i]["Weight"]</td>
+                                            <td>@Model.ConsolidatorChargeDatatable.Rows[i]["TariffHead"]</td>
+                                            <td>@Model.ConsolidatorChargeDatatable.Rows[i]["Qty"]</td>
+                                            <td>@Model.ConsolidatorChargeDatatable.Rows[i]["Rate"]</td>
+                                            <td>@Model.ConsolidatorChargeDatatable.Rows[i]["Discount"]</td>
+                                            <td>@Model.ConsolidatorChargeDatatable.Rows[i]["TaxableAmount"]</td>
+                                            <td>
+                                                <span id="@string.Format("GSTPer_{0}_{1}",Model.ConsolidatorChargeDatatable.Rows[i]["InvoiceConsolidatorChargeID"],Model.ConsolidatorChargeDatatable.Rows[i]["TypeName"])">
+                                                    @Model.ConsolidatorChargeDatatable.Rows[i]["GST"]
+                                                </span>
+                                                @Html.HiddenFor(Model => Model.InvoiceConsolidatorChargeID[i], new { @id = "hdnInvoiceConsolidatorChargeID_" + @Model.ConsolidatorChargeDatatable.Rows[i]["InvoiceConsolidatorChargeID"], @name = "hdnInvoiceConsolidatorChargeID_" + @Model.ConsolidatorChargeDatatable.Rows[i]["InvoiceConsolidatorChargeID"] })
+                                                @Html.HiddenFor(Model => Model.TypeName[i], new { @id = "hdnTypeName_" + @Model.ConsolidatorChargeDatatable.Rows[i]["InvoiceConsolidatorChargeID"] + "_" + @Model.ConsolidatorChargeDatatable.Rows[i]["TypeName"], @name = "hdnTypeName_" + @Model.ConsolidatorChargeDatatable.Rows[i]["InvoiceConsolidatorChargeID"] + "_" + @Model.ConsolidatorChargeDatatable.Rows[i]["TypeName"] })
+                                            </td>
+                                            <td>@Model.ConsolidatorChargeDatatable.Rows[i]["GSTAmount"]</td>
+                                            <td>@Model.ConsolidatorChargeDatatable.Rows[i]["TotalAmount"]</td>
+                                            @if (Model.MySubDatatable != null && Model.MySubDatatable.Rows.Count > 0)
+                                            {
+                                                <td>@Html.TextBoxFor(Model => Model.CNTaxableAmount[i], new { @id = "CNTaxableAmount_" + @Model.ConsolidatorChargeDatatable.Rows[i]["InvoiceConsolidatorChargeID"] + "_" + @Model.ConsolidatorChargeDatatable.Rows[i]["TypeName"], @name = "CNTaxableAmount", @class = "form-control", @onchange = "TotalCNTaxableAmount(" + @Model.ConsolidatorChargeDatatable.Rows[i]["InvoiceConsolidatorChargeID"] + @",'" + @Model.ConsolidatorChargeDatatable.Rows[i]["TypeName"] + "')", @onkeypress = "return isNumberWithTwoDecimal(event,'" + "CNTaxableAmount_" + @Model.ConsolidatorChargeDatatable.Rows[i]["InvoiceConsolidatorChargeID"] + "_" + @Model.ConsolidatorChargeDatatable.Rows[i]["TypeName"] + "')", @readonly = true })</td>
+
+                                                <td>
+                                                    <span id="@string.Format("CNGSTAmount_{0}_{1}", Model.ConsolidatorChargeDatatable.Rows[i]["InvoiceConsolidatorChargeID"], Model.ConsolidatorChargeDatatable.Rows[i]["TypeName"])">@Model.MySubDatatable.Rows[i]["GSTAmount"]</span>
+                                                    @Html.HiddenFor(Model => Model.CNGSTAmount[i], new { @id = "hdnCNGSTAmount_" + @Model.ConsolidatorChargeDatatable.Rows[i]["InvoiceConsolidatorChargeID"] + "_" + Model.ConsolidatorChargeDatatable.Rows[i]["TypeName"] })
+                                                </td>
+
+                                                <td>
+                                                    <span id="@string.Format("CNTotalAmount_{0}_{1}", Model.ConsolidatorChargeDatatable.Rows[i]["InvoiceConsolidatorChargeID"], Model.ConsolidatorChargeDatatable.Rows[i]["TypeName"])">@Model.MySubDatatable.Rows[i]["TotalAmount"]</span>
+                                                    @Html.HiddenFor(Model => Model.CNTotalAmount[i], new { @id = "hdnCNTotalAmount_" + @Model.ConsolidatorChargeDatatable.Rows[i]["InvoiceConsolidatorChargeID"] + "_" + Model.ConsolidatorChargeDatatable.Rows[i]["TypeName"] })
+                                                </td>
+                                            }
+
+                                        </tr>
+                                    }
+                                }
+                                <input type="hidden" id="ConsolidatorChargeDatatableRow" name="ConsolidatorChargeDatatableRow" value="@ConsolidatorChargeDatatableRow" />
+                                <input type="hidden" id="tblTypeName" name="tblTypeName" value="@tblTypeName" />
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-body">
+                    <div class="box-body row">
+                        <div class="table-responsive">
+                            <table id="example4" class="table-bordered table-hover " style="float:right ;margin-left:2%">
+                                <tbody>
+                                    <tr class="text-right">
+                                        <td><b> Credit Not Amount :</b></td>
+                                        <td><span id="FinalCreditNotAmount"></span></td>
+                                    </tr>
+                                    <tr class="text-right">
+                                        <td><b> GST Amount :</b></td>
+                                        <td><span id="FinalGSTAmount"></span></td>
+                                    </tr>
+                                    <tr class="text-right">
+                                        <td><b> Total Amount :</b></td>
+                                        <td><span id="FinalTotalAmount"></span></td>
+                                    </tr>
+                                    <tr class="text-right">
+                                        <td><b> Round Amount :</b></td>
+                                        <td><span id="FinalRoundAmount"></span></td>
+                                    </tr>
+                                    <tr class="text-right">
+                                        <td><b> Net Amount :</b></td>
+                                        <td><span id="FinalNetAmount"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/CreditNote.js")"></script>

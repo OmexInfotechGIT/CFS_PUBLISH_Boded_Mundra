@@ -1,0 +1,118 @@
+﻿@model CFS.Models.MstrVesselOnPort
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Vessel On Port";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Vessel On Port";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrVesselOnPort","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrVesselOnPort", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "MstrVesselOnPort", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+                        @Html.HiddenFor(Model => Model.MstrVesselOnPortID)
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.VCNNo, new { @for = "txtVCNNo" })
+                                    <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.VCNNo, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.VCNNo, new { @id = "txtVCNNo", @name = "txtVCNNo", @onkeypress = "return isonlynumber(event);", @class = "form-control", @placeholder = "Enter VCN No" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.VesselName, new { @for = "txtVesselName" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.VesselID, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.VesselName, new { @id = "txtVesselName", @name = "txtVesselName", @class = "form-control", @placeholder = "Enter Vessel Name" })
+                                    @Html.HiddenFor(Model => Model.VesselID)
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.VOYNo, new { @for = "txtVOYNo" })
+                                    @Html.TextBoxFor(Model => Model.VOYNo, new { @id = "txtVOYNo", @name = "txtVOYNo", @class = "form-control", @placeholder = "Enter VOY No" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.DateOfCutOff, new { @for = "dtpDateOfCutOff" })
+                                    <div class="input-group">
+                                        @Html.TextBoxFor(Model => Model.DateOfCutOff, new { @id = "dtpDateOfCutOff", @name = "dtpDateOfCutOff", @class = "form-control DateTimePicker", @placeholder = "Enter Date Of Cut Off"})
+                                        <span class="input-group-addon" onclick="getElementById('dtpDateOfCutOff').focus()"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+
+
+                                </div>
+                            </div>
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.PortName, new { @for = "txtPortName" }) <span class="text-red">*</span>
+                                    @Html.ValidationMessageFor(Model => Model.PortID, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.PortName, new { @id = "txtPortName", @name = "txtPortName", @class = "form-control", @placeholder = "Enter Port Name" })
+                                    @Html.HiddenFor(Model => Model.PortID)
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Remark, new { @for = "txtRemark" })
+                                    @Html.TextBoxFor(Model => Model.Remark, new { @id = "txtRemark", @name = "txtRemark", @class = "form-control", @placeholder = "Enter Remarks" })
+                                </div>
+                                <br />
+                                <div class="form-group">
+                                    @Html.CheckBoxFor(Model => Model.IsActive, new { @class = "form-control" })
+                                    @Html.Label("IsActive") @Html.ValidationMessageFor(Model => Model.IsActive, String.Empty, new { @class = "help-inline text-red" })
+                                </div>
+                                <div class="form-group" id="dvInActiveReason">
+                                    @Html.LabelFor(Model => Model.InActiveReason, new { @for = "InActiveReason" })
+                                    @Html.ValidationMessageFor(Model => Model.InActiveReason, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.InActiveReason, new { @class = "form-control", @placeholder = "Enter InActivate Reason" })
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrVesselOnPort","Index")" class="btn btn-danger">Cancel</a>*@
+                                <a href="@Url.Action("Index", "MstrVesselOnPort", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrVesselOnPort.js")"></script>
+

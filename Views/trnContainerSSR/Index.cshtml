@@ -1,0 +1,127 @@
+﻿@model CFS.Models.trnContainerSSR
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.Title = "Container SSR List";
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+    string SPType = "";
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a href="@Url.Action("Action", "trnContainerSSR", new { doaction = "add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Container SSR"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div style="overflow-x:scroll">
+                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerSSR", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "SSRWONo", SortOrder = (Model.pagger.SortColumn.ToLower() == "ssrwono" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "ssrwono" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>SSR WO No </a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerSSR", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "CreatedDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "createddate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "createddate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>SSR WO Date </a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerSSR", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "trnDocumentNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "trndocumentno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "trndocumentno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>NOC No </a>
+                                    </th>                                    
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerSSR", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "SSRNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "ssrno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "ssrno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>  Manual SSRNo </a>
+                                    </th>
+                                    <th class="freezeLastColumn">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@Model.MyDatatable.Rows[i]["SSRPrefix"]@Model.MyDatatable.Rows[i]["SSRWONo"]</td>
+                                        <td>@Convert.ToDateTime(Model.MyDatatable.Rows[i]["CreatedDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat)</td>
+                                        <td>@Model.MyDatatable.Rows[i]["trnDocumentNo"]</td>                                        
+                                        <td>@Model.MyDatatable.Rows[i]["SSRNo"]</td>
+                                        <td class="freezeLastColumnwithWhite">
+                                            @if (ViewBag.gblBlnEdit && Convert.ToString(Model.MyDatatable.Rows[i]["HandlingInvoiceNo"]) == "")
+                                            {
+                                                <a href="@Url.Action("Action", "trnContainerSSR", new { id = Model.MyDatatable.Rows[i]["trnContainerSSRID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true, @InBOENoID = Model.MyDatatable.Rows[i]["trnDocumentLotDetailsID"].ToString()+Model.MyDatatable.Rows[i]["trnExportDocumentDeclarationLotDetailsID"].ToString(),  @mode = "Action" , @IsFinished = Model.MyDatatable.Rows[i]["IsFinished"], @trnDocumentNo = Model.MyDatatable.Rows[i]["trnDocumentNoAndCont"] })"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                            }
+                                            @if (ViewBag.gblBlnView)
+                                            {
+                                                <a href="@Url.Action("view", "trnContainerSSR", new { id = Model.MyDatatable.Rows[i]["trnContainerSSRID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true, @InBOENoID = Model.MyDatatable.Rows[i]["trnDocumentLotDetailsID"].ToString()+Model.MyDatatable.Rows[i]["trnExportDocumentDeclarationLotDetailsID"].ToString(),  @mode = "View", @trnDocumentNo = Model.MyDatatable.Rows[i]["trnDocumentNoAndCont"]})"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                            }
+                                            <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('trnContainerSSR','@Model.MyDatatable.Rows[i]["trnContainerSSRID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                            @if (ViewBag.gblBlnDelete && Convert.ToString(Model.MyDatatable.Rows[i]["HandlingInvoiceNo"]) == "")
+                                            {
+                                                <a><i data-toggle="modal" data-target="#DeleteContainerSSR" onclick="DeleteRemarks('trnContainerSSR','@Model.MyDatatable.Rows[i]["trnContainerSSRID"]')" title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                            }
+                                            <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", "trnContainerSSR", new { id = Model.MyDatatable.Rows[i]["trnContainerSSRID"], trnDocumentID = Model.MyDatatable.Rows[i]["trnDocumentID"], format = "pdf" })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    @Html.Partial("_pagination")
+                </div>
+            </div>
+            <div class="modal fade in" id="DeleteContainerSSR" style="display: none; padding-right: 17px;">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            <h4 class="modal-title">Delete Container SSR</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row" style="padding:15px;">
+                                @Html.HiddenFor(Model => Model.trnContainerSSRID, new { @id = "trnContainerSSRID", @name = "trnContainerSSRID" })
+                                <div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.DeleteRemarks, new { @for = "DeleteRemarks" })  @Html.ValidationMessageFor(Model => Model.DeleteRemarks, String.Empty, new { @id = "spn_DeleteRemarks", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.DeleteRemarks, new { @id = "DeleteRemarks", @name = "DeleteRemarks", @class = "form-control", @placeholder = "Enter Delete Remarks" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-danger pull-right margin-r-5" onclick="DeleteContainerSSR();" id="delete">Delete</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+        </div>
+    </div>
+</section>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnContainerSSR.js")"></script>

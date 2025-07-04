@@ -1,0 +1,153 @@
+﻿@model CFS.Models.trnEmptyTruckOutWO
+@{
+    ViewBag.Title = "View Empty Truck Out";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+@using (Html.BeginForm("Action", CFS.Com.ClsCommon.Controller(), FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+{
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;"> Empty Truck Out No. : @Model.trnEmptyTruckOutWONo</span>&nbsp;
+                                <span class="badge bg-light-blue" style="font-size:15px;"> Datetime. : @Model.trnEmptyTruckOutWODate</span>&nbsp;
+                                <span class="badge bg-light-blue" style="font-size:15px;"> User. : @Model.User</span>
+                            </div>
+                        </div>
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                <a href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.CycleName) : <span>@Model.CycleName</span>
+                                @Html.HiddenFor(Model => Model.IsFinished, new { @id = "IsFinished", @name = "IsFinished" })
+                                <input type="hidden" id="trnEmptyTruckOutWOID" name="trnEmptyTruckOutWOID" value="@Model.trnEmptyTruckOutWOID" />
+                                @Html.HiddenFor(Model => Model.trnEmptyTruckOutWOContainer.trnEmptyTruckOutWOContainerID, new { @id = "trnEmptyTruckOutWOContainerID", @name = "trnEmptyTruckOutWOContainerID" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.User) : <span>@Model.User</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.TransportationType) : <span>@Model.TransportationType</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Transporter) : <span>@Model.Transporter</span>
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.TruckNo) : <span>@Model.TruckNo</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Driver, new { @for = "Driver" })   : <span>@Model.Driver</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.LicenceNo, new { @for = "LicenceNo" })   : <span>@Model.LicenceNo</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.MobileNo, new { @for = "MobileNo" })   : <span>@Model.MobileNo</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Address, new { @for = "Address" })   : <span>@Model.Address</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Containerplacedontruck, new { @for = "Containerplacedontruck" }) : <span>@(Convert.ToBoolean(Model.Containerplacedontruck) ? "Yes" : "No")</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" }) : <span>@Model.Remarks</span>
+                            </div>
+                        </div>                        
+                    </div>
+                    <div class="box-body">
+                        @if (Model.Containerplacedontruck)
+                        {
+                            <div id="dvWeighmentDetails">
+                                <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Cont No</th>
+                                            <th>Size</th>
+                                            <th>Type</th>
+                                            <th>Cargo Type</th>
+                                            <th>Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblContainerDetails"></tbody>
+                                </table>
+                            </div>
+                         }
+                    </div>
+                </div>
+                @Html.Partial("_DOCDetailsCard")
+            </div>
+        </div>
+    </section>
+}
+    <script>
+        
+    var VCNDeatails = '@Model.HtmlVCNDeatails';
+    var IsSearch = '@Model.IsSearch.ToString().ToLower()';
+    function changestepValue(tabNo) {
+        $("#DocumentGWTab").val(tabNo);
+        if (tabNo != "1") {
+            if (tabNo == "5") {
+                $("#IsChangeStep").val(2);
+            }
+        }
+    }
+    </script>
+    @if (((Model != null && Model.doaction.ToLower() == "edit") || Model.trnEmptyTruckOutWOID > 0))
+    {
+        <script>
+            $(".isDisplayOnlyinEdit").show();
+        </script>
+    }
+    else
+    {
+        <script>
+            $(".isDisplayOnlyinEdit").hide();
+        </script>
+    }
+    <script> 
+        setTimeout(function () {
+            $(".trnviewAction").hide();
+        }, 1000);
+    </script>
+    <script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnEmptyTruckOutWO.js")"></script>

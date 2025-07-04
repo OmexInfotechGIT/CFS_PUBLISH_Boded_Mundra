@@ -1,0 +1,339 @@
+﻿@model CFS.Models.ExcessCargoRemoval
+    @using System.Globalization;
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    var IsEdit = false;
+    if (Model.doaction == "edit")
+    {
+        IsEdit = true;
+        ViewBag.Title = "Update Repacking of cargo";
+        if (!ViewBag.gblBlnEdit && !ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Excess Cargo Removal";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    System.Text.StringBuilder StrAutocomplete = new System.Text.StringBuilder();
+}
+
+<!-- Main content -->
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+@using (Html.BeginForm("Action", CFS.Com.ClsCommon.Controller(), FormMethod.Post))
+{
+    @Html.HiddenFor(Model => Model.page)
+    @Html.HiddenFor(Model => Model.ExcessCargoRemovalID)
+    @Html.HiddenFor(Model => Model.doaction)
+    @Html.HiddenFor(Model => Model.filter)
+    <section class="content">
+        <div class="row">
+            <div class="box">
+                <div class="box-body">
+
+                    @if (Model != null && Model.doaction == "edit")
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">Excess Cargo Removal Ref No : @Model.ExcessCargoRemovalPrefix@Model.ExcessCargoRemovalNo</span>
+                                <span class="badge bg-light-blue" style="font-size:15px;">Excess Cargo Removal Ref Date : @Model.CreatedDate</span>
+                                <span class="badge bg-light-blue" style="font-size:15px;">User : @Model.UserName</span>
+                            </div>
+                        </div>
+                    }
+                    @Html.HiddenFor(Model => Model.trnSpaceCertificateGWID, new { @id = "trnSpaceCertificateGWID", @name = "trnSpaceCertificateGWID" })
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <a href="@Url.Action("Index","ExcessCargoRemoval", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="box-body">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.SpaceCertificateNo)<span class="text-red">*</span>
+                                    @if (Model.IsSearch)
+                                    {
+                                        @Html.TextBoxFor(Model => Model.SpaceCertificateNo, new { @id = "SpaceCertificateNo", @name = "SpaceCertificateNo", @class = "form-control", @placeholder = "SpaceCertificateNo", @readonly = "true" })
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBoxFor(Model => Model.SpaceCertificateNo, new { @id = "SpaceCertificateNo", @name = "SpaceCertificateNo", @class = "form-control", @placeholder = "SpaceCertificateNo" })
+                                    }
+                                    @Html.HiddenFor(Model => Model.trnSpaceCertificateGWID, new { @id = "trnSpaceCertificateGWID", @name = "trnSpaceCertificateGWID" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                @Html.LabelFor(Model => Model.BatchNo, new { @for = "BatchNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.BatchID, String.Empty, new { @id = "spn_BatchID", @class = "help-inline text-red" })
+                                @if (Model.IsSearch)
+                                {
+                                    @Html.TextBoxFor(Model => Model.BatchNo, new { @id = "BatchNo", @name = "BatchNo", @class = "form-control", @placeholder = "Enter Batch", @readonly = "true" })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(Model => Model.BatchNo, new { @id = "BatchNo", @name = "BatchNo", @class = "form-control", @placeholder = "Enter Batch" })
+                                }
+                                @Html.HiddenFor(Model => Model.BatchID, new { @id = "BatchID", @name = "BatchID" })
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.ReasonRemoval, new { @for = "ReasonRemoval" }) <span class="text-red"> *</span> @Html.ValidationMessageFor(Model => Model.ReasonRemoval, String.Empty, new { @id = "spn_WHVCategory", @class = "help-inline text-red" })
+                                    @Html.DropDownListFor(Model => Model.ReasonRemoval, Model.ReasonRemovalList, new { @id = "ReasonRemoval", @name = "ReasonRemoval", @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.ApprovalMailDate, new { @for = "ApprovalMailDate" })<span class="text-red"> *</span>  @Html.ValidationMessageFor(Model => Model.ApprovalMailDate, String.Empty, new { @id = "spn_ApprovalMailDate", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.ApprovalMailDate, new { @id = "ApprovalMailDate", @name = "ApprovalMailDate", @class = "form-control DatePicker", @placeholder = "Select Approval Mail Date" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.ApprovedBy)<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.ApprovedBy, String.Empty, new { @class = "help-inline text-red", @id = "spn_ApprovedBy" })
+                                    @Html.TextBoxFor(Model => Model.ApprovedBy, new { @id = "ApprovedBy", @name = "ApprovedBy", @class = "form-control", @placeholder = "Select/Enter Approved By" })
+                                    @Html.HiddenFor(Model => Model.ApprovedById, new { @id = "ApprovedById", @name = "ApprovedById" })
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="box-body">
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.CheckedBy)
+
+                                    @if (Model != null && Model.doaction == "edit" && Model.CheckedByCheck)
+                                    {
+                                        @Html.CheckBoxFor(Model => Model.CheckedByCheck, new { @id = "CheckedByCheck", @class = "form-control", @disabled = "disabled" })
+                                        @Html.HiddenFor(Model => Model.hdnCheckedByCheck, new { @id = "hdnCheckedByCheck", @name = "hdnCheckedByCheck" })
+                                    }
+                                    else
+                                    {
+                                        @Html.CheckBoxFor(Model => Model.CheckedByCheck, new { @id = "CheckedByCheck", @class = "form-control" })
+                                    }
+
+                                    @Html.TextBoxFor(Model => Model.CheckedBy, new { @id = "CheckedBy", @name = "CheckedBy", @class = "form-control", @placeholder = "Select/Enter Checked By" })
+                                    @Html.HiddenFor(Model => Model.CheckedById, new { @id = "CheckedById", @name = "CheckedById" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.CheckedByRemarks)
+                                    @Html.TextBoxFor(Model => Model.CheckedByRemarks, new { @id = "CheckedByRemarks", @name = "CheckedByRemarks", @class = "form-control", @placeholder = "Enter Remarks" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.AcknowledgedBy)
+
+
+                                    @if (Model != null && Model.doaction == "edit" && Model.AcknowledgedByCheck)
+                                    {
+                                        @Html.CheckBoxFor(Model => Model.AcknowledgedByCheck, new { @id = "AcknowledgedByCheck", @class = "form-control", @disabled = "disabled" })
+                                        @Html.HiddenFor(Model => Model.hdnAcknowledgedByCheck, new { @id = "hdnAcknowledgedByCheck", @name = "hdnAcknowledgedByCheck" })
+                                    }
+                                    else
+                                    {
+                                        @Html.CheckBoxFor(Model => Model.AcknowledgedByCheck, new { @id = "AcknowledgedByCheck", @class = "form-control" })
+                                    }
+
+                                    @Html.TextBoxFor(Model => Model.AcknowledgedBy, new { @id = "AcknowledgedBy", @name = "AcknowledgedBy", @class = "form-control", @placeholder = "Select/Enter Acknowledged By" })
+                                    @Html.HiddenFor(Model => Model.AcknowledgedById, new { @id = "AcknowledgedById", @name = "AcknowledgedById" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.AcknowledgedRemarks)
+                                    @Html.TextBoxFor(Model => Model.AcknowledgedRemarks, new { @id = "AcknowledgedRemarks", @name = "AcknowledgedRemarks", @class = "form-control", @placeholder = "Enter Remarks" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="box-body">
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.CRUpdatedBy)<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.CRUpdatedBy, String.Empty, new { @class = "help-inline text-red", @id = "spn_CRUpdatedBy" })
+                                    @Html.TextBoxFor(Model => Model.CRUpdatedBy, new { @id = "CRUpdatedBy", @name = "CRUpdatedBy", @class = "form-control", @placeholder = "Select/Enter Updated By" })
+                                    @Html.HiddenFor(Model => Model.CRUpdatedById, new { @id = "CRUpdatedById", @name = "CRUpdatedById" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.MainRemarks)
+                                    @Html.TextBoxFor(Model => Model.MainRemarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control", @placeholder = "Enter Remarks" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="box-body">
+
+
+                            @if (Model.doaction == "add")
+                            {
+                                <div class="col-md-6 pull-right">
+                                    <div class="form-group">
+                                        <br />
+                                        <a href="@Url.Action("index", "ExcessCargoRemoval")" style="margin-right: 5px;" class="btn btn-danger pull-right">Cancel</a>
+                                        <button type="submit" style="margin-right: 5px;" class="btn btn-primary pull-right" id="SaveDocument" onclick="return validateModel()"> Continue </button>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        @if (Model.doaction == "edit")
+        {
+            <div class="row">
+
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h4><b>Document Detail </b></h4>
+
+                    </div>
+                    <div class="box-body">
+                        @if (Model.doaction == "edit" && CFS.Com.ClsCommon.NocDatatable.Rows.Count > 0)
+                        {
+                            <div class="col-md-12" style="overflow:scroll;">
+                                <table id="NOC-detail" style="width:100%; white-space:nowrap;" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>LOT NO</th>
+                                            <th>Shiiping Bill No./BOE No.</th>
+                                            <th>Shiping Bill Date/BOE Date</th>
+                                            <th>Invoice No.</th>
+                                            <th>Invoice Date</th>
+                                            <th>CHA/BROKER</th>
+                                            <th>IMPORTER/PARTY</th>
+                                            <th>BULK/NB STATUS</th>
+                                            <th>Cargo Desc</th>
+                                            <th>PACKAGE TYPE</th>
+
+                                            <th>Balance Packages</th>
+                                            <th>Balance Pieces</th>
+                                            <th>Balance Weight</th>
+
+                                            <th>NO OF PKGS</th>
+                                            <th>NO.OF PIECES</th>
+                                            <th>WEIGHT (KGS)</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < CFS.Com.ClsCommon.NocDatatable.Rows.Count; i++)
+                                        {
+                                            Model.hdnBALPKGS = new decimal[(CFS.Com.ClsCommon.NocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.NocDatatable.Rows.Count % 10)))];
+                                            Model.hdnBALPIECES = new decimal[(CFS.Com.ClsCommon.NocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.NocDatatable.Rows.Count % 10)))];
+                                            Model.hdnBALWEIGHT = new decimal[(CFS.Com.ClsCommon.NocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.NocDatatable.Rows.Count % 10)))];
+                                            Model.RemovalPKGS = new decimal[(CFS.Com.ClsCommon.NocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.NocDatatable.Rows.Count % 10)))];
+                                            Model.RemovalPIECES = new decimal[(CFS.Com.ClsCommon.NocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.NocDatatable.Rows.Count % 10)))];
+                                            Model.RemovalWEIGHT = new decimal[(CFS.Com.ClsCommon.NocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.NocDatatable.Rows.Count % 10)))];
+                                            Model.hdntrnDocumentGWLotDetailsID = new decimal[(CFS.Com.ClsCommon.NocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.NocDatatable.Rows.Count % 10)))];
+                                            Model.ExcessCargoRemovalDetailsID = new int[(CFS.Com.ClsCommon.NocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.NocDatatable.Rows.Count % 10)))];
+
+                                            Model.hdnBALPKGS[i] = Convert.ToDecimal(CFS.Com.ClsCommon.NocDatatable.Rows[i]["BALPKG"]);
+                                            Model.hdnBALPIECES[i] = Convert.ToDecimal(CFS.Com.ClsCommon.NocDatatable.Rows[i]["BALPCS"]);
+                                            Model.hdnBALWEIGHT[i] = Convert.ToDecimal(CFS.Com.ClsCommon.NocDatatable.Rows[i]["BALWGT"]);
+                                            Model.hdntrnDocumentGWLotDetailsID[i] = Convert.ToInt32(CFS.Com.ClsCommon.NocDatatable.Rows[i]["trnDocumentGWLotDetailsID"]);
+                                            Model.ExcessCargoRemovalDetailsID[i] = Convert.ToInt32(CFS.Com.ClsCommon.NocDatatable.Rows[i]["ExcessCargoRemovalDetailsID"]);
+                                            Model.RemovalPKGS[i] = Convert.ToDecimal(CFS.Com.ClsCommon.NocDatatable.Rows[i]["RemovalPKGS"]);
+                                            Model.RemovalPIECES[i] = Convert.ToDecimal(CFS.Com.ClsCommon.NocDatatable.Rows[i]["RemovalPIECES"]);
+                                            Model.RemovalWEIGHT[i] = Convert.ToDecimal(CFS.Com.ClsCommon.NocDatatable.Rows[i]["RemovalWEIGHT"]);
+
+                                            <tr>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["LotNo"]</td>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["ShiipingBillNo"]</td>
+                                                @if (CFS.Com.ClsCommon.NocDatatable.Rows[i]["ShipingBillDate"] != null && CFS.Com.ClsCommon.NocDatatable.Rows[i]["ShipingBillDate"].ToString() != "")
+                                                {
+                                                    <td>@(Convert.ToDateTime(CFS.Com.ClsCommon.NocDatatable.Rows[i]["ShipingBillDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture))</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["InvoiceNumber"]</td>
+                                                @if (CFS.Com.ClsCommon.NocDatatable.Rows[i]["InvoiceDate"] != null && CFS.Com.ClsCommon.NocDatatable.Rows[i]["InvoiceDate"].ToString() != "")
+                                                {
+                                                    <td>@(Convert.ToDateTime(CFS.Com.ClsCommon.NocDatatable.Rows[i]["InvoiceDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture))</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["CHAName"]</td>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["ImporterName"]</td>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["BULKSTATUS"]</td>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["CARGODESC"]</td>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["PACKAGETYPE"]</td>
+                                                <td style="display:none;">@Html.HiddenFor(Model => Model.hdnBALPKGS[i], new { @id = "hdnBALPKGS_" + i, @style = "width: 50px;background:#eee", @readonly = "true" }) </td>
+                                                <td style="display:none;">@Html.HiddenFor(Model => Model.hdnBALPIECES[i], new { @id = "hdnBALPIECES_" + i, @style = "width: 50px;background:#eee", @readonly = "true" }) </td>
+                                                <td style="display:none;">@Html.HiddenFor(Model => Model.hdnBALWEIGHT[i], new { @id = "hdnBALWEIGHT_" + i, @style = "width: 50px;background:#eee", @readonly = "true" }) </td>
+                                                <td style="display:none;">@Html.HiddenFor(Model => Model.hdntrnDocumentGWLotDetailsID[i], new { @id = "hdntrnDocumentGWLotDetailsID_" + i, @style = "width: 50px;background:#eee", @readonly = "true" }) </td>
+                                                <td style="display:none;">@Html.HiddenFor(Model => Model.ExcessCargoRemovalDetailsID[i], new { @id = "ExcessCargoRemovalDetailsID_" + i, @style = "width: 50px;background:#eee", @readonly = "true" }) </td>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["BALPKG"]</td>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["BALPCS"]</td>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["BALWGT"]</td>
+
+                                                <td align="right">@Html.TextBoxFor(Model => Model.RemovalPKGS[i], new { @id = "RemovalPKGS_" + i, @placeholder = "RemovalPKGS", @style = "width: 50px;", @onkeypress = "return isNumberWithTwoDecimal(event,'RemovalPKGS" + i + "')", @onblur = "checkitems('RemovalPKGS','" + i + "')" })</td>
+                                                <td align="right">@Html.TextBoxFor(Model => Model.RemovalPIECES[i], new { @id = "RemovalPIECES_" + i, @placeholder = "RemovalPIECES", @style = "width: 50px;", @onkeypress = "return isNumberWithTwoDecimal(event,'RemovalPIECES" + i + "')", @onblur = "checkitems('RemovalPIECES','" + i + "')" })</td>
+                                                <td align="right">@Html.TextBoxFor(Model => Model.RemovalWEIGHT[i], new { @id = "RemovalWEIGHT_" + i, @placeholder = "RemovalWEIGHT", @style = "width: 50px;", @onkeypress = "return isNumberWithTwoDecimal(event,'RemovalWEIGHT" + i + "')", @onblur = "checkitems('RemovalWEIGHT','" + i + "')" })</td>
+
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+
+                    @if (Model.doaction == "edit")
+                    {
+
+                        <div class="col-md-12" style="margin-top:1rem !important">
+                            <div class="pull-right">
+                                <button type="submit" class="btn btn-primary" onclick="return validateModelCargoRapackingDetails()">Save</button>
+                                <a href="@Url.Action("Index", "ExcessCargoRemoval", new { pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        }
+    </section>
+}
+<script>
+    var doaction = '@Model.doaction';
+    var IsView = false;
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/ExcessCargoRemoval.js")"></script>

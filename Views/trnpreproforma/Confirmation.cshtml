@@ -1,0 +1,478 @@
+﻿@model CFS.Models.trnpreproforma
+@{
+    bool isEdit = true;
+    ViewBag.Title = "Confirm Pre-Proforma";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    if (!ViewBag.gblBlnUnapprove && !ViewBag.gblBlnApprove)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+
+@using (Html.BeginForm("Action", "trnpreproforma", FormMethod.Post))
+{
+    <section class="content">
+        @Html.HiddenFor(Model => Model.trnpreproformaID)
+        @Html.HiddenFor(Model => Model.doaction)
+        @Html.HiddenFor(Model => Model.isFinished)
+        @Html.HiddenFor(Model => Model.isApproved)
+        <div class="row">
+            <div class="box">
+                <div class="box-header with-border" style="cursor:pointer">
+                    <div class="pull-left">
+                        <div style="display: inline-flex">
+                            <h4>
+                                <b>
+                                    Basic Details ?
+
+                                    @if (isEdit && Model.isFinished)
+                                    {
+                                        <span class="badge bg-light-blue" style="font-size:15px;">Pre-Proforma Invoice NO : @CFS.Com.ClsCommon.AddhtmlSpace(3)@Model.trnPreProformaPrefix@Model.trnPreProformaNo</span>
+                                    }
+                                </b>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @if (Convert.ToBoolean(ViewBag.gblBlnApprove) && Model.isApproved == false)
+                            {
+                                <a class="btn btn-block btn-primary" data-toggle="modal" data-target="#myModalConfirmation">Click to Approve</a>
+                            }
+                            else if (Convert.ToBoolean(ViewBag.gblBlnUnapprove) && Model.isApproved)
+                            {
+                                <a class="btn btn-block btn-primary" data-toggle="modal" data-target="#myModalConfirmation">Click to UnApprove</a>
+                            }
+                            @CFS.Com.ClsCommon.AddhtmlSpace(5)
+                            <a href="@Url.Action("Index","trnpreproforma")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+
+                <div class="box-body">
+
+                    <div class="col-md-4">
+
+                        @Html.LabelFor(Model => Model.ImporterExporter, new { @id = "lblImporterExporter", @for = "ImporterExporter" })  : <span>@Model.ImporterExporter</span>
+                        @Html.HiddenFor(Model => Model.ImporterExporterID, new { @id = "ImporterExporterID", @name = "ImporterExporterID" })
+
+                    </div>
+                    <div class="col-md-4">
+
+                        @Html.LabelFor(Model => Model.CHAName, new { @for = "CHAName" }) : <span>@Model.CHAName</span>
+                        @Html.HiddenFor(Model => Model.CHAID, new { @id = "CHAID", @name = "CHAID" })
+
+                    </div>
+                    <div class="col-md-4">
+
+                        @Html.LabelFor(Model => Model.ForwarderName, new { @for = "ForwarderName" }) : <span>@Model.ForwarderName</span>
+                        @Html.HiddenFor(Model => Model.ForwarderID, new { @id = "ForwarderID", @name = "ForwarderID" })
+
+                    </div>
+                    <div class="col-md-4">
+
+                        @Html.LabelFor(Model => Model.ConsolerName, new { @for = "ConsolerName" }) : <span>@Model.ConsolerName</span>
+                        @Html.HiddenFor(Model => Model.ConsolerID, new { @id = "ConsolerID", @name = "ConsolerID" })
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        @Html.LabelFor(Model => Model.BillToCustomerName, new { @for = "BillToCustomerName" }) : <span>@Model.BillToCustomerName</span>
+                        @Html.HiddenFor(Model => Model.BillToCustomerID, new { @id = "BillToCustomerID", @name = "BillToCustomerID" })
+
+                    </div>
+                    <div class="col-md-4">
+
+                        @Html.LabelFor(Model => Model.BillToCustomerAddress, new { @for = "BillToCustomerAddress" }) : <span>@Model.BillToCustomerAddress</span>
+                        @Html.HiddenFor(Model => Model.BillToCustomerAddressID, new { @id = "BillToCustomerAddressID", @name = "BillToCustomerAddressID" })
+
+                    </div>
+                    <div class="col-md-4">
+
+                        @Html.LabelFor(Model => Model.BillToCustomerGSTNo, new { @for = "BillToCustomerGSTNo" })      <span id="spn_BillToCustomerGSTNo">@Model.BillToCustomerGSTNo</span>
+                        @Html.HiddenFor(Model => Model.BillToCustomerGSTNo, new { @id = "BillToCustomerGSTNo", @name = "BillToCustomerGSTNo" })
+
+                    </div>
+                    <div class="col-md-4">
+
+                        @Html.LabelFor(Model => Model.StateName, new { @for = "state" }) : <span>@Model.StateName</span>
+                        @Html.HiddenFor(Model => Model.StateId, new { @id = "MainStateId" })
+
+                    </div>
+                    <div class="col-md-4">
+
+                        @Html.LabelFor(Model => Model.GSTCustomerTypeName) : <span>@Model.GSTCustomerTypeName</span>
+
+                    </div>
+                    <div class="col-md-4">
+
+                        @Html.LabelFor(Model => Model.BookingType) : <span>@(Convert.ToString(Model.BookingType) == "F" ? "Fixed" : "Flexible")</span>
+
+                    </div>
+                    <div class="col-md-4">
+
+                        @Html.LabelFor(Model => Model.CARGOVALUE, new { @for = "CARGOVALUE" }) : <span>@Model.CARGOVALUE</span>
+
+                    </div>
+                    <div class="col-md-4">
+
+                        @Html.LabelFor(Model => Model.Dutyvalue) : <span>@Model.Dutyvalue</span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        @Html.LabelFor(Model => Model.Remarks) : <span>@Model.Remarks</span>
+
+                    </div>
+                    <div class="col-md-12">
+
+                        @for (int i = 0; i < Model.LSTHandlingTypes.Count; i++)
+                        {
+                            @Html.CheckBoxFor(m => Model.LSTHandlingTypes[i].IsChecked, new { @id = Model.LSTHandlingTypes[i].Text + "_" + Model.LSTHandlingTypes[i].Value, @disabled = "true" }) @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                            @Html.Label(Model.LSTHandlingTypes[i].Text, new { @style = "font-weight: bold", @for = Model.LSTHandlingTypes[i].Text + "_" + Model.LSTHandlingTypes[i].Value })
+                            @Html.HiddenFor(m => Model.LSTHandlingTypes[i].Value) @Html.HiddenFor(m => Model.LSTHandlingTypes[i].Text) @CFS.Com.ClsCommon.AddhtmlSpace(10)
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        @if (Model != null && Model.LSTHandlingTypes[0].IsChecked)
+        {
+            <div class="row">
+                <div class="box">
+                    <div class="box-header with-border" data-widget="collapse">
+                        <h4><b>@Model.LSTHandlingTypes[0].Text </b></h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12" style="overflow-x:scroll">
+                            <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Cont Size</th>
+                                        <th>No of Containers</th>
+                                        <th>Delivery Mode</th>
+                                        <th>Cargo Type </th>
+                                        <th>Bill Commodity </th>
+                                        <th>Sub commodity </th>
+                                        <th>Tarrif Head </th>
+                                        <th>Rate </th>
+                                        <th>Total </th>
+                                        <th>Discount amt </th>
+                                        <th>GST(%) </th>
+                                        <th>Net amount </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ContainerDetails"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (Model != null && Model.LSTHandlingTypes[1].IsChecked)
+        {
+            <div class="row">
+                <div class="box">
+                    <div class="box-header with-border" data-widget="collapse">
+                        <h4><b>@Model.LSTHandlingTypes[1].Text </b></h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12" style="overflow: scroll;">
+                            <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Cargo Type </th>
+                                        <th>Bill Commodity </th>
+                                        <th>Sub commodity </th>
+                                        <th>Tarrif Head </th>
+                                        <th>Package Type </th>
+                                        <th>UOM </th>
+                                        <th>Qty </th>
+                                        <th>Weight </th>
+                                        <th>Rate </th>
+                                        <th>Total </th>
+                                        <th>Discount amt </th>
+                                        <th>GST(%) </th>
+                                        <th>Net amount </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="CargoDetails"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (Model != null && Model.LSTHandlingTypes[2].IsChecked)
+        {
+            <div class="row">
+                <div class="box">
+                    <div class="box-header with-border" data-widget="collapse">
+                        <h4><b>@Model.LSTHandlingTypes[2].Text </b></h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12" style="overflow: scroll;">
+                            <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Cont Size</th>
+                                        <th>No of Containers</th>
+                                        <th>Delivery Mode</th>
+                                        <th>Cargo Type </th>
+                                        <th>Bill Commodity </th>
+                                        <th>Sub-Commodity </th>
+                                        <th>Tarrif Head </th>
+                                        <th>From Date </th>
+                                        <th>Pattern </th>
+                                        <th>Pattern-Time </th>
+                                        <th>End Date </th>
+                                        <th>Rate </th>
+                                        <th>Total </th>
+                                        <th>Discount amt </th>
+                                        <th>GST(%) </th>
+                                        <th>Net amount </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ContainerBasedStorageDetails"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (Model != null && Model.LSTHandlingTypes[3].IsChecked)
+        {
+            <div class="row">
+                <div class="box">
+                    <div class="box-header with-border" data-widget="collapse">
+                        <h4><b>@Model.LSTHandlingTypes[3].Text </b></h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12" style="overflow: scroll;">
+                            <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Cargo Type </th>
+                                        <th>Bill Commodity </th>
+                                        <th>Sub-Commodity </th>
+                                        <th>Tarrif Head </th>
+                                        <th>UOM </th>
+                                        <th>From Date </th>
+                                        <th>Pattern </th>
+                                        <th>Pattern-Time </th>
+                                        <th>End Date </th>
+                                        <th>Area </th>
+                                        <th>Qty </th>
+                                        <th>Weight </th>
+                                        <th>Rate </th>
+                                        <th>Total </th>
+                                        <th>Discount amt </th>
+                                        <th>GST(%) </th>
+                                        <th>Net amount </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="CargoBaseStorageDetails"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (Model != null && Model.LSTHandlingTypes[4].IsChecked)
+        {
+            <div class="row">
+                <div class="box">
+                    <div class="box-header with-border" data-widget="collapse">
+                        <h4><b>@Model.LSTHandlingTypes[4].Text </b></h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12" style="overflow: scroll;">
+                            <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Cargo Type </th>
+                                        <th>Bill Commodity </th>
+                                        <th>Sub-Commodity </th>
+                                        <th>Tarrif Head </th>
+                                        <th>UOM </th>
+                                        <th>From Date </th>
+                                        <th>Pattern </th>
+                                        <th>Pattern-Time </th>
+                                        <th>End Date </th>
+                                        <th>Area </th>
+                                        <th>Rate </th>
+                                        <th>Total </th>
+                                        <th>Discount amt </th>
+                                        <th>GST(%) </th>
+                                        <th>Net amount </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ReserveAreaStorageDetails"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (Model != null && Model.LSTHandlingTypes[5].IsChecked)
+        {
+            <div class="row">
+                <div class="box">
+                    <div class="box-header with-border" data-widget="collapse">
+                        <h4><b>@Model.LSTHandlingTypes[5].Text </b></h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12" style="overflow-x:scroll">
+                            <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Cont Size</th>
+                                        <th>No of Containers</th>
+                                        <th>Cargo Type </th>
+                                        <th>Bill Commodity </th>
+                                        <th>Sub Commodity </th>
+                                        <th>Tarrif Head </th>
+                                        <th>From Date </th>
+                                        <th>End Date </th>
+                                        <th>Total </th>
+                                        <th>Discount amt </th>
+                                        <th>GST(%) </th>
+                                        <th>Net amount </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ContainerSlabwiseStorageDetails"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (Model != null && Model.LSTHandlingTypes[6].IsChecked)
+        {
+            <div class="row">
+                <div class="box">
+                    <div class="box-header with-border" data-widget="collapse">
+                        <h4><b>@Model.LSTHandlingTypes[6].Text </b></h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12" style="overflow: scroll;">
+                            <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Cargo Type </th>
+                                        <th>Bill Commodity </th>
+                                        <th>Sub-Commodity </th>
+                                        <th>Tarrif Head </th>
+                                        <th>UOM </th>
+                                        <th>From Date </th>
+                                        <th>Pattern </th>
+                                        <th>Pattern-Time </th>
+                                        <th>End Date </th>
+                                        <th>Area </th>
+                                        <th>Qty </th>
+                                        <th>Weight </th>
+                                        <th>Total </th>
+                                        <th>Discount amt </th>
+                                        <th>GST(%) </th>
+                                        <th>Net amount </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="CargoSlabwiseStorageDetails"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (Model != null && isEdit)
+        {
+            <div class="row">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h4>
+                            <b>Consolidated Charges </b>
+                            <div class="pull-right ActionID">
+                                <button type="button" class="btn btn-primary" onclick="openOtherterrif()">Add</button>
+                            </div>
+                        </h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12" style="overflow-x:scroll">
+                            <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Tarrif Head </th>
+                                        <th>Taxable Amount </th>
+                                        <th>Discount Amt </th>
+                                        <th>Net Taxable Amount </th>
+                                        <th>GST(%) </th>
+                                        <th>Net amount </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ConsolidatedChargesDetails"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="modal fade in" id="AddOtherTarrifHead" style="display: none; padding-right: 17px;">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title">Add Other Tarrif Head</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12" style="overflow: scroll;">
+                                <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Tarrif Head </th>
+                                            <th>Qty </th>
+                                            <th>Rate </th>
+                                            <th>Discount </th>
+                                            <th>GST (%) </th>
+                                            <th>Total </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="OtherTerrifDetailsDetails"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    </section>
+}
+<script>
+    var doaction = '@Model.doaction';
+    var ImporterCode = '@CFS.Com.ClsCommon.GetSettingValue("IMPTR", "1")';
+    var ExporterCode = '@CFS.Com.ClsCommon.GetSettingValue("EXPTR", "2")';
+    var DomesticCode = '@CFS.Com.ClsCommon.GetSettingValue("DMESC", "3")';
+	var KGSCode = '@CFS.Com.ClsCommon.GetSettingValue("UOMKG", "1")';
+    var PERUNITCode = '@CFS.Com.ClsCommon.GetSettingValue("UOMPU", "2")';
+    var SQRFEETCode = '@CFS.Com.ClsCommon.GetSettingValue("UOMSF", "3")';
+    var SQRMTRCode = '@CFS.Com.ClsCommon.GetSettingValue("UOMSM", "4")';
+</script>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnpreproforma.js")"></script>

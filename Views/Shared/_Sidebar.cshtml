@@ -1,0 +1,189 @@
+﻿@using WebHelpers.Mvc5
+ 
+<style >
+    /* width */
+    ::-webkit-scrollbar {
+        width: 5px;
+        height:10px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background-color: transparent;
+         cursor:pointer;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3c8dbc;
+            cursor: pointer;
+        }
+</style>
+ 
+<aside class="main-sidebar">
+    <section class="sidebar" style="overflow-y: scroll;" >
+        @* BEGIN Search *@
+        @*<form action="#" method="get" class="sidebar-form">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search...">
+                    <span class="input-group-btn">
+                        <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </span>
+                </div>
+            </form>*@
+        @* END Search *@
+        @* BEGIN Menu *@
+        <ul class="sidebar-menu" id="dvmn" data-widget="tree">
+            @{
+                if (HttpContext.Current.Session["UserGroupID"] != null)
+                {
+                    System.Data.DataSet ds = CFS.Com.ClsCommon.GetMenuLevel1();
+                    System.Data.DataTable dtMainMenu = ds.Tables[0];
+                    System.Data.DataTable dtsubmenu = ds.Tables[1];
+                    System.Data.DataTable dtsubmenu2 = ds.Tables[2];
+                    for (int i = 0; i < dtMainMenu.Rows.Count; i++)
+                    {
+                        if (Convert.ToString(dtMainMenu.Rows[i]["Controller"]) == "")
+                        {
+                            System.Data.DataView dv = dtsubmenu.DefaultView;
+                            dv.RowFilter = "ParentID = '" + Convert.ToString(dtMainMenu.Rows[i]["PageMenuID"]) + "'";
+                            System.Data.DataTable dt = dv.ToTable();
+                            string clsmain = "";
+
+                            System.Data.DataView dv1 = dt.DefaultView;
+                            dv1.RowFilter = " Controller = '" + CFS.Com.ClsCommon.Controller().ToLower() + "'";
+                            System.Data.DataTable dt1 = dv1.ToTable();
+                            if (dt1.Rows.Count > 0)
+                            {
+                                clsmain = "active";
+                            }
+
+                            <li class="treeview @clsmain" onclick="GetSetMenuSelection('1','@Convert.ToString(dtMainMenu.Rows[i]["MenuName"]).Replace(" ","_")')" id="@Convert.ToString(dtMainMenu.Rows[i]["MenuName"]).Replace(" ","_")">
+                                <a href="#">
+                                    <i class="@Convert.ToString(dtMainMenu.Rows[i]["Menulogotext"])"></i> <span>@Convert.ToString(dtMainMenu.Rows[i]["MenuName"])</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu" id="UL_@Convert.ToString(dtMainMenu.Rows[i]["MenuName"]).Replace(" ","_")">
+                                    @for (int j = 0; j < dt.Rows.Count; j++)
+                                    {
+                                        string cls = "";
+                                        if (CFS.Com.ClsCommon.Controller().ToLower() == Convert.ToString(dt.Rows[j]["Controller"]).ToLower())
+                                        {
+                                            if (CFS.Com.ClsCommon.Action().ToLower() != "action")
+                                            {
+                                                if (CFS.Com.ClsCommon.Action().ToLower() == Convert.ToString(dt.Rows[j]["Action"]).ToLower())
+                                                {
+                                                    cls = "class=active";
+                                                }
+                                            }
+                                            else
+                                            {
+                                                cls = "class=active";
+                                            }
+
+                                        }
+                                        if (Convert.ToString(dt.Rows[j]["Controller"]) == "")
+                                        {
+                                            System.Data.DataView dv2 = dtsubmenu2.DefaultView;
+                                            dv2.RowFilter = "ParentID = '" + Convert.ToString(dt.Rows[j]["PageMenuID"]) + "'";
+                                            System.Data.DataTable dt2 = dv2.ToTable();
+                                            string clsmain2 = "";
+
+                                            System.Data.DataView dv3 = dt2.DefaultView;
+                                            dv3.RowFilter = " Controller = '" + CFS.Com.ClsCommon.Controller().ToLower() + "'";
+                                            System.Data.DataTable dt3 = dv3.ToTable();
+                                            if (dt3.Rows.Count > 0)
+                                            {
+                                                clsmain2 = "active";
+                                            }
+                                            <li class="treeview" @clsmain2 onclick="GetSetMenuSelection('2','@Convert.ToString(dtMainMenu.Rows[i]["MenuName"]).Replace(" ","_")_@Convert.ToString(dt.Rows[j]["MenuName"]).Replace(" ","_")')" id="@Convert.ToString(dtMainMenu.Rows[i]["MenuName"]).Replace(" ","_")_@Convert.ToString(dt.Rows[j]["MenuName"]).Replace(" ","_")">
+                                                <a href="#">
+                                                    <i class="@Convert.ToString(dt.Rows[j]["Menulogotext"])"></i> @Convert.ToString(dt.Rows[j]["MenuName"])
+                                                    <span class="pull-right-container">
+                                                        <i class="fa fa-angle-left pull-right"></i>
+                                                    </span>
+                                                </a>
+                                                <ul class="treeview-menu" id="UL_@Convert.ToString(dtMainMenu.Rows[i]["MenuName"]).Replace(" ","_")_@Convert.ToString(dt.Rows[j]["MenuName"]).Replace(" ","_")">
+                                                    @for (int m = 0; m < dt2.Rows.Count; m++)
+                                                    {
+                                                        if (CFS.Com.ClsCommon.Controller().ToLower() == Convert.ToString(dt2.Rows[m]["Controller"]).ToLower())
+                                                        {
+                                                            cls = "class=active";
+                                                        }
+                                                        else
+                                                        {
+                                                            cls = "";
+                                                        }
+
+                                                        <li @cls id="@Convert.ToString(dtMainMenu.Rows[i]["MenuName"]).Replace(" ","_")_@Convert.ToString(dt.Rows[j]["MenuName"]).Replace(" ","_")_@Convert.ToString(dt2.Rows[m]["MenuName"]).Replace(" ","_")"><a href="@Url.Action(Convert.ToString(dt2.Rows[m]["Action"]), Convert.ToString(dt2.Rows[m]["Controller"]))"><i class="@Convert.ToString(dt2.Rows[m]["Menulogotext"])"></i> @Convert.ToString(dt2.Rows[m]["MenuName"])</a></li>
+                                                    }
+                                                </ul>
+                                            </li>
+
+
+                                        }
+                                        else
+                                        {
+                                            <li @cls><a href="@Url.Action(Convert.ToString(dt.Rows[j]["Action"]), Convert.ToString(dt.Rows[j]["Controller"]))"><i class="@Convert.ToString(dt.Rows[j]["Menulogotext"])"></i> @Convert.ToString(dt.Rows[j]["MenuName"])</a></li>
+                                        }
+                                    }
+
+
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li onclick="GetSetMenuSelection('1','@Convert.ToString(dtMainMenu.Rows[i]["MenuName"]).Replace(" ","_")')" id="@Convert.ToString(dtMainMenu.Rows[i]["MenuName"]).Replace(" ","_")" class="@Url.IsLinkActive(Convert.ToString(dtMainMenu.Rows[i]["Action"]), Convert.ToString(dtMainMenu.Rows[i]["Controller"]))">
+                                <a href="@Url.Action(Convert.ToString(dtMainMenu.Rows[i]["Action"]), Convert.ToString(dtMainMenu.Rows[i]["Controller"]))"><i class="@Convert.ToString(dtMainMenu.Rows[i]["Menulogotext"])"></i> <span>@Convert.ToString(dtMainMenu.Rows[i]["MenuName"])</span></a>
+                            </li>
+                        }
+
+                    }
+                }
+            }
+
+            @*<li class="header">HEADER</li>*@
+            @*<li class="@Url.IsLinkActive("Index", "Home")">
+                    <a href="@Url.Action("Index", "Home")"><i class="fa fa-link"></i> <span>Home</span></a>
+                </li>
+                <li class="@Url.IsLinkActive("AnotherLink", "Home")">
+                    <a href="@Url.Action("AnotherLink", "Home")"><i class="fa fa-link"></i> <span>Another Link</span></a>
+                </li>
+                <li class="@Url.IsLinkActive("Index", "MstrBillableCommodity")">
+                    <a href="@Url.Action("Index", "MstrBillableCommodity")"><i class="fa fa-link"></i> <span>Billable Commodity Master</span></a>
+                </li>
+                <li class="@Url.IsLinkActive("Index", "MstrTaxType")">
+                    <a href="@Url.Action("Index", "MstrTaxType")"><i class="fa fa-link"></i> <span>Tax Type Master</span></a>
+                </li>
+                <li class="@Url.IsLinkActive("Index", "MstrTaxGroup")">
+                    <a href="@Url.Action("Index", "MstrTaxGroup")"><i class="fa fa-link"></i> <span>Tax Group Master</span></a>
+                </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-link"></i> <span>Multilevel</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="#">Link in level 1</a></li>
+                            <li><a href="#">Link in level 2</a></li>
+                        </ul>
+                    </li>
+                </ul>*@
+            @* END Menu *@
+        </ul>
+    </section>
+</aside>

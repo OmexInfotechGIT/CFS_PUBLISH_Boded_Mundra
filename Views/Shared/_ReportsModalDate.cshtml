@@ -1,0 +1,22 @@
+﻿@{
+    CFS.Models.ReportsModal ReportsModal = new CFS.Models.ReportsModal();
+    if (ViewBag.ReportsModal != null)
+    {
+        ReportsModal = ViewBag.ReportsModal;
+    }
+}
+<div class="col-md-2">
+    @Html.LabelFor(Model => ReportsModal.FromDate, new { @for = "FromDate" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => ReportsModal.FromDate, String.Empty, new { @id = "spn_FromDate", @class = "help-inline text-red" })
+    <div class="input-group">
+        @Html.TextBoxFor(Model => ReportsModal.FromDate, new { @id = "FromDate", @name = "FromDate", @class = "form-control DateTimePicker", @placeholder = "Enter From Date" })
+        <span class="input-group-addon" onclick="getElementById('FromDate').focus()"><i class="fa fa-calendar"></i></span>
+    </div>
+</div>
+<div class="col-md-2">
+    @Html.LabelFor(Model => ReportsModal.ToDate, new { @for = "ToDate" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => ReportsModal.ToDate, String.Empty, new { @id = "spn_ToDate", @class = "help-inline text-red" })
+    <div class="input-group">
+        @Html.TextBoxFor(Model => ReportsModal.ToDate, new { @id = "ToDate", @name = "ToDate", @class = "form-control DateTimePicker", @placeholder = "Enter To Date" })
+        <span class="input-group-addon" onclick="getElementById('ToDate').focus()"><i class="fa fa-calendar"></i></span>
+    </div>
+</div>
+        

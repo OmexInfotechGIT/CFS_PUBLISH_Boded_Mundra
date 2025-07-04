@@ -1,0 +1,364 @@
+﻿@model CFS.Models.UserGroupAccess
+@{
+    ViewBag.Title = "View User Group Access";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-info">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <a href="@CFS.Com.ClsCommon.GetUrlReferrer("UserGroupAccess","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12">
+                        <div class="box-body" style="padding:20px;">
+                            <div class="form-group">
+                                <label>Group Name : </label> <span>@Model.GroupName</span>
+                            </div> <br />
+                            <div class="row" style="padding-left:20px;">
+                                <div class="table-responsive">
+                                    <table class="table table-responsive-md" style="border:1px solid #e2d5d5;">
+                                        <thead>
+                                            <tr>
+                                                <th style="border:1px solid #e2d5d5;">Page Name</th>
+                                                <th style="border:1px solid #e2d5d5;" colspan="7" class="clsTextAlignCenter">Page Access</th>
+                                                <input type="hidden" id="hdngblBlnView" value="gblBlnView" />
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="border:1px solid #e2d5d5;"><strong></strong></td>
+                                                <td style="border:1px solid #e2d5d5;">All</td>
+                                                <td style="border:1px solid #e2d5d5;">View</td>
+                                                <td style="border:1px solid #e2d5d5;">Add</td>
+                                                <td style="border:1px solid #e2d5d5;">Edit</td>
+                                                <td style="border:1px solid #e2d5d5;">Delete</td>
+                                                <td style="border:1px solid #e2d5d5;">Approve</td>
+                                                <td style="border:1px solid #e2d5d5;">UnApprove</td>
+                                            </tr>
+                                            @{ int FormatID = 0;
+                                                string gblStrUserId = Convert.ToString(HttpContext.Current.Session["UserID"]);
+
+                                                if (gblStrUserId == "")
+                                                {
+                                                    gblStrUserId = "0";
+
+                                                }
+
+                                                if (Model.MyDatatable.Rows.Count > 0)
+                                                {
+                                                    string strView = "", strAdd = "", strEdit = "", strDelete = "",strApprove="",strUnApprove="";
+                                                    for (int intI = 0; intI < Model.MyDatatable.Rows.Count; intI++)
+                                                    {
+                                                        strView = "false";
+                                                        strAdd = "false";
+                                                        strEdit = "false";
+                                                        strDelete = "false";
+                                                        strApprove = "false";
+                                                        strUnApprove = "false";
+                                                        String MenuName = Convert.ToString(Model.MyDatatable.Rows[intI]["MenuName"]);
+                                                        int MenuID = Convert.ToInt32(Model.MyDatatable.Rows[intI]["PageMenuID"]);
+                                                        strView = Convert.ToString(Model.MyDatatable.Rows[intI]["FlagView"]);
+                                                        strAdd = Convert.ToString(Model.MyDatatable.Rows[intI]["FlagAdd"]);
+                                                        strEdit = Convert.ToString(Model.MyDatatable.Rows[intI]["FlagEdit"]);
+                                                        strDelete = Convert.ToString(Model.MyDatatable.Rows[intI]["FlagDelete"]);
+                                                        strApprove = Convert.ToString(Model.MyDatatable.Rows[intI]["FlagApprove"]);
+                                                        strUnApprove = Convert.ToString(Model.MyDatatable.Rows[intI]["FlagUnApprove"]);
+                                                        if (Convert.ToString(Model.MyDatatable.Rows[intI]["LevelID"]) == "1")
+                                                        {
+                                                                if (intI != 0)
+                                                                {
+                                                                    FormatID = FormatID + 1;
+                                                                }
+                                                                <tr>
+                                                                    <td style="border:1px solid #e2d5d5;">
+                                                                        <strong>@MenuName</strong>
+                                                                        @Html.HiddenFor(model => model.hdnPageMenuId[FormatID], new { @id = "hdnPageMenuId_" + FormatID + "", @name = "hdnPageMenuId_" + FormatID + "", @Value = MenuID })
+                                                                    </td>
+                                                                    <td style="border:1px solid #e2d5d5;">
+                                                                        <label>
+                                                                            <span>
+                                                                                @{
+                                                                                    if (Convert.ToBoolean(strAdd) == true && Convert.ToBoolean(strEdit) == true && Convert.ToBoolean(strView) == true && Convert.ToBoolean(strDelete) == true && Convert.ToBoolean(strApprove) == true && Convert.ToBoolean(strUnApprove) == true)
+                                                                                    {
+                                                                                        <i class="fa fa fa-check"></i>
+                                                                                    }
+                                                                                }
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                    <td style="border:1px solid #e2d5d5;">
+                                                                        <label>
+                                                                            <span>
+                                                                                @{ if (Convert.ToBoolean(strView) == true)
+                                                                                    {
+                                                                                        <i title="Click to view" style="vertical-align: middle;text-align:center;" class="fa fa-check"></i>
+
+                                                                                    }
+                                                                                }
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                    <td style="border:1px solid #e2d5d5;">
+                                                                        <label>
+                                                                            <span>
+                                                                                @{ if (Convert.ToBoolean(strAdd) == true)
+                                                                                    {
+                                                                                        <i title="Click to view" style="vertical-align: middle;text-align:center;" class="fa fa-check"></i>
+                                                                                    }
+                                                                                }
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                    <td style="border:1px solid #e2d5d5;">
+                                                                        <label>
+                                                                            <span>
+                                                                                @{ if (Convert.ToBoolean(strEdit) == true)
+                                                                                    {
+                                                                                        <i title="Click to view" style="vertical-align: middle;text-align:center;" class="fa fa-check"></i>
+                                                                                    }
+                                                                                }
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                    <td style="border:1px solid #e2d5d5;">
+                                                                        <label>
+                                                                            <span>
+                                                                                @{ if (Convert.ToBoolean(strDelete) == true)
+                                                                                    {
+                                                                                        <i title="Click to view" style="vertical-align: middle;text-align:center;" class="fa fa-check"></i>
+                                                                                    }
+                                                                                }
+                                                                                </span>
+                                                                            </label>
+                                                                    </td>
+                                                                    <td style="border:1px solid #e2d5d5;">
+                                                                        <label>
+                                                                            <span>
+                                                                                @{ if (Convert.ToBoolean(strApprove) == true)
+                                                                                    {
+                                                                                        <i title="Click to view" style="vertical-align: middle;text-align:center;" class="fa fa-check"></i>
+                                                                                    }
+                                                                                }
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                    <td style="border:1px solid #e2d5d5;">
+                                                                        <label>
+                                                                            <span>
+                                                                                @{ if (Convert.ToBoolean(strUnApprove) == true)
+                                                                                    {
+                                                                                        <i title="Click to view" style="vertical-align: middle;text-align:center;" class="fa fa-check"></i>
+                                                                                    }
+                                                                                }
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                        }
+                                                        else if (Convert.ToString(Model.MyDatatable.Rows[intI]["LevelID"]) == "2")
+                                                        {
+                                                                FormatID = FormatID + 1;
+                                                                <tr>
+                                                                <td style="border:1px solid #e2d5d5;">
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;<strong> @MenuName</strong>
+                                                                    @Html.HiddenFor(model => model.hdnPageMenuId[FormatID], new { @id = "hdnPageMenuId_" + FormatID + "", @name = "hdnPageMenuId_" + FormatID + "", @Value = MenuID })
+                                                                </td>
+                                                                <td style="border:1px solid #e2d5d5;">
+                                                                    <label>
+                                                                        <span>
+                                                                            @{
+                                                                                if (Convert.ToBoolean(strAdd) == true && Convert.ToBoolean(strEdit) == true && Convert.ToBoolean(strView) == true && Convert.ToBoolean(strDelete) == true && Convert.ToBoolean(strApprove) == true && Convert.ToBoolean(strUnApprove) == true)
+                                                                                {
+                                                                                    <i class="fa fa-check"></i>
+                                                                                }
+                                                                            }
+                                                                        </span>
+                                                                    </label>
+                                                                </td>
+                                                                <td style="border:1px solid #e2d5d5;">
+                                                                    <label>
+                                                                        <span>
+                                                                            @{ if (Convert.ToBoolean(strView) == true)
+                                                                                {
+                                                                                    <i class="fa fa-check"></i>
+                                                                                }
+                                                                            }
+                                                                        </span>
+                                                                    </label>
+                                                                </td>
+                                                                <td style="border:1px solid #e2d5d5;">
+                                                                    <label>
+                                                                        <span>
+                                                                            @{ if (Convert.ToBoolean(strAdd) == true)
+                                                                                {
+                                                                                    <i class="fa fa-check"></i>
+                                                                                }
+                                                                            }
+                                                                        </span>
+                                                                    </label>
+                                                                </td>
+                                                                <td style="border:1px solid #e2d5d5;">
+                                                                    <label>
+                                                                        <span>
+                                                                            @{ if (Convert.ToBoolean(strEdit) == true)
+                                                                                {
+                                                                                    <i class="fa fa-check"></i>
+                                                                                }
+                                                                            }
+                                                                        </span>
+                                                                    </label>
+                                                                </td>
+                                                                <td style="border:1px solid #e2d5d5;">
+                                                                    <label>
+                                                                        <span>
+                                                                            @{ if (Convert.ToBoolean(strDelete) == true)
+                                                                                {
+                                                                                    <i class="fa fa-check"></i>
+                                                                                }
+                                                                            }
+                                                                        </span>
+                                                                    </label>
+                                                                </td>
+                                                                <td style="border:1px solid #e2d5d5;">
+                                                                    <label>
+                                                                        <span>
+                                                                            @{ if (Convert.ToBoolean(strApprove) == true)
+                                                                                {
+                                                                                    <i class="fa fa-check"></i>
+                                                                                }
+                                                                            }
+                                                                        </span>
+                                                                    </label>
+                                                                </td>
+                                                                <td style="border:1px solid #e2d5d5;">
+                                                                    <label>
+                                                                        <span>
+                                                                            @{ if (Convert.ToBoolean(strUnApprove) == true)
+                                                                                {
+                                                                                    <i class="fa fa-check"></i>
+                                                                                }
+                                                                            }
+                                                                        </span>
+                                                                    </label>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                        else if (Convert.ToString(Model.MyDatatable.Rows[intI]["LevelID"]) == "3")
+                                                        {
+                                                                FormatID = FormatID + 1;
+                                                                <tr>
+                                                                    <td style="border:1px solid #e2d5d5;">
+                                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @MenuName
+                                                                        @Html.HiddenFor(model => model.hdnPageMenuId[FormatID], new { @id = "hdnPageMenuId_" + FormatID + "", @name = "hdnPageMenuId_" + FormatID + "", @Value = MenuID })
+                                                                    </td>
+                                                                    <td style="border:1px solid #e2d5d5;">
+                                                                        <label>
+                                                                            <span>
+                                                                                @{
+                                                                                    if (Convert.ToBoolean(strAdd) == true && Convert.ToBoolean(strEdit) == true && Convert.ToBoolean(strView) == true && Convert.ToBoolean(strDelete) == true && Convert.ToBoolean(strApprove) == true && Convert.ToBoolean(strUnApprove) == true)
+                                                                                    {
+                                                                                        <i class="fa fa-check"></i>
+                                                                                    }
+                                                                                }
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                    <td style="border:1px solid #e2d5d5;">
+                                                                        <label>
+                                                                            <span>
+                                                                                @{ if (Convert.ToBoolean(strView) == true)
+                                                                                    {
+                                                                                        <i class="fa fa-check"></i>
+                                                                                    }
+                                                                                }
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                    <td style="border:1px solid #e2d5d5;">
+                                                                        <label>
+                                                                            <span>
+                                                                                @{ if (Convert.ToBoolean(strAdd) == true)
+                                                                                    {
+                                                                                        <i class="fa fa-check"></i>
+                                                                                    }
+                                                                                }
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                    <td style="border:1px solid #e2d5d5;">
+                                                                        <label>
+                                                                            <span>
+                                                                                @{ if (Convert.ToBoolean(strEdit) == true)
+                                                                                    {
+                                                                                        <i class="fa fa-check"></i>
+                                                                                    }
+                                                                                }
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                    <td style="border:1px solid #e2d5d5;">
+                                                                        <label>
+                                                                            <span>
+                                                                                @{ if (Convert.ToBoolean(strDelete) == true)
+                                                                                    {
+                                                                                        <i class="fa fa-check"></i>
+                                                                                    }
+                                                                                }
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                    <td style="border:1px solid #e2d5d5;">
+                                                                        <label>
+                                                                            <span>
+                                                                                @{ if (Convert.ToBoolean(strApprove) == true)
+                                                                                    {
+                                                                                        <i class="fa fa-check"></i>
+                                                                                    }
+                                                                                }
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                    <td style="border:1px solid #e2d5d5;">
+                                                                        <label>
+                                                                            <span>
+                                                                                @{ if (Convert.ToBoolean(strUnApprove) == true)
+                                                                                    {
+                                                                                        <i class="fa fa-check"></i>
+                                                                                    }
+                                                                                }
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                        }
+                                                             
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+

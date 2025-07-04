@@ -1,0 +1,25 @@
+﻿
+@{
+    CFS.Models.ReportsModal ReportsModal = new CFS.Models.ReportsModal();
+    if (ViewBag.ReportsModal != null)
+    {
+        ReportsModal = ViewBag.ReportsModal;
+    }
+    ViewBag.Title = "Ex-Bond Report";
+}
+@using (Html.BeginForm("ExBondReport", "Reports", FormMethod.Post))
+{
+    <div class="">
+        <div class="box">
+            <div class="box-body">
+                @Html.Partial("_ReportsModalDate")
+                @Html.Partial("_ReportsModalCHA")
+                @Html.Partial("_ReportsModalForwarder")
+                @Html.Partial("_ReportsModalImporter")
+                @Html.Partial("_ReportsModalSearchClearButton")
+            </div>
+        </div>
+    </div>
+}
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/ReportsModal.js")"></script>
+

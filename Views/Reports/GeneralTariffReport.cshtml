@@ -1,0 +1,16 @@
+﻿@{
+    ViewBag.Title = "General Tariff Report";
+}
+@using (Html.BeginForm("GeneralTariffReport", "Reports", FormMethod.Post))
+{
+    <div class="">
+        <div class="box">
+            <div class="box-body">
+                @Html.Partial("_ReportsModalDate")               
+
+                @Html.Partial("_ReportsModalSearchClearButton")
+            </div>
+        </div>
+    </div>
+}
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/ReportsModal.js")"></script>

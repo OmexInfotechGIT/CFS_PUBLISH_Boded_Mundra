@@ -1,0 +1,10 @@
+﻿@model CFS.Models.trnWeighmentCashInvoice
+@if (Model.doaction == "edit")
+{
+    ViewBag.Title = "Update Weighment Cash Invoice";
+}
+else
+{
+    ViewBag.Title = "Add new Weighment Cash Invoice";
+}
+@Html.Partial("../trnWeighmentCashInvoice/action")

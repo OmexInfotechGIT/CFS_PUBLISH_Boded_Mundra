@@ -1,0 +1,183 @@
+﻿@model CFS.Models.MstrTaxGroup
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Tax Group";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Tax Group";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (Model.doaction == "edit")
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">Tax Group Code: @Model.TaxGrpCode</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrTaxGroup","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrTaxGroup", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "MstrTaxGroup", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.MstrTaxGroupID)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+                        @Html.HiddenFor(Model => Model.TaxGrpCode)
+
+                        <div class="col-md-6">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.TaxGrpname, new { @for = "txtTaxGrpname" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TaxGrpname, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.TaxGrpname, new { @id = "txtTaxGrpname", @name = "txtTaxGrpname", @class = "form-control", @placeholder = "Enter Tax Group Name" })
+                                    @Html.HiddenFor(Model => Model.RefID)
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.HSNSacCode, new { @for = "txtHSNSACCode" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.HSNSacCode, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.HSNSacCode, new { @id = "txtHSNSACCode", @name = "txtHSNSACCode", @class = "form-control", @placeholder = "Enter HSN/SAC Code", @onkeypress = "return AlphaNumberwithslace(event)" })
+                                    @Html.HiddenFor(Model => Model.RefHSNSacCode)
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Remark, new { @for = "txtRemarks" })
+                                    @Html.TextBoxFor(Model => Model.Remark, new { @id = "txtRemarks", @name = "txtRemarks", @class = "form-control", @placeholder = "Enter Remarks" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.CheckBoxFor(Model => Model.IsActive, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.Label("IsActive") @Html.ValidationMessageFor(Model => Model.IsActive, String.Empty, new { @class = "help-inline text-red" })
+                                </div>
+                                <div class="form-group" id="dvInActiveReason">
+                                    @Html.LabelFor(Model => Model.InActiveReason, new { @for = "InActiveReason" }) @Html.ValidationMessageFor(Model => Model.InActiveReason, String.Empty, new { @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.InActiveReason, new { @class = "form-control", @placeholder = "Enter Inactivate Reason" })
+                                </div>
+                            </div>
+                            <div class="box-footer">
+                                @if (Model.doaction != "edit")
+                                {
+                                    <button type="submit" class="btn btn-primary" id="SaveTaxGrp" name="submit" value="Save & Next">Save & Next</button>
+                                }
+                                <button type="submit" class="btn btn-primary" id="SaveTaxGrp" name="submit" value="Submit">Submit</button>
+
+                                @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrTaxGroup","Index")" class="btn btn-danger">Cancel</a>*@
+                                <a href="@Url.Action("Index", "MstrTaxGroup", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+
+                    @using (Html.BeginForm("Actionsub", "MstrTaxGroup", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.MstrTaxGroupSub.MstrTaxGroupID)
+                        @Html.HiddenFor(Model => Model.MstrTaxGroupSub.TaxID, new { @id = "TaxID", @name = "TaxID" })
+                        if (Model != null && Model.doaction == "edit")
+                        {
+                            <div class="col-md-6">
+                                <div class="box-body">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.MstrTaxGroupSub.TaxName, new { @for = "Taxname" })<span class="text-red">*</span>
+                                            @Html.TextBoxFor(Model => Model.MstrTaxGroupSub.TaxName, new { @id = "Taxname", @name = "Taxname", @class = "form-control", @placeholder = "Select Tax Name" })
+                                            @Html.HiddenFor(Model => Model.MstrTaxGroupSub.MstrTaxTypeID, new { @id = "MstrTaxTypeID", @name = "MstrTaxTypeID" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.MstrTaxGroupSub.TaxPercentage, new { @for = "TaxPercentage" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.MstrTaxGroupSub.TaxPercentage, String.Empty, new { @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.MstrTaxGroupSub.TaxPercentage, new { @id = "TaxPercentage", @name = "TaxPercentage", @class = "form-control", @placeholder = "Enter Tax Percentage", @onkeypress = "return isNumberWithTwoDecimal(event, 'TaxPercentage')" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <br />
+                                            <button type="submit" onclick="return Validation()" class="btn btn-primary" id="btnTaxSave">Add</button>
+                                            <button type="button" class="btn btn-default" onclick="cleartex()" id="btnTaxclear">Clear</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <table id="example2" class="table table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tax Name</th>
+                                                    <th>Tax Percentage</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.MstrTaxGroupSub.MySubDatatable != null && Model.MstrTaxGroupSub.MySubDatatable.Rows.Count > 0)
+                                                {
+                                                    for (int i = 0; i < Model.MstrTaxGroupSub.MySubDatatable.Rows.Count; i++)
+                                                    {
+                                                        <tr>
+                                                            <td style="display:none"><span id="MstrTaxTypeID_@Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["TaxID"]">@Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["MstrTaxTypeID"]</span></td>
+                                                            <td style="display:none"><span id="TaxID_@Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["TaxID"]">@Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["TaxID"]</span></td>
+                                                            <td><span id="Taxname_@Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["TaxID"]">@Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["Taxname"]</span></td>
+                                                            <td><span id="TaxPer_@Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["TaxID"]">@Convert.ToDecimal(Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["TaxPer"]).ToString("0.00")</span></td>
+                                                            <td>
+                                                                <a onclick="EditTax('@Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["TaxID"]')"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                                                <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('Tax','@Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["TaxID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                                                <a href="@Url.Action("deleteSub", "MstrTaxGroup", new { id = Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["TaxID"] })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    var MstrTaxGroupID = '@Model.MstrTaxGroupID';
+    if (MstrTaxGroupID == null || MstrTaxGroupID == undefined || MstrTaxGroupID == "") {
+        MstrTaxGroupID = "0";
+    }
+    var TaxID = '@Model.MstrTaxGroupSub.TaxID';
+    if (TaxID == null || TaxID == undefined || TaxID == "") {
+        TaxID = "0";
+    }
+
+    $('#txtHSNSACCode').on('paste', function (event) {
+        if (event.originalEvent.clipboardData.getData('Text').match(/[^\d]/)) {
+            event.preventDefault();
+        }
+    });
+</script>
+<script>
+    doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrTaxGroup.js")"></script>

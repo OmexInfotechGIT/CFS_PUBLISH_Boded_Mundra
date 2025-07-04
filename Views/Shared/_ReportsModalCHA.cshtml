@@ -1,0 +1,20 @@
+﻿@{
+    CFS.Models.ReportsModal ReportsModal = new CFS.Models.ReportsModal();
+    if (ViewBag.ReportsModal != null)
+    {
+        ReportsModal = ViewBag.ReportsModal;
+    }
+}
+
+<div class="col-md-2">
+    <div class="form-group">
+        @Html.LabelFor(Model => ReportsModal.CHAName, new { @for = "CHAName" })
+        @Html.TextBoxFor(Model => ReportsModal.CHAName, new { @id = "CHAName", @name = "CHAName", @class = "form-control clsReadOnly", @placeholder = "Enter Customs Broker/Customer" })
+        @Html.HiddenFor(Model => ReportsModal.CHAID, new { @id = "CHAID", @name = "CHAID" })
+    </div>
+</div>
+
+
+
+
+       

@@ -1,0 +1,132 @@
+﻿@model CFS.Models.MstrStorageLocation
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Storage Location";
+
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Storage Location";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrStorageLocation","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrStorageLocation", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "MstrStorageLocation", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.MstrStorageLocationID)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+                        <div class="col-md-12">
+                            <div class="box-body">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Building, new { @for = "txtBuilding" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.BuildingRefID, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.Building, new { @id = "txtBuilding", @name = "txtBuilding", @class = "form-control EnableDisable", @placeholder = "Enter Building", @onblur = "EnableDetailsByID('BuildingRefID');" })
+                                        @Html.HiddenFor(Model => Model.BuildingRefID, new { @id = "BuildingRefID" })
+                                        @Html.HiddenFor(Model => Model.OldBuilding, new { @id = "OldtxtBuilding", @Value = "" })
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Chamber, new { @for = "txtChamber" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ChamberRefID, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.Chamber, new { @id = "txtChamber", @name = "txtChamber", @class = "form-control EnableDisable", @placeholder = "Enter Chamber", @readonly = true, @onblur = "EnableDetailsByID('ChamberRefID','txtFloor');" })
+                                        @Html.HiddenFor(Model => Model.ChamberRefID, new { @id = "ChamberRefID" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="box-body">
+                                <div class="dvDetails">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.Floor, new { @for = "txtFloor" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.FloorRefID, String.Empty, new { @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.Floor, new { @id = "txtFloor", @name = "txtFloor", @class = "form-control EnableDisable", @placeholder = "Enter Floor", @readonly = true, @onblur = "EnableDetailsByID('FloorRefID','txtPallet');" })
+                                            @Html.HiddenFor(Model => Model.FloorRefID, new { @id = "FloorRefID" })
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.Pallet, new { @for = "txtPallet" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.PalletRefID, String.Empty, new { @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.Pallet, new { @id = "txtPallet", @name = "txtPallet", @class = "form-control EnableDisable", @placeholder = "Enter Pallet", @readonly = true, @onblur = "EnableDetailsByID('PalletRefID','');" })
+                                            @Html.HiddenFor(Model => Model.PalletRefID, new { @id = "PalletRefID" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="box-body">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.MaxPalletQty, new { @for = "txtMaxPalletQty" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.MaxPalletQty, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.MaxPalletQty, new { @id = "txtMaxPalletQty", @name = "txtMaxPalletQty", @class = "form-control", @placeholder = "Enter Max Pallet Qty", @onkeypress = "return isonlynumber(event)" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="box-body">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        @Html.CheckBoxFor(Model => Model.IsActive, new { @class = "form-control" })
+                                        @Html.Label("IsActive") @Html.ValidationMessageFor(Model => Model.IsActive, String.Empty, new { @class = "help-inline text-red" })
+                                    </div>
+                           
+                                    <div class="form-group" id="dvInActiveReason">
+                                        @Html.LabelFor(Model => Model.InActiveReason, new { @for = "InActiveReason" }) @Html.ValidationMessageFor(Model => Model.InActiveReason, String.Empty, new { @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.InActiveReason, new { @id = "InActiveReason", @class = "form-control", @placeholder = "Enter InActivate Reason" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrStorageLocation","Index")" class="btn btn-danger">Cancel</a>*@
+                                <a href="@Url.Action("Index", "MstrStorageLocation", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrStorageLocation.js")"></script>
+
+

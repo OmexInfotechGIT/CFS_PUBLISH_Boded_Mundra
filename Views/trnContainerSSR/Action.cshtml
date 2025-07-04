@@ -1,0 +1,552 @@
+﻿@model CFS.Models.trnContainerSSR
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Container SSR";
+        if (!ViewBag.gblBlnEdit && !ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add new Container SSR";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+@using (Html.BeginForm("Action", "trnContainerSSR", FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+{
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+
+                                @if (Model != null && Model.doaction == "edit" && Model.IsFinished)
+                                {
+                                    <span class="badge bg-light-blue" style="font-size:15px;">SSR WO No: @Model.SSRPrefix@Model.SSRWONo </span>
+                                }
+                            </div>
+                        </div>
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                <a href="@Url.Action("Index","trnContainerSSR", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12">
+                            <div class="box-body">
+                                
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.SSRNo)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.SSRNo, String.Empty, new { @id = "spn_SSRNo", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.SSRNo, new { @id = "SSRNo", @name = "SSRNo", @class = "form-control", @placeholder = "Enter SSR No" })
+                                        @Html.HiddenFor(Model => Model.SSRNoRefID)
+                                        @Html.HiddenFor(Model => Model.SPType)
+                                        @Html.HiddenFor(Model => Model.SSRWONo)
+                                        @Html.HiddenFor(Model => Model.SSRPrefix)
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Cycle, new { @for = "Cycle" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Cycle, String.Empty, new { @id = "spn_Cycle", @class = "help-inline text-red" })
+                                        @Html.DropDownListFor(Model => Model.Cycle, Model.CycleNames, new { @id = "Cycle", @name = "Cycle", @class = "form-control", @onchange = "CheckCycleSelected()" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.InBOENo, new { @for = "InBOENo", id = "LInBOENo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnDocumentNo, String.Empty, new { @id = "spn_InBOENoID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.InBOENo, new { @id = "InBOENo", @name = "InBOENo", @class = "form-control" })
+                                        @Html.HiddenFor(Model => Model.InBOENoID, new { @id = "InBOENoID", name = "InBOENoID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnDocumentNo)<span class="text-red">*</span>
+                                        @Html.TextBoxFor(Model => Model.trnDocumentNo, new { @id = "trnDocumentNo", @name = "trnDocumentNo", @class = "form-control", @placeholder = "SELECT trnDocumentNo", @readonly = "true" })
+                                        @Html.HiddenFor(Model => Model.trnDocumentID, new { @id = "trnDocumentID", @name = "trnDocumentID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.DOCDate)
+                                        @Html.TextBoxFor(Model => Model.DOCDate, new { @id = "DOCDate", @name = "DOCDate", @class = "form-control", @readonly = "true" })
+                                    </div>
+                                </div>
+                                @*<div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(Model => Model.BatchNo)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.BatchNoID, String.Empty, new { @id = "spn_BatchNoID", @class = "help-inline text-red" })
+                @Html.TextBoxFor(Model => Model.BatchNo, new { @id = "BatchNo", @name = "BatchNo", @class = "form-control", @placeholder = "SELECT Batch No" })
+                @Html.HiddenFor(Model => Model.BatchNoID, new { @id = "BatchNoID", @name = "BatchNoID" })
+            </div>
+        </div>*@
+                                @*<div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(Model => Model.TransactionType)
+                @Html.TextBoxFor(Model => Model.TransactionType, new { @id = "TransactionType", @name = "TransactionType", @class = "form-control", @placeholder = "", @disabled = "disabled" })
+            </div>
+        </div>*@
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Remarks)
+                                        @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control", @placeholder = "Enter Remarks" })
+                                    </div>
+                                </div>
+                                @if (Model.doaction.ToUpper() == "ADD")
+                                {
+                                    <div class="col-md-3 pull-right">
+                                        <div class="form-group">
+                                            <button type="button" style="margin-right:5px;" class="btn btn-danger pull-right" onclick="ClearContainerSSR()">Clear</button>
+                                            <button type="button" style="margin-right:5px;" class="btn btn-primary pull-right" onclick="SearchwithtrnDocumentNo()">Search</button>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        @if (Model.IsSearch)
+                        {
+                            <div class="box-body">
+                                <div class="col-md-12">
+                                    <table style="width:100%" class="table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style="display:none"></th>
+                                                @if (Model.Cycle.ToLower() == "bonded")
+                                                {
+                                                    <th>IGM No</th>
+                                                    <th>In-BOE No</th>
+                                                    <th>In-BOE Date</th>
+                                                    <th>BL No</th>
+                                                    <th>BL Date</th>
+                                                    <th>Cargo Desc</th>
+                                                }
+                                                else
+                                                {                                                
+                                                    <th>SB No</th>
+                                                    <th>SB Date</th>
+                                                    <th>Invoice No</th>
+                                                    <th>Invoice Date</th>
+                                                    <th>Cargo Desc</th>
+                                                }
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.LotNoDatatable != null && Model.LotNoDatatable.Rows.Count > 0)
+                                            {
+                                                for (int i = 0; i < Model.LotNoDatatable.Rows.Count; i++)
+                                                {
+
+                                                    int LotDetailsID = 0;
+                                                    if (Model.Cycle.ToLower() == "bonded")
+                                                    {
+                                                        LotDetailsID = Convert.ToInt32(Model.LotNoDatatable.Rows[i]["trnDocumentLotDetailsID"]);
+                                                    }
+                                                    else
+                                                    {
+                                                        LotDetailsID = Convert.ToInt32(Model.LotNoDatatable.Rows[i]["trnExportDocumentDeclarationLotDetailsID"]);
+                                                    }
+
+                                                    string ischeck = "";
+                                                    if (Model != null && Model.CheckDocumentID != null && Model.CheckDocumentID.Contains(Convert.ToString(LotDetailsID) + "|"))
+                                                    {
+                                                        ischeck = "checked = 'true'";
+                                                    }
+                                            <tr>
+                                                <td style="display:none"><input type="checkbox" id="ChkLotDetails_@LotDetailsID" @ischeck name="ChkLotDetails" value="@LotDetailsID" checked="true"></td>
+                                                <td style="display:none;"><span id="LOTNO_@LotDetailsID">@Model.LotNoDatatable.Rows[i]["LotPrefix"].ToString()@Model.LotNoDatatable.Rows[i]["LOTNO"].ToString()</span></td>
+                                                @if (Model.Cycle.ToLower() == "bonded")
+                                                {
+                                                    <td><span id="IGMNo_@LotDetailsID">@Model.LotNoDatatable.Rows[i]["IGMNo"].ToString()</span></td>
+                                                }
+                                                <td><span id="BOENo_@LotDetailsID">@Model.LotNoDatatable.Rows[i]["BOENo"]</span></td>
+                                                @if (!string.IsNullOrEmpty(Model.LotNoDatatable.Rows[i]["BOEDate"].ToString()))
+                                                {
+                                                    <td><span id="BOEDate_@LotDetailsID">@Convert.ToDateTime(Model.LotNoDatatable.Rows[i]["BOEDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat)</span></td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+
+                                                <td><span id="BLNo_@LotDetailsID">@Model.LotNoDatatable.Rows[i]["BLNo"]</span></td>
+
+                                                @if (!string.IsNullOrEmpty(Model.LotNoDatatable.Rows[i]["BLDate"].ToString()))
+                                                {
+                                                    <td><span id="BLDate_@LotDetailsID">@Convert.ToDateTime(Model.LotNoDatatable.Rows[i]["BLDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat)</span></td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                <td><span id="CARGODESC_@LotDetailsID">@Model.LotNoDatatable.Rows[i]["CARGODESC"]</span></td>
+                                                <input type="hidden" id="txtChkLotDetails_@LotDetailsID" name="txtChkLotDetails" value="@LotDetailsID">
+                                                <input type="hidden" id="txtLOTNO_@LotDetailsID" name="txtLOTNO_@LotDetailsID" value="@Model.LotNoDatatable.Rows[i]["LOTNO"]" />
+                                                <input type="hidden" id="txtBOENo_@LotDetailsID" name="txtBOENo_@LotDetailsID" value="@Model.LotNoDatatable.Rows[i]["BOENo"]" />
+                                                <input type="hidden" id="txtBOEDate_@LotDetailsID" name="txtBOEDate_@LotDetailsID" value="@Model.LotNoDatatable.Rows[i]["BOEDate"]" />
+                                                <input type="hidden" id="txtBLNo_@LotDetailsID" name="txtBLNo_@LotDetailsID" value="@Model.LotNoDatatable.Rows[i]["BLNo"]" />
+                                                <input type="hidden" id="txtBLDate_@LotDetailsID" name="txtBLDate_@LotDetailsID" value="@Model.LotNoDatatable.Rows[i]["BLDate"]" />
+                                                <input type="hidden" id="txtCARGODESC_@LotDetailsID" name="txtCARGODESC_@LotDetailsID" value="@Model.LotNoDatatable.Rows[i]["CARGODESC"]" />
+                                                <input type="hidden" id="txtIGMNo_@LotDetailsID" name="txtIGMNo_@LotDetailsID" value="@Model.LotNoDatatable.Rows[i]["IGMNo"]" />
+                                            </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+
+                            @Html.HiddenFor(Model => Model.pagger.Search)
+                            @Html.HiddenFor(Model => Model.doaction)
+                            @Html.HiddenFor(Model => Model.page)
+                            @Html.HiddenFor(Model => Model.filter)
+                            @Html.HiddenFor(Model => Model.IsSearch)
+                            @Html.HiddenFor(Model => Model.IsFinished)
+                            @Html.HiddenFor(Model => Model.trnDocumentNo)
+                            @Html.HiddenFor(Model => Model.trnDocumentID)
+                            @Html.HiddenFor(Model => Model.HdnTrnDocumentNo)
+                            @*@Html.HiddenFor(Model => Model.BatchNo)
+                            @Html.HiddenFor(Model => Model.BatchNoID)*@
+
+                            <input type="hidden" id="DocumentTab" name="DocumentTab" value="@Model.DocumentTab" />
+                            <input type="hidden" id="IsChangeStep" name="IsChangeStep" value="0" />
+                            <input type="hidden" id="trnContainerSSRID" name="trnContainerSSRID" value="@Model.trnContainerSSRID" />
+                            <input type="hidden" id="trnContainerSSRDetailsID" name="trnContainerSSRDetailsID" value="@Model.trnContainerSSRDetailsID" />
+
+                            <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+
+                            <div class="box-header with-border">
+                                <h4><b>Document Details</b></h4>
+                            </div>
+                            @*<div class="col-md-4">
+                                <div class="form-group">
+                                    <label>CHA : </label> <span>@Model.CHA</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Forwarder : </label> <span>@Model.Forwarder</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Importer/Exporter : </label> <span>@Model.ImporterExporter</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Consoler : </label> <span>@Model.Consoler</span>
+                                </div>
+                            </div>*@
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Invoice No : </label> <span>@Model.InvoiceNo</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Invoice Date : </label> <span>@Model.InvoiceDate</span>
+                                </div>
+                            </div>
+
+                            if (Model.doaction != "edit")
+                            {
+                                <div class="col-md-3 pull-right">
+                                    <br />
+                                    <div class="form-group">
+                                        <a href="@Url.Action("Index","trnContainerSSR")" class="btn btn-danger pull-right">Cancel</a>
+                                        <button type="submit" style="margin-right: 5px;" class="btn btn-primary pull-right" id="SaveDocument" onclick="return DocumentValidation(1)">Continue Entry</button>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+
+                @if (Model.IsSearch)
+                {
+
+                    if (Model != null && Model.doaction.ToLower() == "edit")
+                    {
+                        <div class="box">
+                            <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                                <h4><b>SSR Details</b></h4>
+                            </div>
+                            <div class="box-body">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ContNo, new { @for = "ContNo" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContNoID, String.Empty, new { @id = "spn_ContNoID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.ContNo, new { @id = "ContNo", @name = "ContNo", @class = "form-control" })
+                                        @Html.HiddenFor(Model => Model.ContNoID, new { @id = "ContNoID", @name = "ContNoID" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Size) : <span id="txtSize" class="form-control-lable" style="margin-right:50px">@Model.Size</span>
+                                        @Html.HiddenFor(Model => Model.Size, new { @id = "hdnSize", @name = "hdnSize" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Type) : <span id="txtType" class="form-control-lable" style="margin-right:50px">@Model.Type</span>
+                                        @Html.HiddenFor(Model => Model.Type, new { @id = "hdnType", @name = "hdnType" })
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.CargoType) : <span id="txtCargoType" class="form-control-lable" style="margin-right:50px">@Model.CargoType</span>
+                                        @Html.HiddenFor(Model => Model.CargoType, new { @id = "hdnCargoType", @name = "hdnCargoType" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.SSRBillableHead, new { @for = "SSRBillableHead" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.SSRBillableHeadID, String.Empty, new { @id = "spn_SSRBillableHeadID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.SSRBillableHead, new { @id = "SSRBillableHead", @name = "SSRBillableHead", @class = "form-control" })
+                                        @Html.HiddenFor(Model => Model.SSRBillableHeadID, new { @id = "SSRBillableHeadID", @name = "SSRBillableHeadID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Quantity, new { @for = "Quantity" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Quantity, String.Empty, new { @id = "spn_Quantity", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.Quantity, new { onblur = "calculateAmount();", @id = "Quantity", @name = "Quantity", @class = "form-control", @onkeypress = "return isNumber(event)" })
+                                        <input type="hidden" id="hdnQuantity" name="hdnQuantity" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Rate, new { @for = "Rate" })
+                                        @Html.TextBoxFor(Model => Model.Rate, new { onblur = "calculateAmount();", @id = "Rate", @name = "Rate", @class = "form-control", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.AdditionalRate, new { @for = "AdditionalRate" })
+                                        @Html.TextBoxFor(Model => Model.AdditionalRate, new { onblur = "calculateAmount();", @id = "AdditionalRate", @name = "AdditionalRate", @class = "form-control", @onkeypress = "return isNumber(event)" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Amount, new { @for = "Amount" })
+                                        @Html.TextBoxFor(Model => Model.Amount, new { @id = "Amount", @name = "Amount", @class = "form-control", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.Discount, new { @for = "Discount" })
+                                        @Html.TextBoxFor(Model => Model.Discount, new { @id = "Discount", @name = "Discount", @class = "form-control", @readonly = "readonly", onblur = "calculateAmount()" })
+                                        <input type="hidden" id="hdnDiscount" name="hdnDiscount" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.GrossAmount, new { @for = "GrossAmount" })
+                                        @Html.TextBoxFor(Model => Model.GrossAmount, new { @id = "GrossAmount", @name = "GrossAmount", @class = "form-control", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.GSTPer, new { @for = "GSTPer" }) @Html.ValidationMessageFor(Model => Model.Quantity, String.Empty, new { @id = "spn_GSTPer", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.GSTPer, new { @id = "GSTPer", @name = "GSTPer", @class = "form-control", @readonly = "readonly", onblur = "calculateAmount()" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.GSTamt, new { @for = "GSTamt" })
+                                        @Html.TextBoxFor(Model => Model.GSTamt, new { @id = "GSTamt", @name = "GSTamt", @class = "form-control", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.TotalAmount, new { @for = "TotalAmount" })
+                                        @Html.TextBoxFor(Model => Model.TotalAmount, new { disabled = "disabled", @id = "TotalAmount", @name = "TotalAmount", @class = "form-control" })
+                                        @Html.HiddenFor(Model => Model.hdnTotalAmount, new { @id = "hdnTotalAmount", @name = "hdnTotalAmount" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <br />
+
+                                        <button type="button" class="btn btn-danger pull-right" onclick="ClearSSRDetails()">Clear</button>
+                                        <button type="submit" style="margin-right:5px;" onclick="return DocumentValidation(2)" class="btn btn-primary pull-right">Add</button>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12" style="overflow:scroll">
+                                    <div class="pull-right">
+                                        <div style="display: inline-flex">
+                                            <div class="input-group input-group-sm">
+                                                <input id="txtTblSearch" name="txtTblSearch" type="text" class="form-control" onkeyup="DataTableSeachEngine('txtTblSearch','SSRdetail','btnTblSearch')" placeholder="Search for Common" value="">
+                                                <span class="input-group-btn">
+                                                    <button type="button" id="btnTblSearch" onclick="DataTableSeachEngine('txtTblSearch','SSRdetail','btnTblSearch','yes')" class="btn btn-primary btn-flat">Search</button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12" style="overflow:scroll">
+                                    <table id="SSRdetail" style="white-space: nowrap;" class="table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Cont No</th>
+                                                <th>Size</th>
+                                                <th>Type</th>
+                                                <th>Cargo Type</th>
+                                                <th>SSR Billable Head</th>
+                                                <th>Quantity</th>
+                                                <th>Rate</th>
+                                                <th>Additional Rate</th>
+                                                <th>Amount</th>
+                                                <th>Discount</th>
+                                                <th>Gross Amount</th>
+                                                <th>GST(%)</th>
+                                                <th>GST Amount</th>
+                                                <th>Total Amount</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.MySubDatatable != null && Model.MySubDatatable.Rows.Count > 0)
+                                            {
+                                                for (int i = 0; i < Model.MySubDatatable.Rows.Count; i++)
+                                                {
+                                                    <tr>
+                                                        <td style="display:none"><span id="trnContainerSSRDetailsID_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]</span></td>
+                                                        <td style="display:none"><span id="ContNoID_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["ContNoID"]</span></td>
+                                                        <td style="display:none"><span id="SSRBillableHeadID_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["SSRBillableHeadID"]</span></td>
+                                                        <td><span id="ContNo_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["ContNo"].ToString()</span></td>
+                                                        <td><span id="Size_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["Size"]</span></td>
+                                                        <td><span id="Type_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["Type"]</span></td>
+                                                        <td><span id="CargoType_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["CargoType"]</span></td>
+                                                        <td><span id="SSRBillableHead_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["SSRBillableHead"]</span></td>
+                                                        <td><span id="Quantity_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["Quantity"]</span></td>
+                                                        <td><span id="Rate_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["Rate"]</span></td>
+                                                        <td><span id="AdditionalRate_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["AdditionalRate"]</span></td>
+                                                        <td><span id="Amount_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["Amount"]</span></td>
+                                                        <td><span id="Discount_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["Discount"]</span></td>
+                                                        <td><span id="GrossAmount_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["GrossAmount"]</span></td>
+                                                        <td><span id="GSTper_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["GSTper"]</span></td>
+                                                        <td><span id="GSTamt_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["GSTamt"]</span></td>
+                                                        <td><span id="TotalAmount_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["TotalAmount"]</span></td>
+                                                        <td><span id="Status_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@(!Convert.ToBoolean(Model.MySubDatatable.Rows[i]["flagdeleted"]) ? "Active" : "Cancelled")</span></td>
+                                                        <td>
+                                                            @if (!Convert.ToBoolean(Model.MySubDatatable.Rows[i]["flagdeleted"]) && Convert.ToBoolean(Model.MySubDatatable.Rows[i]["CanEditDelete"]))
+                                                            {
+                                                                <a onclick="EditSSRDetails('@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]')"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                                                <a class="btn btn-danger pull-right" style=" font-size: x-small; cursor: pointer; vertical-align: middle;"
+                                                                   data-toggle="modal" data-target="#DeleteSubContainerSSR"
+                                                                   onclick="DeleteSubRemarks('trnContainerSSRDetails','@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]')"
+                                                                   title="Click to Cancel">Cancel</a>@CFS.Com.ClsCommon.AddhtmlSpace(1)
+                                                            }
+                                                            <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('trnContainerSSRDetails','@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        if (Model.doaction == "edit")
+                        {
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button type="submit" onclick="return FinalFinished();" class="btn btn-primary">Save</button>
+                                    <a href="@Url.Action("Index", "trnContainerSSR", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                                </div>
+                            </div>
+                        }
+                    }
+                }
+            </div>
+        </div>
+        <div class="modal fade in" id="DeleteSubContainerSSR" style="display: none; padding-right: 17px;">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title">Cancel Sub Container SSR</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row" style="padding:15px;">
+                            @Html.HiddenFor(Model => Model.trnContainerSSRDetailsID, new { @id = "trnContainerSSRDetailsID", @name = "trnContainerSSRDetailsID" })
+                            <div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.DeleteRemarks, new { @for = "DeleteRemarks" })  @Html.ValidationMessageFor(Model => Model.DeleteRemarks, String.Empty, new { @id = "spn_DeleteRemarks", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.DeleteRemarks, new { @id = "DeleteRemarks", @name = "DeleteRemarks", @class = "form-control", @placeholder = "Enter Cancel Remarks" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger pull-right margin-r-5" onclick="DeleteSubContainerSSR();" id="delete">Confirm</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    </section>
+}
+<script>
+    var doaction = '@Model.doaction';
+    var IsSearch = '@Model.IsSearch.ToString().ToLower()';
+    var ImporterCode = '@CFS.Com.ClsCommon.GetSettingValue("IMPTR", "1")';
+    var ExporterCode = '@CFS.Com.ClsCommon.GetSettingValue("EXPTR", "2")';
+    var DomesticCode = '@CFS.Com.ClsCommon.GetSettingValue("DMESC", "3")';
+    var trnContainerSSRID = '@Model.trnContainerSSRID';
+    function changestepValue(tabNo) {
+        $("#DocumentTab").val(tabNo);
+        if (tabNo != "1") {
+            if (tabNo == "5") {
+                $("#IsChangeStep").val(2);
+            }
+        }
+    }
+
+function FinalFinished()
+    {
+        $("#IsFinished").val(true);
+        return DocumentValidation(1);
+    }
+</script>
+@if (((Model != null && Model.doaction.ToLower() == "edit") || Model.trnContainerSSRID > 0))
+{
+    <script>
+        $(".isDisplayOnlyinEdit").show();
+    </script>
+}
+else
+{
+    <script>
+        $(".isDisplayOnlyinEdit").hide();
+    </script>
+}
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnContainerSSR.js")"></script>

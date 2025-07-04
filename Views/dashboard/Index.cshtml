@@ -1,0 +1,611 @@
+﻿@model CFS.Models.dashboard
+@{    
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize");
+    }
+}
+<link href="~/Content/theme/bower_components/jvectormap/jquery-jvectormap.css" rel="stylesheet" />
+
+<link href="~/Content/theme/dist/css/skins/_all-skins.min.css" rel="stylesheet" />
+<link href="~/Content/css/dashboard.css" rel="stylesheet" />
+<link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/css/dashboard.css")" />
+<!-- Main content -->
+<section class="content" style="overflow: hidden; ">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-7 DashBoardHeader"><h4><b>Accounting Dashboard</b></h4></div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    @Html.LabelFor(Model => Model.FromDate, new { @for = "FromDate" })
+                    <div class="input-group">
+                        @Html.TextBoxFor(Model => Model.FromDate, new { @id = "FromDate", @name = "FromDate", @class = "form-control DatePicker" })
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    @Html.LabelFor(Model => Model.ToDate, new { @for = "ToDate" })
+                    <div class="input-group">
+                        @Html.TextBoxFor(Model => Model.ToDate, new { @id = "ToDate", @name = "ToDate", @class = "form-control DatePicker" })
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1" style="margin-top:24px">
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary fa fa-search" style="height:30px;" onclick="SerchDate();"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Info boxes -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-5">
+                <div class="col-md-6">
+                    <!-- Info Boxes Style 2 -->
+                    <div class="info-box bondInvoice1">
+                        <div class="info-box-text text-center">
+                            <h4>Bond Invoice Amt.(Lac)</h4>
+                        </div>
+                        <div class="info-box-number text-center">
+                            <h4>@Model.BondInvoiceAmt</h4>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <!-- Info Boxes Style 2 -->
+                    <div class="info-box EmptyInvoice1">
+                        <div class="info-box-text text-center">
+                            <h4>Empty Invoice Amt.(Lac)</h4>
+                        </div>
+                        <div class="info-box-number text-center">
+                            <h4>@Model.EmptyInvoiceAmt</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-box ExportInvoice1">
+                        <div class="info-box-text text-center">
+                            <h4>Export Invoice Amt.(Lac)</h4>
+                        </div>
+                        <div class="info-box-number text-center">
+                            <h4>@Model.ExportInvoiceAmt</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <!-- /.info-box -->
+                    <div class="info-box  MiscInvoice1">
+                        <div class="info-box-text text-center">
+                            <h4>Misc. Invoice Amt.(Lac)</h4>
+                        </div>
+                        <div class="info-box-number text-center">
+                            <h4>@Model.MiscInvoiceAmt</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="box AllChart">
+                        <div class="box-header with-border rectangle-214">
+                            <h3 class="box-title AllHeaderSpace">Bond Expired</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="row">                                
+                                <div class="col-md-12">
+                                    <div class="chart">
+                                        <!-- line Chart Canvas -->
+                                        <canvas id="barChart" style="height:240px"></canvas>
+                                    </div>
+                                    <!-- /.chart-responsive -->
+                                </div>
+                                <!-- /.col -->
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="box AllChart">
+                        <div class="box-header with-border rectangle-214">
+                            <h3 class="box-title AllHeaderSpace">Cargo Inventory Details</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="chart-container">
+                                        <!-- Pie Chart Canvas -->
+                                        <canvas id="pieChart1"></canvas>
+                                        <div class="legend-container">
+                                            <div class="legend-item">
+                                                <span class="legend-color active"></span>Total Qty(Lac)
+                                            </div>
+                                            <div class="legend-item">
+                                                <span class="legend-color idle"></span>Total Wt(Lac)
+                                            </div>
+                                            <div class="legend-item">
+                                                <span class="legend-color AreaInUse"></span>Total Area in use(Lac)
+                                            </div>
+                                            <div class="legend-item">
+                                                <span class="legend-color breakdown"></span>Total Cargo Value(Lac)
+                                            </div>
+                                            <div class="legend-item">
+                                                <span class="legend-color Dutyvalue"></span>Total Custom Duty(Lac)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.chart-responsive -->
+                                </div>
+                                @*<div class="col-md-4" style="font-size:15px;">
+                                        <ul class="chart-legend clearfix">
+                                            <li><i class="fa fa-square" style="color: #0fb200"></i> </li>
+                                            <li><i class="fa fa-square" style="color: #ff3e26"></i> Total Wt	</li>
+                                            <li><i class="fa fa-square" style="color: #295a7d "></i>  </li>
+                                            <li><i class="fa fa-square" style="color: #00181e"></i> 	</li>
+                                            <li><i class="fa fa-square" style="color: #00cdff"></i> 	</li>
+                                        </ul>
+                                    </div>*@
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+                        </div>
+                    </div>
+                    <!-- /.box -->
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="col-md-12">
+                    <div class="box AllChart">
+                        <div class="box-header with-border rectangle-214">
+                            <h3 class="box-title AllHeaderSpace">TEUS Wise & Space Wise Volume details</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="row">
+                                @*<div class="pull-right">
+                                        <h5><i class="fa fa-square" style="color: #5a39db"></i> TEUs Volume</h5>
+                                        <h5><i class="fa fa-square" style="color: #fd9f32"></i> Space Sale</h5>
+                                    </div>*@
+                                <div class="col-md-12">
+                                    <div class="chart">
+                                        <!-- line Chart Canvas -->
+                                        <canvas id="lineChart1" style="height: 210px;"></canvas>
+                                    </div>
+                                    <!-- /.chart-responsive -->
+                                </div>
+                                <!-- /.col -->
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+                        </div>
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <div class="col-md-12">
+                    <div class="box AllChart">
+                        <div class="box-header rectangle-214">
+                            <h3 class="box-title AllHeaderSpace">Due Collection Reports</h3>
+                            <div class="pull-right">
+                                <a id="btnViewMore" style="color: #fff" data-toggle="modal" data-target="#ModalDueDetails"><h5 class="box-title viewMoer">View More</h5><i title="DueDetails" style="font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-long-arrow-right viewMoer"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="box-body chart-container-table" style="overflow:auto;">
+                            <table class="table table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th>Sr.</th>
+                                        <th>NOC No</th>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.dtDuesCollection != null && Model.dtDuesCollection.Rows.Count > 0)
+                                    {
+                                        for (int i = 0; i < Model.dtDuesCollection.Rows.Count; i++)
+                                        {
+                                            int Srno = i + 1;
+                                            <tr>
+                                                <td>@Srno</td>
+                                                <td>@Model.dtDuesCollection.Rows[i]["NOCNo"]</td>
+                                                <td>@Convert.ToDateTime(Model.dtDuesCollection.Rows[i]["NOCDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat)</td>
+                                                <td>@Model.dtDuesCollection.Rows[i]["Type"]</td>
+                                            </tr>
+                                            if (i == 5)
+                                            {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr><td>No recored Found</td></tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-12">
+                    <div class="box AllChart">
+                        <div class="box-header with-border rectangle-214">
+                            <h3 class="box-title AllHeaderSpace">Customer Share (Billing Party)</h3>
+                            <div class="pull-right">
+                                <a id="btnViewMore" style="color: #fff" data-toggle="modal" data-target="#ModalCustomerDetails"><h5 class="box-title viewMoer">View More</h5><i title="CustomerDetails" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-long-arrow-right viewMoer"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="box-body chart-container-table">
+                            <table class="table table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th>Sr.</th>
+                                        <th>Name</th>
+                                        <th>Teus</th>
+                                        <th>Space Sale(Lac)</th>
+                                        <th>Cargo Value(Lac)</th>
+                                        <th>Custom Duty(Lac)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.dtCustomerDetails != null && Model.dtCustomerDetails.Rows.Count > 0)
+                                    {
+
+                                        for (int i = 0; i < Model.dtCustomerDetails.Rows.Count; i++)
+                                        {
+                                            int SrNo = i + 1;
+                                            <tr>
+                                                <td>@SrNo</td>
+                                                <td>@Model.dtCustomerDetails.Rows[i]["BillToParty"]</td>
+                                                <td>@Model.dtCustomerDetails.Rows[i]["Tues"]</td>
+                                                <td>@Model.dtCustomerDetails.Rows[i]["TotalSpace"]</td>
+                                                <td>@Model.dtCustomerDetails.Rows[i]["CargoValue"]</td>
+                                                <td>@Model.dtCustomerDetails.Rows[i]["Dutyvalue"]</td>
+                                            </tr>
+                                            if (i == 5)
+                                            {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr><td colspan="6">No Recored Found</td></tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- /.chart-responsive -->
+    </div>
+    <div class="modal fade in" id="ModalCustomerDetails" style="display: none; padding-right: 17px;">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Customer Details</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="padding: 15px; overflow-y: scroll; max-height: 400px; ">
+                        <table class="table-bordered" style="white-space: nowrap;">
+                            <thead>
+                                <tr>
+                                    <th>Sr.</th>
+                                    <th>Name</th>
+                                    <th>Teus</th>
+                                    <th>Space Sale(Lac)</th>
+                                    <th>Cargo Value(Lac)</th>    
+                                    <th>Custom Duty(Lac)</th>
+                                </tr>                                
+                            </thead>
+                            <tbody>
+                                @if (Model.dtCustomerDetails != null && Model.dtCustomerDetails.Rows.Count > 0)
+                                {
+                                    int SrNo = 0;
+                                    for (int i = 0; i < Model.dtCustomerDetails.Rows.Count; i++)
+                                    {
+                                        SrNo = i + 1;
+                                        <tr>
+                                            <td>@SrNo</td>
+                                            <td>@Model.dtCustomerDetails.Rows[i]["BillToParty"]</td>
+                                            <td>@Model.dtCustomerDetails.Rows[i]["Tues"]</td>
+                                            <td>@Model.dtCustomerDetails.Rows[i]["TotalSpace"]</td>
+                                            <td>@Model.dtCustomerDetails.Rows[i]["CargoValue"]</td>
+                                            <td>@Model.dtCustomerDetails.Rows[i]["Dutyvalue"]</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>                    
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade in" id="ModalDueDetails" style="display:none;padding-right:17px;">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                    <h4 class="modal-title">Due Collection</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="padding:15px;overflow:scroll;max-height:400px;">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Sr.</th>
+                                    <th>NOC No</th>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.dtDuesCollection != null && Model.dtDuesCollection.Rows.Count > 0)
+                                {
+                                    int SrNo = 0;
+                                    for (int i = 0; i < Model.dtDuesCollection.Rows.Count; i++)
+                                    {
+                                        SrNo = i + 1;
+                                        <tr>
+                                            <td>@SrNo</td>
+                                            <td>@Model.dtDuesCollection.Rows[i]["NOCNo"]</td>
+                                            <td>@Convert.ToDateTime(Model.dtDuesCollection.Rows[i]["NOCDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat)</td>
+                                            <td>@Model.dtDuesCollection.Rows[i]["Type"]</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td>No Recored Found</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>    
+    var CargoData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.InventroyList));
+    // Extract labels and data for the pie chart
+    var data = 0;
+    var labels = "";
+    if (CargoData != null) {
+        labels = CargoData.map(function (item) { return item.Lable; });
+        data = CargoData.map(function (item) { return parseFloat(item.Invdata, 2); });
+    }
+    
+    /*var data = ["9", "85", "79", "90", "145"];*/
+    // Check if data is available
+    if (data.length === 0 || data.every(value => value === 0)) {
+        // If no data is available, show a 360-degree pie chart with gray color
+        labels = ['No Data Available'];
+        data = [1]; // Single slice to fill the chart
+        var backgroundColor = ['#D3D3D3']; // Gray color
+    } else {
+        // Use the actual data and colors
+        var backgroundColor = ['#0fb200', '#ff3e26', '#00181e', '#00cdff', '#295a7d'];
+    }
+    // Initialize the pie chart
+    var ctx = document.getElementById('pieChart1').getContext('2d');
+    var pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: backgroundColor,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {                            
+                            var label = context.label || '';
+                            var value = context.raw || 0;
+                            return `${label}: ${value}`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    $(function () {        
+        var BondExpiredList =@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.BondExpiredList));
+
+        var TotalQty = BondExpiredList.map(function (item) { return item.TotQty });
+        var TotalWeight = BondExpiredList.map(function (item) { return item.TotWT });
+        var TotalCargoValue = BondExpiredList.map(function (item) { return item.TotAV });
+        var TotalCustomsDuty = BondExpiredList.map(function (item) { return item.TotDV });
+        var TotalSpace = BondExpiredList.map(function (item) { return item.TotSpace });
+        var MonthLabels = BondExpiredList.map(function (item) { return item.MonthNM });
+
+        var areaChartData = {
+            labels: MonthLabels,
+            datasets: [
+                {
+                    label: 'Total Qty(Lac)',
+                    backgroundColor: "#0fb200",
+                    fillColor: 'rgba(210, 214, 222, 1)',
+                    strokeColor: 'rgba(210, 214, 222, 1)',
+                    pointColor: 'rgba(210, 214, 222, 1)',
+                    pointStrokeColor: '#c1c7d1',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(220,220,220,1)',
+                    data: TotalQty
+                },
+                {
+                    label: 'Total Weight(Lac)',
+                    backgroundColor: "#ff3e26",
+                    fillColor: 'rgba(60,141,188,0.9)',
+                    strokeColor: 'rgba(60,141,188,0.8)',
+                    pointColor: '#3b8bba',
+                    pointStrokeColor: 'rgba(60,141,188,1)',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data: TotalWeight
+                }
+                ,
+                {
+                    label: 'Total Cargo Value(Lac)',
+                    backgroundColor: "#295a7d",
+                    fillColor: 'rgba(60,141,188,0.9)',
+                    strokeColor: 'rgba(60,141,188,0.8)',
+                    pointColor: '#3b8bba',
+                    pointStrokeColor: 'rgba(60,141,188,1)',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data: TotalCargoValue
+                }
+                ,
+                {
+                    label: 'Total Customs Duty(Lac)',
+                    backgroundColor: "#00181e",
+                    fillColor: 'rgba(60,141,188,0.9)',
+                    strokeColor: 'rgba(60,141,188,0.8)',
+                    pointColor: '#3b8bba',
+                    pointStrokeColor: 'rgba(60,141,188,1)',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data: TotalCustomsDuty
+                }
+                ,
+                {
+                    label: 'Total Space(Lac)',
+                    backgroundColor: "#00cdff",
+                    fillColor: 'rgba(60,141,188,0.9)',
+                    strokeColor: 'rgba(60,141,188,0.8)',
+                    pointColor: '#3b8bba',
+                    pointStrokeColor: 'rgba(60,141,188,1)',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data: TotalSpace
+                }
+            ]
+        }
+        //-------------
+        //- BAR CHART -
+        //-------------
+        var barChartCanvas = $('#barChart').get(0).getContext('2d');
+
+        var barChart = new Chart(barChartCanvas, {
+            type: 'bar',
+            data: areaChartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: true
+                        }
+                    }
+                }
+            }
+        });
+    });
+
+    $(function () {        
+        var TeusSpacedata =@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.TeusSpaceList));
+        var Linelable = TeusSpacedata.map(function (item) { return item.Monthnm; });
+        var Teusdata = TeusSpacedata.map(function (item) { return parseInt(item.Tues); });
+        var Spacedata = TeusSpacedata.map(function (item) { return parseInt(item.TotSpace); });
+        var lineChartData = {
+            labels: Linelable,
+            datasets: [
+                {
+                    label: 'TEUs Volume',
+                    fillColor: 'rgba(210, 214, 222, 1)',
+                    strokeColor: '#5a39db',
+                    pointColor: '#5a39db',
+                    pointStrokeColor: '#c1c7d1',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(220,220,220,1)',
+                    data: Teusdata
+                },
+                {
+                    label: 'Space Sale',
+                    fillColor: 'rgba(60,141,188,0.9)',
+                    strokeColor: '#fd9f32',
+                    pointColor: '#fd9f32',
+                    pointStrokeColor: 'rgba(60,141,188,1)',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data: Spacedata
+                }
+            ]
+        }
+        //-------------
+        //- Line CHART -
+        //-------------
+        var LineChartCanvas = $('#lineChart1').get(0).getContext('2d');
+
+        var barChart = new Chart(LineChartCanvas, {
+            type: 'line',
+            data: lineChartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: true
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/DashBoard.js")"></script>

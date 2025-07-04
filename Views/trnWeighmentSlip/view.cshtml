@@ -1,0 +1,164 @@
+﻿@model CFS.Models.trnWeighmentSlip
+@{
+    ViewBag.Title = "View Weighment Slip";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            @using (Html.BeginForm("Action", CFS.Com.ClsCommon.Controller(), FormMethod.Post))
+            {
+                <div class="box">
+                    <div class="box-body">
+                        @if (Model != null && Model.doaction == "edit")
+                        {
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4>
+                                        <b>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">Weighment Slip No : @Model.trnWeighmentSlipPrefix@Model.trnWeighmentSlipNo </span>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">Datetime  :@Model.CreatedDate</span>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">User :@Model.CreatedUser</span>
+                                        </b>
+                                    </h4>                                    
+                                </div>
+                            </div>
+                        }
+                        <div class="pull-right" id="divBack">
+                            <div style="display: inline-flex">
+                                <a id="btnBack" href="@Url.Action("Index", CFS.Com.ClsCommon.Controller(), new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.trnWeighmentSlipID)
+                        @Html.HiddenFor(Model => Model.doaction)
+
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.TruckNo) :
+                            @Html.DisplayFor(Model => Model.TruckNo)
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.ContainerNo) :
+                            @Html.DisplayFor(Model => Model.ContainerNo)
+                        </div>
+
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                        
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.WeighmentMode) :
+                            @Html.DisplayFor(Model => Model.WeighmentMode)
+                        </div>
+
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.WeighmentInvoiceType) :
+                            @Html.DisplayFor(Model => Model.WeighmentInvoiceType)
+                        </div>
+
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.CashWeighmentInvoiceNo) :
+                            @Html.DisplayFor(Model => Model.CashWeighmentInvoiceNo)
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.FirstWeighmentUser) :
+                            @Html.DisplayFor(Model => Model.FirstWeighmentUser)
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.SecondWeighmentUser) :
+                            @Html.DisplayFor(Model => Model.SecondWeighmentUser)
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.Cycle) :
+                            @Html.DisplayFor(Model => Model.Cycle)
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.InOutTruckNo) :
+                            @Html.DisplayFor(Model => Model.InOutTruckNo)
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.TransactionType) :
+                            @Html.DisplayFor(Model => Model.TransactionType)
+                        </div>
+                        <div id="dvContainerDetails">
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.ContainerNo) :
+                                @Html.DisplayFor(Model => Model.ContainerNo)
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.Size) :
+                                @Html.DisplayFor(Model => Model.Size)
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.Type) :
+                                @Html.DisplayFor(Model => Model.Type)
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.CargoType) :
+                                @Html.DisplayFor(Model => Model.CargoType)
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.Equipment) :
+                            @Html.DisplayFor(Model => Model.Equipment)
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.WeighmentModeNo) :
+                            @Html.DisplayFor(Model => Model.WeighmentModeNo)
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.WeighmentScaleWeight) :
+                            @Html.DisplayFor(Model => Model.WeighmentScaleWeight)
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.GrossWeight) :
+                            @Html.DisplayFor(Model => Model.GrossWeight)
+                        </div>
+                        <div id="TruckTareWeight" class="col-md-4">
+                            @Html.LabelFor(Model => Model.TruckTareWeight) :
+                            @Html.DisplayFor(Model => Model.TruckTareWeight)
+                        </div>
+                        <div id="ContainerTareWeight" class="col-md-4">
+                            @Html.LabelFor(Model => Model.ContainerTareWeight) :
+                            @Html.DisplayFor(Model => Model.ContainerTareWeight)
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.NetWeight) :
+                            @Html.DisplayFor(Model => Model.NetWeight)
+                        </div>
+                        <div class="col-md-4">
+                            <label> Remarks :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.Remarks</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="dvNocDetails">
+                    @Html.Partial("_DOCDetailsGrid")
+                </div>
+               
+            }
+        </div>
+    </div>
+</section>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnWeighmentSlip.js")"></script>
+<script>
+    var IsEdit = "true";
+    var IsSearch = '@Model.IsSearch';
+    var doaction = '@Model.doaction';
+    var SearchType = '@Model.SearchType';
+    //setTimeout(function () {
+    //    $(".hideinViewMode").hide();
+    //}, 500);
+</script>

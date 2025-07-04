@@ -1,0 +1,86 @@
+﻿@model CFS.Models.MstrTaxGroup
+
+@{
+    ViewBag.Title = "View Tax Group";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (ViewBag.gblBlnView)
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">Tax Group Code: @Model.TaxGrpCode</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrTaxGroup","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrTaxGroup", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div class="col-md-5">
+
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>Tax Group Name : </label> <span>@Model.TaxGrpname</span>
+                            </div>
+                            <div class="form-group">
+                                <label>HSN/SAC Code : </label> <span>@Model.HSNSacCode</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Remarks : </label> <span>@Model.Remark</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Status: </label> <span>@(Model.IsActive == true ? "Active" : "InActive")</span>
+                            </div>
+                            @if (!Model.IsActive)
+                            {
+                                <div class="form-group">
+                                    <label>Inactivate Reason : </label> <span>@Model.InActiveReason</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="col-md-3">Tax Name</th>
+                                    <th class="col-md-3">Tax Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.MstrTaxGroupSub.MySubDatatable != null && Model.MstrTaxGroupSub.MySubDatatable.Rows.Count > 0)
+                                {
+                                    for (int i = 0; i < Model.MstrTaxGroupSub.MySubDatatable.Rows.Count; i++)
+                                    {
+                                        <tr>
+                                            <td style="display:none"><span id="MstrTaxTypeID_@Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["TaxID"]">@Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["MstrTaxTypeID"]</span></td>
+                                            <td style="display:none"><span id="TaxID_@Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["TaxID"]">@Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["TaxID"]</span></td>
+                                            <td><span id="Taxname_@Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["TaxID"]">@Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["Taxname"]</span></td>
+                                            <td><span id="TaxPer_@Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["TaxID"]">@Convert.ToDecimal(Model.MstrTaxGroupSub.MySubDatatable.Rows[i]["TaxPer"]).ToString("0.00")</span></td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

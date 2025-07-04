@@ -1,0 +1,236 @@
+﻿@model CFS.Models.trnWeighmentSlip
+@using System.Globalization;
+@{
+    ViewBag.Title = "Weighment Slip List";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header" id="divSearch">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat" id="btnSearch">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a id="btnBack" href="@Url.Action("Action", CFS.Com.ClsCommon.Controller(), new { doaction = "add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Weighment Slip"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div style="overflow-x:scroll">
+                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "WS.trnWeighmentSlipNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "ws.trnweighmentslipno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "ws.trnweighmentslipno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Weighment Slip No.</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "WS.SearchNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "ws.searchno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "ws.searchno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Truck No. / Container No.</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "WS.TruckNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "ws.truckno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "ws.truckno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Truck No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "WeighmentDateUser", SortOrder = (Model.pagger.SortColumn.ToLower() == "weighmentdateuser" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "weighmentdateuser" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Weighment Slip Date</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "ws.BOENo", SortOrder = (Model.pagger.SortColumn.ToLower() == "ws.boeno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "ws.boeno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> In-BOE No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "ws.BOEDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "ws.boedate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "ws.boedate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> In-BOE Date</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "ws.BOENo", SortOrder = (Model.pagger.SortColumn.ToLower() == "ws.boeno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "ws.boeno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> EX-BOE No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "ws.BOEDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "ws.boedate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "ws.boedate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> EX-BOE Date</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "ws.trnDocumentNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "ws.trndocumentno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "ws.trndocumentno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> NOC No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "ws.DocDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "ws.docdate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "ws.docdate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> NOC Date</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "WS.Equipment", SortOrder = (Model.pagger.SortColumn.ToLower() == "ws.equipment" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "ws.equipment" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Equipment</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "WS.WeighmentModeNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "ws.weighmentmodeno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "ws.weighmentmodeno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Weighment Mode No.</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "WS.WeighmentScaleWeight", SortOrder = (Model.pagger.SortColumn.ToLower() == "ws.weighmentscaleweight" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "ws.weighmentscaleweight" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Weighment Scale Weight</a>
+                                    </th>
+                                    <th class="freezeLastColumn">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                {
+                                    string mode = "", SearchNo = "", SearchType = "", TType = "";
+                                <tr>
+                                    <td>@(Convert.ToString(Model.MyDatatable.Rows[i]["trnWeighmentSlipPrefix"]) + Convert.ToString(Model.MyDatatable.Rows[i]["trnWeighmentSlipNo"]))</td>
+                                    <td>@Model.MyDatatable.Rows[i]["SearchNo"]</td>
+                                    <td>@Model.MyDatatable.Rows[i]["TruckNo"]</td>
+                                    <td>@Model.MyDatatable.Rows[i]["WeighmentDateUser"]</td>
+                                    <td>
+                                        @if (Model.MyDatatable.Rows[i]["wsMode"].ToString().ToUpper() == "GATE IN")
+                                        {
+                                            @Model.MyDatatable.Rows[i]["BOENo"]
+                                        }
+                                        else { }
+                                    </td>
+                                    <td>
+                                        @if (Model.MyDatatable.Rows[i]["wsMode"].ToString().ToUpper() == "GATE IN")
+                                        {
+                                            if (!string.IsNullOrEmpty(Model.MyDatatable.Rows[i]["BOEDate"].ToString()))
+                                            {
+                                                @Model.MyDatatable.Rows[i]["BOEDate"]
+                                            }
+                                            else { }
+                                        }
+                                        else { }
+                                    </td>
+                                    <td>
+                                        @if (Model.MyDatatable.Rows[i]["wsMode"].ToString().ToUpper() == "GATE OUT")
+                                        {
+                                            @Model.MyDatatable.Rows[i]["BOENo"]
+                                        }
+                                        else { }
+                                    </td>
+                                    <td>
+                                        @if (Model.MyDatatable.Rows[i]["wsMode"].ToString().ToUpper() == "GATE OUT")
+                                        {
+                                            if (!string.IsNullOrEmpty(Model.MyDatatable.Rows[i]["BOEDate"].ToString()))
+                                            {
+                                                @Model.MyDatatable.Rows[i]["BOEDate"]
+                                            }
+                                            else { }
+                                        }
+                                        else { }
+                                    </td>
+
+                                    <td>@Model.MyDatatable.Rows[i]["trnDocumentNo"]</td>
+                                    @if (Model.MyDatatable.Rows[i]["DocDate"] != null && Convert.ToString(Model.MyDatatable.Rows[i]["DocDate"]) != "")
+                                    {
+                                        <td>@Model.MyDatatable.Rows[i]["DocDate"]</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                    <td>@Model.MyDatatable.Rows[i]["Equipment"]</td>
+                                    <td>@Model.MyDatatable.Rows[i]["WeighmentModeNo"]</td>
+                                    <td>@Model.MyDatatable.Rows[i]["WeighmentScaleWeight"]</td>
+                                    @if (Model.MyDatatable.Rows[i]["Mode"].ToString().ToLower() == "gate out")
+                                    {
+                                        if (Model.MyDatatable.Rows[i]["SearchType"].ToString().ToLower() == "exporttruck")
+                                        {
+                                            SearchType = "Truck";
+                                            SearchNo = Model.MyDatatable.Rows[i]["SearchNo"].ToString() + "-Export";
+                                            TType = "Export";
+                                        }
+                                        else if (Model.MyDatatable.Rows[i]["SearchType"].ToString().ToLower() == "truck")
+                                        {
+                                            SearchType = "Truck";
+                                            SearchNo = Model.MyDatatable.Rows[i]["SearchNo"].ToString() + "-Cargo";
+                                            TType = "Cargo";
+                                        }
+                                        else if (Model.MyDatatable.Rows[i]["SearchType"].ToString().ToLower() == "exportcontainer")
+                                        {
+                                            SearchType = "Container";
+                                            SearchNo = Model.MyDatatable.Rows[i]["SearchNo"].ToString() + "-Export";
+                                            TType = "Export";
+                                        }
+                                        else if (Model.MyDatatable.Rows[i]["SearchType"].ToString().ToLower() == "exportsts")
+                                        {
+                                            SearchType = "Container";
+                                            SearchNo = Model.MyDatatable.Rows[i]["SearchNo"].ToString() + "-ExportSTS";
+                                            TType = "EXPORTSTS";
+                                        }
+                                        else if (Model.MyDatatable.Rows[i]["SearchType"].ToString().ToLower() == "exportclp")
+                                        {
+                                            SearchType = "Container";
+                                            SearchNo = Model.MyDatatable.Rows[i]["SearchNo"].ToString() + "-EXPORTCLP";
+                                            TType = "EXPORTCLP";
+                                        }
+                                        else
+                                        {
+                                            SearchType = "Container";
+                                            SearchNo = Model.MyDatatable.Rows[i]["SearchNo"].ToString() + "-Container";
+                                            TType = "Container";
+
+                                            //SearchNo = Model.MyDatatable.Rows[i]["SearchNo"].ToString();
+                                            //SearchType = Model.MyDatatable.Rows[i]["SearchType"].ToString();
+                                        }
+                                    }
+                                    else if (Model.MyDatatable.Rows[i]["Mode"].ToString().ToLower() == "gate in")
+                                    {
+                                        SearchNo = Model.MyDatatable.Rows[i]["SearchNo"].ToString();
+                                        SearchType = Model.MyDatatable.Rows[i]["SearchType"].ToString();
+                                    }                                    
+                                    <td class="freezeLastColumnwithWhite">
+                                        @*@if (Model.MyDatatable.Rows[i]["Mode"].ToString().ToLower() == "gate out" && Model.MyDatatable.Rows[i]["TruckType"].ToString().ToLower() == "export")
+                                        {*@
+                                            @*if (ViewBag.gblBlnEdit && Convert.ToInt32(Model.MyDatatable.Rows[i]["UsedCount"]) == 0 && Convert.ToString(Model.MyDatatable.Rows[i]["Equipment"]) != "Reach Stacker for Container" && Model.MyDatatable.Rows[i]["WeighmentModeNo"].ToString() == "FIRST")
+                                            {
+                                                <a href="@Url.Action("Action", CFS.Com.ClsCommon.Controller(), new { id = Model.MyDatatable.Rows[i]["trnWeighmentSlipID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true, @SearchID = Model.MyDatatable.Rows[i]["SearchID"], @SearchNo = SearchNo, @SearchType = SearchType, @Mode=Model.MyDatatable.Rows[i]["Mode"] })"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                            }*@
+                                        @*}
+                                        else
+                                        {
+                                            if (ViewBag.gblBlnEdit && Convert.ToInt32(Model.MyDatatable.Rows[i]["UsedCount"]) == 0 && Convert.ToString(Model.MyDatatable.Rows[i]["Equipment"]) != "Reach Stacker for Container")
+                                            {
+                                                <a href="@Url.Action("Action", CFS.Com.ClsCommon.Controller(), new { id = Model.MyDatatable.Rows[i]["trnWeighmentSlipID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true, @SearchID = Model.MyDatatable.Rows[i]["SearchID"], @SearchNo = SearchNo, @SearchType = SearchType, @Mode=Model.MyDatatable.Rows[i]["Mode"] })"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                            }
+                                        }*@
+
+                                        @if (ViewBag.gblBlnView)
+                                        {
+                                            <a href="@Url.Action("view", CFS.Com.ClsCommon.Controller(), new { id = Model.MyDatatable.Rows[i]["trnWeighmentSlipID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true, @SearchID = Model.MyDatatable.Rows[i]["SearchID"], @SearchNo = SearchNo, @SearchType = SearchType, @Mode=Model.MyDatatable.Rows[i]["Mode"] })"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                        }
+
+                                        <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('trnWeighmentSlip','@Model.MyDatatable.Rows[i]["trnWeighmentSlipID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                        @if (ViewBag.gblBlnDelete && Convert.ToInt32(Model.MyDatatable.Rows[i]["UsedCount"]) == 0)
+                                        {
+                                            <a href="@Url.Action("delete", CFS.Com.ClsCommon.Controller(), new { id = Model.MyDatatable.Rows[i]["trnWeighmentSlipID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                        }
+                                        <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", CFS.Com.ClsCommon.Controller(), new { id = Model.MyDatatable.Rows[i]["trnWeighmentSlipID"], format = "pdf" ,@IsSearch = true, @SearchID = Model.MyDatatable.Rows[i]["SearchID"], @SearchNo = Model.MyDatatable.Rows[i]["SearchNo"], @SearchType = SearchType, @Mode = Model.MyDatatable.Rows[i]["Mode"],@TType=TType,@WeighmentModeNo=Model.MyDatatable.Rows[i]["WeighmentModeNo"] })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                    </td>
+                                </tr>
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+                    @Html.Partial("_pagination")
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    var doaction = '@Model.doaction';
+    var IsSearch = '@Model.IsSearch';
+    var SearchType = '@Model.SearchType';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnWeighmentSlip.js")"></script>
+

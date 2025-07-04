@@ -1,0 +1,185 @@
+﻿@model CFS.Models.BWDefaultBillableHead
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Default Billable Heads";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Default Billable Heads";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+
+<section class="content">
+    @using (Html.BeginForm("Action", "BWDefaultBillableHead", FormMethod.Post))
+    {
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                <a href="@Url.Action("Index", "BWDefaultBillableHead", new { pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+                    <div class="box-body">
+
+                        @Html.HiddenFor(Model => Model.BWDefaultBillableHeadID)
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+
+                        <div class="col-md-2">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Cycle, new { @for = "CycleName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.Cycle, String.Empty, new { @class = "help-inline text-red", @id = "spn_Cycle" })
+                                    @Html.TextBoxFor(Model => Model.Cycle, new { @id = "CycleName", @name = "CycleName", @class = "form-control", @placeholder = "Select Cycle Name" })
+                                    @Html.HiddenFor(Model => Model.hdnCycle, new { @id = "hdnCycleName" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.DeliveryMode, new { @for = "DeliveryMode" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.DeliveryMode, String.Empty, new { @class = "help-inline text-red", @id = "spn_DeliveryMode" })
+                                    @Html.TextBoxFor(Model => Model.DeliveryMode, new { @id = "DeliveryMode", @name = "DeliveryMode", @class = "form-control", @placeholder = "Select Delivery Mode", @onblur = "fclLclSelect()" })
+                                    @Html.HiddenFor(Model => Model.hdnDeliveryMode, new { @id = "hdnDeliveryMode" })
+                                    @*@Html.CheckBoxFor(Model => Model.IsTrue, new { @class = "form-control", @id = "" })*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.FclLcl, new { @for = "FclLcl" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.FclLcl, String.Empty, new { @class = "help-inline text-red", @id = "spn_FclLcl" })
+                                    @Html.TextBoxFor(Model => Model.FclLcl, new { @id = "FclLcl", @name = "FclLcl", @class = "form-control", @placeholder = "Select FLC/LCL" })
+                                    @Html.HiddenFor(Model => Model.hdnFclLcl, new { @id = "hdnFclLcl" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <br />
+                                    @Html.CheckBoxFor(Model => Model.IsActive, new { @class = "form-control" })
+                                    @Html.Label("IsActive") @Html.ValidationMessageFor(Model => Model.IsActive, String.Empty, new { @class = "help-inline text-red" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="box-body" style="margin-left: -80px;">
+                                <div class="form-group" id="dvInActiveReason">
+                                    @Html.LabelFor(Model => Model.InActiveReason, new { @for = "InActiveReason" }) @Html.ValidationMessageFor(Model => Model.InActiveReason, String.Empty, new { @class = "help-inline text-red", @id = "spn_InActiveReason" })
+                                    @Html.TextBoxFor(Model => Model.InActiveReason, new { @class = "form-control", @placeholder = "Enter Inactivate Reason" })
+                                </div>
+                            </div>
+                        </div>
+
+
+                        @if (Model.doaction == "add")
+                        {
+                            <div class="col-md-12">
+                                <div class="box-body">
+                                    <button type="submit" class="btn btn-primary" onclick="return GatePassValidationStep1()">Save & Next</button>
+                                    <a href="@Url.Action("Index", "BWDefaultBillableHead", new { pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        if (Model.doaction == "edit")
+        {
+            <div class="row" id="step-2">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-body" id="step-2-body">
+
+                            <div class="col-md-4">
+                                <div class="box-body">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.TariffHead, new { @for = "TariffHead" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TariffHead, String.Empty, new { @class = "help-inline text-red", @id = "spn_TariffHead" })
+                                        @Html.TextBoxFor(Model => Model.TariffHead, new { @id = "TariffHead", @name = "FclLcl", @class = "form-control", @placeholder = "Select Tariff Head" })
+                                        @Html.HiddenFor(Model => Model.hdnTariffHead, new { @id = "hdnTariffHead" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <br />
+                                <div class="box-body">
+                                    <a href="@Url.Action("Action", "BWDefaultBillableHead", new { pg = Request.Params["pg"], search = Request.Params["search"], doaction = Model.doaction })" class="btn btn-primary" onclick="return GatePassValidationStep2()">Add</a>
+                                </div>
+                            </div>
+
+                            @if (Model.MySubDatatable != null && Model.MySubDatatable.Rows.Count > 0)
+                            {
+                                <div class="col-md-12 row">
+                                    <div class="box-body">
+                                        <table id="LineName" class="table table-bordered table-hover">
+
+                                            <thead>
+                                                <tr>
+                                                    <th>Tariff Head</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @for (int i = 0; i < Model.MySubDatatable.Rows.Count; i++)
+                                                {
+                                                    <tr>
+                                                        <td id="hdntxtTariffHeadName_@Model.MySubDatatable.Rows[i]["TariffHeadName"]">@Model.MySubDatatable.Rows[i]["TariffHeadName"]</td>
+                                                        <td style="display:none" id="hdntxtBWDefaultBillableHeadDetailID_@Model.MySubDatatable.Rows[i]["BWDefaultBillableHeadDetailID"]">@Model.MySubDatatable.Rows[i]["BWDefaultBillableHeadDetailID"]</td>
+
+                                                        <td>
+                                                            <a href="@Url.Action("deleteSub", "BWDefaultBillableHead", new { id = Model.MySubDatatable.Rows[i]["BWDefaultBillableHeadDetailID"], id2 = Model.BWDefaultBillableHeadID, doaction = Model.doaction })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="box-body">
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                        <a href="@Url.Action("Index", "BWDefaultBillableHead", new { pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+    </section>
+<script>
+    doaction = '@Model.doaction';
+    let id = '@Model.BWDefaultBillableHeadID';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/BWDefaultBillableHead.js")"></script>
+

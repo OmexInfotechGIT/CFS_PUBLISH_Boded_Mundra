@@ -1,0 +1,17 @@
+﻿@{
+    CFS.Models.ReportsModal ReportsModal = new CFS.Models.ReportsModal();
+    if (ViewBag.ReportsModal != null)
+    {
+        ReportsModal = ViewBag.ReportsModal;
+    }
+}
+<div class="col-md-2">
+    <div class="form-group">
+        @Html.LabelFor(Model => ReportsModal.ForwarderName, new { @for = "ForwarderName" })
+        @Html.TextBoxFor(Model => ReportsModal.ForwarderName, new { @id = "ForwarderName", @name = "ForwarderName", @class = "form-control clsReadOnly", @placeholder = "Enter Forwarder" })
+        @Html.HiddenFor(Model => ReportsModal.ForwarderID, new { @id = "ForwarderID", @name = "ForwarderID" })
+    </div>
+</div>
+
+
+        

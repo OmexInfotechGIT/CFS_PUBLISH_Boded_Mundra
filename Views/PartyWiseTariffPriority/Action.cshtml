@@ -1,0 +1,109 @@
+﻿@model CFS.Models.PartyWiseTariffPriority
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    bool IsEdit = false;
+    if (Model.doaction == "edit")
+    {
+        IsEdit = true;
+        ViewBag.Title = "Update Tariff Priority";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Tariff Priority";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">                    
+                    <div class="pull-right">
+                        <div style="display: inline-flex">                            
+                            <a href="@Url.Action("Index","PartyWiseTariffPriority", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "PartyWiseTariffPriority", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model=>Model.PartyWiseTariffPriorityID)
+                        @Html.HiddenFor(Model=>Model.doaction)
+                        if (IsEdit)
+                        {
+                    <div class="col-md-2 form-group">
+                        @Html.LabelFor(Model => Model.SequenceNo, new { @for = "SequenceNo" })@Html.ValidationMessageFor(Model => Model.SequenceNo, String.Empty, new { @id = "spn_SequenceNo", @class = "help-inline text-red" })
+                        @Html.TextBoxFor(Model => Model.SequenceNo, new { @id = "SequenceNo", @name = "SequenceNo", @class = "form-control" })
+                    </div>
+                        }
+                <div class="col-md-1 form-group">
+                    @Html.LabelFor(Model => Model.InvoiceType)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.InvoiceType, String.Empty, new { @id = "spn_InvoiceType", @class = "help-inline text-red" })
+                    @Html.DropDownListFor(model => model.InvoiceType, Model.SelectInvoiceType, new { @class = "form-control", @id = "InvoiceType", @name = "InvoiceType"})
+                </div>
+                    <div class="col-md-2 form-group">
+                        @Html.LabelFor(Model => Model.BillToParty, new { @for = "BillToPartyID" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.BillToParty, String.Empty, new { @id = "spn_BillToParty", @class = "help-inline text-red" })
+                        @Html.TextBoxFor(Model => Model.BillToParty, new { @id = "BillToParty", @name = "BillToParty", @class = "form-control", @placeholder = "Select BillToParty" })
+                        @Html.HiddenFor(Model => Model.BillToPartyID)
+                    </div>
+                    <div class="col-md-2 form-group">
+                        @Html.LabelFor(Model => Model.Line, new { @for = "Line" }) <span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.Line, String.Empty, new { @id = "spn_Line", @class = "help-inline text-red" })
+                        @Html.TextBoxFor(Model => Model.Line, new { @id = "Line", @name = "Line", @class = "form-control", @placeholder = "Select Line" })
+                        @Html.HiddenFor(Model => Model.LineID)
+                    </div>
+                    <div class="col-md-2 form-group">
+                        @Html.LabelFor(Model => Model.CHA, new { @for = "CHA" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.CHA, String.Empty, new { @id = "spn_CHA", @class = "help-inline text-red" })
+                        @Html.TextBoxFor(Model => Model.CHA, new { @id = "CHA", @name = "CHA", @class = "form-control", @placeholder = "Select CHA" })
+                        @Html.HiddenFor(Model => Model.CHAID)
+                    </div>
+                    <div class="col-md-2 form-group">
+                        @Html.LabelFor(Model => Model.Importer, new { @for = "Importer" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.Importer, String.Empty, new { @id = "spn_Importer", @class = "help-inline text-red" })
+                        @Html.TextBoxFor(Model => Model.Importer, new { @id = "Importer", @name = "Importer", @class = "form-control", @placeholder = "Select Importer" })
+                        @Html.HiddenFor(Model => Model.ImporterID)
+                    </div>
+                    <div class="col-md-2 form-group">
+                        @Html.LabelFor(Model => Model.Agent, new { @for = "Agent" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.AgentID, String.Empty, new { @id = "spn_Agent", @class = "help-inline text-red" })
+                        @Html.TextBoxFor(Model => Model.Agent, new { @id = "Agent", @name = "Agent", @class = "form-control", @placeholder = "Select Agent" })
+                        @Html.HiddenFor(Model => Model.AgentID)
+                    </div>
+                    <div class="col-md-2 form-group">
+                        @Html.LabelFor(Model => Model.Exporter, new { @for = "Exporter" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.Exporter, String.Empty, new { @id = "spn_Exporter", @class = "help-inline text-red" })
+                        @Html.TextBoxFor(Model => Model.Exporter, new { @id = "Exporter", @name = "Exporter", @class = "form-control", @placeholder = "Select Exporter" })
+                        @Html.HiddenFor(Model => Model.ExporterID)
+                    </div>
+                    <div class="col-md-2 form-group">
+                        @Html.LabelFor(Model => Model.Consoler, new { @for = "Consoler" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.Consoler, String.Empty, new { @id = "spn_Consoler", @class = "help-inline text-red" })
+                        @Html.TextBoxFor(Model => Model.Consoler, new { @id = "Consoler", @name = "Consoler", @class = "form-control", @placeholder = "Select Consoler" })
+                        @Html.HiddenFor(Model => Model.ConsolerID)
+                    </div>
+                    <div class="col-md-2 form-group">
+                        @Html.LabelFor(Model => Model.Forwarder, new { @for = "Forwarder" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.Forwarder, String.Empty, new { @id = "spn_Forwarder", @class = "help-inline text-red" })
+                        @Html.TextBoxFor(Model => Model.Forwarder, new { @id = "Forwarder", @name = "Forwarder", @class = "form-control", @placeholder = "Select Forwarder" })
+                        @Html.HiddenFor(Model => Model.ForwarderID)
+                    </div>
+                        <div class="col-md-12">
+                            <div class="box-footer pull-right">
+                                <button type="submit" class="btn btn-primary" onclick="return Validation();">Submit</button>                                
+                                <a href="@Url.Action("Index", "PartyWiseTariffPriority", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/PartyWiseTariffPriority.js")"></script>
+
+

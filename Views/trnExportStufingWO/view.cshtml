@@ -1,0 +1,150 @@
+﻿@model CFS.Models.trnExportStufingWO
+@{
+    ViewBag.Title = "View Export Stuffing Work Order";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            @using (Html.BeginForm("Action", "trnExportStufingWO", FormMethod.Post))
+            {
+            <div class="box">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="box-body">
+                                <div class="pull-left">
+                                    <div style="display: inline-flex">
+                                        <h4>
+                                            <b>
+                                                <span class="badge bg-light-blue" style="font-size:15px;">Stuffing WO No:@Model.trnExportStufingWONo</span>
+                                                <span class="badge bg-light-blue" style="font-size:15px;">Stuffing WO Date:@Model.CreatedDate</span>
+                                                <span class="badge bg-light-blue" style="font-size:15px;">User :@Model.UserName</span>
+                                            </b>
+                                        </h4>
+                                    </div>
+                                </div>
+                                <div class="pull-right">
+                                    <div style="display:inline-flex">
+                                        <a href="@Url.Action("Index", "trnExportStufingWO" , new {pg=Request.Params["pg"], search=Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                                    </div>
+                                </div>
+                                <br />
+                                <br />
+                                @Html.HiddenFor(Model => Model.pagger.Search)
+                                @Html.HiddenFor(Model => Model.trnExportStuffingWOID)
+                                @Html.HiddenFor(Model => Model.doaction)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.LabelFor(Model => Model.Agent, new { @for = "Agent" }) :<span>@Model.Agent</span>
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.LabelFor(Model => Model.Line, new { @for = "Line" }) :<span>@Model.Line</span>
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.LabelFor(Model => Model.Consoler, new { @for = "Consoler" }) :<span>@Model.Consoler</span>
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.LabelFor(Model => Model.VcnNo, new { @for = "VcnNo" }) :<span>@Model.VcnNo</span>
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.LabelFor(Model => Model.VoyNo, new { @for = "VoyNo" }) :<span>@Model.VoyNo</span>
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.LabelFor(Model => Model.Veseelnm, new { @for = "Veseelnm" }) :<span>@Model.Veseelnm</span>
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.LabelFor(Model => Model.CoffD, new { @for = "CoffD" }):<span>@Model.CoffD</span>
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.LabelFor(Model => Model.Contractor, new { @for = "Contractor" }):<span>@Model.Contractor</span>
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.LabelFor(Model => Model.Surveyor, new { @for = "Surveyor" }):<span>@Model.Surveyor</span>
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" }) :<span>@Model.Remarks</span>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                    <h4><b>Shipping Bill Details</b></h4>
+                </div>
+                <div class="box-body">
+                    <div class="col-lg-12 table-responsive">
+                        <table id="example1" class="table table-hover table-bordered" style="white-space:nowrap">
+                            <thead>
+                                <tr>
+                                    <th>SB No</th>
+                                    <th>SB Date</th>
+                                    <th>INV No</th>
+                                    <th>INV Date</th>
+                                    <th>Bulk/Non-Bulk</th>
+                                    <th>CHA/Customer</th>
+                                    <th>Forwarder</th>
+                                    <th>Exporter</th>
+                                    <th>Cargo</th>
+                                    <th>FOB</th>
+                                    <th>Cargo Type</th>
+                                    <th>Bill Commodity</th>
+                                    <th>POD</th>
+                                    <th>Class</th>
+                                    <th>UN</th>
+                                    <th>Temp</th>
+                                    <th>Declared Packages</th>
+                                    <th>Declared Pieces</th>
+                                    <th>Declared Weight</th>
+                                    <th>WO Packages</th>
+                                    <th>WO Pieces</th>
+                                    <th>WO Weight</th>
+                                    <th>Re-Export Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblSBDetails"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header">
+                    <h4><b>Container Details</b></h4>
+                </div>
+                <div class="box-body">
+                    <div class="col-lg-12 table-responsive">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Container No</th>
+                                    <th>Size</th>
+                                    <th>Type</th>
+                                    <th>Stuffing Mode</th>
+                                    <th>Wo packeges</th>
+                                    <th>Wo Pieces</th>
+                                    <th>Wo Weight</th>
+                                    <th>CLP Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblConatinerDetail"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</section>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnExportStufingWO.js")"></script>
+<script>
+    setTimeout(function () {
+        $(".viewSBDetails").hide();
+        $(".viewTSBDetails").hide();
+        $(".viewContainerDetails").hide();
+    }, 500);
+</script>

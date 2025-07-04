@@ -1,0 +1,299 @@
+﻿@model CFS.Models.trnTruckDestuffing
+@using System.Globalization;
+@{
+    ViewBag.Title = "View Truck Destuffing";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            @using (Html.BeginForm("Action", "trnTruckDestuffing", FormMethod.Post))
+            {
+                <div class="box">
+                    <div class="box-body">
+                        @if (Model != null && Model.doaction == "edit")
+                        {
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <span class="badge bg-light-blue" style="font-size:15px;">Truck Destuffing No : @Model.DestuffReferenceNo </span>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                    <span class="badge bg-light-blue" style="font-size:15px;">User : @Model.User</span> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                    <span class="badge bg-light-blue" style="font-size:15px;">Destuff Date and time : @Model.DestuffDateTime</span>
+                                </div>
+                            </div>
+                        }
+                        <div class="pull-right" id="divBack">
+                            <div style="display: inline-flex">
+
+                                @if (Request.Params["IsWorkOrderOrGateIn"].ToString() == "True")
+                                {
+                                    <a id="btnBack" href="@Url.Action("Index", "trnWorkOrder", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                                }
+                                else
+                                {
+                                    <a id="btnBack" href="@Url.Action("Index", "trnTruckDestuffing", new { pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                                }
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.trnTruckDestuffingID)
+                        @Html.HiddenFor(Model => Model.doaction)
+
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.TruckNo, new { @for = "TruckNo" }) : <span>@Model.TruckNo</span>
+                        </div>
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.CargoType, new { @for = "txtCargoType" }) : <span>@Model.CargoType</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.BillCommodity, new { @for = "txtBillCommodity" }) : <span>@Model.BillCommodity</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.TEMP, new { @for = "txtTemp" }) : <span>@Model.TEMP</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.IMO, new { @for = "txtIMO" }) : <span>@Model.IMO</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.UN, new { @for = "txtUN" }) : <span>@Model.UN</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.HighValueStatus, new { @for = "txtHighValueStatus" }) : <span>@Model.HighValueStatus</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.TransactionType, new { @for = "txtTransactionType" }) : <span>@Model.TransactionType</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.GateInDate, new { @for = "GateInDate" }) : <span>@Model.GateInDate</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.Transporter, new { @for = "txtTransporter" }) : <span>@Model.Transporter</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.VehicleType, new { @for = "txtVehicleType" }) : <span>@Model.VehicleType</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.WeighmentStatus, new { @for = "txtWeighmentStatus" }) : <span>@Model.WeighmentStatus</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.GrossWeight, new { @for = "txtGrossWeight" }) : <span>@Model.GrossWeight</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.TruckTareWeight, new { @for = "txtTruckTareWeight" }) : <span>@Model.TruckTareWeight</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.NetWeight, new { @for = "txtNetWeight" }) : <span>@Model.NetWeight</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.PlugIndate, new { @for = "PlugIndate" }) : <span>@Model.PlugIndate</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.PlugOffDate, new { @for = "PlugOffDate" }) : <span>@Model.PlugOffDate</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.NoofPackages, new { @for = "txtNoofPackages" }) : <span>@Model.NoofPackages</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.NoofPieces, new { @for = "txtNoofPieces" }) : <span>@Model.NoofPieces</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.Weight, new { @for = "txtWeight" }) : <span>@Model.Weight</span>
+                        </div>
+
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                        <div class="col-md-4">
+                            <label>Surveyor : </label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @(Model.Surveyor) </span>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Contractor : </label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @(Model.Contractor) </span>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Destuff Begin Date and Time : </label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @(Model.BeginActualDestuffDateandTime) </span>
+                        </div>
+                        <div class="col-md-4">
+                            <label> Destuff End Date and Time :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.EndActualDestuffDateandTime</span>
+                        </div>
+                        <div class="col-md-4">
+                            <label> Remarks :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.Remarks</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <div class="box-header">
+                        <h4><span>NOC Details</span></h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12" style="overflow:scroll;">
+                            <table id="example2" style="white-space:nowrap;" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="min-width: 150px">NOC No.</th>
+                                        <th style="min-width: 80px">NOC Date</th>
+                                        <th style="min-width: 70px">In-BOE No.</th>
+                                        <th style="min-width: 80px">In-BOE Date</th>
+                                        <th style="min-width: 80px">IGM No.</th>
+                                        <th style="min-width: 80px">IGM Date</th>
+                                        <th style="min-width: 80px">Item No.</th>
+                                        <th style="min-width: 80px">Bulk</th>
+                                        <th style="min-width: 100px">NOC Dec. Pkgs</th>
+                                        <th style="min-width: 100px">NOC Dec. Pieces</th>
+                                        <th style="min-width: 100px">NOC Dec. Weight</th>
+                                        <th style="min-width: 100px">Wo Packages</th>
+                                        <th style="min-width: 100px">Wo Pieces</th>
+                                        <th style="min-width: 100px">Wo Weight</th>
+                                        <th style="min-width: 100px">Destuffed Pkgs</th>
+                                        <th style="min-width: 100px">Destuffed Pieces</th>
+                                        <th style="min-width: 100px">Destuffed Weight</th>
+                                        <th style="min-width: 100px">Destuff Details</th>
+                                        <th style="min-width: 100px">Short/Excess Packages</th>
+                                        <th style="min-width: 100px">Short/Excess Pieces</th>
+                                        <th style="min-width: 100px">Short/Excess Weight</th>
+                                        <th style="min-width: 100px">Tot. Destuffed Pkgs</th>
+                                        <th style="min-width: 100px">Tot. Destuffed Pieces</th>
+                                        <th style="min-width: 100px">Tot. Destuffed Weight</th>
+                                        <th style="min-width: 250px">Billing Party</th>
+                                        <th style="min-width: 250px">Importer</th>
+                                        <th style="min-width: 250px"> CHA</th>
+                                        <th style="min-width: 250px">Forwarder</th>
+                                        <th style="min-width: 100px">Cargo Desc.</th>
+                                        <th style="min-width: 100px">Sub Commodity</th>
+                                        <th style="min-width: 100px">Pkge Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.dtNocDetails != null)
+                                    {
+                                        for (int i = 0; i < Model.dtNocDetails.Rows.Count; i++)
+                                        {
+                                            <tr>
+                                                <td>@Convert.ToString(Model.dtNocDetails.Rows[i]["DocumentNo"])</td>
+                                                <td>@Convert.ToDateTime(Model.dtNocDetails.Rows[i]["DocDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture)</td>
+                                                <td>@Convert.ToString(Model.dtNocDetails.Rows[i]["BOENo"])</td>
+                                                <td>@Convert.ToDateTime(Model.dtNocDetails.Rows[i]["BOEDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture)</td>
+                                                <td>@Convert.ToString(Model.dtNocDetails.Rows[i]["IGMNo"])</td>
+                                                <td>
+                                                    @if (Convert.ToString(Model.dtNocDetails.Rows[i]["IGMDate"]) != "")
+                                                    {
+                                                        <span>@(Convert.ToDateTime(Model.dtNocDetails.Rows[i]["IGMDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture))</span>
+                                                    }
+                                                </td>
+                                                <td>@Convert.ToString(Model.dtNocDetails.Rows[i]["ItemNo"])</td>
+                                                <td>@Convert.ToString(Model.dtNocDetails.Rows[i]["BULKSTATUS"])</td>
+                                                <td>@Convert.ToInt32(Model.dtNocDetails.Rows[i]["NOOFPKGS"])</td>
+                                                <td>@Convert.ToInt32(Model.dtNocDetails.Rows[i]["NOOFPIECES"])</td>
+                                                <td>@Convert.ToString(Model.dtNocDetails.Rows[i]["WEIGHT"])</td>
+                                                <td>@(Convert.ToDecimal(Model.dtNocDetails.Rows[i]["WoPkg"]).ToString("0"))</td>
+                                                <td>@(Convert.ToDecimal(Model.dtNocDetails.Rows[i]["Wopcs"]).ToString("0"))</td>
+                                                <td>@Model.dtNocDetails.Rows[i]["Wowgt"]</td>
+                                                <td>@Convert.ToInt32(Model.dtNocDetails.Rows[i]["DestuffPkg"])</td>
+                                                <td>@Convert.ToInt32(Model.dtNocDetails.Rows[i]["Destuffpcs"])</td>
+                                                <td>@Convert.ToString(Model.dtNocDetails.Rows[i]["Destuffwgt"])</td>
+                                                <td>
+                                                    <a style=" cursor: pointer;" href="@Url.Action("Index","trnBOEItems", new { @id = Model.dtNocDetails.Rows[i]["trnDocumentLotDetailsID"], @trnTruckDestuffingID = Model.trnTruckDestuffingID, @TruckNo = Model.TruckNo, @BOENo = Convert.ToString(Model.dtNocDetails.Rows[i]["BOENo"]),@GatePassNOOFPKGS =  Convert.ToString(Model.dtNocDetails.Rows[i]["GatePassNOOFPKGS"]),@GatePassNOOFPIECES =  Convert.ToString(Model.dtNocDetails.Rows[i]["GatePassNOOFPIECES"]),@GatePassWEIGHT =  Convert.ToString(Model.dtNocDetails.Rows[i]["GatePassWEIGHT"]), @type='T', @SearchID = ViewBag.searchID, @SearchNO = ViewBag.searchNo,@trnDocumentID =CFS.Com.ClsCommon.DocDatatable.Rows[i]["trnDocumentID"], @Isview = true, @IsWorkOrderOrGateIn = Request.Params["IsWorkOrderOrGateIn"] })" target="_blank" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+
+                                                </td>
+                                                <td>@(Convert.ToInt32(Model.dtNocDetails.Rows[i]["DestuffPkg"]) - Convert.ToInt32(Model.dtNocDetails.Rows[i]["WoPkg"]))</td>
+                                                <td>@(Convert.ToInt32(Model.dtNocDetails.Rows[i]["Destuffpcs"]) - Convert.ToInt32(Model.dtNocDetails.Rows[i]["Wopcs"]))</td>
+                                                <td>@(Convert.ToDecimal(Model.dtNocDetails.Rows[i]["Destuffwgt"]) - Convert.ToDecimal(Model.dtNocDetails.Rows[i]["Wowgt"]))</td>
+
+                                                <td>@Convert.ToInt32(Model.dtNocDetails.Rows[i]["DestuffPkg"])</td>
+                                                <td>@Convert.ToInt32(Model.dtNocDetails.Rows[i]["Destuffpcs"])</td>
+                                                <td>@Convert.ToString(Model.dtNocDetails.Rows[i]["Destuffwgt"])</td>
+                                                <td>@Convert.ToString(Model.dtNocDetails.Rows[i]["BillToCustomerName"])</td>
+                                                <td>@Convert.ToString(Model.dtNocDetails.Rows[i]["ImporterName"])</td>
+                                                <td>@Convert.ToString(Model.dtNocDetails.Rows[i]["SubCHA"])</td>
+                                                <td>@Convert.ToString(Model.dtNocDetails.Rows[i]["Forwarder"])</td>
+                                                <td>@Convert.ToString(Model.dtNocDetails.Rows[i]["CARGODESC"])</td>
+                                                <td>@Convert.ToString(Model.dtNocDetails.Rows[i]["SUBCOMMODITY"])</td>
+                                                <td>@Convert.ToString(Model.dtNocDetails.Rows[i]["PACKAGETYPE"])</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade in" id="AddTruckDestuffDetails" style="display: none; padding-right: 17px;">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title">Destuff Details</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <input type="hidden" id="trnDocumentGWLotDetailsID" name="trnDocumentGWLotDetailsID" value="@Model.trnDocumentLotDetailsID" />
+                                    <input type="hidden" id="trnTruckDestuffingID" name="trnTruckDestuffingID" value="@Model.trnTruckDestuffingID" />
+                                    <input type="hidden" id="trnTruckDestuffingDetailsID" name="trnTruckDestuffingDetailsID" value="@Model.trnTruckDestuffingDetailsID" />
+                                    <div class="col-md-12" style="overflow:scroll">
+                                        <div class="pull-right">
+                                            <div style="display: inline-flex">
+                                                <div class="input-group input-group-sm">
+                                                    <input id="txtTruckDestuffingDetails" name="txtTruckDestuffingDetails" type="text" class="form-control" onkeyup="DataTableSeachEngine('txtTruckDestuffingDetails','tblTruckDestuffingDetails','btnTruckDestuffingDetails')" placeholder="Search for Common" value="">
+                                                    <span class="input-group-btn">
+                                                        <button type="button" id="btnTruckDestuffingDetails" onclick="DataTableSeachEngine('txtTruckDestuffingDetails','tblTruckDestuffingDetails','btnTruckDestuffingDetails','yes')" class="btn btn-primary btn-flat">Search</button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <table id="tblTruckDestuffingDetails" style="white-space: nowrap;" class="table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Packages</th>
+                                                    <th>Weight</th>
+                                                    <th>Pieces</th>
+                                                    <th>Area Required</th>
+                                                    <th>WH Location</th>
+                                                    <th>Packing Type</th>
+                                                    <th>Bill Commodity</th>
+                                                    <th>Equipment Used</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="TruckDestuffingDetails"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+
+            }
+        </div>
+    </div>
+</section>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnTruckDestuffing.js")"></script>
+<script>
+    var IsEdit = "true";
+    var IsSearch = '@Model.IsSearch';
+    var doaction = '@Model.doaction';
+
+    function hideaction() {
+        setTimeout(function () {
+            $("#trnviewAction").hide();
+        }, 350);
+    }
+</script>

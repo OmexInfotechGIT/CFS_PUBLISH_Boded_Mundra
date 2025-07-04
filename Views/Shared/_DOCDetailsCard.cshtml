@@ -1,0 +1,192 @@
+﻿@using System.Globalization;
+@if (CFS.Com.ClsCommon.DocDatatable != null && CFS.Com.ClsCommon.DocDatatable.Rows.Count > 0)
+{
+    for (int i = 0; i < CFS.Com.ClsCommon.DocDatatable.Rows.Count; i++)
+    {
+        <div class="">
+            <div class="box">
+                <div class="box-header with-border">
+                    <div class="col-md-3">
+                        <h4><b>In-BOE Details @CFS.Com.ClsCommon.AddhtmlSpace(2) <span class="badge bg-green-gradient" style="font-size:15px;"> In-BOE No : @CFS.Com.ClsCommon.DocDatatable.Rows[i]["BOENo"] </span> </b></h4>
+                    </div>
+                    @{ if (CFS.Com.ClsCommon.DocDatatable.Columns["DestuffPkg"] != null)
+                        {
+                            <div class="col-md-3">
+                                <h5><b><label>@Convert.ToString(CFS.Com.ClsCommon.DocDatatable.Rows[i]["Types"]) Destuff Packages </label>&nbsp;<span class="badge bg-red-gradient" style="font-size:15px;">@CFS.Com.ClsCommon.DocDatatable.Rows[i]["DestuffPkg"]</span></b></h5>
+                            </div>
+                        }
+                        if (CFS.Com.ClsCommon.DocDatatable.Columns["Destuffpcs"] != null)
+                        {
+                            <div class="col-md-3">
+                                <h5><b><label>@Convert.ToString(CFS.Com.ClsCommon.DocDatatable.Rows[i]["Types"]) Destuff Pieces </label>&nbsp;<span class="badge bg-red-gradient" style="font-size:15px;">@CFS.Com.ClsCommon.DocDatatable.Rows[i]["Destuffpcs"]</span></b></h5>
+                            </div>
+                        }
+                        if (CFS.Com.ClsCommon.DocDatatable.Columns["Destuffwgt"] != null)
+                        {
+                            <div class="col-md-3">
+                                <h5><b><label>@Convert.ToString(CFS.Com.ClsCommon.DocDatatable.Rows[i]["Types"]) Destuff Weight </label>&nbsp;<span class="badge bg-red-gradient" style="font-size:15px;">@CFS.Com.ClsCommon.DocDatatable.Rows[i]["Destuffwgt"]</span></b></h5>
+                            </div>
+                        }
+                    }
+                </div>
+                <div class="box-body">
+                    <div class="col-md-3">
+                        <label>NOC no </label> @CFS.Com.ClsCommon.AddhtmlSpace(3) :  @CFS.Com.ClsCommon.DocDatatable.Rows[i]["DocumentNo"]
+                    </div>
+                    <div class="col-md-3">
+                        <label>NOC Date </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @(Convert.ToDateTime(CFS.Com.ClsCommon.DocDatatable.Rows[i]["DocDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture))
+                    </div>
+                    <div class="col-md-3">
+                        <label>IGM No. </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["IGMNo"]
+                    </div>
+                    <div class="col-md-3">
+                        <label>IGM Date :</label>
+                        @{
+                            if (CFS.Com.ClsCommon.DocDatatable.Rows[i]["IGMDate"].ToString() != "" && (CFS.Com.ClsCommon.ConvertDateNullToBlank(Convert.ToDateTime(CFS.Com.ClsCommon.DocDatatable.Rows[i]["IGMDate"]))).ToString() != "")
+                            {
+                                <span>@(Convert.ToDateTime(CFS.Com.ClsCommon.DocDatatable.Rows[i]["IGMDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture))</span>
+                            }
+                        }
+                    </div>
+                    <div class="col-md-3">
+                        <label>Item No </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["ItemNo"]
+                    </div>
+                    <div class="col-md-3">
+                        <label>In-BOE No </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["BOENo"]
+                    </div>
+                    <div class="col-md-3">
+                        <label>In-BOE Date : </label>
+                        @if (Convert.ToString(CFS.Com.ClsCommon.DocDatatable.Rows[i]["BOEDate"]) != "" && (CFS.Com.ClsCommon.ConvertDateNullToBlank(Convert.ToDateTime(CFS.Com.ClsCommon.DocDatatable.Rows[i]["BOEDate"]))).ToString() != "")
+                        {
+                            <span>@(Convert.ToDateTime(CFS.Com.ClsCommon.DocDatatable.Rows[i]["BOEDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture))</span>
+                        }
+                    </div>
+                    @if (CFS.Com.ClsCommon.IsContainer)
+                    {
+                        <div class="col-md-3">
+                            <label>BL No </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["BLNo"]
+                        </div>
+                        <div class="col-md-3">
+                            <label>BL Date </label>
+                            @if (Convert.ToString(CFS.Com.ClsCommon.DocDatatable.Rows[i]["BLDate"]) != "" && (CFS.Com.ClsCommon.ConvertDateNullToBlank(Convert.ToDateTime(CFS.Com.ClsCommon.DocDatatable.Rows[i]["BLDate"]))).ToString() != "")
+                            {
+                                <span>@(Convert.ToDateTime(CFS.Com.ClsCommon.DocDatatable.Rows[i]["BLDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture))</span>
+                            }
+                        </div>
+                        <div class="col-md-3">
+                            <label>CP Status </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["CPStatus"]
+                        </div>
+                        <div class="col-md-3">
+                            <label>CP/Bond No </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["CPBondNo"]
+                        </div>
+                        <div class="col-md-3">
+                            <label>CP/Bond Date </label>@CFS.Com.ClsCommon.AddhtmlSpace(3):
+                            @if (Convert.ToString(CFS.Com.ClsCommon.DocDatatable.Rows[i]["CPBondDate"]) != "" && (CFS.Com.ClsCommon.ConvertDateNullToBlank(Convert.ToDateTime(CFS.Com.ClsCommon.DocDatatable.Rows[i]["CPBondDate"]))).ToString() != "")
+                            {
+                                <span>@(Convert.ToDateTime(CFS.Com.ClsCommon.DocDatatable.Rows[i]["CPBondDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture))</span>
+                            }
+                        </div>
+                        <div class="col-md-3">
+                            <label> Assessable Value </label> @CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["AssessableValue"]
+                        </div>
+                        <div class="col-md-3">
+                            <label> Duty Value </label> @CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["Dutyvalue"]
+                        </div>
+                    }
+
+                    <div class="col-md-3">
+                        <label>Bulk-Non </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["BULKSTATUS"]
+                    </div>
+
+                    <div class="col-md-3">
+                        <label>Total In-BOE Packages </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["TotalNOOFPKGS"]
+                    </div>
+                    <div class="col-md-3">
+                        <label>Total In-BOE Pieces </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["TotalNOOFPIECES"]
+                    </div>
+                    <div class="col-md-3">
+                        <label>Total In-BOE Weight </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["TotalWEIGHT"]
+                    </div>
+                    @if (!CFS.Com.ClsCommon.IsContainer)
+                    {
+                        if (CFS.Com.ClsCommon.DocDatatable.Columns["BalWONOOFPKGS"] != null)
+                        {
+                            <div class="col-md-3">
+                                <label>Balance WO Packages </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["BalWONOOFPKGS"]
+                            </div>
+                        }
+                        if (CFS.Com.ClsCommon.DocDatatable.Columns["BalWONOOFPIECES"] != null)
+                        {
+                            <div class="col-md-3">
+                                <label>Balance WO Pieces </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["BalWONOOFPIECES"]
+                            </div>
+                        }
+                        if (CFS.Com.ClsCommon.DocDatatable.Columns["BalWOWEIGHT"] != null)
+                        {
+                            <div class="col-md-3">
+                                <label>Balance WO Weight </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["BalWOWEIGHT"]
+                            </div>
+                        }
+                        if (CFS.Com.ClsCommon.DocDatatable.Columns["Types"] != null && Convert.ToString(CFS.Com.ClsCommon.DocDatatable.Rows[i]["Types"]) == "Truck" && CFS.Com.ClsCommon.DocDatatable.Columns["GatePassNOOFPKGS"] != null)
+                        {
+                            <div class="col-md-3">
+                                <label>Gatepass Packages </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["GatePassNOOFPKGS"]
+                            </div>
+                        }
+                        if (CFS.Com.ClsCommon.DocDatatable.Columns["Types"] != null && Convert.ToString(CFS.Com.ClsCommon.DocDatatable.Rows[i]["Types"]) == "Truck" && CFS.Com.ClsCommon.DocDatatable.Columns["GatePassNOOFPIECES"] != null)
+                        {
+                            <div class="col-md-3">
+                                <label>Gatepass Pieces </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["GatePassNOOFPIECES"]
+                            </div>
+                        }
+                        if (CFS.Com.ClsCommon.DocDatatable.Columns["Types"] != null && Convert.ToString(CFS.Com.ClsCommon.DocDatatable.Rows[i]["Types"]) == "Truck" && CFS.Com.ClsCommon.DocDatatable.Columns["GatePassWEIGHT"] != null)
+                        {
+                            <div class="col-md-3">
+                                <label>Gatepass Weight </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["GatePassWEIGHT"]
+                            </div>
+                        }
+                    }
+                    @if (!CFS.Com.ClsCommon.IsGW)
+                    {
+                        <div class="col-md-3">
+                            <label>Chamber Type </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["BillToCustomerName"]
+                        </div>
+                    }
+                    <div class="col-md-3">
+                        <label>Billing Party </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["BillToCustomerName"]
+                    </div>
+                    <div class="col-md-3">
+                        <label>Importer </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["ImporterName"]
+                    </div>
+                    <div class="col-md-3">
+                        <label>CHA/Customer </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["SubCHA"]
+                    </div>
+                    <div class="col-md-3">
+                        <label>Forwarder </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["Forwarder"]
+                    </div>
+                    <div class="col-md-3">
+                        <label>Cargo Desc  </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["CARGODESC"]
+                    </div>
+                    <div class="col-md-3">
+                        <label>Sub Commodity  </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["SUBCOMMODITY"]
+                    </div>
+                    <div class="col-md-3">
+                        <label>Package Type  </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["PACKAGETYPE"]
+                    </div>
+                    <div class="col-md-3">
+                        <label>Cargo Type  </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["CargoType"]
+                    </div>
+                    <div class="col-md-3">
+                        <label>IMO  </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["IMO"]
+                    </div>
+                    <div class="col-md-3">
+                        <label>UN  </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["UN"]
+                    </div>
+                    <div class="col-md-3">
+                        <label>Temp  </label>@CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.DocDatatable.Rows[i]["Temp"]
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}

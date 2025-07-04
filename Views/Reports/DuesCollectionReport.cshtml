@@ -1,0 +1,40 @@
+﻿@{
+    CFS.Models.ReportsModal ReportsModal = new CFS.Models.ReportsModal();
+    ViewBag.Title = "Dues Collection Report";
+}
+@using (Html.BeginForm("DuesCollectionReport", "Reports", FormMethod.Post))
+{
+    <div class="">
+        <div class="box">
+            <div class="box-body">    
+                @Html.Partial("_ReportModalAgent")
+                @Html.Partial("_ReportModalLine")
+                @Html.Partial("_ReportsModalCHA")
+                @Html.Partial("_ReportsModalForwarder")
+                @Html.Partial("_ReportsModalImporter")
+
+                @Html.Partial("_ReportsModalSearchClearButton")
+            </div>
+        </div>
+    </div>
+}
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/ReportsModal.js")"></script>
+<script>
+   
+//function Validate()
+//{
+//    var isvalid = true;            
+//    var BatchNo = $("#BatchNo").val();
+//    var BatchID = $("#BatchID").val();
+//    if (BatchID != "0" && BatchNo != " " && BatchNo != null && BatchNo != undefined) {                
+//        $("#BatchNo").removeClass("redborder");
+//    }
+//    else {
+           
+//        $("#BatchNo").addClass("redborder");
+//        TosterAlert("error", "Batch No Required", "Required!");
+//        isvalid = false;
+//    }
+//    return isvalid;
+//}  
+</script>

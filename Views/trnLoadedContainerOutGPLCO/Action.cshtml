@@ -1,0 +1,10 @@
+﻿@model CFS.Models.trnLoadedContainerOutGP
+@if (Model.doaction == "edit")
+{
+    ViewBag.Title = "Update Loaded Container Out Gatepass";
+}
+else
+{
+    ViewBag.Title = "Add New Loaded Container Out Gatepass";
+}
+@Html.Partial("../trnLoadedContainerOutGP/action")

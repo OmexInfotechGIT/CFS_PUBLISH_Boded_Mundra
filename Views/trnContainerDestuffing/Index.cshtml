@@ -1,0 +1,115 @@
+﻿@model CFS.Models.trnContainerDestuffing
+@using System.Globalization;
+@{
+    ViewBag.Title = "Container Destuffing List";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a href="@Url.Action("Action", "trnContainerDestuffing", new { doaction = "add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Weighment Cash Invoice"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div style="overflow-x:scroll">
+                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerDestuffing", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "A.trnContainerDestuffingNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "a.trncontainerdestuffingno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "a.trncontainerdestuffingno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Container Destuffing No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerDestuffing", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "A.ContainerNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "a.containerno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "a.containerno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Container No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerDestuffing", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "A.DoNO", SortOrder = (Model.pagger.SortColumn.ToLower() == "a.dono" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "a.dono" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Do No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerDestuffing", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "A.DoDateTime", SortOrder = (Model.pagger.SortColumn.ToLower() == "a.dodatetime" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "a.dodatetime" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Do Valid Date</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerDestuffing", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "A.ISOCodeSize", SortOrder = (Model.pagger.SortColumn.ToLower() == "a.isocodesize" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "a.isocodesize" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Cont size</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerDestuffing", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "A.ISOCodeType", SortOrder = (Model.pagger.SortColumn.ToLower() == "a.isocodetype" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "a.isocodetype" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Cont Type</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerDestuffing", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "A.DocumentNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "a.documentno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "a.documentno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> NOC No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerDestuffing", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "A.BOENo", SortOrder = (Model.pagger.SortColumn.ToLower() == "a.boeno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "a.boeno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> In-BOE No.</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerDestuffing", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "A.BeginDestuffDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "a.begindestuffdate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "a.begindestuffdate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Destuff Begin Date</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerDestuffing", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "A.EndDestuffDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "a.enddestuffdate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "a.enddestuffdate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Destuff End Date</a>
+                                    </th>
+                                    <th class="freezeLastColumn">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@(Model.MyDatatable.Rows[i]["trnContainerDestuffingPrefix"].ToString() + Model.MyDatatable.Rows[i]["trnContainerDestuffingNo"].ToString())</td>
+                                        <td>@Model.MyDatatable.Rows[i]["ContainerNo"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["DoNO"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["DoDateTime"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["ISOCodeSize"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["ISOCodeType"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["DocumentNo"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["BOENo"]</td>
+                                        <td>@Convert.ToDateTime(Model.MyDatatable.Rows[i]["BeginDestuffDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat, CultureInfo.InvariantCulture)</td>
+                                        <td>@Convert.ToDateTime(Model.MyDatatable.Rows[i]["EndDestuffDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat, CultureInfo.InvariantCulture)</td>                                        
+                                        <td class="freezeLastColumnwithWhite">
+                                            @if (ViewBag.gblBlnEdit && (Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsExbondDone"])))
+                                            {
+                                                <a href="@Url.Action("Action", "trnContainerDestuffing", new { id = Model.MyDatatable.Rows[i]["trnContainerDestuffingID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true, @trnContainerDestuffWorkOrderDetailsID = Convert.ToString(Model.MyDatatable.Rows[i]["trnContainerDestuffWorkOrderDetailsID"]), @ContNo = Convert.ToString(Model.MyDatatable.Rows[i]["ContainerNo"]), @IsWorkOrderOrGateIn = false })"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                            }
+                                            @if (ViewBag.gblBlnView)
+                                            {
+                                                <a href="@Url.Action("view", "trnContainerDestuffing", new { id = Model.MyDatatable.Rows[i]["trnContainerDestuffingID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true,@trnContainerDestuffWorkOrderDetailsID = Convert.ToString(Model.MyDatatable.Rows[i]["trnContainerDestuffWorkOrderDetailsID"]),@ContNo = Convert.ToString(Model.MyDatatable.Rows[i]["ContainerNo"]), @IsWorkOrderOrGateIn = false })"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                            }
+                                        </td>                                        
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    @Html.Partial("_pagination")
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    var doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnContainerDestuffing.js")"></script>
+

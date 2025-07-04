@@ -1,0 +1,144 @@
+﻿@model CFS.Models.MstrCombination
+@{
+    ViewBag.IsEdit = false;
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.IsEdit = true;
+        ViewBag.Title = "Update Agent and Line Combination";
+        if (!ViewBag.gblBlnEdit && !ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add new Agent and Line Combination";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrCombination","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrCombination", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "MstrCombination", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.MstrCombinationID, new { @id= "MstrCombinationID", @name= "MstrCombinationID" })
+                        @Html.HiddenFor(Model => Model.doaction)
+                        
+                        <div class="box-body col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.AgentName, new { @for = "txtAgentName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.AgentID, String.Empty, new { @id = "spn_AgentID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.AgentName, new { @id = "txtAgentName", @name = "txtAgentName", @class = "form-control", @placeholder = "Enter Agent Name" })
+                                @Html.HiddenFor(Model => Model.AgentID, new { @id = "txtAgentID", @name = "txtAgentID" })
+                            </div>
+                        </div>
+                        <div class="col-md-2" id="btnsearchclick">
+                            <br />
+                            <button type="button" style="margin-top: 15px;" onclick="searchTaxExempted()" class="btn btn-primary">Search</button>
+                        </div>
+                        if (Model.IsSearch || Model.AgentID > 0)
+                        {
+                        <div class="col-md-12 row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.LineName, new { @for = "txtLineName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.LineID, String.Empty, new { @id= "spn_LineID", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.LineName, new { @id = "txtLineName", @name = "txtLineName", @class = "form-control", @placeholder = "Enter Line Name" })
+                                    @Html.HiddenFor(Model => Model.LineID, new { @id = "txtLineID", @name = "txtLineID" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <br />
+                                <div class="form-group">
+                                    @Html.CheckBoxFor(Model => Model.Status, new { @class = "form-control", @id="chkstatus" })<b>&nbsp;&nbsp;</b>
+                                    @Html.Label("Status", new { @for= "chkstatus" }) @Html.ValidationMessageFor(Model => Model.Status, String.Empty, new { @class = "help-inline text-red" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <br />
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <a onclick="ClearLine()" class="btn btn-danger">Clear</a>
+                            </div>
+                        </div>
+                            if (Model != null && Model.MySubDatatable != null && Model.MySubDatatable.Rows.Count > 0) {
+                        <div class="col-md-12 row">
+                            <div class="box-body">
+
+
+                                <table id="LineName" class="table table-bordered table-hover">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Line Name</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.MySubDatatable.Rows.Count; i++)
+                                        {
+                                        <tr>
+                                            <td id="hdntxtLineName_@Model.MySubDatatable.Rows[i]["MstrCombinationID"]">@Model.MySubDatatable.Rows[i]["LineName"]</td>
+                                            <td style="display:none" id="hdntxtLineID_@Model.MySubDatatable.Rows[i]["MstrCombinationID"]">@Model.MySubDatatable.Rows[i]["LineID"]</td>
+                                            @*<td id="txtStatus_@Model.MySubDatatable.Rows[i]["MstrCombinationID"]">@(Convert.ToBoolean(Model.MySubDatatable.Rows[i]["Status"]) ? "Active" : "InActive")</td>*@
+                                            @if (ViewBag.gblBlnEdit)
+                                            {
+                                                <td>
+                                                    @{
+                                                        string Icon = "glyphicon glyphicon-remove-circle";
+                                                        string click = "click to Active";
+                                                        string isactive = "true";
+                                                        if (Convert.ToBoolean(Model.MySubDatatable.Rows[i]["Status"]) == true)
+                                                        {
+                                                            Icon = "glyphicon glyphicon-ok-circle";
+                                                            click = "click to InActive";
+                                                            isactive = "false";
+                                                        }
+                                                    }
+                                                    <a><i @*onclick="ValidateUpdateStatus('MstrCombination','@isactive','@Model.MySubDatatable.Rows[i]["MstrCombinationID"]')"*@ title="@click" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="@Icon"></i></a>
+                                                </td>
+                                            }
+                                            <td style="display:none" id="hdntxtStatus_@Model.MySubDatatable.Rows[i]["MstrCombinationID"]">@Model.MySubDatatable.Rows[i]["Status"]</td>
+                                            <td>
+                                                <a onclick="EditLineDetails('@Model.MySubDatatable.Rows[i]["MstrCombinationID"]')"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                                <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('MstrCombination','@Model.MySubDatatable.Rows[i]["MstrCombinationID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                                <a href="@Url.Action("deleteSub", "MstrCombination", new { id = Model.MySubDatatable.Rows[i]["MstrCombinationID"] })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                            </td>
+                                        </tr>
+                                        }
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    var IsEdit = '@ViewBag.IsEdit';
+    var IsSearch = '@Model.IsSearch';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrCombination.js")"></script>

@@ -1,0 +1,304 @@
+﻿@using System.Web.Optimization
+@using WebHelpers.Mvc5.Enum
+@{
+    if (Session == null || (HttpContext.Current.Session["UserID"] == null || Convert.ToString(HttpContext.Current.Session["UserID"]) == ""))
+    {
+        if (!Response.IsRequestBeingRedirected)
+        {
+            //Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "logout"); ** this code commited because of generate error while seesion expired. layout pg not allow Response.Redirect **
+            <script>window.location.href = '@Url.Content("~/logout")';</script>
+        }
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>
+        @if (!string.IsNullOrWhiteSpace(ViewBag.Title))
+        {
+            @ViewBag.Title@: -
+        }
+        CFS Seabird
+    </title>
+
+    <link rel="icon" href="@CFS.Com.ClsCommon.GetCacheVersion("favicon.ico")" type="image/x-icon" />
+    <link rel="shortcut icon" href="@CFS.Com.ClsCommon.GetCacheVersion("favicon.ico")" type="image/x-icon" />
+
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/css/fontcss.css")">
+    @Styles.Render("~/Bundles/css")
+
+
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/css/skins/skin-"+CFS.Com.ClsCommon.GetTheme()+".css")" />
+
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/bower_components/select2/dist/css/select2.min.css")" />
+
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/bower_components/bootstrap/dist/css/bootstrap.min.css")" />
+    <!-- Font Awesome -->
+
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/bower_components/font-awesome/css/font-awesome.min.css")" />
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/bower_components/Ionicons/css/ionicons.min.css")" />
+    <!-- Theme style -->
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/dist/css/AdminLTE-"+CFS.Com.ClsCommon.GetTheme()+".min.css")" />
+    <!-- iCheck -->
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/plugins/iCheck/square/blue.css")" />
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/js/plugins/toastr/css/toastr.min.css")" />
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/css/jquery-ui.css")" />    
+    <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/chart.js")"></script>
+
+
+    <style>
+        .freezeLastColumn {
+            position: sticky;
+            right: 0;
+        }
+
+        .freezeLastColumnwithWhite {
+            position: sticky;
+            right: 0;
+            background-color: white;
+        }
+
+        .redborder {
+            border: 1px solid red !important;
+            border-radius: 5px;
+        }
+
+        .timepicker-canvas line {
+            stroke: red;
+        }
+
+        body {
+            text-transform: capitalize;
+        }
+
+        .ui-menu-item {
+            border-bottom: 1px solid #dddddd
+        }
+
+        .tblFontSize {
+            font-size: 13px !important;
+        }
+
+        .tblBorderBottom {
+            border-bottom: 1px #cdcdcd solid !important;
+        }
+    </style>
+    <script>
+        var JavaScriptProjectDateFormat = '@System.Configuration.ConfigurationManager.AppSettings.Get("JavaScriptProjectDateFormat")';
+        var JavaScriptProjectDateTimeFormat = '@System.Configuration.ConfigurationManager.AppSettings.Get("JavaScriptProjectDateTimeFormat")';
+        var JavaScriptProjectTimeFormat = '@System.Configuration.ConfigurationManager.AppSettings.Get("JavaScriptProjectTimeFormat")';
+        var gblStrFullPath = '@CFS.Com.ClsCommon.GetRootPath()';
+
+    </script>
+
+
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="hold-transition skin-@CFS.Com.ClsCommon.GetTheme() sidebar-mini ">
+    <div class="wrapper">
+        @Html.Partial("_Header")
+        @Html.Partial("_Sidebar")
+        <div class="content-wrapper ">
+            <section class="content-header">
+                <h1>
+                    @ViewBag.Title
+                    <small>@ViewBag.Description</small>
+                </h1>
+            </section>
+
+            <section class="content">
+
+                <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/jquery.min.js")"></script>
+
+                <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/plugins/iCheck/icheck.min.js")"></script>
+                <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/js/plugins/toastr/js/toastr.min.js")"></script>
+                <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/js/plugins/toastr-init.js")"></script>
+                <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/bower_components/select2/dist/js/select2.full.min.js")"></script>
+                <script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/Common.js")"></script>
+
+                @*THis below is Onlay Datepicker Start*@
+                <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/datepicker/jquery.js")"></script>
+                <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/datepicker/moment.min.js")"></script>
+                <link href="@CFS.Com.ClsCommon.GetCacheVersion("Content/datepicker/bootstrap-datetimepicker.min.css")" rel="stylesheet" />
+                <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/datepicker/bootstrap-datetimepicker.min.js")"></script>
+                @*THis below is Onlay Datepicker END*@
+                @RenderBody()
+                <script>
+                    $('.DateTimePicker').datetimepicker({
+                        format: '@System.Configuration.ConfigurationManager.AppSettings.Get("JavaScriptProjectDateTimeFormat")'
+                    });
+                    $('.DatePicker').datetimepicker({
+                        format: '@System.Configuration.ConfigurationManager.AppSettings.Get("JavaScriptProjectDateFormat")'
+
+                    });
+                    $('.TimePicker').datetimepicker({
+                        format: '@System.Configuration.ConfigurationManager.AppSettings.Get("JavaScriptProjectTimeFormat")'
+                    });
+                    $('.DatePickerCustom').datetimepicker({
+                        format: '@System.Configuration.ConfigurationManager.AppSettings.Get("JavaScriptProjectDateFormat")' ,
+                        useCurrent: false
+                    });
+                </script>
+            </section>
+        </div>
+        <div class="row" style="border-top: 1px solid #ddd; background-color: #f3f4f5; width: 102%; position: fixed; bottom: 0px; z-index: 99;">
+            <div class="col-lg-12 m-b-sm">
+                <div class="text-right" style="color:black;">
+                    Powered By <a target="_blank" href="https://www.omexinfotech.com/">Omex Infotech.</a>
+                    @{
+                        if (CFS.Com.ClsCommon.GetSettingValue("VRSIN", "") != "")
+                        {
+                            var list = Enumerable
+                            .Range(0, CFS.Com.ClsCommon.GetSettingValue("VRSIN", "").Length / 1)
+                            .Select(i => CFS.Com.ClsCommon.GetSettingValue("VRSIN", "").Substring(i * 1, 1))
+                            .ToList();
+                            var res = string.Join(".", list);
+                            <q>Version: 1.@res</q>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        @*@Html.Partial("_ControlSidebar")*@
+        @Html.Partial("_historymodal")
+    </div>
+    <script src="@RouteJs.RouteJsHandler.HandlerUrl"></script>
+    <script src="@EnumHandler.HandlerUrl"></script>
+
+    @Scripts.Render("~/Bundles/js")
+    <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/js/jquery-ui.js")"></script>
+
+    <style>
+        .ui-autocomplete {
+            max-height: 200px;
+            overflow-y: scroll;
+        }
+
+        .ui-menu-item {
+            width: 99.99%;
+        }
+    </style>
+    @RenderSection("ViewSpecificJavascript", required: false)
+    <script>
+        var _MessageType = '@Session["MessageType"]';
+        var _Messages = `@Session["Message"]`.split("\n").join(" <br /> ");
+        var _MessageTitle = '@Session["MessageTitle"]';
+        var GetRootPath = '@CFS.Com.ClsCommon.GetRootPath()';
+        //$(".sidebar-toggle").click();
+
+    </script>
+
+    @if (HttpContext.Current.Session["OldUrl"] != null && HttpContext.Current.Session["OldUrl"] != "")
+    {
+        <script>
+            window.history.pushState("", "", "@HttpContext.Current.Session["OldUrl"]");
+        </script>
+        HttpContext.Current.Session["OldUrl"] = null;
+    }
+
+    @if (CFS.Com.ClsCommon.ErrorFields != null && CFS.Com.ClsCommon.ErrorFields.Length > 0)
+    {
+        for (int Q = 0; Q < CFS.Com.ClsCommon.ErrorFields.Length; Q++)
+        {
+            <script>
+            $("#spn_@((CFS.Com.ClsCommon.ErrorFields[Q].Contains('.')) ? CFS.Com.ClsCommon.ErrorFields[Q].Split('.')[1] : CFS.Com.ClsCommon.ErrorFields[Q] )").text('');
+            $("#spn_@((CFS.Com.ClsCommon.ErrorFields[Q].Contains('.')) ? CFS.Com.ClsCommon.ErrorFields[Q].Split('.')[1] : CFS.Com.ClsCommon.ErrorFields[Q] )").next().addClass("redborder");
+            </script>
+        }
+        CFS.Com.ClsCommon.ErrorFields = null;
+
+    }
+
+    @{
+        Session["MessageType"] = "";
+        Session["Message"] = "";
+        Session["MessageTitle"] = "";
+    }
+    <style>
+        .table-bordered th {
+            border: 1px #cdcdcd solid !important;
+            background-color: #cdcdcd;
+        }
+
+        .table-bordered td {
+            border: 1px #cdcdcd solid !important;
+            padding-left: 10px !important;
+            padding-top: 4px !important;
+            padding-bottom: 2px !important;
+        }
+
+        .form-control {
+            border-color: #c3b3b3;
+            border-radius: 5px;
+        }
+
+        .input-group-addon {
+            border-color: #c3b3b3 !important;
+            border-top-right-radius: 5px !important;
+            border-bottom-right-radius: 5px !important;
+            background-color: #c3b3b3 !important;
+        }
+
+        hr {
+            color: #c3b3b3;
+        }
+
+        .form-control-lable {
+            display: block;
+            background: #eee !important;
+            width: 100%;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%);
+            box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%);
+            -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        }
+
+        body {
+            font-size: 13px !important;
+        }
+
+        .form-control {
+            padding: 3px 6px !important;
+            font-size: 13px !important;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+
+
+            $("#dvmn").css("height", ($(document).height()-60) +"px");
+
+            //alert('@Session["SELECTEDMENU_1"]');
+            //alert('@Session["SELECTEDMENU_2"]');
+            setTimeout(function () {
+                $("#@Session["SELECTEDMENU_1"]").addClass("menu-open")
+                $("#UL_@Session["SELECTEDMENU_1"]").css({ "display": "block" })
+                if ('@Session["SELECTEDMENU_2"]'!='') {
+                    $("#@Session["SELECTEDMENU_2"]").addClass("active menu-open")
+                    $("#UL_@Session["SELECTEDMENU_2"]").css({ "display": "block" })
+                }
+
+            }, 100);
+        });
+
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,757 @@
+﻿@model CFS.Models.emptyInvoice
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    var IsEdit = false;
+    if (Model.doaction == "edit")
+    {
+        IsEdit = true;
+        ViewBag.Title = "Update Empty Container Invoice";
+        if (!ViewBag.gblBlnEdit && !ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Empty Container Invoice";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+@using (Html.BeginForm("Action", "emptyInvoice", FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+{
+    <section class="content">
+        <div class="">
+            <div class="box">
+                <div class="box-body">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <a href="@Url.Action("Index","emptyInvoice")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-top: 10px;"></div>
+                    @{
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.IsSearch)
+                        @Html.HiddenFor(Model => Model.EmptyInvoiceID, new { @id = "EmptyInvoiceID", @name = "EmptyInvoiceID" })
+                        @Html.HiddenFor(Model => Model.IsFinished, new { @id = "IsFinished", @name = "IsFinished" })
+                        @Html.HiddenFor(Model => Model.EmptyInvoiceNo, new { @id = "EmptyInvoiceNo", @name = "EmptyInvoiceNo" })
+                        @Html.HiddenFor(Model => Model.EmptyInvoicePrefix, new { @id = "EmptyInvoicePrefix", @name = "EmptyInvoicePrefix" })
+                        @Html.HiddenFor(Mode => Model.ContainerStatus, new { @id = "ContainerStatus" })
+                        <input type="hidden" id="EmptyInvTab" name="EmptyInvTab" value="@Model.EmptyInvTab" />
+                        @Html.HiddenFor(Model => Model.FinalTotal)
+                        <div class="col-md-12">
+                            @*<div class="col-md-2">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => Model.InvoiceMode, new { @for = "InvoiceMode" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.InvoiceMode, String.Empty, new { @id = "spn_InvoiceMode", @class = "help-inline text-red" })
+                        @Html.DropDownListFor(model => model.InvoiceMode, Model.SelectInvoiceMode, new { @class = "form-control", @id = "InvoiceMode", @name = "InvoiceMode" })
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => Model.InvoiceType, new { @for = "InvoiceType" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.InvoiceType, String.Empty, new { @id = "spn_InvoiceType", @class = "help-inline text-red" })
+                        @Html.DropDownListFor(model => model.InvoiceType, Model.SelectInvoiceType, new { @class = "form-control", @id = "InvoiceType", @name = "InvoiceType" })
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => Model.ContainerStatus, new { @for = "VehicleType" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerStatus, String.Empty, new { @id = "spn_ContainerStatus", @class = "help-inline text-red" })
+                        @Html.DropDownListFor(model => model.ContainerStatus, Model.SelectContainerStatus, new { @class = "form-control", @id = "ContainerStatus", @name = "ContainerStatus" })
+                    </div>
+                </div>*@
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.ContNo, new { @for = "ContNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContNo, String.Empty, new { @id = "spn_ContNo", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(model => model.ContNo, new { @class = "form-control", @id = "ContNo", @name = "ContNo" })
+                                    @Html.HiddenFor(model => model.ContID, new { @class = "form-control", @id = "ContID", @name = "ContID" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.WONO, new { @for = "WONO" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.WONO, String.Empty, new { @id = "spn_WONO", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(model => model.WONO, new { @class = "form-control", @id = "WONO", @name = "WONO", @readonly = true })
+                                    @Html.HiddenFor(model => model.WOID, new { @class = "form-control", @id = "WOID", @name = "WOID" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.WODate, new { @for = "WODate" })  <span class="text-red">*</span>
+                                    @Html.TextBoxFor(Model => Model.WODate, new { @id = "WODate", @name = "WODate", @class = "form-control", @placeholder = "Enter Work Order Date", @readonly = true })
+                                </div>
+                            </div>
+                            @if (!Model.IsSearch)
+                            {
+                                <div class="col-md-2 pull-right">
+                                    <div class="form-group">
+                                        <br />
+                                        <button type="button" class="btn btn-primary" id="SaveDoc" onclick="SearchValidation()">Search</button>
+                                        <a href="@Url.Action("index", "emptyInvoice")" class="btn btn-danger">Cancel</a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        @if (Model.IsSearch)
+        {                           
+            if (Model.IsNOC)
+            {
+        <div class="">
+            <div class="box">
+                <div class="box-header with-border" data-widget="collapse">
+                    <h4><b></b></h4>
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12">
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.FromInvoiceDate, new { @for = "FromInvoiceDate" })
+                            @Html.TextBoxFor(Model => Model.FromInvoiceDate, new { @id = "FromInvoiceDate", @name = "FromInvoiceDate", @class = "form-control", @readonly = true })
+                            
+                        </div>
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.ToInvoiceDate, new { @for = "ToInvoiceDate" })
+                            @Html.TextBoxFor(Model => Model.ToInvoiceDate, new { @id = "ToInvoiceDate", @name = "ToInvoiceDate", @class = "form-control", @readonly = true })                            
+                        </div>
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.NOCNO, new { @for = "NOCNO" })
+                            @Html.TextBoxFor(Model => Model.NOCNO, new { @id = "NOCNO", @name = "NOCNO", @class = "form-control", @readonly = true })
+                            @Html.HiddenFor(Model => Model.NOCID, new { @id = "NOCID", @name = "NOCID" })
+                        </div>
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.Importer)
+                            @Html.TextBoxFor(Model => Model.Importer, new { @id = "Importer", @name = "Importer", @class = "form-control", @readonly = true })
+                            @Html.HiddenFor(Model => Model.ImporterID, new { @id = "ImporterID", @name = "ImporterID" })
+                        </div>
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.CHA)
+                            @Html.TextBoxFor(Model => Model.CHA, new { @id = "CHA", @name = "CHA", @class = "form-control", @readonly = true })
+                            @Html.HiddenFor(Model => Model.CHAID, new { @id = "CHAID", @name = "CHAID" })
+                        </div>
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.Forwarder)
+                            @Html.TextBoxFor(Model => Model.Forwarder, new { @id = "Forwarder", @name = "Forwarder", @class = "form-control", @readonly = true })
+                            @Html.HiddenFor(Model => Model.ForwarderID, new { @id = "ForwarderID", @name = "ForwarderID" })
+                        </div>
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.Consoler)
+                            @Html.TextBoxFor(Model => Model.Consoler, new { @id = "Consoler", @name = "Consoler", @class = "form-control", @readonly = true })
+                            @Html.HiddenFor(Model => Model.ConsolerID, new { @id = "ConsolerID", @name = "ConsolerID" })
+                        </div>
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.FRBundlingStatus)
+                            @Html.TextBoxFor(Model => Model.FRBundlingStatus, new { @id = "FRBundlingStatus", @name = "FRBundlingStatus", @class = "form-control", @readonly = true })
+                        </div>
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.Bundle20)
+                            @Html.TextBoxFor(Model => Model.Bundle20, new { @id = "Bundle20", @name = "Bundle20", @class = "form-control", @readonly = true })
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.BillingParty, new { @for = "BillingParty" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContNo, String.Empty, new { @id = "spn_BillingPartyID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(model => model.BillingParty, new { @class = "form-control", @id = "BillingParty", @name = "BillingParty" })
+                                @Html.HiddenFor(model => model.BillingPartyID, new { @id = "BillingPartyID", @name = "BillingPartyID" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.BillingPartyAddress, new { @for = "BillingPartyAddress" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.WONO, String.Empty, new { @id = "spn_BillingPartyAddressID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(model => model.BillingPartyAddress, new { @class = "form-control", @id = "BillingPartyAddress", @name = "BillingPartyAddress" })
+                                @Html.HiddenFor(model => model.BillingPartyAddressID, new { @id = "BillingPartyAddressID", @name = "BillingPartyAddressID" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.State)
+                            @Html.TextBoxFor(Model => Model.State, new { @id = "State", @name = "State", @class = "form-control", @readonly = true })
+                            @Html.HiddenFor(Model => Model.StateID, new { @id = "StateID" })
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.BillingPartyGSTIN)
+                            @Html.TextBoxFor(Model => Model.BillingPartyGSTIN, new { @id = "BillingPartyGSTIN", @name = "BillingPartyGSTIN", @class = "form-control", @readonly = true })
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.GSTCustomerType)
+                            @Html.TextBoxFor(Model => Model.GSTCustomerType, new { @id = "GSTCustomerType", @name = "GSTCustomerType", @class = "form-control", @readonly = true })
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.PaymentMode, new { @for = "PaymentMode" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.PaymentMode, String.Empty, new { @id = "spn_PaymentMode", @class = "help-inline text-red" })
+                                @Html.DropDownListFor(model => model.PaymentMode, Model.SelectPaymentMode, new { @class = "form-control", @id = "PaymentMode", @name = "PaymentMode" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" })
+                                @Html.TextBoxFor(model => model.Remarks, new { @class = "form-control", @id = "Remarks", @name = "Remarks" })
+                            </div>
+                        </div>
+                        
+                        @if (!IsEdit)
+                        {
+                            <div class="col-md-12 pull-right">
+                                <div class="form-group pull-right">
+                                    <br />
+                                    <button type="submit" class="btn btn-primary" id="btnSearchNOCDetails" onclick="return SearchNOCDetails(0);">Continue</button>
+                                    <a href="@Url.Action("index", "emptyInvoice")" class="btn btn-danger">Cancel</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            @if (Model.EmptyInvoiceID > 0)
+            {
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h4>
+                            <b>Consolidated Charges </b>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                            <div style="display: inline-flex">
+                                <span class="badge bg-aqua" style="font-size:15px;"> 20 : @Model.noof20count</span>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                <span class="badge bg-aqua" style="font-size:15px;"> 40 : @Model.noof40count</span>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                <span class="badge bg-aqua" style="font-size:15px;"> 45 : @Model.noof45count</span>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                            </div>
+                        </h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12" style="overflow:scroll">
+                            <table id="example3" style="white-space: nowrap;" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>                                        
+                                        <th>Agent</th>
+                                        <th>Line</th>
+                                        <th>WO NO</th>
+                                        <th>WO DATE</th>
+                                        <th>Cont No </th>
+                                        <th>Size </th>
+                                        <th>Type </th>
+                                        <th>Arrival Date </th>
+                                        <th>From Date</th>
+                                        <th>To Date</th>
+                                        <th>Cargo Type </th>
+                                        <th>Billiable Head</th>
+                                        <th>Qty </th>
+                                        <th>Rate </th>
+                                        <th>Discount </th>
+                                        <th>Taxable Amount</th>
+                                        <th>GST% </th>
+                                        <th>GST Amount </th>
+                                        <th>Total Amount </th>                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{ decimal TotalAmount = 0;}
+                                    @if (Model.dtConsolidateChargeDetails != null && Model.dtConsolidateChargeDetails.Rows.Count > 0)
+                                    {
+                                        for (int i = 0; i < Model.dtConsolidateChargeDetails.Rows.Count; i++)
+                                        {
+                                            TotalAmount = TotalAmount + Convert.ToDecimal(Model.dtConsolidateChargeDetails.Rows[i]["TotalAmount"]);
+                                    <tr>
+                                        <td>@Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["AgentName"])</td>
+                                        <td>@Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["LineName"])</td>
+                                        <td>@Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["WONO"])</td>
+                                        @if (!String.IsNullOrEmpty(Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["WODate"])))
+                                        {
+                                            <td>@Convert.ToDateTime(Model.dtConsolidateChargeDetails.Rows[i]["WODate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat)</td>
+                                        }
+                                        else
+                                        {
+                                            <td></td>
+                                        }
+                                        <td>@Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["ContainerNumber"])</td>
+                                        <td>@Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["ISOCodeSize"])</td>
+                                        <td>@Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["ISOCodeType"])</td>
+                                        @if (!String.IsNullOrEmpty(Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["ArrivalDate"])))
+                                        {
+                                            <td>@Convert.ToDateTime(Model.dtConsolidateChargeDetails.Rows[i]["ArrivalDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat)</td>
+                                        }
+                                        else
+                                        {
+                                            <td></td>
+                                        }
+                                        @if (!String.IsNullOrEmpty(Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["FromDate"])))
+                                        {
+                                            <td>@Convert.ToDateTime(Model.dtConsolidateChargeDetails.Rows[i]["FromDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat)</td>
+                                        }
+                                        else
+                                        {
+                                            <td></td>
+                                        }
+                                        @if (!String.IsNullOrEmpty(Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["ToDate"])))
+                                        {
+                                            <td>@Convert.ToDateTime(Model.dtConsolidateChargeDetails.Rows[i]["ToDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat)</td>
+                                        }
+                                        else
+                                        {
+                                            <td></td>
+                                        }
+                                        <td>@Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["CargoType"])</td>
+                                        <td>@Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["MSTRTariffHeadName"])</td>
+                                        <td>@Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["Qty"])</td>
+                                        <td>@Convert.ToDecimal(Model.dtConsolidateChargeDetails.Rows[i]["Rate"]).ToString("0.00")</td>
+                                        <td>@Convert.ToDecimal(Model.dtConsolidateChargeDetails.Rows[i]["Discount"]).ToString("0.00")</td>
+                                        <td>@Convert.ToDecimal(Model.dtConsolidateChargeDetails.Rows[i]["TaxableAmount"]).ToString("0.00")</td>
+                                        <td>@Convert.ToDecimal(Model.dtConsolidateChargeDetails.Rows[i]["GST"]).ToString("0.00")</td>
+                                        <td>@Convert.ToDecimal(Model.dtConsolidateChargeDetails.Rows[i]["GSTAmount"]).ToString("0.00")</td>
+                                        <td>@Convert.ToDecimal(Model.dtConsolidateChargeDetails.Rows[i]["TotalAmount"]).ToString("0.00")</td>
+                                    </tr>
+                                        }
+                                        <tr>
+                                            <td colspan="18" style="text-align:right;font-weight:bold;">Total Amount:</td>
+                                            <td colspan="2">@TotalAmount.ToString("0.00")</td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h4>
+                            <b> Discount Details </b>
+                            <div class="pull-right">
+                                <button type="button" class="btn btn-primary" onclick="openOtherTariff()">Add</button>
+                            </div>
+                        </h4>
+                    </div>
+                    @{ decimal TaxableAmount = 0, NetTaxableAmount = 0, GSTAmount = 0, DiscountAmount = 0, RoundOff = 0, NetAmount = 0; }
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Billable Head</th>
+                                            @*<th>Qty</th>
+                                        <th>Rate</th>*@
+                                            <th>Taxable Amount</th>
+                                            <th>Discount Amount</th>
+                                            <th>Net Taxable Amount</th>
+                                            <th>GST(%)</th>
+                                            @*<th>IGST Amount</th>
+                                        <th>CGST Amount</th>
+                                        <th>SGST Amount</th>*@
+                                            <th>Total GST</th>
+                                            <th>Net amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ decimal Amount = 0;
+                                            decimal TotalInvoiceAmount = 0;
+
+                                        }
+                                        @if (Model.dtDiscountDetails != null && Model.dtDiscountDetails.Rows.Count > 0)
+                                        {
+                                            <input type="hidden" id="DiscountDataTableCount" name="DiscountDataTableCount" value="@Model.dtDiscountDetails.Rows.Count" />
+
+                                            for (int L = 0; L < Model.dtDiscountDetails.Rows.Count; L++)
+                                            {
+                                                TaxableAmount += Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["TaxableAmount"]);
+                                                NetTaxableAmount += Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["NetTaxableAmount"]);
+                                                GSTAmount += Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["GSTAmount"]);
+                                                DiscountAmount = 0;
+                                                TotalInvoiceAmount += Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["TotalAmount"]);
+
+
+                                                <tr>
+                                                    @*<input type="hidden" id="hdntrnSpaceCertificateGWID_@L" name="hdntrnSpaceCertificateGWID_@L" value="@Model.dtDiscountDetails.Rows[L]["trnSpaceCertificateGWID"]">
+                                                <input type="hidden" id="hdntrnDocumentID_@L" name="hdntrnDocumentID_@L" value="@Model.dtDiscountDetails.Rows[L]["trnDocumentID"]">*@
+                                                    <input type="hidden" id="hdnMstrTariffHeadID_@L" name="hdnMstrTariffHeadID_@L" value="@Model.dtDiscountDetails.Rows[L]["TariffHeadID"]">
+                                                    <input type="hidden" id="hdnTariffHead_@L" name="hdnTariffHead_@L" value="@Model.dtDiscountDetails.Rows[L]["TariffHead"]">
+                                                    <input type="hidden" id="hdnTaxableAmount_@L" name="hdnTaxableAmount_@L" value="@Model.dtDiscountDetails.Rows[L]["TaxableAmount"]">
+                                                    <input type="hidden" id="hdnDiscount_@L" name="hdnDiscount_@L" value="">
+                                                    <input type="hidden" id="hdnNetTaxableAmount_@L" name="hdnNetTaxableAmount_@L" value="@Model.dtDiscountDetails.Rows[L]["TaxableAmount"]">
+                                                    <input type="hidden" id="hdnGST" name="hdnGST_@L" value="@Model.dtDiscountDetails.Rows[L]["GST"]">
+                                                    <input type="hidden" id="hdnGSTAmount_@L" name="hdnGSTAmount_@L" value="@Model.dtDiscountDetails.Rows[L]["GSTAmount"]">
+                                                    <input type="hidden" id="hdnTotalAmount_@L" name="hdnTotalAmount_@L" value="@Model.dtDiscountDetails.Rows[L]["TotalAmount"]">
+                                                    <input type="hidden" id="hdnStateID" name="hdnStateID_@L" value="@Model.dtDiscountDetails.Rows[L]["StateID"]">
+                                                    <td>@Model.dtDiscountDetails.Rows[L]["TariffHead"]</td>
+
+                                                    <td id="txtTaxableAmount_@L">@(Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["TaxableAmount"]).ToString("0.00"))</td>
+
+                                                    <td>
+                                                        <div class="form-group-sm">
+                                                            @Html.TextBoxFor(Model => Model.DiscountAmount[L], new { @id = "DiscountAmount_" + L, @name = "DiscountAmount" + L, @class = "form-control", @placeholder = "Enter Discount Amount", @oninput = "NumberWithTwoDecimal(event,'DiscountAmount_" + L + "')", @onkeyup = "return CalcNetTaxableAmount('DiscountAmount_" + L + "')" })
+                                                        </div>
+                                                    </td>
+                                                    <td id="txtNetTaxableAmount_@L">@(Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["NetTaxableAmount"]).ToString("0.00"))</td>
+                                                    <td id="GSTPer_@L">@(Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["GST"]).ToString("0.00"))</td>
+
+                                                    <td id="GSTAmt_@L">@(Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["GSTAmount"]).ToString("0.00"))</td>
+                                                    <td id="NetAmt_@L">@(Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["TotalAmount"]).ToString("0.00"))</td>
+
+                                                    @*<td>@Model.dtDiscountDetails.Rows[L]["MSTRTariffHeadName"]</td>
+                                                <td>@(Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["Qty"]))</td>
+                                                <td>@(Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["Rate"]).ToString("0.00"))</td>
+                                                <td>@(Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["Discount"]).ToString("0.00"))</td>
+                                                <td>@(Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["TaxableAmount"]).ToString("0.00"))</td>
+                                                <td>@(Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["GST"]).ToString("0.00"))</td>
+                                                <td>@IGST</td>
+                                                <td>@CGST</td>
+                                                <td>@SGST</td>
+                                                <td>@(Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["GSTAmount"]).ToString("0.00"))</td>
+                                                <td>@(Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["TotalAmount"]).ToString("0.00"))</td>*@
+                                                </tr>
+                                            }
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <br />
+
+                        @if (Model.PaymentMode == "Cash")
+                        {
+
+                            <div class="box-header with-border">
+                                <h4>
+                                    <b> Receipt Details </b>
+                                </h4>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Mode Of Payment</th>
+                                                <th>Amount</th>
+                                                <th>Cheque/DD/NEFT NO</th>
+                                                <th>Cheque/DD/NEFT Date</th>
+                                                <th>Bank Details</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>@Html.DropDownListFor(model => model.PaymentModeOfReceipt, Model.SelectPaymentModeOfReceipt, new { @class = "form-control", @id = "PaymentModeOfReceipt", @name = "PaymentMode2" })</td>
+                                                <td>@Html.TextBoxFor(Model => Model.AmountOfReceipt, new { @id = "AmountOfReceipt", @name = "AmountOfReceipt", @class = "form-control", @onkeypress = "return (event.charCode >= 48 && event.charCode <= 57 || (charCode >=45 &&  charCode <= 46))" })</td>
+                                                <td>@Html.TextBoxFor(Model => Model.ChequeDDNeftNoOfReceipt, new { @id = "ChequeDDNeftNoOfReceipt", @name = "ChequeDDNeftNoOfReceipt", @class = "form-control", @placeholder = "Enter Cheque/DD/NEFT NO" })</td>
+                                                <td>@Html.TextBoxFor(Model => Model.ChequeDDNeftDateOfReceipt, new { @id = "ChequeDDNeftDateOfReceipt", @name = "ChequeDDNeftDateOfReceipt", @class = "form-control DatePicker", @placeholder = "Enter Cheque/DD/NEFT Date"})</td>
+                                                <td>@Html.TextBoxFor(Model => Model.BankDetailsOfReceipt, new { @id = "BankDetailsOfReceipt", @name = "BankDetailsOfReceipt", @class = "form-control", @placeholder = "Enter Bank Details" })</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                        <div class="box-body row">
+                            <div class="table-responsive">
+                                <table id="example4" class="table-bordered table-hover " style="float:right ;margin-left:2%">
+                                    <tbody>
+                                        <tr class="text-right">
+                                            <td><b> Taxable Amount :</b></td>
+                                            <td id="FinalTaxableAmount">@(Convert.ToDecimal(TaxableAmount).ToString("0.00")) </td>
+                                        </tr>
+                                        <tr class="text-right">
+                                            <td><b> Discount Amount :</b></td>
+                                            <td id="FinalDiscountAmount">@(Convert.ToDecimal(DiscountAmount).ToString("0.00")) </td>
+                                        </tr>
+                                        <tr class="text-right">
+                                            <td><b>Net Taxable Amount :</b></td>
+                                            <td id="FinalNetTaxableAmount">@(Convert.ToDecimal(NetTaxableAmount).ToString("0.00")) </td>
+                                        </tr>
+                                        <tr class="text-right">
+                                            <td><b> GST Amount :</b></td>
+                                            <td id="FinalGSTAmount">@(Convert.ToDecimal(GSTAmount).ToString("0.00"))</td>
+                                        </tr>
+                                        <tr class="text-right">
+                                            <td><b> Total Amount :</b></td>
+                                            <td id="FinalTotalAmount">@(Convert.ToDecimal(TotalInvoiceAmount).ToString("0.00")) </td>
+                                        </tr>
+                                        <tr class="text-right">
+                                            <td><b> Round Amount :</b></td>
+                                            <td id="FinalRoundAmount">@((Math.Round(Convert.ToDecimal(TotalInvoiceAmount)) - Convert.ToDecimal(TotalInvoiceAmount)).ToString("0.00")) </td>
+                                        </tr>
+                                        <tr class="text-right">
+                                            <td><b> Net Amount :</b></td>
+                                            <td id="FinalNetAmount">@(Math.Round(Convert.ToDecimal(TotalInvoiceAmount)).ToString("0.00")) </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-12 pull-right">
+                            <div class="form-group pull-right">
+                                <br>
+                                <button type="submit" id="btnFinalSave" onclick="return validateModel(1)" @((!(Model.FinalTotal > 0)) ? "disabled='disabled;'" : "") class="btn btn-primary">Generate Empty Invoice</button>
+                                <a href="@Url.Action("index", "emptyInvoice")" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+                <div class="modal fade in" id="AddOtherTariffHead" style="display: none; padding-right: 17px;" data-backdrop="static" data-keyboard="false">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" onclick="RefreshPage()" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title">Add Other Tariff Head</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    @Html.HiddenFor(Model => Model.OtherTariffDetails.EmptyInvoiceOtherTariffDetailsID, new { @id = "EmptyInvoiceOtherTariffDetailsID", @name = "EmptyInvoiceOtherTariffDetailsID" })
+
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.OtherTariffDetails.OtherTariffDetailsTariffHead)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.OtherTariffDetails.OtherTariffDetailsTariffHeadID, String.Empty, new { @id = "spn_OtherTariffDetailsTariffHeadID", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.OtherTariffDetails.OtherTariffDetailsTariffHead, new { @id = "OtherTariffDetailsTariffHead", @name = "OtherTariffDetailsTariffHead", @class = "form-control", @placeholder = "Enter TariffHead" })
+                                            @Html.HiddenFor(Model => Model.OtherTariffDetails.OtherTariffDetailsTariffHeadID, new { @id = "OtherTariffDetailsTariffHeadID", @name = "OtherTariffDetailsTariffHeadID" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.OtherTariffDetails.OtherTariffDetailsQTY)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.OtherTariffDetails.OtherTariffDetailsQTY, String.Empty, new { @id = "spn_OtherTariffDetailsQTY", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.OtherTariffDetails.OtherTariffDetailsQTY, new { @id = "OtherTariffDetailsQTY", @name = "OtherTariffDetailsQTY", @class = "form-control", @placeholder = "Enter QTY", @maxlength = "11", @onblur = "CalculateOtherTariffDetailsAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'OtherTariffDetailsQTY')" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.OtherTariffDetails.OtherTariffDetailsRate)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.OtherTariffDetails.OtherTariffDetailsRate, String.Empty, new { @id = "spn_OtherTariffDetailsRate", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.OtherTariffDetails.OtherTariffDetailsRate, new { @id = "OtherTariffDetailsRate", @name = "OtherTariffDetailsRateRate", @class = "form-control", @placeholder = "Enter Rate", @maxlength = "11", @onblur = "CalculateOtherTariffDetailsAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'OtherTariffDetailsRate')" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.OtherTariffDetails.OtherTariffDetailsTotal) @Html.ValidationMessageFor(Model => Model.OtherTariffDetails.OtherTariffDetailsTotal, String.Empty, new { @id = "spn_OtherTariffDetailsTotal", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.OtherTariffDetails.OtherTariffDetailsTotal, new { @id = "OtherTariffDetailsTotal", @name = "OtherTariffDetailsTotal", @class = "form-control", @placeholder = "Enter Total", @onblur = "CalculateOtherTariffDetailsAMT()", @readonly = "true" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            <input type="hidden" id="OtherTariffDetailsDiscountBase" />
+                                            <input type="hidden" id="OtherTariffDetailsRateBase" />
+                                            @Html.LabelFor(Model => Model.OtherTariffDetails.OtherTariffDetailsDiscount) @Html.ValidationMessageFor(Model => Model.OtherTariffDetails.OtherTariffDetailsDiscount, String.Empty, new { @id = "spn_OtherTariffDetailsOtherTariffDetailsDiscount", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.OtherTariffDetails.OtherTariffDetailsDiscount, new { @id = "OtherTariffDetailsDiscount", @name = "OtherTariffDetailsDiscount", @class = "form-control", @placeholder = "Enter Discount ", @onblur = "CalculateOtherTariffDetailsAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'OtherTariffDetailsDiscount')" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+
+                                            @Html.LabelFor(Model => Model.OtherTariffDetails.OtherTariffDetailsDiscountamt) @Html.ValidationMessageFor(Model => Model.OtherTariffDetails.OtherTariffDetailsDiscountamt, String.Empty, new { @id = "spn_OtherTariffDetailsOtherTariffDetailsDiscountamt", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.OtherTariffDetails.OtherTariffDetailsDiscountamt, new { @id = "OtherTariffDetailsDiscountamt", @name = "OtherTariffDetailsDiscountamt", @class = "form-control", @placeholder = "Enter Discount Amt", @maxlength = "11", @readonly = true })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+
+                                            @Html.LabelFor(Model => Model.OtherTariffDetails.OtherTariffDetailsTaxableAmount) @Html.ValidationMessageFor(Model => Model.OtherTariffDetails.OtherTariffDetailsTaxableAmount, String.Empty, new { @id = "spn_OtherTariffDetailsOtherTariffDetailsTaxableAmount", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.OtherTariffDetails.OtherTariffDetailsTaxableAmount, new { @id = "OtherTariffDetailsTaxableAmount", @name = "OtherTariffDetailsTaxableAmount", @class = "form-control", @placeholder = "Enter Discount Amt", @maxlength = "11", @readonly = true })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.OtherTariffDetails.OtherTariffDetailsGSTPer) @Html.ValidationMessageFor(Model => Model.OtherTariffDetails.OtherTariffDetailsGSTPer, String.Empty, new { @id = "spn_OtherTariffDetailsGSTPer", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.OtherTariffDetails.OtherTariffDetailsGSTPer, new { @id = "OtherTariffDetailsGSTPer", @name = "OtherTariffDetailsGSTPer", @class = "form-control", @placeholder = "Enter GST(%)", @onblur = "CalculateOtherTariffDetailsAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'OtherTariffDetailsGSTPer')" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.OtherTariffDetails.OtherTariffDetailsGSTAmount) @Html.ValidationMessageFor(Model => Model.OtherTariffDetails.OtherTariffDetailsGSTAmount, String.Empty, new { @id = "spn_OtherTariffDetailsGSTAmount", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.OtherTariffDetails.OtherTariffDetailsGSTAmount, new { @id = "OtherTariffDetailsGSTAmount", @name = "OtherTariffDetailsGSTAmount", @class = "form-control", @placeholder = "Enter GST(%)", @maxlength = "11", @readonly = true })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.OtherTariffDetails.OtherTariffDetailsNetAmount) @Html.ValidationMessageFor(Model => Model.OtherTariffDetails.OtherTariffDetailsNetAmount, String.Empty, new { @id = "spn_OtherTariffDetailsNetAmount", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.OtherTariffDetails.OtherTariffDetailsNetAmount, new { @id = "OtherTariffDetailsNetAmount", @name = "OtherTariffDetailsNetAmount", @class = "form-control", @readonly = "true" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 pull-right">
+                                        <div class="form-group pull-right">
+                                            <br />
+                                            <button type="button" onclick="return AddEmptyInvoiceOtherTariffDetails()" id="btnOtherTariffDetails" class="btn btn-primary">Add</button>
+                                            <a onclick="ClearEmptyInvoiceOtherTariffDetails()" class="btn btn-danger">Clear</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12" style="overflow: scroll;">
+                                        <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tariff Head </th>
+                                                    <th>Qty </th>
+                                                    <th>Rate </th>
+                                                    <th>Total</th>
+                                                    <th>Discount </th>
+                                                    <th>Discount Amount </th>
+                                                    <th>Taxable Amount </th>
+                                                    <th>GST (%) </th>
+                                                    <th>GST Amount </th>
+                                                    <th>Net Amount </th>
+                                                    <th class="freezeLastColumn">Action </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="OtherTariffDetailsDetails"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default pull-right" onclick="RefreshPage()" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+            }
+        }
+    </section>
+}
+<script>
+    var IsSearch = '@Model.IsSearch.ToString().ToLower()';
+
+    function changestepValue(tabNo) {
+        $("#DocumentTab").val(tabNo);
+        if (tabNo != "1") {
+            if (tabNo == "5") {
+                $("#IsChangeStep").val(2);
+            }
+        }
+        //$("frmpost").submit();
+    }
+    function FinalFinished() {
+        $("#IsFinished").val(true);
+        return GatePassValidation();
+    }
+
+    function getRoundOffAmount(amount) {
+        amount = parseFloat(amount).toFixed(2);
+        var amt = 0;
+        if ((amount) - Math.floor(amount) > 0.50) {
+            amt = 1 - ((amount) - Math.floor(amount));
+        }
+        else {
+            amt = -((amount) - Math.floor(amount));
+        }
+        return amt;
+    }
+
+    function CalcNetTaxableAmount(ID) {
+        debugger;
+        var SplitID = ID.split("_");
+        $("#" + ID).removeClass("redborder");
+        var DiscountAmount = $("#" + ID).val();
+        var TaxableAmount = $("#txtTaxableAmount_" + SplitID[1]).text();
+        var GSTPer = $("#GSTPer_" + SplitID[1]).text();
+        var GSTAmount = $("#GSTAmt_" + SplitID[1]).text();
+        var TotalAmount = $("#NetAmt_" + SplitID[1]).text();
+
+        if (DiscountAmount != "" && DiscountAmount != null && DiscountAmount != undefined) {
+            if (parseFloat(DiscountAmount) > parseFloat(TaxableAmount)) {
+                TosterAlert("error", "Please add less discount amount than taxable amount", "Error!");
+                $("#" + ID).addClass("redborder");
+                $("#" + ID).val("0.00");
+            }
+            else {
+                var NetTaxableAmount = parseFloat(TaxableAmount) - parseFloat(DiscountAmount);
+                var GSTAmt = ((parseFloat(NetTaxableAmount) * parseFloat(GSTPer)) / 100).toFixed(2);
+                var TotalAmt = (parseFloat(NetTaxableAmount) + parseFloat(GSTAmt)).toFixed(2);
+                $("#txtNetTaxableAmount_" + SplitID[1]).text(parseFloat(NetTaxableAmount).toFixed(2));
+                $("#GSTAmt_" + SplitID[1]).text(GSTAmt);
+                $("#NetAmt_" + SplitID[1]).text(TotalAmt);
+
+                $("#hdnDiscount_" + SplitID[1]).val(parseFloat(DiscountAmount).toFixed(2));
+                $("#hdnNetTaxableAmount_" + SplitID[1]).val(parseFloat(NetTaxableAmount).toFixed(2));
+                $("#hdnGSTAmount_" + SplitID[1]).val(GSTAmt);
+                $("#hdnTotalAmount_" + SplitID[1]).val(TotalAmt);
+            }
+        }
+        else {
+            DiscountAmount = 0;
+            var NetTaxableAmount = parseFloat(TaxableAmount) - parseFloat(DiscountAmount);
+            var GSTAmt = ((parseFloat(NetTaxableAmount) * parseFloat(GSTPer)) / 100).toFixed(2);
+            var TotalAmt = (parseFloat(NetTaxableAmount) + parseFloat(GSTAmt)).toFixed(2);
+            $("#txtNetTaxableAmount_" + SplitID[1]).text(parseFloat(NetTaxableAmount).toFixed(2));
+            $("#GSTAmt_" + SplitID[1]).text(GSTAmt);
+            $("#NetAmt_" + SplitID[1]).text(TotalAmt);
+
+            $("#hdnDiscount_" + SplitID[1]).val(parseFloat(DiscountAmount).toFixed(2));
+            $("#hdnNetTaxableAmount_" + SplitID[1]).val(parseFloat(NetTaxableAmount).toFixed(2));
+            $("#hdnGSTAmount_" + SplitID[1]).val(GSTAmt);
+            $("#hdnTotalAmount_" + SplitID[1]).val(TotalAmt);
+        }
+
+        var DiscountDataTableCount = $("#DiscountDataTableCount").val();
+        var FinalTaxableAmount = 0;
+        var FinalDiscountAmount = 0;
+        var FinalNetTaxableAmount = 0;
+        var FinalGSTAmount = 0;
+        var FinalTotalAmount = 0;
+        for (var i = 0; i < DiscountDataTableCount; i++) {
+            TaxableAmountOfThis = $("#txtTaxableAmount_" + i).text();
+            DiscountAmountofThis = $("#DiscountAmount_" + i).val();
+            if (DiscountAmountofThis == "" || DiscountAmountofThis == undefined || DiscountAmountofThis == null) {
+                DiscountAmountofThis = 0;
+            }
+            NetTaxableAmountofThis = $("#txtNetTaxableAmount_" + i).text();
+            GSTAmtofThis = $("#GSTAmt_" + i).text();
+            NetAmtofThis = $("#NetAmt_" + i).text();
+            FinalTaxableAmount = (parseFloat(FinalTaxableAmount) + parseFloat(TaxableAmountOfThis)).toFixed(2);
+            FinalDiscountAmount = (parseFloat(FinalDiscountAmount) + parseFloat(DiscountAmountofThis)).toFixed(2);
+            FinalNetTaxableAmount = (parseFloat(FinalNetTaxableAmount) + parseFloat(NetTaxableAmountofThis)).toFixed(2);
+            FinalGSTAmount = (parseFloat(FinalGSTAmount) + parseFloat(GSTAmtofThis)).toFixed(2);
+            FinalTotalAmount = (parseFloat(FinalTotalAmount) + parseFloat(NetAmtofThis)).toFixed(2);
+        }
+
+        $("#FinalTaxableAmount").text(FinalTaxableAmount);
+        $("#FinalDiscountAmount").text(FinalDiscountAmount);
+        $("#FinalNetTaxableAmount").text(FinalNetTaxableAmount);
+        $("#FinalGSTAmount").text(FinalGSTAmount);
+        $("#FinalTotalAmount").text(FinalTotalAmount);
+        var RoundAmount = $("#FinalRoundAmount").text();
+        var FinalRoundOffAmount = getRoundOffAmount(FinalTotalAmount);
+        $("#FinalRoundAmount").text(parseFloat(FinalRoundOffAmount).toFixed(2));
+        var FinalNetAmountAfterRoundOff = (parseFloat(FinalTotalAmount) + parseFloat(FinalRoundOffAmount)).toFixed(2);
+        $("#FinalNetAmount").text(parseFloat(FinalNetAmountAfterRoundOff).toFixed(2));
+        if (parseFloat($("#FinalNetAmount").text()) == 0) {
+            $("#btnFinalSave").attr("disabled", "disabled");            
+        }
+        else {
+            $("#btnFinalSave").removeAttr("disabled", "disabled");            
+        }
+    }
+</script>
+
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/emptyInvoice.js")"></script>
+
+<style>
+
+    .bootstrap-datetimepicker-widget table td,
+    .bootstrap-datetimepicker-widget table th {
+        color: #212121 !important;
+        border-color: white !important;
+    }
+
+    .bootstrap-datetimepicker-widget table th {
+        background-color: white !important;
+    }
+
+    .bootstrap-datetimepicker-widget table td.active {
+        color: white !important;
+    }
+</style>

@@ -1,0 +1,174 @@
+﻿@model CFS.Models.trnEmptyContainerInWO
+@{
+    ViewBag.Title = "View Empty Container In Work Order";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    Model.IsView = true;
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+<section class="content">
+
+    @using (Html.BeginForm("Action", "trnEmptyContainerInWO", FormMethod.Post))
+    {        
+        <input type="hidden" id="IsChangeStep" name="IsChangeStep" value="0" />
+        @Html.HiddenFor(Model => Model.IsFinished, new { @id = "IsFinished", @name = "IsFinished" })
+        <input type="hidden" id="trnEmptyContainerInWOID" name="trnEmptyContainerInWOID" value="@Model.trnEmptyContainerInWOID" />
+        <input type="hidden" id="trnEmptyContainerInWONO" name="trnEmptyContainerInWONO" value="@Model.trnEmptyContainerInWONO" />
+        @Html.HiddenFor(Model => Model.doaction)
+        <div class="row" id="step-1">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header with-border" style="cursor:pointer">
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <h4>
+                                    <b>
+                                        Basic Details ?
+                                        @if (Model != null && Model.IsFinished)
+                                        {
+                                            <span class="badge bg-light-blue" style="font-size:15px;">Empty Container In Work Order NO : @CFS.Com.ClsCommon.AddhtmlSpace(3)@Model.trnEmptyContainerInWOPrefix@Model.trnEmptyContainerInWONO</span>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">User : @Model.User</span> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                            <span class="badge bg-light-blue" style="font-size:15px;">Empty Container In Work Order Date and time : @Model.trnEmptyContainerInWODate</span>
+                                        }
+                                    </b>
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                <a href="@Url.Action("Index","trnEmptyContainerInWO", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+
+                    <div class="box-body" id="step-1-body">
+                        @Html.HiddenFor(Model =>Model.IsView)
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.CHAName) : <span style="margin-right:50px">@Model.CHAName</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.ForwarderName) : <span>@Model.ForwarderName</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.Exporter) : <span>@Model.Exporter</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.ConsolerName) : <span>@Model.ConsolerName</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.FromLocation) : <span>@Model.FromLocation</span>
+                        </div>
+                        <div class="col-md-4">
+                            @{ 
+                                string LiftOnBy = "";
+                                if (Model.LiftOnBy.ToString().ToUpper() == "OWN")
+                                {
+                                    LiftOnBy = "Seabird";
+                                }
+                                else
+                                {
+                                    LiftOnBy = Model.LiftOnBy;
+                                }
+                            }
+                            @Html.LabelFor(Model => Model.LiftOnBy) : <span>@LiftOnBy</span>
+                        </div>
+                        <div class="col-md-4">
+                            @{
+                                string LiftOffBy = "";
+                                if (Model.LiftOffBy.ToString().ToUpper() == "OWN")
+                                {
+                                    LiftOffBy = "Seabird";
+                                }
+                                else
+                                {
+                                    LiftOffBy = Model.LiftOffBy;
+                                }
+                            }
+                            @Html.LabelFor(Model => Model.LiftOffBy) : <span>@LiftOffBy</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.Remarks) : <span>@Model.Remarks</span>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div id="dvContainerDetails" style="display:none;" class="box">
+                    <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <h4>
+                                    <b>Add Container Details</b>
+                                </h4>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+
+                    <div class="box-body" id="step-1-body">
+                        @Html.HiddenFor(Model => Model.trnEmptyContainerInWOContainerDetails.trnEmptyContainerInWOContainerDetailsID, new { @id = "trnEmptyContainerInWOContainerDetailsID", @name = "trnEmptyContainerInWOContainerDetailsID" })
+                        <div class="col-md-12" style="overflow:scroll">
+                            <hr>
+                            <div class="pull-right">
+                                <div style="display: inline-flex">
+                                    <div class="input-group input-group-sm">
+                                        <input id="txtContainerdetail" name="txtContainerdetail" type="text" class="form-control" onkeyup="DataTableSeachEngine('txtContainerdetail','tblContainerdetail','btnContainerdetail')" placeholder="Search for Common" value="">
+                                        <span class="input-group-btn">
+                                            <button type="button" id="btnContainerdetail" onclick="DataTableSeachEngine('txtContainerdetail','tblContainerdetail','btnContainerdetail','yes')" class="btn btn-primary btn-flat">Search</button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <table id="tblContainerdetail" style="white-space: nowrap;" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Container Number</th>
+                                        <th>ISO Code</th>
+                                        <th>Size</th>
+                                        <th>Type</th>
+                                        <th>Agent</th>
+                                        <th>Line</th>
+                                        <th>Gate In Date</th>
+                                        <th>Gate Out Date</th>
+                                        <th>Event</th>
+                                        <th>Empty In Invoice No</th>
+                                        <th>Empty In Invoice Date</th>
+                                        <th>Empty Out Invoice No</th>
+                                        <th>Empty Out Invoice Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblContainerDetails"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</section>
+<script>
+    var IsFinished = '@Model.IsFinished';
+    var doaction = '@Model.doaction';
+
+    setTimeout(function () {
+        $(".HideIfView").hide();
+    }, 500);
+    function HideIfView() {
+        setTimeout(function () {
+            $(".HideIfView").hide();
+        }, 400);
+    }
+
+</script>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnEmptyContainerInWO.js")"></script>

@@ -1,0 +1,227 @@
+﻿@model CFS.Models.trnCargoGateIn
+@{
+    ViewBag.Title = "Confirmation Truck Gate In ";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    Model.IsView = true;
+    if (!ViewBag.gblBlnUnapprove && !ViewBag.gblBlnApprove)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+@using (Html.BeginForm("Confirmation", "trnCargoGateIn", FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+{
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;"> Cargo Gate In No : @Model.trnCargoGateInPrefix@Model.trnCargoGateInNo</span>
+                            </div>
+                        </div>
+                        <div class="pull-right" id="divBack">
+                            <div style="display: inline-flex">
+                                @if (ViewBag.gblBlnUnapprove == true && Model.IsApproved == true)
+                                {
+                                    <a class="btn btn-block btn-primary" data-toggle="modal" data-target="#myModalConfirmation">Cancle Gate Passs</a>
+                                    @CFS.Com.ClsCommon.AddhtmlSpace(2)<a id="btnEdit" target="_blank" href="@Url.Action("GenerateAndDisplayReport", "trnCargoGateIn", new { id = Model.trnCargoGateInID, WorkOrderID = Model.WorkOrderID, format = "pdf" })"><i title="Click to Gate Pass Print" style=" font-size: xx-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                    @CFS.Com.ClsCommon.AddhtmlSpace(2)<a id="btnPrint" target="_blank" href="@Url.Action("GenerateAndDisplayConfirmationReport", "trnCargoGateIn", new { id = Model.WorkOrderID, WorkOrderID = Model.WorkOrderID, format = "pdf" })"><i title="Click Confirm to Gate Pass Print" style=" font-size: xx-large; cursor: pointer; vertical-align: middle;" class="fa fa-floppy-o"></i></a>
+                                    @CFS.Com.ClsCommon.AddhtmlSpace(2)<a><i id="btnHistory" data-toggle="modal" data-target="#myModal" onclick="ShowHistory('trnCargoGateIn','@Model.trnCargoGateInID')" title="History" style=" font-size: xx-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                }
+                                else if (ViewBag.gblBlnApprove == true && Model.IsApproved == false)
+                                {
+                                    <a class="btn btn-block btn-primary" data-toggle="modal" data-target="#myModalConfirmation"> Confirm Gate Passs</a>
+                                    @CFS.Com.ClsCommon.AddhtmlSpace(2)<a id="btnEdit" href="@Url.Action("Action", "trnCargoGateIn", new { id = Model.trnCargoGateInID , pg = Model.pagger.CurrentPage, search =  Model.pagger.Search ,doaction = "edit", @IsSearch = true, @WorkOrdersearchID = Model.WorkOrderID +  "_" +Model.TruckID+ "_" + Model.TransporterID , @WorkOrderNo = Convert.ToString(Model.WorkOrderNo) + " - " + Convert.ToString(Model.TruckNo) + " - " + Convert.ToString(Model.Transporter) })"><i title="Click to Edit" style=" font-size: xx-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                    @CFS.Com.ClsCommon.AddhtmlSpace(2)<a id="btnPrint" target="_blank" href="@Url.Action("GenerateAndDisplayReport", "trnCargoGateIn", new { id = Model.trnCargoGateInID, WorkOrderID = Model.WorkOrderID, format = "pdf" })"><i title="Click to Gate Pass Print" style=" font-size: xx-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                    @CFS.Com.ClsCommon.AddhtmlSpace(2)<a><i id="btnHistory" data-toggle="modal" data-target="#myModal" onclick="ShowHistory('trnCargoGateIn','@Model.trnCargoGateInID')" title="History" style=" font-size: xx-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                }
+                                @CFS.Com.ClsCommon.AddhtmlSpace(5)
+                                <a id="btnBack" href="@Url.Action("index", "trnCargoGateIn", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.IsSearch)
+                        @Html.HiddenFor(Model => Model.IsView)
+                        @Html.HiddenFor(Model => Model.IsFinished, new { id = "IsFinished", name = "IsFinished" })
+                        @Html.HiddenFor(Model => Model.trnCargoGateInPrefix, new { id = "trnCargoGateInPrefix", name = "trnCargoGateInPrefix" })
+                        @Html.HiddenFor(Model => Model.trnCargoGateInNo, new { id = "trnCargoGateInNo", name = "trnCargoGateInNo" })
+                        <input type="hidden" id="trnCargoGateInID" name="trnCargoGateInID" value="@Model.trnCargoGateInID" />
+                        <input type="hidden" id="WorkOrderIDOnly" name="WorkOrderIDOnly" value="@Model.WorkOrderIDOnly" />
+                        <input type="hidden" id="WorkOrderNoOnly" name="WorkOrderNoOnly" value="@Model.WorkOrderNoOnly" />
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.CycleName) : <span>@Model.CycleName</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.CargoGateInDate) : <span>@Model.CargoGateInDate</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.ActualGateInDate) : <span>@Model.ActualGateInDate</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.User) : <span>@Model.User</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.TransportationType) : <span>@Model.TransportationType</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.TruckNo) : <span>@Model.TruckNo</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Transporter) : <span>@Model.Transporter</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.WeighmentInvoiceNo) : <span>@Model.WeighmentInvoiceNo</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.WeighmentReceiptNo) : <span>@Model.WeighmentReceiptNo</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.GrossWeight) : @if (!string.IsNullOrEmpty(Model.GrossWeight))
+                            {<span>@Convert.ToDecimal(Model.GrossWeight).ToString("0.00")</span>}
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.NetWt) : @if (!string.IsNullOrEmpty(Model.NetWt))
+                            {<span>@Convert.ToDecimal(Model.NetWt).ToString("0.00")</span>}
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(Model => Model.TruckTareWeight) : @if (!string.IsNullOrEmpty(Model.TruckTareWeight))
+                            {<span>@Convert.ToDecimal(Model.TruckTareWeight).ToString("0.00")</span>}
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.ContainerTareWeight) : @if (!string.IsNullOrEmpty(Model.ContainerTareWeight))
+                            {<span>@Convert.ToDecimal(Model.ContainerTareWeight).ToString("0.00")</span>}
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.VehicleType, new { @for = "VehicleType" })   : <span>@Model.VehicleType</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Driver, new { @for = "Driver" })   : <span>@Model.Driver</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.LicenceNo, new { @for = "LicenceNo" })   : <span>@Model.LicenceNo</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.MobileNo, new { @for = "MobileNo" })   : <span>@Model.MobileNo</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Address, new { @for = "Address" })   : <span>@Model.Address</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.FromLocation, new { @for = "FromLocation" })  : <span>@Model.FromLocation</span>
+                            </div>
+                        </div>
+                         <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.DomesticContainerStatus, new { @for = "DomesticContainerStatus" }) : <span>@(Convert.ToBoolean(Model.DomesticContainerStatus) ? "Yes" : "No")</span>
+                            </div>
+                        </div>
+
+                        @if (Model.DomesticContainerStatus == true)
+                        {
+
+                            <div class="col-md-12">
+                                <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Cont No</th>
+                                            <th>ISO Code</th>
+                                            <th>Size</th>
+                                            <th>Cont Type</th>
+                                            <th>Gross Weight</th>
+                                            <th>Tare Weight</th>
+                                            <th>Payload Capacity</th>
+                                            <th>Physical Seal</th>
+                                            <th>Declared Seal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ContainerDetails"></tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+                @Html.Partial("_DOCDetailsCard");
+            </div>
+        </div>
+    </section>
+}
+<script>
+    var VCNDeatails = '@Model.HtmlVCNDeatails';
+    var IsSearch = '@Model.IsSearch.ToString().ToLower()';
+    var Type = '@Model.Type.ToString().ToLower()';
+    var IsView = "False";
+
+    function changestepValue(tabNo) {
+        $("#DocumentTab").val(tabNo);
+        if (tabNo != "1") {
+            if (tabNo == "5") {
+                $("#IsChangeStep").val(2);
+            }
+        }
+        //$("frmpost").submit();
+    }
+    setTimeout(function () {
+        $(".HideIfView").hide();
+    }, 500);
+
+    function HideIfView() {
+        setTimeout(function () {
+            $(".HideIfView").hide();
+        }, 400);
+    }
+</script>
+@if (((Model != null && Model.doaction.ToLower() == "edit") || Model.trnCargoGateInID > 0))
+{
+    <script>
+        $(".isDisplayOnlyinEdit").show();
+    </script>
+}
+else
+{
+    <script>
+        $(".isDisplayOnlyinEdit").hide();
+    </script>
+}
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnCargoGateIn.js")"></script>

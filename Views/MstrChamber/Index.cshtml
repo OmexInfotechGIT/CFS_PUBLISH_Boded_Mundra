@@ -1,0 +1,150 @@
+﻿@model CFS.Models.MstrChamber
+@{
+
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+
+    ViewBag.Title = "Chamber Master List";
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a href="@Url.Action("Action", "MstrChamber", new { pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "add" })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Chamber"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+
+
+                    <div style="overflow-x:scroll">
+                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "MstrChamber", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "BuildingName", SortOrder = (Model.pagger.SortColumn.ToLower() == "buildingname" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "buildingname" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Building </a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "MstrChamber", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "ChamberCode", SortOrder = (Model.pagger.SortColumn.ToLower() == "chambercode" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "chambercode" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Chamber Code</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "MstrChamber", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "ChamberName", SortOrder = (Model.pagger.SortColumn.ToLower() == "chambername" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "chambername" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Chamber Name </a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "MstrChamber", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "Floor", SortOrder = (Model.pagger.SortColumn.ToLower() == "floor" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "floor" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Floor </a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "MstrChamber", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "CFT", SortOrder = (Model.pagger.SortColumn.ToLower() == "cft" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "cft" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> CFT </a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "MstrChamber", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "ActualSize", SortOrder = (Model.pagger.SortColumn.ToLower() == "actualsize" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "actualsize" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Actual Size </a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "MstrChamber", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "UseableSize", SortOrder = (Model.pagger.SortColumn.ToLower() == "useablesize" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "useablesize" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Useable Size </a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "MstrChamber", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "SquareFeet", SortOrder = (Model.pagger.SortColumn.ToLower() == "squarefeet" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "squarefeet" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Square(FT)</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "MstrChamber", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "noofpallet", SortOrder = (Model.pagger.SortColumn.ToLower() == "noofpallet" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "noofpallet" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> No.Of Pallet</a>
+                                    </th>
+
+                                    @if (ViewBag.gblBlnEdit)
+                                    {
+                                        <th>
+                                            <a class="text-black" href="@Url.Action("index", "MstrChamber", new { pg = Model.pagger.CurrentPage, search = Model.pagger.Search, SortColumn = "isactive", SortOrder = (Model.pagger.SortColumn.ToLower() == "isactive" && Model.pagger.SortOrder.ToLower() == "asc" ? "desc" : "asc") })"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "isactive" && Model.pagger.SortOrder.ToLower() == "asc" ? "desc" : "asc").ToString().ToLower())"></i> Status</a>
+                                        </th>
+                                    }
+                                    <th class="freezeLastColumn">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@Model.MyDatatable.Rows[i]["BuildingName"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["ChamberCode"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["ChamberName"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["Floor"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["CFT"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["ActualSize"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["UseableSize"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["SquareFeet"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["NoOfPallet"]</td>
+                                        @if (ViewBag.gblBlnEdit)
+                                        {
+                                            <td>
+                                                @{
+                                                    string Icon = "glyphicon glyphicon-remove-circle";
+                                                    string click = "click to Active";
+                                                    string isactive = "true";
+                                                    if (Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsActive"]) == true)
+                                                    {
+                                                        Icon = "glyphicon glyphicon-ok-circle";
+                                                        click = "click to InActive";
+                                                        isactive = "false";
+                                                    }
+                                                }
+                                                <a><i onclick="ValidateUpdateStatus('MstrChamber','@isactive','@Model.MyDatatable.Rows[i]["MstrChamberID"]')" title="@click" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="@Icon"></i></a>
+                                            </td>
+                                        }
+                                        <td class="freezeLastColumnwithWhite">
+                                            @if (ViewBag.gblBlnEdit)
+                                            {
+                                                <a href="@Url.Action("Action", "MstrChamber", new { id = Model.MyDatatable.Rows[i]["MstrChamberID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit" })"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                            }
+                                            @if (ViewBag.gblBlnView)
+                                            {
+                                                <a href="@Url.Action("view", "MstrChamber", new { id = Model.MyDatatable.Rows[i]["MstrChamberID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search })"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                            }
+                                            <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('MstrChamber','@Model.MyDatatable.Rows[i]["MstrChamberID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                            @if (ViewBag.gblBlnDelete)
+                                            {
+                                                <a href="@Url.Action("delete", "MstrChamber", new { id = Model.MyDatatable.Rows[i]["MstrChamberID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+                        @Html.Partial("_pagination")
+                    </div>
+                </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrChamber.js")"></script>
+

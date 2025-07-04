@@ -1,0 +1,804 @@
+﻿@model CFS.Models.trnBOEItems
+
+@{
+
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update BOE Items";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New BOE Items";
+
+    }
+    string heading = "";
+    System.Text.StringBuilder StrAutocomplete = new System.Text.StringBuilder();
+}
+
+<style>
+    th, td {
+        padding: 3px;
+    }
+
+    input, select {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+
+    .ui-autocomplete {
+        z-index: 9999;
+    }
+</style>
+<!-- Main content -->
+<section class="">
+
+    @using (Html.BeginForm("Index", "trnBOEItems", FormMethod.Post))
+    {
+        @Html.HiddenFor(Model => Model.trnDocumentLotDetailsID)
+        @Html.HiddenFor(Model => Model.trnDocumentID)
+        @Html.HiddenFor(Model => Model.trnDocumentContainerID)
+        @Html.HiddenFor(Model => Model.trnTruckDestuffingID)
+        @Html.HiddenFor(Model => Model.ModelTruckNo)
+        @Html.HiddenFor(Model => Model.ModelBOENo)
+        @Html.HiddenFor(Model => Model.ModelGatePassPackages)
+        @Html.HiddenFor(Model => Model.ModelGatePassPieces)
+        @Html.HiddenFor(Model => Model.ModelGatePassWeight)
+        @Html.HiddenFor(Model => Model.ModelBulk)
+        @Html.HiddenFor(Model => Model.type)
+        @Html.HiddenFor(Model => Model.searchID)
+        @Html.HiddenFor(Model => Model.searchNo)
+        @Html.HiddenFor(Model => Model.CLPIsFinished)
+        @Html.HiddenFor(Model => Model.IsGroupArea)
+        <div class="row" id="step-1">
+
+            <div class="col-xs-12">
+
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h4>
+                            <b>BOE Items</b>
+
+                            <div class="pull-right">
+                                <div style="display: inline-flex">
+                                    @if (Model.Isview)
+                                    {
+                                        if (Model.type == "T")
+                                        {
+                                            <a href="@Url.Action("view","trnTruckDestuffing", new { @id=Model.trnTruckDestuffingID, @doaction = "edit", @IsSearch = "True", @WorkOrderNo = Model.searchNo, @WorkOrdersearchID = Model.searchID, @IsWorkOrderOrGateIn = Request.Params["IsWorkOrderOrGateIn"]})" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.Action("view","trnContainerDestuffing", new { @id=Model.trnTruckDestuffingID, @doaction = "edit", @IsSearch = "True", @ContNo = Model.searchNo, @trnContainerDestuffWorkOrderDetailsID = Model.searchID, @IsWorkOrderOrGateIn = Request.Params["IsWorkOrderOrGateIn"]})" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (Model.type == "T")
+                                        {
+                                            <a href="@Url.Action("Action","trnTruckDestuffing", new { @id=Model.trnTruckDestuffingID, @doaction = "edit", @IsSearch = "True", @WorkOrderNo = Model.searchNo, @WorkOrdersearchID = Model.searchID, @IsWorkOrderOrGateIn = Request.Params["IsWorkOrderOrGateIn"]})" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.Action("Action","trnContainerDestuffing", new { @id=Model.trnTruckDestuffingID, @doaction = "edit", @IsSearch = "True", @ContNo = Model.searchNo, @trnContainerDestuffWorkOrderDetailsID = Model.searchID, @IsWorkOrderOrGateIn = Request.Params["IsWorkOrderOrGateIn"]})" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                                        }
+                                    }
+                                </div>
+
+                            </div>
+                        </h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.AreaRequired) : <span id="txtAreaRequired">@Model.AreaRequired</span>
+                        </div>
+                        @if (Model.type == "T")
+                        {
+                            <div class="col-md-2">
+                                @Html.LabelFor(Model => Model.ModelTruckNo) : <span>@Model.ModelTruckNo</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-md-2">
+                                @Html.Label("Container No") : <span>@Model.ModelTruckNo</span>
+                            </div>
+                        }
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.ModelBOENo) : <span>@Model.ModelBOENo</span>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.ModelGatePassPackages) : <span style="color:red;font-weight:bold;">@(Convert.ToDecimal(Model.ModelGatePassPackages).ToString("0"))</span>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.ModelGatePassPieces) : <span style="color:red;font-weight:bold;">@(Convert.ToDecimal(Model.ModelGatePassPieces).ToString("0"))</span>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.ModelGatePassWeight) : <span style="color:red;font-weight:bold;">@Model.ModelGatePassWeight</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.Label("Total Area Booked") : <span id="txtBookingArea">@Model.dtAreaDetails.Rows[0]["BookingArea"].ToString()@Model.dtAreaDetails.Rows[0]["BookingAreaUom"].ToString()</span>
+                            @Html.HiddenFor(Model => Model.TotalBookedArea)
+                        </div>
+                        <div class="col-md-3">
+                            @Html.Label("Total Area Used") : <span id="txtTotalReceivedArea">@Model.dtAreaDetails.Rows[0]["TotalReceivedArea"].ToString()@Model.dtAreaDetails.Rows[0]["BookingAreaUom"].ToString()</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.Label("Total Area Released") : <span id="txtTotalOutwadArea">@Model.dtAreaDetails.Rows[0]["TotalOutwadArea"].ToString()@Model.dtAreaDetails.Rows[0]["BookingAreaUom"].ToString()</span>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.Label("Total Balance Area") : <span id="txtTotalBalanceArea">@((Convert.ToDecimal(Model.dtAreaDetails.Rows[0]["TotalReceivedArea"].ToString()) - Convert.ToDecimal(Model.dtAreaDetails.Rows[0]["TotalOutwadArea"].ToString())))@Model.dtAreaDetails.Rows[0]["BookingAreaUom"].ToString()</span>
+                        </div>
+                        @if (!Model.Isview)
+                        {
+
+
+                            <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                            if (Model.CLPIsFinished)
+                            {
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.AreaRequired, new { @for = "AreaRequired" })  @Html.ValidationMessageFor(Model => Model.AreaRequired, String.Empty, new { @id = "spn_AreaRequired", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.AreaRequired, new { @id = "AreaRequired", @name = "AreaRequired", @class = "form-control", @placeholder = "Enter Area Required", @maxlength = "10", @onkeypress = "return isNumberWithTwoDecimal(event,'AreaRequired')", @readonly = true })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ModelWHLocation, new { @for = "ModelWHLocation" })  @Html.ValidationMessageFor(Model => Model.ModelWHLocationID, String.Empty, new { @id = "spn_ModelWHLocation", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.ModelWHLocation, new { @id = "ModelWHLocation", @name = "ModelWHLocation", @class = "form-control", @placeholder = "Enter WH Location", @readonly = true })
+                                        @Html.HiddenFor(Model => Model.ModelWHLocationID, new { @id = "ModelWHLocationID", @name = "ModelWHLocationID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ModelPackagingType, new { @for = "ModelPackagingType" })  @Html.ValidationMessageFor(Model => Model.ModelPackagingTypeID, String.Empty, new { @id = "spn_ModelPackagingType", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.ModelPackagingType, new { @id = "ModelPackagingType", @name = "ModelPackagingType", @class = "form-control", @placeholder = "Enter Packaging Type", @readonly = true })
+                                        @Html.HiddenFor(Model => Model.ModelPackagingTypeID, new { @id = "ModelPackagingTypeID", @name = "ModelPackagingTypeID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ModelBillCommodity, new { @for = "ModelBillCommodity" })  @Html.ValidationMessageFor(Model => Model.ModelBillCommodityID, String.Empty, new { @id = "spn_ModelBillCommodity", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.ModelBillCommodity, new { @id = "ModelBillCommodity", @name = "ModelBillCommodity", @class = "form-control", @placeholder = "Enter Bill Commodity", @readonly = true })
+                                        @Html.HiddenFor(Model => Model.ModelBillCommodityID, new { @id = "ModelBillCommodityID", @name = "ModelBillCommodityID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ModelEquipmentUsed, new { @for = "ModelEquipmentUsed" })  @Html.ValidationMessageFor(Model => Model.ModelEquipmentUsedID, String.Empty, new { @id = "spn_ModelEquipmentUsed", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.ModelEquipmentUsed, new { @id = "ModelEquipmentUsed", @name = "ModelEquipmentUsed", @class = "form-control", @placeholder = "Enter Equipment Used", @readonly = true })
+                                        @Html.HiddenFor(Model => Model.ModelEquipmentUsedID, new { @id = "ModelEquipmentUsedID", @name = "ModelEquipmentUsedID" })
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.AreaRequired, new { @for = "AreaRequired" })  @Html.ValidationMessageFor(Model => Model.AreaRequired, String.Empty, new { @id = "spn_AreaRequired", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.AreaRequired, new { @id = "AreaRequired", @name = "AreaRequired", @class = "form-control", @placeholder = "Enter Area Required", @maxlength = "10", @onkeypress = "return isNumberWithTwoDecimal(event,'AreaRequired')" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ModelWHLocation, new { @for = "ModelWHLocation" })  @Html.ValidationMessageFor(Model => Model.ModelWHLocationID, String.Empty, new { @id = "spn_ModelWHLocation", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.ModelWHLocation, new { @id = "ModelWHLocation", @name = "ModelWHLocation", @class = "form-control", @placeholder = "Enter WH Location" })
+                                        @Html.HiddenFor(Model => Model.ModelWHLocationID, new { @id = "ModelWHLocationID", @name = "ModelWHLocationID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ModelPackagingType, new { @for = "ModelPackagingType" })  @Html.ValidationMessageFor(Model => Model.ModelPackagingTypeID, String.Empty, new { @id = "spn_ModelPackagingType", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.ModelPackagingType, new { @id = "ModelPackagingType", @name = "ModelPackagingType", @class = "form-control", @placeholder = "Enter Packaging Type" })
+                                        @Html.HiddenFor(Model => Model.ModelPackagingTypeID, new { @id = "ModelPackagingTypeID", @name = "ModelPackagingTypeID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ModelBillCommodity, new { @for = "ModelBillCommodity" })  @Html.ValidationMessageFor(Model => Model.ModelBillCommodityID, String.Empty, new { @id = "spn_ModelBillCommodity", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.ModelBillCommodity, new { @id = "ModelBillCommodity", @name = "ModelBillCommodity", @class = "form-control", @placeholder = "Enter Bill Commodity" })
+                                        @Html.HiddenFor(Model => Model.ModelBillCommodityID, new { @id = "ModelBillCommodityID", @name = "ModelBillCommodityID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.ModelEquipmentUsed, new { @for = "ModelEquipmentUsed" })  @Html.ValidationMessageFor(Model => Model.ModelEquipmentUsedID, String.Empty, new { @id = "spn_ModelEquipmentUsed", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.ModelEquipmentUsed, new { @id = "ModelEquipmentUsed", @name = "ModelEquipmentUsed", @class = "form-control", @placeholder = "Enter Equipment Used" })
+                                        @Html.HiddenFor(Model => Model.ModelEquipmentUsedID, new { @id = "ModelEquipmentUsedID", @name = "ModelEquipmentUsedID" })
+                                    </div>
+                                </div>
+                            }
+                        }
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                        <div class="col-md-12">
+                            @if (Model != null && Model.MyDatatable != null)
+                            {
+
+                                <table id="tblterifftable" style="width:100%">
+                                    <thead>
+
+                                        <tr>
+                                            <th>Cargo Name</th>
+                                            <th>Book Pkgs</th>
+                                            <th>Book Pics</th>
+                                            <th>Book Wgt</th>
+                                            <th>Rcv. Pkgs</th>
+                                            <th>Rcv. Pics</th>
+                                            <th>Rcv. Wgt</th>
+                                            <th>Rem. Pkgs</th>
+                                            <th>Rem. Pics</th>
+                                            <th>Rem. Wgt</th>
+                                            <th>Pkgs</th>
+                                            <th>Pics</th>
+                                            <th>Wgt</th>
+                                            <th>WH Location</th>
+                                            <th>Packing Type</th>
+                                            <th>Bill Commodity</th>
+                                            <th>Equipment</th>
+                                            @if (!Model.Isview)
+                                            {
+                                                if (!Model.CLPIsFinished)
+                                                {
+                                                    <th>Clear</th>
+                                                }
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            int count1 = 0;
+                                        }
+
+                                        @{
+                                            StrAutocomplete.Append(@" <script> setTimeout(function () {");
+                                            count1 = Model.MyDatatable.Rows.Count;
+                                            Model.CargoName = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.ContainerNumber    = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.BookNoOfPackage = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.BookNoOfPieces = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.BookWeight = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.RcvNoOfPackage = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.RcvNoOfPieces = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.RcvWeight = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.RemNoOfPackage = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.RemNoOfPieces = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.RemWeight = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.Package = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.Pieces = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.Weight = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.WHLocation = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.WHLocationID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.PackingType = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.PackingTypeID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.BillCommodity = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.BillCommodityID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.Equipment = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.EquipmentID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.trnDocumentBoiItemsID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.trnTruckDestuffingDetailsID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.trnContainerID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.hdnIsGroupArea = new long[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        }
+
+                                        @if (Model.MyDatatable != null && Model.MyDatatable.Rows.Count > 0)
+                                        {
+
+
+                                            for (int Q = 0; Q < Model.MyDatatable.Rows.Count; Q++)
+                                            {
+
+                                                Model.CargoName[Q] = Model.MyDatatable.Rows[Q]["CargoName"].ToString();
+                                                Model.ContainerNumber[Q] = Model.MyDatatable.Rows[Q]["ContainerNumber"].ToString();
+                                                Model.BookNoOfPackage[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["BookNoOfPackage"].ToString());
+                                                Model.BookNoOfPieces[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["BookNoOfPieces"]);
+                                                Model.BookWeight[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["BookWeight"]);
+                                                Model.RcvNoOfPackage[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["RcvNoOfPackage"].ToString());
+                                                Model.RcvNoOfPieces[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["RcvNoOfPieces"]);
+                                                Model.RcvWeight[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["RcvWeight"]);
+                                                Model.RemNoOfPackage[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["RemNoOfPackage"].ToString());
+                                                Model.RemNoOfPieces[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["RemNoOfPieces"]);
+                                                Model.RemWeight[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["RemWeight"]);
+                                                Model.trnDocumentBoiItemsID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["trnDocumentBoiItemsID"]);
+                                                Model.trnContainerID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["trnDocumentContainerID"]);
+
+                                                StrAutocomplete.Append(@"  Autocompletebox('WHLocation" + Q + @"', 'WHLocationID" + Q + @"', 'trnTruckDestuffing', 'GetLocation');
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           Autocompletebox('PackingType" + Q + @"', 'PackingTypeID" + Q + @"', 'trnTruckDestuffing', 'GetPackingType');
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           Autocompletebox('BillCommodity" + Q + @"', 'BillCommodityID" + Q + @"', 'trnTruckDestuffing', 'GetBillCommodity');
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           Autocompletebox('Equipment" + Q + @"', 'EquipmentID" + Q + @"', 'trnTruckDestuffing', 'GetEquipment'); ");
+
+                                                if (Model != null && Model.MyGridDatatable != null && Model.MyGridDatatable.Rows.Count > 0)
+                                                {
+                                                    System.Data.DataView dv = new System.Data.DataView(Model.MyGridDatatable);
+
+                                                    dv.RowFilter = "trnDocumentBoiItemsID = '" + Model.trnDocumentBoiItemsID[Q] + "'";
+                                                    if (Model.trnContainerID[Q] > 0)
+                                                    {
+                                                        dv.RowFilter = "trnDocumentBoiItemsID = '" + Model.trnDocumentBoiItemsID[Q] + "'" + " AND trnDocumentContainerID='" + Model.trnContainerID[Q] + "'";
+                                                    }
+                                                    System.Data.DataTable dt = dv.ToTable();
+
+                                                    if (dt != null && dt.Rows.Count > 0)
+                                                    {
+                                                        Model.AreaRequired = Convert.ToDecimal(dt.Rows[0]["AreaRequired"]);
+                                                        Model.Package[Q] = Convert.ToDecimal(dt.Rows[0]["Packages"]);
+                                                        Model.Pieces[Q] = Convert.ToDecimal(dt.Rows[0]["Pieces"]);
+                                                        Model.Weight[Q] = Convert.ToDecimal(dt.Rows[0]["Weight"]);
+                                                        Model.WHLocation[Q] = Convert.ToString(dt.Rows[0]["WHLocation"]);
+                                                        Model.WHLocationID[Q] = Convert.ToInt32(dt.Rows[0]["WHLocationID"]);
+                                                        Model.PackingType[Q] = Convert.ToString(dt.Rows[0]["PackagingType"]);
+                                                        Model.PackingTypeID[Q] = Convert.ToInt32(dt.Rows[0]["PackagingTypeID"]);
+                                                        Model.BillCommodity[Q] = Convert.ToString(dt.Rows[0]["BillCommodity"]);
+                                                        Model.BillCommodityID[Q] = Convert.ToInt32(dt.Rows[0]["BillCommodityID"]);
+                                                        Model.Equipment[Q] = dt.Rows[0]["EquipmentUsed"].ToString();
+                                                        Model.EquipmentID[Q] = Convert.ToInt32(dt.Rows[0]["EquipmentUsedID"]);
+                                                        Model.trnTruckDestuffingDetailsID[Q] = Convert.ToInt32(dt.Rows[0]["trnTruckDestuffingDetailsID"]);
+                                                        if (!string.IsNullOrEmpty(dt.Rows[0]["IsAreaGroup"].ToString()))
+                                                        {
+                                                            Model.hdnIsGroupArea[Q] = Convert.ToInt64(dt.Rows[0]["IsAreaGroup"]);
+                                                        }
+                                                        else
+                                                        {
+                                                            Model.hdnIsGroupArea[Q] = 0;
+                                                        }
+                                                    }
+                                                }
+
+                                        <tr>
+                                            <td style="display:none;">@Html.HiddenFor(Model => Model.WHLocationID[Q], new { @id = "WHLocationID" + Q })</td>
+                                            <td style="display:none;">@Html.HiddenFor(Model => Model.PackingTypeID[Q], new { @id = "PackingTypeID" + Q })</td>
+                                            <td style="display:none;">@Html.TextBoxFor(Model => Model.BillCommodityID[Q], new { @id = "BillCommodityID" + Q })</td>
+                                            <td style="display:none;">@Html.TextBoxFor(Model => Model.EquipmentID[Q], new { @id = "EquipmentID" + Q })</td>
+                                            <td style="display:none;">@Html.TextBoxFor(Model => Model.trnDocumentBoiItemsID[Q], new { @id = "trnDocumentBoiItemsID" + Q })</td>
+                                            <td style="display:none;">@Html.TextBoxFor(Model => Model.trnTruckDestuffingDetailsID[Q], new { @id = "trnTruckDestuffingDetailsID" + Q })</td>
+                                            <td style="display:none;">@Html.HiddenFor(Model => Model.hdnIsGroupArea[Q], new { @id = "hdnIsGroupArea" + Q })</td>
+                                            <td style="display:none;">@Html.TextBoxFor(Model => Model.trnContainerID[Q], new { @id = "trnContainerID" + Q })</td>
+
+                                            <td>@Html.HiddenFor(Model => Model.CargoName[Q], new { @id = "CargoName" + Q, @placeholder = "CargoName", @readonly = "true", @style = "background:#eee;width: 130px;" }) @Model.CargoName[Q]</td>
+                                            <td>@Html.HiddenFor(Model => Model.ContainerNumber[Q], new { @id = "ContainerNumber" + Q, @placeholder = "ContainerNumber", @readonly = "true", @style = "background:#eee;width: 130px;" }) @Model.ContainerNumber[Q]</td>
+                                            <td>@Html.HiddenFor(Model => Model.BookNoOfPackage[Q], new { @id = "BookNoOfPackage" + Q, @style = "width: 50px;background:#eee", @readonly = "true" }) @(Convert.ToDecimal(Model.BookNoOfPackage[Q]).ToString("0"))</td>
+                                            <td>@Html.HiddenFor(Model => Model.BookNoOfPieces[Q], new { @id = "BookNoOfPieces" + Q, @placeholder = "BookNoOfPieces", @style = "width: 50px;background:#eee", @readonly = "true" }) @(Convert.ToDecimal(Model.BookNoOfPieces[Q]).ToString("0"))</td>
+                                            <td>@Html.HiddenFor(Model => Model.BookWeight[Q], new { @id = "BookWeight" + Q, @placeholder = "BookWeight", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.BookWeight[Q]</td>
+                                            <td>@Html.HiddenFor(Model => Model.RcvNoOfPackage[Q], new { @id = "RcvNoOfPackage" + Q, @style = "width: 50px;background:#eee", @readonly = "true" }) @(Convert.ToDecimal(Model.RcvNoOfPackage[Q]).ToString("0"))</td>
+                                            <td>@Html.HiddenFor(Model => Model.RcvNoOfPieces[Q], new { @id = "RcvNoOfPieces" + Q, @placeholder = "RcvNoOfPieces", @style = "width: 50px;background:#eee", @readonly = "true" }) @(Convert.ToDecimal(Model.RcvNoOfPieces[Q]).ToString("0"))</td>
+                                            <td>@Html.HiddenFor(Model => Model.RcvWeight[Q], new { @id = "RcvWeight" + Q, @placeholder = "RcvWeight", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.RcvWeight[Q]</td>
+                                            <td>@Html.HiddenFor(Model => Model.RemNoOfPackage[Q], new { @id = "RemNoOfPackage" + Q, @style = "width: 50px;background:#eee", @readonly = "true" }) @(Convert.ToDecimal(Model.RemNoOfPackage[Q]).ToString("0"))</td>
+                                            <td>@Html.HiddenFor(Model => Model.RemNoOfPieces[Q], new { @id = "RemNoOfPieces" + Q, @placeholder = "RemNoOfPieces", @style = "width: 50px;background:#eee", @readonly = "true" }) @(Convert.ToDecimal(Model.RemNoOfPieces[Q]).ToString("0"))</td>
+                                            <td>@Html.HiddenFor(Model => Model.RemWeight[Q], new { @id = "RemWeight" + Q, @placeholder = "RemWeight", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.RemWeight[Q]</td>
+                                            @if (Model.Isview)
+                                            {
+                                                <td>@Html.HiddenFor(Model => Model.Package[Q], new { @id = "Package" + Q, @placeholder = "Package", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.Package[Q]</td>
+                                                <td>@Html.HiddenFor(Model => Model.Pieces[Q], new { @id = "Pieces" + Q, @placeholder = "Pieces", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.Pieces[Q]</td>
+                                                <td>@Html.HiddenFor(Model => Model.Weight[Q], new { @id = "Weight" + Q, @placeholder = "Weight", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.Weight[Q]</td>
+                                                <td>@Html.HiddenFor(Model => Model.WHLocation[Q], new { @id = "WHLocation" + Q, @placeholder = "WHLocation", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.WHLocation[Q]</td>
+                                                <td>@Html.HiddenFor(Model => Model.PackingType[Q], new { @id = "PackingType" + Q, @placeholder = "PackingType", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.PackingType[Q]</td>
+                                                <td>@Html.HiddenFor(Model => Model.BillCommodity[Q], new { @id = "BillCommodity" + Q, @placeholder = "BillCommodity", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.BillCommodity[Q]</td>
+                                                <td>@Html.HiddenFor(Model => Model.Equipment[Q], new { @id = "Equipment" + Q, @placeholder = "Equipment", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.Equipment[Q]</td>
+                                            }
+                                            else
+                                            {
+
+
+                                                if (Model.CLPIsFinished)
+                                                {
+                                                    if (Model.IsExbondDone)
+                                                    {
+                                                        <td>@Model.Package[Q]</td>
+                                                        <td>@Model.Pieces[Q]</td>
+                                                        <td>@Model.Weight[Q]</td>
+                                                        <td>@Model.WHLocation[Q]</td>
+                                                        <td>@Model.PackingType[Q]</td>
+                                                        <td>@Model.BillCommodity[Q]</td>
+                                                        <td>@Model.Equipment[Q]</td>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>@Html.TextBoxFor(Model => Model.Package[Q], new { @id = "Package" + Q, @class = "calPackage", @style = "width: 50px;", @placeholder = "Package", @onkeypress = "return isNumberWithTwoDecimal(event,'Package" + Q + "')", @onblur = "checkitems('Package','" + Q + "')" })</td>
+                                                        <td>@Html.TextBoxFor(Model => Model.Pieces[Q], new { @id = "Pieces" + Q, @class = "calPieces", @placeholder = "Pieces", @style = "width: 50px;", @onkeypress = "return isNumberWithTwoDecimal(event,'Pieces" + Q + "')", @onblur = "checkitems('Pieces','" + Q + "')" })</td>
+                                                        <td>@Html.TextBoxFor(Model => Model.Weight[Q], new { @id = "Weight" + Q, @class = "calWeight", @placeholder = "Weight", @style = "width: 100px;", @onkeypress = "return isNumberWithTwoDecimal(event,'Weight" + Q + "')", @onblur = "checkitems('Weight','" + Q + "')" })</td>
+
+                                                        <td>@Html.HiddenFor(Model => Model.WHLocation[Q], new { @id = "WHLocation" + Q, @placeholder = "WHLocation", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.WHLocation[Q]</td>
+                                                        <td>@Html.HiddenFor(Model => Model.PackingType[Q], new { @id = "PackingType" + Q, @placeholder = "PackingType", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.PackingType[Q]</td>
+                                                        <td>@Html.HiddenFor(Model => Model.BillCommodity[Q], new { @id = "BillCommodity" + Q, @placeholder = "BillCommodity", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.BillCommodity[Q]</td>
+                                                        <td>@Html.HiddenFor(Model => Model.Equipment[Q], new { @id = "Equipment" + Q, @placeholder = "Equipment", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.Equipment[Q]</td>
+                                                    }
+
+
+                                                }
+                                                else
+                                                {
+                                                    <td>@Html.TextBoxFor(Model => Model.Package[Q], new { @id = "Package" + Q, @class = "calPackage", @style = "width: 50px;", @placeholder = "Package", @onkeypress = "return isNumberWithTwoDecimal(event,'Package" + Q + "')", @onblur = "checkitems('Package','" + Q + "')" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.Pieces[Q], new { @id = "Pieces" + Q, @class = "calPieces", @placeholder = "Pieces", @style = "width: 50px;", @onkeypress = "return isNumberWithTwoDecimal(event,'Pieces" + Q + "')", @onblur = "checkitems('Pieces','" + Q + "')" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.Weight[Q], new { @id = "Weight" + Q, @class = "calWeight", @placeholder = "Weight", @style = "width: 100px;", @onkeypress = "return isNumberWithTwoDecimal(event,'Weight" + Q + "')", @onblur = "checkitems('Weight','" + Q + "')" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.WHLocation[Q], new { @id = "WHLocation" + Q, @placeholder = "WH Location", @style = "width: 100px;" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.PackingType[Q], new { @id = "PackingType" + Q, @placeholder = "PackingType", @style = "width: 100px;" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.BillCommodity[Q], new { @id = "BillCommodity" + Q, @placeholder = "Bill Commodity", @style = "width: 100px;" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.Equipment[Q], new { @id = "Equipment" + Q, @placeholder = "Equipment", @style = "width: 100px;" })</td>
+                                                }
+
+                                            }
+                                            @if (!Model.Isview)
+                                            {
+                                                if (Model.trnTruckDestuffingDetailsID[Q] > 0)
+                                                {
+                                                    if (!Model.CLPIsFinished)
+                                                    {
+                                                        <td><a class="" href="@Url.Action("delete", "trnBOEItems", new { id = Model.trnTruckDestuffingDetailsID[Q], trnDocumentLotDetailsID = Model.trnDocumentLotDetailsID, trnTruckDestuffingID = Model.trnTruckDestuffingID, TruckNo = Model.ModelTruckNo, BOENo = Model.ModelBOENo, GatePassNOOFPKGS = Model.ModelGatePassPackages, GatePassNOOFPIECES = Model.ModelGatePassPieces, GatePassWEIGHT = Model.ModelGatePassWeight, type = Model.type, SearchID = Model.searchID, SearchNo = Model.searchNo })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Clear" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red;" class="fa fa-trash"></i></a></td>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <td><a class="" onclick="ClearGridDate('@Q')"><i title="Click to Clear" style="font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-refresh"></i></a></td>
+                                                }
+                                            }
+
+                                        </tr>
+                                            }
+
+                                        }
+                                        @{
+                                            Model.hdnGridCount = Model.MyDatatable.Rows.Count;
+
+                                        }
+                                        @{
+                                            StrAutocomplete.Append(@" }, 1000); $('#AreaRequired').val('" + Model.AreaRequired + "'); $('#txtAreaRequired').text('" + Model.AreaRequired + "'); var AreaRequired = $('#AreaRequired').val(); if(AreaRequired == '0'){$('#AreaRequired').val('')} </script> ");
+                                        }
+                                        @Html.HiddenFor(Model => Model.hdnGridCount, new { @id = "hdnGridCount", @name = "hdnGridCount" })
+
+                                        <tr>
+                                            <td colspan="18"><hr /></td>
+                                        </tr>
+                                        <tr>
+                                            <td> <b>Total : </b> </td>
+                                            <td>@(Convert.ToDecimal(Model.BookNoOfPackage.Sum()).ToString("0"))</td>
+                                            <td>@(Convert.ToDecimal(Model.BookNoOfPieces.Sum()).ToString("0"))</td>
+                                            <td>@(Convert.ToDecimal(Model.BookWeight.Sum()))</td>
+                                            <td>@(Convert.ToDecimal(Model.RcvNoOfPackage.Sum()).ToString("0"))</td>
+                                            <td>@(Convert.ToDecimal(Model.RcvNoOfPieces.Sum()).ToString("0"))</td>
+                                            <td>@(Convert.ToDecimal(Model.RcvWeight.Sum()))</td>
+                                            <td>@(Convert.ToDecimal(Model.RemNoOfPackage.Sum()).ToString("0"))</td>
+                                            <td>@(Convert.ToDecimal(Model.RemNoOfPieces.Sum()).ToString("0"))</td>
+                                            <td>@(Convert.ToDecimal(Model.RemWeight.Sum()))</td>
+                                            <td id="ttlpkg">@(Convert.ToDecimal(Model.Package.Sum()).ToString("0"))</td>
+                                            <td id="ttlpcs">@(Convert.ToDecimal(Model.Pieces.Sum()).ToString("0"))</td>
+                                            <td id="ttlwgt">@(Convert.ToDecimal(Model.Weight.Sum()))</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                        @if (!Model.Isview)
+                        {
+                            if (Model.CLPIsFinished)
+                            {
+                                if (!Model.IsExbondDone)
+                                {
+                                    <div class="col-md-12 box-footer">
+                                        <div class="pull-right">
+                                            <button type="submit" onclick="return validateForm()" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </div>
+                                }
+
+                            }
+                            else
+                            {
+                                <div class="col-md-12 box-footer">
+                                    <div class="pull-right">
+                                        <button type="submit" onclick="return validateForm()" class="btn btn-primary">Submit</button>
+                                    </div>
+                                </div>
+                            }
+
+                        }
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    }
+
+</section>
+@if (Model.Isview)
+{
+    <script>
+        $(document).ready(function () {
+            $("input").prop("readonly", true);
+        });
+    </script>
+}
+<script>
+    //var doaction = '@Model.doaction';
+
+
+    $(document).ready(function () {
+        Autocompletebox("ModelWHLocation", "ModelWHLocationID", "trnTruckDestuffing", "GetLocation");
+        Autocompletebox("ModelPackagingType", "ModelPackagingTypeID", "trnTruckDestuffing", "GetPackingType");
+        Autocompletebox("ModelBillCommodity", "ModelBillCommodityID", "trnTruckDestuffing", "GetBillCommodity");
+        Autocompletebox("ModelEquipmentUsed", "ModelEquipmentUsedID", "trnTruckDestuffing", "GetEquipment");
+
+        $('[id^=Package]').each(function () {
+            var Pkg = parseInt($(this).val());
+            if (Pkg == 0) {                
+                $(this).val('');
+            }
+
+        });
+
+        $('[id^=Pieces]').each(function () {
+            var Pices = parseInt($(this).val());
+            if (Pices == 0) {                
+                $(this).val('');
+            }
+
+        });
+
+        $('[id^=Weight]').each(function () {
+            var wt = parseInt($(this).val());
+            if (wt == 0) {                
+                $(this).val('');
+            }
+
+        });
+    });
+    function ChangeAllforfields(i) {
+        var Package = $("#Package" + i).val();
+        var Pieces = $("#Pieces" + i).val();
+        var Weight = $("#Weight" + i).val();
+        var isneedtoadd = false;
+        if (Package > 0 || Pieces > 0 || Weight > 0) {
+            isneedtoadd = true;
+        }
+        var ModelWHLocationID = $("#ModelWHLocationID").val();
+        var ModelWHLocation = $("#ModelWHLocation").val();
+
+        if (ModelWHLocationID > 0 && ModelWHLocation != "" && isneedtoadd) {
+            $("#WHLocation" + i).val(ModelWHLocation);
+            $("#WHLocationID" + i).val(ModelWHLocationID);
+        }
+        else {
+            $("#WHLocation" + i).val("");
+            $("#WHLocationID" + i).val("0");
+        }
+
+        var ModelPackagingTypeID = $("#ModelPackagingTypeID").val();
+        var ModelPackagingType = $("#ModelPackagingType").val();
+
+        if (ModelPackagingTypeID > 0 && ModelPackagingType != "" && isneedtoadd) {
+                $("#PackingType" + i).val(ModelPackagingType);
+                $("#PackingTypeID" + i).val(ModelPackagingTypeID);
+        }
+        else {
+            $("#PackingType" + i).val("");
+            $("#PackingTypeID" + i).val("0");
+        }
+
+        var ModelBillCommodityID = $("#ModelBillCommodityID").val();
+        var ModelBillCommodity = $("#ModelBillCommodity").val();
+
+        if (ModelBillCommodityID > 0 && ModelBillCommodity != "" && isneedtoadd)
+        {
+            $("#BillCommodity" + i).val(ModelBillCommodity);
+            $("#BillCommodityID" + i).val(ModelBillCommodityID);
+        }
+        else {
+            $("#BillCommodity" + i).val("");
+            $("#BillCommodityID" + i).val("0");
+        }
+
+        var ModelEquipmentUsedID = $("#ModelEquipmentUsedID").val();
+        var ModelEquipmentUsed = $("#ModelEquipmentUsed").val();
+
+        if (ModelEquipmentUsedID > 0 && ModelEquipmentUsed != "" && isneedtoadd)
+        {
+            $("#Equipment" + i).val(ModelEquipmentUsed);
+            $("#EquipmentID" + i).val(ModelEquipmentUsedID);
+        }
+        else {
+            $("#Equipment" + i).val("");
+            $("#EquipmentID" + i).val("0");
+        }
+    }
+
+    function validateForm() {
+
+        var isvalid = true;
+        var AreaRequired = $("#AreaRequired").val();
+        if (AreaRequired == 0) {
+            if (confirm('Are you sure to submit with required area 0  for the destuffing?')) {
+                isvalid = true;
+            } else {
+                return false;
+            }
+        }
+        if (isvalid == true) {
+
+        $.ajax({
+            url: GetRootPath + "trnBOEItems/validateModel",
+            type: "Post",
+            data: $("form").serialize(),
+            dataType: "text",
+            async: false,
+            success: function (data) {
+                $(".redborder").removeClass("redborder");
+                if (data != "") {
+                    isvalid = false;
+                    var Errormsg = data.split("|")[0];
+                    var ErrorFields = data.split("|")[1].split(",");
+
+                    if (ErrorFields != null && ErrorFields.length > 0) {
+                        for (var Q = 0; Q < ErrorFields.length; Q++) {
+                            if (ErrorFields[Q] != "") {
+                                $("#" + ErrorFields[Q]).addClass("redborder");
+                            }
+                        }
+                    }
+                    if (Errormsg != "") {
+                        TosterAlert("error", Errormsg, "Required!");
+                    }
+                }
+            }
+        });
+        }
+
+
+        return isvalid;
+    }
+
+    function ClearGridDate(num) {
+        $("#Package" + num).val('0');
+        $("#Pieces" + num).val('0');
+        $("#Weight" + num).val('0');
+        $("#WHLocation" + num).val('');
+        $("#PackingType" + num).val('');
+        $("#BillCommodity" + num).val('');
+        $("#Equipment" + num).val('');
+        $("#EquipmentID" + num).val('0');
+        $("#BillCommodityID" + num).val('0');
+        $("#PackingTypeID" + num).val('0');
+        $("#WHLocationID" + num).val('0');
+    }
+
+    function findTotal(Name, ID) {
+        var arr = document.getElementsByClassName(Name);
+        var tot = 0;
+        for (var i = 0; i < arr.length; i++) {
+            if (parseFloat(arr[i].value))
+                tot += parseFloat(arr[i].value);
+        }
+        document.getElementById(ID).innerText = tot;
+    }
+
+    function checkitems(type, num) {
+
+        var msg = "";
+        var isvalid = true;
+        if (type == "Package") {
+            var RemNoOfPackage = $("#RemNoOfPackage" + num).val();
+
+            if (RemNoOfPackage == null && RemNoOfPackage == undefined && RemNoOfPackage == "") {
+                RemNoOfPackage = 0;
+            }
+            var Package = $("#Package" + num).val();
+
+            if (Package == null && Package == undefined && Package == "") {
+                Package = 0;
+            }
+
+            if (parseFloat(RemNoOfPackage) < parseFloat(Package)) {
+                msg += "Enter Package is grater then remaining Package";
+                isvalid = false;
+            }
+            findTotal("calPackage", "ttlpkg");
+
+            //WeightCalculation("Package" + num, "Pieces" + num, "BookNoOfPackage" + num, "BookWeight" + num, "Weight" + num);
+            
+            var ttlpkg = $("#ttlpkg").text();
+            var GatePassPackages = $("#ModelGatePassPackages").val();
+
+            if (parseFloat(ttlpkg) < parseFloat(GatePassPackages)) {
+                msg += "Enter Packages are less then GatePass Packages.<br/>";
+                isvalid = false;
+            }
+            else if (parseFloat(ttlpkg) > parseFloat(GatePassPackages)) {
+                msg += "Enter Packages are greater then GatePass Packages.<br/>";
+                isvalid = false;
+            }
+        }
+        else if (type == "Pieces") {
+            var RemNoOfPieces = $("#RemNoOfPieces" + num).val();
+
+            if (RemNoOfPieces == null && RemNoOfPieces == undefined && RemNoOfPieces == "") {
+                RemNoOfPieces = 0;
+            }
+            var Pieces = $("#Pieces" + num).val();
+
+            if (Pieces == null && Pieces == undefined && Pieces == "") {
+                Pieces = 0;
+            }
+
+            if (parseFloat(RemNoOfPieces) < parseFloat(Pieces)) {
+                msg += "Enter Pieces is grater then remaining Pieces";
+                isvalid = false;
+            }
+            findTotal("calPieces", "ttlpcs");
+
+            var ttlpcs = $("#ttlpcs").text();
+            var GatePassPieces = $("#ModelGatePassPieces").val();
+
+            if (parseFloat(ttlpcs) < parseFloat(GatePassPieces)) {
+                msg += "Enter Pieces are less then GatePass Pieces.<br/>";
+                isvalid = false;
+            }
+            else if (parseFloat(ttlpcs) > parseFloat(GatePassPieces)) {
+                msg += "Enter Pieces are greater then GatePass Pieces.<br/>";
+                isvalid = false;
+            }
+
+        }
+        else if (type == "Weight") {
+            var RemWeight = $("#RemWeight" + num).val();
+
+            if (RemWeight == null && RemWeight == undefined && RemWeight == "") {
+                RemWeight = 0;
+            }
+            var Weight = $("#Weight" + num).val();
+
+            if (Weight == null && Weight == undefined && Weight == "") {
+                Weight = 0;
+            }
+
+            if (parseFloat(RemWeight) < parseFloat(Weight)) {
+                msg += "Enter Weight is grater then remaining Weight";
+                isvalid = false;
+            }
+            findTotal("calWeight", "ttlwgt");
+
+
+            var ttlwgt = $("#ttlwgt").text();
+            var GatePassWeight = $("#ModelGatePassWeight").val();
+
+            if (parseFloat(ttlwgt) < parseFloat(GatePassWeight)) {
+                msg += "Enter Weight are less then GatePass Weight.<br/>";
+                isvalid = false;
+            }
+            else if (parseFloat(ttlwgt) > parseFloat(GatePassWeight)) {
+                msg += "Enter Weight are greater then GatePass Weight.</br>";
+                isvalid = false;
+            }
+        }
+        if ('@Model.CLPIsFinished' == 'False' || '@Model.CLPIsFinished' == 'false' || '@Model.CLPIsFinished' == 'FALSE') {
+            @Model.CLPIsFinished=false;
+        }
+        else {
+            @Model.CLPIsFinished=true;
+        }
+        if (!@Model.CLPIsFinished) {
+                ChangeAllforfields(num);
+
+        }        
+        if (!isvalid) {
+            TosterAlert("warning", msg, "Warning!");
+        }
+    }
+
+</script>
+
+@{
+
+    System.Web.HtmlString HtmlDeatails = new HtmlString(StrAutocomplete.ToString());
+}
+@HtmlDeatails
+@*<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnBOEItems.js")"></script>*@
+<style>
+    .ui-menu-item {
+        font-size: 12px !important;
+    }
+</style>
+
+
+

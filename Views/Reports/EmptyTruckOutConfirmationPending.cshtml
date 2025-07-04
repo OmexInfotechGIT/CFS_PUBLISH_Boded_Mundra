@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Empty truck out confirmation pending";
+}
+@using (Html.BeginForm("Emptytruckoutconfirmationpending", "Reports", FormMethod.Post))
+{
+    <div class="">
+        <div class="box">
+            <div class="box-body">
+                @Html.Partial("_ReportsModalImporter")
+                @Html.Partial("_ReportsModalForwarder")
+                @Html.Partial("_ReportsModalCHA")
+
+                @Html.Partial("_ReportsModalSearchClearButton")
+            </div>
+        </div>
+    </div>
+}
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/ReportsModal.js")"></script>

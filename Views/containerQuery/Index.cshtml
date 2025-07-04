@@ -1,0 +1,1149 @@
+﻿@model CFS.Models.ContainerQuery
+@using System.Globalization;
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+
+    ViewBag.Title = "Warehouse Container Query";
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+
+}
+
+
+
+<!-- Main content -->
+
+<section class="content">
+
+
+    <div class="row" id="step-1">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <div class="pull-left">
+                        <div style="display: inline-flex"></div>
+                    </div>
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @if (Model.IsSearch)
+                            {
+                                <a href="#" onclick="exportToExcel()" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Download"><i class="fa fa-download fa-2x"></i></a>
+                            }                            
+                        </div>
+
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body" id="step-1-body">
+                    <div class="col-md-12">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Category, new { @for = "Category" }) @Html.ValidationMessageFor(Model => Model.Category, String.Empty, new { @id = "spn_Category", @class = "help-inline text-red" })
+                                @Html.DropDownListFor(Model => Model.Category, Model.SelectCategory, new { @id = "Category", @name = "Category", @class = "form-control", @onchange = "onchangecategory()" })
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.ContNo, new { @for = "ContNo" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContID, String.Empty, new { @id = "spn_ContNo", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.ContNo, new { @id = "ContNo", @name = "ContNo", @class = "form-control", @placeholder = "Select Container Details" })
+                                @Html.HiddenFor(Model => Model.ContID, new { @id = "ContID", @name = "ContID" })
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="col-md-2 pull-right">
+                        <div class="form-group pull-right">
+                            <br />
+                            <button type="button" style="margin-right:5px;" class="btn btn-danger pull-right" onclick="ClearContNo()">Clear</button>
+                            <button type="button" style="margin-right:5px;" onclick="return SearchwithContNo()" class="btn btn-primary">Search</button>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        @if (Model.IsSearch && Model.Category == "WarehouseLoaded")
+        {
+            <div id="tab1">
+
+                    <div class="col-xs-12">
+                    <div class="box" style="overflow:scroll;">
+                        <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4><b>Warehouse Loaded Container Inward Details</b></h4>
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="box-body" id="step-1-body">
+                            <div class="form-group">
+                                <table id="example1" class="table table-bordered table-hover" style="white-space:nowrap;">
+                                    <thead>
+                                        <tr>
+                                            <th>Cont No</th>
+                                            <th>ISO Code</th>
+                                            <th>Size</th>
+                                            <th>Type</th>
+                                            <th>Delivery Mode</th>
+                                            <th>Gate In Pass No</th>
+                                            <th>Gate In Pass Date</th>
+                                            <th>Destuff No</th>
+                                            <th>Destuff Date</th>
+                                            <th>In Truck No</th>
+                                            <th>In Transporter</th>
+                                            <th>Condition</th>
+                                            <th>Remarks</th>
+                                            <th>Line</th>
+                                            <th>Agent</th>
+                                            <th>Nature Of Cargo</th>
+                                            <th>Packing Type</th>
+                                            <th>Bill Commodity</th>
+                                            <th>Sub Commodity</th>
+                                            <th>Bulk/Non-Bulk</th>
+                                            <th>Declared Packages</th>
+                                            <th>Declared Pieces</th>
+                                            <th>Declared Weight</th>
+                                            <th>From Location</th>
+                                            <th>Start Plug in Date</th>
+                                            <th>Start Plug off Date</th>
+                                            <th>In Weighment Status</th>
+                                            <th>In Gross Weight</th>
+                                            <th>In Container Tare Weight</th>
+                                            <th>In Truck Tare Weight</th>
+                                            <th>In Net Weight</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            @if (Model.dtLoadedContInwardDetails != null && Model.dtLoadedContInwardDetails.Rows.Count > 0)
+                                            {
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["ContNo"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["ISOCode"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["ISOCodeSize"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["ISOCodeType"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["DeliveryMode"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["GateInPassNo"])</td>
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["GateInPassDate"])))
+                                                {
+                                                    <td>@Convert.ToDateTime(Model.dtLoadedContInwardDetails.Rows[0]["GateInPassDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat, CultureInfo.InvariantCulture)</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["DestuffNo"])</td>
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["DestuffDate"])))
+                                                {
+                                                    <td>@Convert.ToDateTime(Model.dtLoadedContInwardDetails.Rows[0]["DestuffDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat, CultureInfo.InvariantCulture)</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["TruckNo"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["Transporter"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["Condition"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["ConditionRemarks"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["LineName"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["AgentName"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["NatureofCargoName"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["PackageType"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["BillCommodity"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["SubCommodityName"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["IsBulkForContainer"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["NoOfPackageForContainer"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["NoOfPiecesForContainer"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["WeightForContainer"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["LocationFrom"])</td>
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["StartPlugInDate"])))
+                                                {
+                                                    <td>@Convert.ToDateTime(Model.dtLoadedContInwardDetails.Rows[0]["StartPlugInDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat, CultureInfo.InvariantCulture)</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["EndPlugInDate"])))
+                                                {
+                                                    <td>@Convert.ToDateTime(Model.dtLoadedContInwardDetails.Rows[0]["EndPlugInDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat, CultureInfo.InvariantCulture)</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                <td>@Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["WeighmentStatus"])</td>
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["GrossWeight"])))
+                                                {
+                                                    <td>@Convert.ToDecimal(Model.dtLoadedContInwardDetails.Rows[0]["GrossWeight"]).ToString("0.00")</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["ContainerTareWeight"])))
+                                                {
+                                                    <td>@Convert.ToDecimal(Model.dtLoadedContInwardDetails.Rows[0]["ContainerTareWeight"]).ToString("0.00")</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["TruckTareWeight"])))
+                                                {
+                                                    <td>@Convert.ToDecimal(Model.dtLoadedContInwardDetails.Rows[0]["TruckTareWeight"]).ToString("0.00")</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                if (!string.IsNullOrEmpty(Convert.ToString(Model.dtLoadedContInwardDetails.Rows[0]["NetWeight"])))
+                                                {
+                                                    <td>@Convert.ToDecimal(Model.dtLoadedContInwardDetails.Rows[0]["NetWeight"]).ToString("0.00")</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                            }
+                                            else
+                                            {
+<tr><td colspan="29" style="text-align:left">No Records Found.</td></tr>
+                                        }
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="col-xs-12">
+                        <div class="box" style="overflow:scroll;">
+                            <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                                <div class="pull-left">
+                                    <div style="display: inline-flex">
+                                        <h4><b>Warehouse Document Details</b></h4>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                            <div class="box-body" id="step-1-body">
+                                <div class="form-group">
+
+                                    <table id="example1" class="table table-bordered table-hover" style="white-space:nowrap;">
+                                        <thead>
+                                            <tr>
+                                                <th>NOC No</th>
+                                                <th>NOC Date</th>
+                                                <th>BOE No</th>
+                                                <th>BOE Date</th>
+                                                <th>IGM No</th>
+                                                <th>IGM Date</th>
+                                                <th>Item No</th>
+                                                <th>No. of SB/BOE Items</th>
+                                                <th>Gate In Mode</th>
+                                                <th>Bulk/Non-Bulk</th>
+                                                <th>Packages</th>
+                                                <th>Pieces</th>
+                                                <th>Weight</th>
+                                                <th>Billing Party</th>
+                                                <th>Exporter/Importer</th>
+                                                <th>CB/Customer</th>
+                                                <th>Forwarder</th>
+                                                <th>Consoler</th>
+                                                <th>Cargo Type</th>
+                                                <th>Bill Commodity</th>
+                                                <th>Sub Commodity</th>
+                                                <th>Package Type</th>
+                                                <th>Cargo Name</th>
+                                                <th>Group Commodity</th>
+                                                <th>Temp</th>
+                                                <th>UN</th>
+                                                <th>IMO</th>
+                                                <th>Assessable Value</th>
+                                                <th>Duty Value</th>
+                                                <th>Status</th>
+                                                <th>Hold Agency</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @if (Model.dtNOCDataTable!= null && Model.dtNOCDataTable.Rows.Count > 0)
+                                            {
+                                                for (int i = 0; i < Model.dtNOCDataTable.Rows.Count; i++)
+                                                {
+                                                    <tr>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["NOCNO"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["NOCDate"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["BOENo"])</td>
+                                                        <td>@Model.dtNOCDataTable.Rows[i]["BOEDate"]</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["IGMNo"])</td>
+                                                        <td>@Model.dtNOCDataTable.Rows[i]["IGMDate"]</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["ItemNo"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["NoOfBOIItems"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["GateInType"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["BULKSTATUS"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["NOOFPKGS"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["NOOFPIECES"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["Weight"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["BillToParty"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["IMPORTERNAME"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["SubCHA"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["Forwarder"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["Consolidator"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["CargoType"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["COMMODITYNAME"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["SUBCOMMODITY"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["PackageType"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["CargoDESC"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["GroupCommodity"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["Temp"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["UN"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["IMO"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["AssessableValue"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["Dutyvalue"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["Status"])</td>
+                                                        <td>@Convert.ToString(Model.dtNOCDataTable.Rows[i]["HoldAgency"])</td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="31" style="text-align:left">No Records Found.</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <div class="box" style="overflow:scroll;">
+                            <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                                <div class="pull-left">
+                                    <div style="display: inline-flex">
+                                        <h4><b>Warehouse Loaded Container Outward Details</b></h4>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                            <div class="box-body" id="step-1-body">
+                                <div class="form-group">
+                                    <table id="example1" class="table table-bordered table-hover" style="white-space:nowrap;">
+                                        <thead>
+                                            <tr>
+                                                <th>Cont No</th>
+                                                <th>ISO Code</th>
+                                                <th>Size</th>
+                                                <th>Type</th>
+                                                <th>Delivery Mode</th>
+                                                <th>Gate Out Pass No</th>
+                                                <th>Gate In Pass Date</th>
+                                                <th>Gate Out Pass Date</th>
+                                                <th>Out Truck No</th>
+                                                <th>Out Transporter</th>
+                                                <th>Out Condition</th>
+                                                <th>Remarks</th>
+                                                <th>Out Weighment Status</th>
+                                                <th>Out Gross Weight</th>
+                                                <th>Out Container Tare Weight</th>
+                                                <th>Out Truck Tare Weight</th>
+                                                <th>Out Net Weight</th>
+                                                <th>To Location</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.dtLoadedContOutwardDetails!=null && Model.dtLoadedContOutwardDetails.Rows.Count > 0)
+                                            {
+                                            <tr>
+                                                <td>@Convert.ToString(Model.dtLoadedContOutwardDetails.Rows[0]["ContNo"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContOutwardDetails.Rows[0]["ISOCode"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContOutwardDetails.Rows[0]["Size"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContOutwardDetails.Rows[0]["ContType"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContOutwardDetails.Rows[0]["DeliveryMode"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContOutwardDetails.Rows[0]["trnLoadedContainerOutGPNo"])</td>
+                                                <td>@Convert.ToDateTime(Model.dtLoadedContOutwardDetails.Rows[0]["LoadedContainerInGPDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat, CultureInfo.InvariantCulture)</td>
+                                                <td>@Convert.ToDateTime(Model.dtLoadedContOutwardDetails.Rows[0]["LoadedContainerOutGPDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat, CultureInfo.InvariantCulture)</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContOutwardDetails.Rows[0]["TruckNo"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContOutwardDetails.Rows[0]["Transporter"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContOutwardDetails.Rows[0]["OutCondition"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContOutwardDetails.Rows[0]["Remarks"])</td>
+                                                <td>@Convert.ToString(Model.dtLoadedContOutwardDetails.Rows[0]["OutWeighmentStatus"])</td>
+                                                @if (!string.IsNullOrEmpty(Convert.ToString(Model.dtLoadedContOutwardDetails.Rows[0]["GrossWeight"])))
+                                                {
+                                                    <td>@Convert.ToDecimal(Model.dtLoadedContOutwardDetails.Rows[0]["GrossWeight"]).ToString("0.00")</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                @if (!string.IsNullOrEmpty(Convert.ToString(Model.dtLoadedContOutwardDetails.Rows[0]["ContainerTareWeight"])))
+                                                {
+                                                    <td>@Convert.ToDecimal(Model.dtLoadedContOutwardDetails.Rows[0]["ContainerTareWeight"]).ToString("0.00")</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                @if (!string.IsNullOrEmpty(Convert.ToString(Model.dtLoadedContOutwardDetails.Rows[0]["TruckTareWeight"])))
+                                                {
+                                                    <td>@Convert.ToDecimal(Model.dtLoadedContOutwardDetails.Rows[0]["TruckTareWeight"]).ToString("0.00")</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                @if (!string.IsNullOrEmpty(Convert.ToString(Model.dtLoadedContOutwardDetails.Rows[0]["NetWeight"])))
+                                                {
+                                                    <td>@Convert.ToDecimal(Model.dtLoadedContOutwardDetails.Rows[0]["NetWeight"]).ToString("0.00")</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                <td>@Model.dtLoadedContOutwardDetails.Rows[0]["MovetoLocation"]</td>
+                                            </tr>
+                                            }
+                                            else
+                                            {
+                                                <tr><td style="text-align:left" colspan="18">No Records Found.</td></tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <div class="box" style="overflow:scroll;">
+                            <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                                <div class="pull-left">
+                                    <div style="display: inline-flex">
+                                        <h4><b>Container SSR Details</b></h4>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                            <div class="box-body" id="step-1-body">
+                                <div class="form-group">
+                                    <table id="example1" class="table table-bordered table-hover" style="white-space:nowrap;">
+                                        <thead>
+                                            <tr>
+                                                <th>SSR WO No</th>
+                                                <th>SSR Date</th>
+                                                <th>Manual SSR No</th>
+                                                <th>QTY</th>
+                                                <th>Invoice No</th>
+                                                <th>Invoice Date</th>
+                                                <th>SSR Type</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.dtContSSRDetails!=null && Model.dtContSSRDetails.Rows.Count > 0)
+                                            {
+                                                <tr>
+                                                    <td>@Convert.ToString(Model.dtContSSRDetails.Rows[0]["SSRWONo"])</td>
+                                                    <td>@Convert.ToDateTime(Model.dtContSSRDetails.Rows[0]["SSRDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat, CultureInfo.InvariantCulture)</td>
+                                                    <td>@Convert.ToString(Model.dtContSSRDetails.Rows[0]["ManualSSRNo"])</td>
+                                                    <td>@Convert.ToString(Model.dtContSSRDetails.Rows[0]["Quantity"])</td>
+                                                    <td>@Convert.ToString(Model.dtContSSRDetails.Rows[0]["InvoiceNo"])</td>
+                                                    <td>@Convert.ToString(Model.dtContSSRDetails.Rows[0]["InvoiceDate"])</td>
+                                                    <td>@Convert.ToString(Model.dtContSSRDetails.Rows[0]["SSRType"])</td>
+                                                </tr>
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="7" style="text-align:left">No Records Found.</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <div class="box" style="overflow:scroll;">
+                            <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                                <div class="pull-left">
+                                    <div style="display: inline-flex">
+                                        <h4><b>Warehouse Invoice Details</b></h4>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                            <div class="box-body" id="step-1-body">
+                                <div class="form-group">
+                                    <table id="example1" class="table table-bordered table-hover" style="white-space:nowrap;">
+                                        <thead>
+
+                                            <tr>
+                                                <th>Invoice Ref. No</th>
+                                                <th>Invoice Date</th>
+                                                <th>Invoice Type</th>
+                                                <th>Mode</th>
+                                                <th>Bill To Party</th>
+                                                <th>Final Bill Amount</th>
+                                                <th>Invoice Valid From</th>
+                                                <th>Invoice Valid Upto</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.dtWarehouseInvoiceDetails!=null && Model.dtWarehouseInvoiceDetails.Rows.Count > 0)
+                                            {
+                                                for (int i = 0; i < Model.dtWarehouseInvoiceDetails.Rows.Count; i++)
+                                                {
+                                                    <tr>
+                                                        <td>@Convert.ToString(Model.dtWarehouseInvoiceDetails.Rows[i]["InvoiceRefNo"])</td>
+                                                        <td>@Convert.ToDateTime(Model.dtWarehouseInvoiceDetails.Rows[i]["InvoiceDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture)</td>
+                                                        <td>@Convert.ToString(Model.dtWarehouseInvoiceDetails.Rows[i]["InvoiceType"])</td>
+                                                        <td>@Convert.ToString(Model.dtWarehouseInvoiceDetails.Rows[i]["mode"])</td>
+                                                        <td>@Convert.ToString(Model.dtWarehouseInvoiceDetails.Rows[i]["BillToCustomerName"])</td>
+                                                        <td>@Convert.ToString(Model.dtWarehouseInvoiceDetails.Rows[i]["FinalBillAmount"])</td>
+                                                        @if (!string.IsNullOrWhiteSpace(Model.dtWarehouseInvoiceDetails.Rows[i]["InvoiceValidFrom"].ToString()) && (Model.dtWarehouseInvoiceDetails.Rows[i]["InvoiceValidFrom"].ToString() != "1900-01-01"))
+                                                        {
+                                                            <td>@Convert.ToString(Model.dtWarehouseInvoiceDetails.Rows[i]["InvoiceValidFrom"])</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td></td>
+                                                        }
+
+                                                        <td>@Convert.ToString(Model.dtWarehouseInvoiceDetails.Rows[i]["InvoiceValidTo"])</td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr><td colspan="8" style="text-align:left">No Records Found.</td></tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            }
+
+        @if (Model.IsSearch && Model.Category == "Empty")
+        {
+            <div id="tab1">
+
+                <div class="col-xs-12">
+                    <div class="box" style="overflow:scroll;">
+                        <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4><b>Empty Container Details</b></h4>
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="box-body" id="step-1-body">
+                            <div class="form-group">
+                                <table id="example1" class="table table-bordered table-hover" style="white-space:nowrap;">
+                                    <thead>
+                                        <tr>
+                                            <th>Cont No</th>
+                                            <th>Size</th>
+                                            <th>Type</th>
+                                            <th>ISO Code</th>
+                                            <th>Gate In Date/Destuffed Date</th>
+                                            <th>Gate In Mode</th>
+                                            <th>In CHA</th>
+                                            <th>In Forwarder</th>
+                                            <th>In Billing Party</th>
+                                            <th>Gate Out Date</th>
+                                            <th>Gate Out Mode</th>
+                                            <th>In Truck No</th>
+                                            <th>Out Truck No</th>
+                                            <th>From Location</th>
+                                            <th>To Location</th>
+                                            <th>Container Status</th>
+                                            <th>Gross Weight</th>
+                                            <th>Tare Weight</th>
+                                            <th>Net Weight</th>
+                                            <th>Out CHA</th>
+                                            <th>Out Forwarder</th>
+                                            <th>Out Billing Party</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.dtEmptyContInwardDetails!=null && Model.dtEmptyContInwardDetails.Rows.Count > 0)
+                                        {
+                                            <tr>
+                                                <td>@Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["ContNo"])</td>
+                                                <td>@Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["ISOCodeSize"])</td>
+                                                <td>@Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["ISOCodeType"])</td>
+                                                <td>@Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["ISOCode"])</td>
+                                                @if (!string.IsNullOrEmpty(Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["GateInPassDate"])))
+                                                {
+                                                    <td>@Convert.ToDateTime(Model.dtEmptyContInwardDetails.Rows[0]["GateInPassDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat, CultureInfo.InvariantCulture)</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+
+                                                <td>@Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["DeliveryMode"])</td>
+                                                <td>@Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["CHAName"])</td>
+                                                <td>@Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["ForwarderName"])</td>
+                                                <td>@Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["BillToCustomerName"])</td>
+                                                @if (!string.IsNullOrEmpty(Model.dtEmptyContInwardDetails.Rows[0]["OutDate"].ToString()))
+                                                {
+                                                    <td>@Convert.ToDateTime(Model.dtEmptyContInwardDetails.Rows[0]["OutDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat, CultureInfo.InvariantCulture)</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                <td></td>
+                                                <td>@Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["TruckNo"])</td>
+                                                <td>@Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["OutTruckNo"])</td>
+                                                <td>@Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["LocationFrom"])</td>
+                                                <td>@Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["LocationTo"])</td>
+                                                <td>@Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["ContainerStatus"])</td>
+                                                @if (!string.IsNullOrEmpty(Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["GrossWeight"])))
+                                                {
+                                                    <td>@Convert.ToDecimal(Model.dtEmptyContInwardDetails.Rows[0]["GrossWeight"]).ToString("0.00")</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                @if (!string.IsNullOrEmpty(Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["TruckTareWeight"])))
+                                                {
+                                                    <td>@Convert.ToDecimal(Model.dtEmptyContInwardDetails.Rows[0]["TruckTareWeight"]).ToString("0.00")</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                @*if (!string.IsNullOrEmpty(Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["ContainerTareWeight"])))
+                                                {
+                                                <td>@Convert.ToDecimal(Model.dtEmptyContInwardDetails.Rows[0]["ContainerTareWeight"]).ToString("0.00")</td>
+                                                }
+                                                else
+                                                {
+                                                <td></td>
+                                                }*@
+                                                @if (!string.IsNullOrEmpty(Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["NetWeight"])))
+                                                {
+                                                    <td>@Convert.ToDecimal(Model.dtEmptyContInwardDetails.Rows[0]["NetWeight"]).ToString("0.00")</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                <td>@Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["CHAName"])</td>
+                                                <td>@Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["ForwarderName"])</td>
+                                                <td>@Convert.ToString(Model.dtEmptyContInwardDetails.Rows[0]["BillToCustomerName"])</td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            <tr><td colspan="29" style="text-align:left">No Records Found.</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>               
+
+                <div class="col-xs-12">
+                    <div class="box" style="overflow:scroll;">
+                        <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4><b>Empty Container Invoice Details</b></h4>
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="box-body" id="step-1-body">
+                            <div class="form-group">
+                                <table id="example1" class="table table-bordered table-hover" style="white-space:nowrap;">
+                                    <thead>
+                                        <tr>
+                                            <th>Invoice Ref. No</th>
+                                            <th>Invoice Date</th>
+                                            <th>Invoice Type</th>
+                                            <th>Mode</th>
+                                            <th>Bill To Party</th>
+                                            <th>Final Bill Amount</th>
+                                            <th>Invoice Valid From</th>
+                                            <th>Invoice Valid Upto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.dtEmptyInvoiceDetails != null && Model.dtEmptyInvoiceDetails.Rows.Count > 0)
+                                        {
+
+                                            for (int i = 0; i < Model.dtEmptyInvoiceDetails.Rows.Count; i++)
+                                            {
+                                                <tr>
+                                                    <td>@Convert.ToString(Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceRefNo"])</td>
+                                                    <td>@Convert.ToDateTime(Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture)</td>
+                                                    <td>@Convert.ToString(Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceType"])</td>
+                                                    <td>@Convert.ToString(Model.dtEmptyInvoiceDetails.Rows[i]["mode"])</td>
+                                                    <td>@Convert.ToString(Model.dtEmptyInvoiceDetails.Rows[i]["BillToCustomerName"])</td>
+                                                    <td>@Convert.ToDecimal(Model.dtEmptyInvoiceDetails.Rows[i]["FinalBillAmount"])</td>
+                                                    <td>@Convert.ToDateTime(Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceValidFrom"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture)</td>
+                                                    <td>@Convert.ToDateTime(Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceValidTo"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture)</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        }
+        @if (Model.IsSearch && Model.Category == "Export")
+        {
+            <div id="tab1">
+
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4><b>Export Loaded Container Inward Details</b></h4>
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="box-body" id="step-1-body">
+                            <div class="col-md-12" style="overflow:scroll">
+
+                                <table id="example1" class="table table-bordered table-hover" style="white-space:nowrap;">
+                                    <thead>
+                                        <tr>
+                                            <th>Cont No</th>
+                                            <th>ISO Code</th>
+                                            <th>Size</th>
+                                            <th>Type</th>
+                                            <th>Delivery Mode</th>
+                                            <th>Gate in pass date</th>
+                                            <th>Gate in pass No</th>
+                                            <th>In Truck No</th>
+                                            <th>In Transporter</th>
+                                            <th>Condition</th>
+                                            <th>Remarks</th>
+                                            <th>Line</th>
+                                            <th>Agent</th>
+                                            <th>Nature Of Cargo</th>
+                                            <th>Packing Type</th>
+                                            <th>Bill Commodity</th>
+                                            <th>Sub Commodity</th>
+                                            <th>Bulk/Non-Bulk</th>
+                                            <th>Declared Packages</th>
+                                            <th>Declared Weight</th>
+                                            <th>Stuffed Packages</th>
+                                            <th>Stuffed Weight</th>
+                                            <th>From Location</th>
+                                            <th>Start Plug in Date</th>
+                                            <th>Start Plug off Date</th>
+                                            <th>In Weighment Status</th>
+                                            <th>In Gross Weight</th>
+                                            <th>In Container Tare Weight</th>
+                                            <th>In Truck Tare Weight</th>
+                                            <th>In Net Weight</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.dtExportInwardContDetails != null && Model.dtExportInwardContDetails.Rows.Count > 0)
+                                        {
+                                            decimal DecPackage = 0, DecWeight = 0, DestuffPackage = 0, DestuffWeight = 0;
+                                            for (int i = 0; i < Model.dtExportInwardContDetails.Rows.Count; i++)
+                                            {
+                                                if (!string.IsNullOrEmpty(Model.dtExportInwardContDetails.Rows[i]["Declared Packages"].ToString()))
+                                                {
+                                                    DecPackage += Convert.ToDecimal(Model.dtExportInwardContDetails.Rows[i]["Declared Packages"]);
+                                                }
+                                                if (!string.IsNullOrEmpty(Model.dtExportInwardContDetails.Rows[i]["Declared Weight"].ToString()))
+                                                {
+                                                    DecWeight += Convert.ToDecimal(Model.dtExportInwardContDetails.Rows[i]["Declared Weight"]);
+                                                }
+
+                                                if (!string.IsNullOrEmpty(Model.dtExportInwardContDetails.Rows[i]["Stuffed Packages"].ToString()))
+                                                {
+                                                    DestuffPackage += Convert.ToDecimal(Model.dtExportInwardContDetails.Rows[i]["Stuffed Packages"]);
+                                                }
+                                                if (!string.IsNullOrEmpty(Model.dtExportInwardContDetails.Rows[i]["Stuffed Weight"].ToString()))
+                                                {
+                                                    DestuffWeight += Convert.ToDecimal(Model.dtExportInwardContDetails.Rows[i]["Stuffed Weight"]);
+                                                }
+
+                                        <tr>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Cont No"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["ISO Code"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Size"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Type"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Delivery Mode"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Gate in pass date"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Gate in pass No"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["In Truck No"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["In Transporter"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Condition"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Remarks"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Line"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Agent"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Nature of cargo"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Packing Type"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Bill Commodity"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Sub Commodity"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Bulk/Non-Bulk"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Declared Packages"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Declared Weight"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Stuffed Packages"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Stuffed Weight"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["From Location"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Start Plug in date"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["Start Plug off date"]</td>
+                                            <td>@Model.dtExportInwardContDetails.Rows[i]["In Weighment Status"]</td>
+                                            <td>@Convert.ToDecimal(Model.dtExportInwardContDetails.Rows[i]["In Gross Weight"]).ToString("0.00")</td>
+                                            <td>@Convert.ToDecimal(Model.dtExportInwardContDetails.Rows[i]["In Cont. Tare Weight"]).ToString("0.00")</td>
+                                            <td>@Convert.ToDecimal(Model.dtExportInwardContDetails.Rows[i]["In Truck Tare Weight"]).ToString("0.00")</td>
+                                            <td>@Convert.ToDecimal(Model.dtExportInwardContDetails.Rows[i]["In Net Weight"]).ToString("0.00")</td>
+                                        </tr>
+                                            }
+                                            <tr><td colspan="17"></td><td style="font-weight:bold;">Total</td><td>@DecPackage</td><td>@DecWeight</td><td>@DestuffPackage</td><td>@DestuffWeight</td><td colspan="8"></td></tr>
+                                        }
+
+                                        else
+                                        {
+                                            <tr><td colspan="30" style="text-align:left">No Records Found.</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4><b>Export Warehouse Document Details</b></h4>
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="box-body" id="step-1-body">
+                            <div class="col-md-12" style="overflow:scroll">
+                                <table id="example1" class="table table-bordered table-hover" style="white-space:nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>NOC No</th>
+                                            <th>NOC Date</th>
+                                            <th>BOE No</th>
+                                            <th>BOE Date</th>
+                                            <th>BL No</th>
+                                            <th>BL Date</th>                                            
+                                            <th>No. of SB/BOE Items</th>
+                                            <th>Gate In Mode</th>
+                                            <th>Bulk/Non-Bulk</th>
+                                            <th>Packages</th>
+                                            <th>Pieces</th>
+                                            <th>Weight</th>
+                                            <th>Billing Party</th>
+                                            <th>Exporter/Importer</th>
+                                            <th>CB/Customer</th>
+                                            <th>Forwarder</th>
+                                            <th>Consoler</th>
+                                            <th>Nature of Cargo</th>
+                                            <th>Bill Commodity</th>
+                                            <th>Sub Commodity</th>
+                                            <th>Package Type</th>
+                                            <th>Cargo Name</th>
+                                            <th>Group Commodity</th>
+                                            <th>Temp</th>
+                                            <th>UN</th>
+                                            <th>Class No</th>
+                                            <th>Assessable Value</th>
+                                            <th>Duty Value</th>
+                                            <th>Hold Status</th>
+                                            <th>Hold Agency</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @if (Model.dtExportWarehouseDetails != null && Model.dtExportWarehouseDetails.Rows.Count > 0)
+                                        {
+                                            decimal Package = 0, Pieces = 0, Weight = 0;
+                                            for (int i = 0; i < Model.dtExportWarehouseDetails.Rows.Count; i++)
+                                            {
+                                                if (!string.IsNullOrEmpty(Model.dtExportWarehouseDetails.Rows[i]["Packages"].ToString()))
+                                                {
+                                                    Package += Convert.ToDecimal(Model.dtExportWarehouseDetails.Rows[i]["Packages"]);
+                                                }
+                                                if (!string.IsNullOrEmpty(Model.dtExportWarehouseDetails.Rows[i]["Pieces"].ToString()))
+                                                {
+                                                    Pieces += Convert.ToDecimal(Model.dtExportWarehouseDetails.Rows[i]["Pieces"]);
+                                                }
+                                                if (!string.IsNullOrEmpty(Model.dtExportWarehouseDetails.Rows[i]["Weight"].ToString()))
+                                                {
+                                                    Weight += Convert.ToDecimal(Model.dtExportWarehouseDetails.Rows[i]["Weight"]);
+                                                }
+                                                <tr>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["NOC No"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["NOC Date"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["BOE No"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["BOE Date"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["BL No"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["BL Date"]</td>                                              
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["No. of SB/BOE Items"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Gate in mode"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Bulk/Non-Bulk"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Packages"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Pieces"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Weight"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Billing Party"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Exporter/Importer"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["CB/Customer"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Forwarder"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Consoler"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Nature of cargo"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Bill Comodity"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Sub Commodity"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Package Type"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Cargo Name"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Group Commodity"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Temp"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["UN"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Class No"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Assessable Value"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Duty Value"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Hold Status"]</td>
+                                                    <td>@Model.dtExportWarehouseDetails.Rows[i]["Hold Agency"]</td>
+                                                </tr>
+                                            }
+                                            <tr><td colspan="8"></td><td style="font-weight:bold;">Total</td><td>@Package</td><td>@Pieces</td><td>@Weight</td><td colspan="18"></td></tr>
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="33" style="text-align:left">No Records Found.</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4><b> Shipping Bill Container Details</b></h4>
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="box-body" id="step-1-body">
+                            <div class="col-md-12" style="overflow:scroll">
+                                <table id="example1" class="table table-bordered table-hover" style="white-space:nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>BOE No</th>
+                                            <th>BL No</th>                                            
+                                            <th>Cont No</th>
+                                            <th>Size</th>
+                                            <th>Type</th>
+                                            <th>Cargo Type</th>
+                                            <th>Bill Commodity</th>
+                                            <th>Stuffed Packages</th>
+                                            <th>Stuffed Pieces</th>
+                                            <th>Stuffed Weight</th>
+                                            <th>Empty container gate in date</th>
+                                            <th>Stuff Request Date</th>
+                                            <th>Stuff Begin Date</th>
+                                            <th>Stuff End Date</th>
+                                            <th>Movement Order Date</th>
+                                            <th>Movement Confirm Date</th>
+                                            <th>Empty Truck Gate In date</th>
+                                            <th>Truck No</th>
+                                            <th>Transporter</th>
+                                            <th>Export Invoice No</th>
+                                            <th>Export Invoice Date</th>
+                                            <th>Loaded Truck Out Date</th>
+                                            <th>To location</th>
+                                            <th>Gross Weight</th>
+                                            <th>Cont Tare Weight</th>
+                                            <th>Truck Tare Weight</th>
+                                            <th>Net Weight</th>
+                                            <th>Seal No.1</th>
+                                            <th>Seal No.2</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.dtExportShippingBillDetails != null && Model.dtExportShippingBillDetails.Rows.Count > 0)
+                                        {
+                                            for (int i = 0; i < Model.dtExportShippingBillDetails.Rows.Count; i++)
+                                            {
+                                        <tr>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["BOE No"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["BL No"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Cont No"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Size"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Type"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Cargo Type"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Bill Commodity"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Stuffed Packages"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Stuffed Pieces"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Stuffed Weight"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Empty container gate in date"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Stuff Request Date"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Stuff Begin Date"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Stuff End Date"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Movement Order Date"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Movement Confirm Date"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Empty Truck Gate In date"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Truck No"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Transporter"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Export Invoice No"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Export Invoice Date"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Loaded Truck Out Date"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["To location"]</td>
+                                            <td>@Convert.ToDecimal(Model.dtExportShippingBillDetails.Rows[i]["Gross Weight"]).ToString("0.00")</td>
+                                            <td>@Convert.ToDecimal(Model.dtExportShippingBillDetails.Rows[i]["Cont Tare Weight"]).ToString("0.00")</td>
+                                            <td>@Convert.ToDecimal(Model.dtExportShippingBillDetails.Rows[i]["Truck Tare Weight"]).ToString("0.00")</td>
+                                            <td>@Convert.ToDecimal(Model.dtExportShippingBillDetails.Rows[i]["Net Weight"]).ToString("0.00")</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Seal No.1"]</td>
+                                            <td>@Model.dtExportShippingBillDetails.Rows[i]["Seal No.2"]</td>
+                                        </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr><td style="text-align:left" colspan="30">No Records Found.</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*<div class="col-xs-12">
+            <div class="box" style="overflow:scroll;">
+                <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                    <div class="pull-left">
+                        <div style="display: inline-flex">
+                            <h4><b>Export Container SSR Details</b></h4>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body" id="step-1-body">
+                    <div class="form-group">
+                        <table id="example1" class="table table-bordered table-hover" style="white-space:nowrap">
+                            <thead>
+                                <tr>
+                                    <th>SSR WO No</th>
+                                    <th>SSR Date</th>
+                                    <th>Manual SSR No</th>
+                                    <th>QTY</th>
+                                    <th>Invoice No</th>
+                                    <th>Invoice Date</th>
+                                    <th>SSR Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (1==1)
+                                {
+
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="7" style="text-align:left">No Records Found.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-12">
+            <div class="box" style="overflow:scroll;">
+                <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                    <div class="pull-left">
+                        <div style="display: inline-flex">
+                            <h4><b>Export Invoice Details</b></h4>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body" id="step-1-body">
+                    <div class="form-group">
+                        <table id="example1" class="table table-bordered table-hover" style="white-space:nowrap">
+                            <thead>
+
+                                <tr>
+                                    <th>Invoice Ref. No</th>
+                                    <th>Invoice Date</th>
+                                    <th>Invoice Type</th>
+                                    <th>Mode</th>
+                                    <th>Bill To Party</th>
+                                    <th>Final Bill Amount</th>
+                                    <th>Invoice Valid From</th>
+                                    <th>Invoice Valid Upto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (1==1)
+                                {
+
+                                }
+                                else
+                                {
+                                    <tr><td colspan="8" style="text-align:left">No Records Found.</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+            </div>
+            }
+    </div>
+
+</section>
+
+
+
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/ContainerQuery.js")"></script>
+
+

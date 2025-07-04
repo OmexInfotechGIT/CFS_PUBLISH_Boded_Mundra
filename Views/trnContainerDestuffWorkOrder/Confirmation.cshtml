@@ -1,0 +1,179 @@
+﻿@model CFS.Models.trnContainerDestuffWorkOrder
+@{
+    ViewBag.Title = "Confirm Container Destuffing Work Order";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    if (!ViewBag.gblBlnUnapprove && !ViewBag.gblBlnApprove)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+    Model.IsviewConf = true;
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+@using (Html.BeginForm("Action", "trnContainerDestuffWorkOrder", FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+{
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <b>
+                                    <span class="badge bg-light-blue" style="font-size:15px;"> Container Destuffing WO No : @Model.trnContainerDestuffWorkOrderNo</span>
+                                    <span class="badge bg-light-blue" style="font-size:15px;">Datetime :@Model.CreatedDate</span>
+                                    <span class="badge bg-light-blue" style="font-size:15px;">User :@Model.User</span>
+                                </b>
+                            </div>
+                        </div>
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                @if (ViewBag.gblBlnEdit && !Model.IsApproved)
+                                {
+                                    <a class="btn btn-primary" href="@Url.Action("Action", "trnContainerDestuffWorkOrder", new { id = Model.trnContainerDestuffWorkOrderID, doaction = "edit", @IsSearch = true })"><i title="Click to Edit" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                }
+                                <a class="btn btn-block btn-primary" data-toggle="modal" data-target="#myModalConfirmation">
+                                    @if (!Model.IsApproved)
+                                    {
+                                        <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                    }
+                                    else
+                                    {
+                                        <i title="Click to UnApprove" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-down"></i>
+                                    }
+                                </a> @CFS.Com.ClsCommon.AddhtmlSpace(3)                               
+                                @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                <a href="@Url.Action("index", "trnContainerDestuffWorkOrder", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        @Html.HiddenFor(Model => Model.IsviewConf)
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model=>Model.trnDocumentNo)
+                            @Html.TextBoxFor(Model=>Model.trnDocumentNo,new { @id= "trnDocumentNo",@name= "trnDocumentNo",@class="form-control",@readonly=true })
+                            @Html.HiddenFor(Model=>Model.trnDocumentID,new { @id= "trnDocumentID" })
+                        </div>
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.Surveyor) 
+                            @Html.TextBoxFor(Model => Model.Surveyor, new { @id = "Surveyor" ,@name= "Surveyor",@class="form-control",@readonly=true })
+                            @Html.HiddenFor(Model=>Model.SurveyorID)
+                        </div>
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.Vendor) 
+                            @Html.TextBoxFor(Model => Model.Vendor, new { @id="Vendor",@name="Vendor",@class="form-control",@readonly=true})
+                            @Html.HiddenFor(Model=>Model.VendorID)
+                        </div>
+                        <div class="col-md-4 form-group">
+                            @Html.LabelFor(Model => Model.Remarks)
+                            @Html.TextBoxFor(Model => Model.Remarks, new { @id="Remarks",@name="Remarks",@class="form-control",@readonly=true})
+                        </div>                        
+
+                    </div>
+                </div>
+                <div class="box">
+                    <input type="hidden" id="trnContainerDestuffWorkOrderID" name="trnContainerDestuffWorkOrderID" value="@Model.trnContainerDestuffWorkOrderID" />              
+                    <div class="box-header with-border" data-widget="collapse">
+                        <h4><b>Container Details </b></h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12" style="overflow:auto;">
+                            <table id="example2" style="white-space: nowrap;" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Container No</th>
+                                        <th>Cont. Size</th>
+                                        <th>Cont. Type</th>
+                                        <th>ISO Code</th>
+                                        <th>Cargo Type</th>
+                                        <th>Bill Commodity</th>
+                                        <th>FCL/LCL</th>
+                                        <th>Gate In Date</th>
+                                        <th>Seal No. 1</th>
+                                        <th>Seal No. 2</th>
+                                        <th>IMO</th>
+                                        <th>UN</th>
+                                        <th>TEMP</th>
+                                        <th>Weighment Status</th>
+                                        <th>Destuff Status</th>
+                                        <th>Destuff WO Status Tick</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(Model.MyDatatable!=null && Model.MyDatatable.Rows.Count > 0)
+                                    {
+                                        for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                        {
+                                    <tr>
+                                        <td>@Model.MyDatatable.Rows[i]["ContainerNumber"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["ISOCodeSize"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["ISOCodeType"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["ISOCode"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["NatureofCargoName"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["BillCommodity"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["ContLevel"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["GateInDate"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["PhysicalSeal"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["DeclaredSeal"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["IMO"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["UN"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["TEMP"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["WeighmentRequired"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["DestuffStatus"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["DestuffWOStatusTick"]</td>
+                                    </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="box">
+                        <div class="box-header">
+                            <h4><b>NOC Detail</b></h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="col-lg-12" style="overflow:scroll;">
+                                <table id="docdetail" style="white-space:nowrap;" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>BOE/IGM NO</th>
+                                            <th>ItemNo</th>
+                                            <th>In-BOE NO.</th>
+                                            <th>In-BOE Date</th>
+                                            <th>BL No</th>
+                                            <th>BL Date</th>
+                                            <th>BOND NO/CP NO</th>
+                                            <th>BOND Date/CP Date</th>
+                                            <th>NOC NO</th>
+                                            <th>NOC Date</th>
+                                            <th>CHA</th>
+                                            <th>Forwarder</th>
+                                            <th>Consoler</th>
+                                            <th>Importer</th>
+                                            <th>Cargo Description</th>
+                                            <th>Package Type</th>
+                                            <th>No Of Packages</th>
+                                            <th>No Of Pieces</th>
+                                            <th>Weight</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="DocDeatils"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+    <script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnContainerDestuffWorkOrder.js")"></script>

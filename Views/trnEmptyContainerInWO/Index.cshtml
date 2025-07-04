@@ -1,0 +1,128 @@
+﻿@model CFS.Models.trnEmptyContainerInWO
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.Title = "Empty Container In Work Order";
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>@CFS.Com.ClsCommon.AddhtmlSpace(1)</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a href="@Url.Action("Action","trnEmptyContainerInWO", new { pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "add" , step = "1"})" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Space Certificate"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div style="overflow-x:scroll">
+                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnEmptyContainerInWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.trnEmptyContainerInWONO", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.trnEmptyContainerInWOno".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.trnEmptyContainerInWOno".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Empty Container In WO No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnEmptyContainerInWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "trnEmptyContainerInWODate", SortOrder = (Model.pagger.SortColumn.ToLower() == "trnEmptyContainerInWOdate".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "trnEmptyContainerInWOdate".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>Empty Container WO Date</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnEmptyContainerInWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.CHAName", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.chaname".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.chaname".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> CHA</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnEmptyContainerInWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.ForwarderName", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.forwardername".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.forwardername".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Forwarder</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnEmptyContainerInWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.ExporterName", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.exportername".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.exportername".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Exporter</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnEmptyContainerInWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.ConsolerName", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.consolername".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.consolername".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Consoler</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnEmptyContainerInWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.FromLocation", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.fromlocation".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.fromlocation".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> From Location</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnEmptyContainerInWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.LiftOnBy", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.liftonby".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.liftonby".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Lift On By</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnEmptyContainerInWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.LiftOffBy", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.liftoffby".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.liftoffby".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Lift Off By</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnEmptyContainerInWO", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.Container", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.container".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.container".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>Container (Size)</a>
+                                    </th>
+                                    <th class="freezeLastColumn">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.MyDatatable != null && Model.MyDatatable.Rows.Count > 0)
+                                {
+                                    for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                    {
+                                        int GataPassCount = 0;
+                                        GataPassCount = Convert.ToInt32(Model.MyDatatable.Rows[i]["GataPassCount"]);
+                                        int WoCount = 0;
+                                        WoCount = Convert.ToInt32(Model.MyDatatable.Rows[i]["WoCount"]);
+                                        <tr>
+                                            <td>@Model.MyDatatable.Rows[i]["trnEmptyContainerInWOPrefix"]@Model.MyDatatable.Rows[i]["trnEmptyContainerInWONO"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["trnEmptyContainerInWODateUser"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["CHAName"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["ForwarderName"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["ExporterName"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["ConsolerName"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["FromLocation"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["LiftOnBy"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["LiftOffBy"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["Container"]</td>
+                                            <td class="freezeLastColumnwithWhite">
+                                                @if (ViewBag.gblBlnEdit && GataPassCount < WoCount)
+                                                {
+                                                    <a href="@Url.Action("Action", "trnEmptyContainerInWO", new { id = Model.MyDatatable.Rows[i]["trnEmptyContainerInWOID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit" })"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                                }
+                                                @if (ViewBag.gblBlnView)
+                                                {
+                                                    <a href="@Url.Action("view", "trnEmptyContainerInWO", new { id = Model.MyDatatable.Rows[i]["trnEmptyContainerInWOID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit"})"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                                }
+                                                @if (ViewBag.gblBlnDelete && GataPassCount == 0)
+                                                {
+                                                    <a href="@Url.Action("delete", "trnEmptyContainerInWO", new { id = Model.MyDatatable.Rows[i]["trnEmptyContainerInWOID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                                }
+                                                <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", "trnEmptyContainerInWO", new { id = Model.MyDatatable.Rows[i]["trnEmptyContainerInWOID"], format = "pdf" })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    @Html.Partial("_pagination")
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    var IsFinished = '@Model.IsFinished';
+    var doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnEmptyContainerInWO.js")"></script>

@@ -1,0 +1,1091 @@
+﻿@model CFS.Models.MstrGeneralTariff
+
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update General Tariff";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New General Tariff";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    string heading = "";
+    System.Text.StringBuilder StrAutocomplete = new System.Text.StringBuilder();
+}
+
+<style>
+    th, td {
+        padding: 3px;
+    }
+
+    input, select {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+    .ui-autocomplete {
+        z-index: 9999;
+    }
+</style>
+<!-- Main content -->
+<section class="">
+
+    @using (Html.BeginForm("Action", "MstrGeneralTariff", FormMethod.Post))
+    {
+        @Html.HiddenFor(Model => Model.pagger.Search)
+        @Html.HiddenFor(Model => Model.MstrTariffHeadID, new { @id = "MstrTariffHeadID", @name = "MstrTariffHeadID" })
+        @Html.HiddenFor(Model => Model.doaction)
+        @Html.HiddenFor(Model => Model.StatusofTariff)
+
+
+        <div class="row" id="step-1">
+            <div class="box">
+                <div class="box-header with-border" id="headDetail" style="cursor:pointer;">
+                    <h4><b>Select Tariff Head </b></h4>
+                    @Html.HiddenFor(Model => Model.MstrGeneralTariffEffetiveDateID, new { @id = "MstrGeneralTariffEffetiveDateID", @name = "MstrGeneralTariffEffetiveDateID" })
+                    @*<div class="col-md-2 EffetiveDateFrom" style="display:none;">
+            <div class="form-group">
+                @Html.LabelFor(Model => Model.EffetiveDateFrom, new { @for = "EffetiveDateFrom" }) @Html.ValidationMessageFor(Model => Model.EffetiveDateFrom, String.Empty, new { @id = "spn_EffetiveDateFrom", @class = "help-inline text-red" })
+                @if (Model != null && !string.IsNullOrEmpty(Model.EffetiveDateFrom))
+                {
+                    <div class="input-group">
+                        @Html.TextBoxFor(Model => Model.EffetiveDateFrom, new { @id = "EffetiveDateFrom", @name = "EffetiveDateFrom", @class = "form-control DatePicker", @placeholder = "Enter Effetive Date From", @onblur = "AddDate()" })
+                        <span class="input-group-addon" onclick="getElementById('EffetiveDateFrom').focus()"><i class="fa fa-calendar"></i></span>
+                    </div>
+                }
+                else
+                {
+                    <div class="input-group">
+                        @Html.TextBoxFor(Model => Model.EffetiveDateFrom, new { @id = "EffetiveDateFrom", @name = "EffetiveDateFrom", @class = "form-control DatePicker", @placeholder = "Enter Effetive Date From", @onblur = "AddDate()" })
+                        <span class="input-group-addon" onclick="getElementById('EffetiveDateFrom').focus()"><i class="fa fa-calendar"></i></span>
+                    </div>
+                }
+            </div>
+        </div>*@
+                    @Html.HiddenFor(Model => Model.EffetiveDateFrom, new { @id = "EffetiveDateFrom", @name = "EffetiveDateFrom", @class = "form-control DatePicker", @placeholder = "Enter Effetive Date From" })
+                    @Html.HiddenFor(Model => Model.EffectiveToDate, new { @id = "EffectiveToDate", @name = "EffectiveToDate", @class = "form-control DatePicker", @placeholder = "Enter Effective To Date", @onblur = "AddDate()" })
+                    @Html.HiddenFor(Model => Model.OrgEffetiveDateFrom)
+                    @Html.HiddenFor(Model => Model.OrgEffectiveToDate)
+
+                    @*<div class="col-md-2 EffectiveToDate" style="display:none;">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.EffectiveToDate, new { @for = "EffectiveToDate" })@Html.ValidationMessageFor(Model => Model.EffectiveToDate, String.Empty, new { @id = "spn_EffectiveToDate", @class = "help-inline text-red" })
+                            @if (Model != null && !string.IsNullOrEmpty(Model.EffetiveDateFrom))
+                            {
+                                <div class="input-group">
+                                    @Html.TextBoxFor(Model => Model.EffectiveToDate, new { @id = "EffectiveToDate", @name = "EffectiveToDate", @class = "form-control DatePicker", @placeholder = "Enter Effective To Date", @onblur = "AddDate()" })
+                                    <span class="input-group-addon" onclick="getElementById('EffectiveToDate').focus()"><i class="fa fa-calendar"></i></span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="input-group">
+                                    @Html.TextBoxFor(Model => Model.EffectiveToDate, new { @id = "EffectiveToDate", @name = "EffectiveToDate", @class = "form-control DatePicker", @placeholder = "Enter Effective To Date", @onblur = "AddDate()" })
+                                    <span class="input-group-addon" onclick="getElementById('EffectiveToDate').focus()"><i class="fa fa-calendar"></i></span>
+                                </div>
+                            }
+                        </div>
+                    </div>*@
+                <div class="col-sm-11">
+                    @if (Model != null && Model.SelectSearchingDateRange != null && Model.SelectSearchingDateRange.Count > 0)
+                    {
+                        <div class="pull-left">
+                            @*@Html.LabelFor(Model => Model.SearchingDateRange, new { @for = "SearchingDateRange", @style = "font-size:15px" }) :*@
+                            @if (!string.IsNullOrEmpty(Model.PreviousFromDate) && !string.IsNullOrEmpty(Model.PreviousToDate))
+                            {
+                                <button type="button" onclick="Changethedate('@Model.MstrTariffHeadID', '@Model.PreviousFromDate', '@Model.PreviousToDate', '@Model.StatusofTariff')" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Rate"><i class="fa fa-backward"></i></button>@CFS.Com.ClsCommon.AddhtmlSpace(5)
+                            }
+                            @Html.DropDownListFor(Model => Model.SearchingDateRange, Model.SelectSearchingDateRange, "Select Search Date", new { @id = "SearchingDateRange", @style = "height:33px", @class = "from-control", @name = "SearchingDateRange", @onchange = "SearchWithDate('" + Model.MstrTariffHeadID + "')" }) @CFS.Com.ClsCommon.AddhtmlSpace(5)
+                            @if (!string.IsNullOrEmpty(Model.NextFromDate) && !string.IsNullOrEmpty(Model.NextToDate))
+                            {
+                                <button type="button" onclick="Changethedate('@Model.MstrTariffHeadID','@Model.NextFromDate', '@Model.NextToDate', '@Model.StatusofTariff')" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Rate"><i class="fa fa-forward"></i></button>
+                            }
+                        </div>
+                        if (!string.IsNullOrEmpty(Model.StatusofTariff))
+                        {
+
+                            if (Model.StatusofTariff.ToLower() == "active")
+                            {
+                                if (Model.TERIFFHEADNAMETYPE != null && Model.TERIFFHEADNAMETYPE.Rows.Count > 0)
+                                {
+                                    for (int i = 0; i < Model.TERIFFHEADNAMETYPE.Rows.Count; i++)
+                                    {
+                                        if (Convert.ToInt32(Model.TERIFFHEADNAMETYPE.Rows[i]["CurrentStatus"]) == 1)
+                                        {
+                                            <div class="col-md-2">
+                                                <button type="button" onclick="Copyallteriffdata('@Model.MstrTariffHeadID','@Model.EffetiveDateFrom', '@Model.EffectiveToDate')" class="btn btn-primary btn-sm" id="CopyThisToBtn" style="color: #fff" data-toggle="tooltip" title="Add New Rate">Copy to this</button>
+                                            </div>
+                                            break;
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                </div>
+                    @*@if (Model != null && Model.SelectSearchingDateRange != null && Model.SelectSearchingDateRange.Count > 0)
+                    {
+                        <div class="col-md-2">                            
+                            <button type="button" onclick="Copyallteriffdata('@Model.MstrTariffHeadID','@Model.EffetiveDateFrom', '@Model.EffectiveToDate')" class="btn btn-primary btn-sm" id="CopyThisToBtn" style="color: #fff" data-toggle="tooltip" title="Add New Rate">Copy to this</button>
+                        </div>
+                    }*@
+                    <div class="col-sm-1">
+                        <div class="form-group pull-left" style="margin-left: 30px;">
+                            <div style="margin-top: 8px;">
+                                <a class="fa fa-download fa-2x" title="Download Tariff" download id="btnDownload" onclick="DownloadTariff()"></a>
+                            </div>
+                        </div>
+                        <div class="form-group pull-right">
+                            <div data-toggle="modal" style=" cursor: pointer;" onclick="funAddTariffHead()" class="btn btn-primary">
+                                <i style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-plus"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-body">
+                    @*@if (Model != null && Model.TERIFFHEADNAMETYPE != null && Model.TERIFFHEADNAMETYPE.Count > 0)
+        {
+            for (int D = 0; D < Model.TERIFFHEADNAMETYPE.Count; D++)
+            {
+                string strclass = "btn-default";
+                if (Model.TERIFFHEADNAMETYPE[D].Value == Model.MstrTariffHeadID.ToString())
+                {
+                    strclass = "btn-primary";
+                    heading = Model.TERIFFHEADNAMETYPE[D].Text;
+                }
+
+                string textcolor = "";
+
+                if (Model.StatusofTariff.ToLower() == "active")
+                {
+                    if (Model.TERIFFHEADNAMETYPE[D].Selected == true)
+                    {
+                        textcolor = "color:#ff8100";
+                    }
+                }
+                else if (Model.StatusofTariff.ToLower() == "inactive")
+                {
+                    if (Model.TERIFFHEADNAMETYPE[D].Selected == true)
+                    {
+                        textcolor = "color:#ff8100";
+                    }
+                }
+                else if (Model.StatusofTariff.ToLower() == "upcomming")
+                {
+                    if (Model.TERIFFHEADNAMETYPE[D].Selected == true)
+                    {
+                        textcolor = "color:#ff8100";
+                    }
+                }
+
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <button type="button" style="text-align: left; @textcolor" onclick="Changeteriff('@Model.TERIFFHEADNAMETYPE[D].Value')" class="btn @strclass btn-block btn-sm">@Model.TERIFFHEADNAMETYPE[D].Text</button>
+                    </div>
+                </div>
+            }
+        }*@
+                    @if (Model != null && Model.TERIFFHEADNAMETYPE != null && Model.TERIFFHEADNAMETYPE.Rows.Count > 0)
+                    {
+                        for (int D = 0; D < Model.TERIFFHEADNAMETYPE.Rows.Count; D++)
+                        {
+
+                            string strclass = "btn-default";
+                            string strspan = "btn-primary";
+
+                            if (Convert.ToString(Model.TERIFFHEADNAMETYPE.Rows[D]["MstrTariffHeadID"]) == Model.MstrTariffHeadID.ToString())
+                            {
+                                strclass = "btn-primary";
+                                strspan = "btn-default";
+                                heading = Convert.ToString(Model.TERIFFHEADNAMETYPE.Rows[D]["TariffHeadName"]);
+                            }
+
+                            string textcolor = "";
+
+                            if (Convert.ToInt32(Model.TERIFFHEADNAMETYPE.Rows[D]["CurrentStatus"]) == 1)
+                            {
+                                textcolor = "color:#ff8100";
+                            }
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <button type="button" style="text-align: left;@textcolor" onclick="Changeteriff('@Model.TERIFFHEADNAMETYPE.Rows[D]["MstrTariffHeadID"]')" class="btn @strclass btn-block btn-sm">
+                                        @Model.TERIFFHEADNAMETYPE.Rows[D]["TariffHeadName"]
+                                        @*@{
+                                            if (Convert.ToString(Model.TERIFFHEADNAMETYPE.Rows[D]["TariffType"]) != "")
+                                            {
+                                                <span class="badge bg-light-blue @strclass" style="font-size:15px;"> @Convert.ToString(Model.TERIFFHEADNAMETYPE.Rows[D]["TariffType"])</span>
+                                            }
+                                        }*@
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+            @{
+                Model.TariffHeadName = heading;
+            }
+            @Html.HiddenFor(Model => Model.TariffHeadName, new { @id = "TariffHeadName", @name = "TariffHeadName" })
+
+            <div class="col-xs-12">
+
+                <div class="box">
+                    <div class="box-header with-border">
+                        <div class="col-md-4">
+                            <h4>
+                                <b>@heading</b>
+
+                            </h4>
+                        </div>
+                        @*<div class="col-md-8 pull-left" style="margin-top:7px">
+                            @if (Model != null && Model.SelectSearchingDateRange != null && Model.SelectSearchingDateRange.Count > 0)
+                            {
+                                <div class="pull-left">
+                                    @Html.LabelFor(Model => Model.SearchingDateRange, new { @for = "SearchingDateRange", @style = "font-size:15px" }) :
+                                    @Html.DropDownListFor(Model => Model.SearchingDateRange, Model.SelectSearchingDateRange, "Select Search Date", new { @id = "SearchingDateRange", @style = "font-size:13px", @class = "from-control", @name = "SearchingDateRange", @onchange = "SearchWithDate('" + Model.MstrTariffHeadID + "')" }) @CFS.Com.ClsCommon.AddhtmlSpace(5)
+
+                                    @if (!string.IsNullOrEmpty(Model.PreviousFromDate) && !string.IsNullOrEmpty(Model.PreviousToDate))
+                                    {
+                                        <button type="button" onclick="Changethedate('@Model.MstrTariffHeadID','@Model.PreviousFromDate', '@Model.PreviousToDate')" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Rate"><i class="fa fa-backward"></i></button>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(Model.NextFromDate) && !string.IsNullOrEmpty(Model.NextToDate))
+                                    {
+                                        <button type="button" onclick="Changethedate('@Model.MstrTariffHeadID','@Model.NextFromDate', '@Model.NextToDate')" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Rate"><i class="fa fa-forward"></i></button>
+                                    }
+                                </div>
+                            }
+                        </div>*@
+                        @if (!string.IsNullOrEmpty(heading))
+                        {
+                            <div class="col-md-3">                                
+                                @if (Model.StatusofTariff == "active")
+                                {
+                                    <span class="badge bg-yellow-gradient" style="font-size:30px;">Active General Tariff</span>
+                                }
+                                else if (Model.StatusofTariff == "inactive")
+                                {
+                                    <span class="badge bg-red-gradient" style="font-size:30px;">Inactive General Tariff</span>
+                                }
+                                else if (Model.StatusofTariff == "upcomming")
+                                {
+                                    <span class="badge bg-green-gradient" style="font-size:30px;">UpComming General Tariff</span>
+                                }
+                            </div>
+
+                        }
+                    </div>
+                    <div class="box-body">
+                        @Html.HiddenFor(Model => Model.UnitType, new { @id = "UnitType", @name = "UnitType" })
+
+
+                        @* ===== LOADED DELIVERY HANDLING ===== *@
+                        
+                        <div class="col-md-9" style="overflow:scroll">
+                            @if (Model != null && Model.UnitType != null && Model.UnitType == "Unit Based")
+                            {
+
+                                <table id="tblterifftable" cellpadding="10" cellspacing="10" style="white-space: nowrap;">
+                                    <thead>
+
+                                        <tr>
+                                            <th>Cont. Size</th>
+                                            <th>Cargo Type</th>
+                                            <th>Del. Mode</th>
+                                            <th>Bill Commodity</th>
+                                            <th>Sub Commodity</th>
+                                            @*<th>Batch</th>*@
+                                            <th>Rate</th>
+                                            <th>Discount</th>
+                                            <th>UOM</th>
+                                            <th>Pattern</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            int count1 = 0;
+                                        }
+
+                                        @{
+                                            StrAutocomplete.Append(@" <script> setTimeout(function () {");
+                                            count1 = Model.MyDatatable.Rows.Count;
+                                            Model.MstrGeneralTariffID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.CargoSize = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.ContSizeRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.CargoType = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.MstrNatureOfCargoRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.MstrBillableCommodityRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.MstrSubCommodityRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.MstrUomRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.MstrDeliveryModeRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.MstrBatchRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.BillCommodity = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.SubCommodity = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.DeliveryMode = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            // Model.Batch = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.Rate = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.Discount = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.UOM = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.StoragePattern = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        }
+
+                                        @if (Model.MyDatatable != null && Model.MyDatatable.Rows.Count > 0)
+                                        {
+
+
+                                            for (int Q = 0; Q < Model.MyDatatable.Rows.Count; Q++)
+                                            {
+
+                                                Model.MstrGeneralTariffID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["MstrGeneralTariffID"].ToString());
+                                                Model.CargoSize[Q] = Model.MyDatatable.Rows[Q]["CargoSize"].ToString();
+                                                Model.ContSizeRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["ContSizeID"]);
+                                                Model.CargoType[Q] = Model.MyDatatable.Rows[Q]["CargoType"].ToString();
+                                                Model.MstrNatureOfCargoRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["MstrNatureOfCargoID"]);
+                                                Model.MstrBillableCommodityRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["MstrBillableCommodityID"]);
+                                                Model.MstrSubCommodityRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["MstrSubCommodityID"]);
+                                                Model.MstrDeliveryModeRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["DeliveryModeID"]);
+                                                Model.MstrBatchRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["MstrBatchID"]);
+                                                Model.MstrUomRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["MstrUomID"]);
+                                                Model.BillCommodity[Q] = Model.MyDatatable.Rows[Q]["BillCommodity"].ToString();
+                                                Model.SubCommodity[Q] = Model.MyDatatable.Rows[Q]["SubCommodity"].ToString();
+                                                Model.DeliveryMode[Q] = Model.MyDatatable.Rows[Q]["DeliveryMode"].ToString();
+                                                //Model.Batch[Q] = Model.MyDatatable.Rows[Q]["Batch"].ToString();
+                                                Model.Rate[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["Rate"]);
+                                                Model.Discount[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["Discount"]);
+                                                Model.UOM[Q] = Model.MyDatatable.Rows[Q]["UOM"].ToString();
+                                                Model.StoragePattern[Q] = Convert.ToString(Model.MyDatatable.Rows[Q]["StoragePattern"]);
+
+                                                StrAutocomplete.Append(@" Autocompletebox('BillCommodity" + Q + @"', 'MstrBillableCommodityRefID" + Q + @"', 'MstrGeneralTariff', 'GetBillCommodity');
+                                                                                                        Autocompletebox('SubCommodity" + Q + @"', 'MstrSubCommodityRefID" + Q + @"', 'MstrGeneralTariff', 'GetSubCommodity');
+                                                                                                        Autocompletebox('DeliveryMode" + Q + @"', 'MstrDeliveryModeRefID" + Q + @"', 'MstrGeneralTariff', 'GetDeliveryMode');
+                                                                                                        Autocompletebox('Batch" + Q + @"', 'MstrBatchRefID" + Q + @"', 'MstrGeneralTariff', 'GetBatch');
+                                                                                                        Autocompletebox('CargoType" + Q + @"', 'MstrNatureOfCargoRefID" + Q + @"', 'MstrGeneralTariff', 'GetCargoType');
+                                                                                                        Autocompletebox('UOM" + Q + @"', 'MstrUomRefID" + Q + @"', 'MstrGeneralTariff', 'GetUOM');
+                                                                                                        Autocompletebox('CargoSize" + Q + @"', 'ContSizeRefID" + Q + @"', 'MstrGeneralTariff', 'GetCargoSize');
+                                                                                                        EnabledDisaleComodity('DeliveryMode', '" + Q + "');");
+
+                                                for (int i = 0; i < Model.selectStoragePeriod.Count; i++)
+                                                {
+                                                    Model.selectStoragePeriod[i].Selected = false;
+                                                }
+                                                for (int i = 0; i < Model.selectStoragePeriod.Count; i++)
+                                                {
+                                                    Model.selectStoragePeriod[i].Selected = false;
+                                                    if (Model.selectStoragePeriod[i].Value == Convert.ToString(Model.MyDatatable.Rows[Q]["StoragePattern"]))
+                                                    {
+                                                        Model.selectStoragePeriod[i].Selected = true;
+                                                        break;
+                                                    }
+                                                }
+
+
+                                                <tr>
+                                                    <td style="display:none;">@Html.HiddenFor(Model => Model.MstrGeneralTariffID[Q], new { @id = "MstrGeneralTariffID" + Q, @value = Model.MyDatatable.Rows[Q]["MstrGeneralTariffID"].ToString() })</td>
+                                                    <td style="display:none;">@Html.HiddenFor(Model => Model.ContSizeRefID[Q], new { @id = "ContSizeRefID" + Q, @value = Model.MyDatatable.Rows[Q]["CargoSize"].ToString() })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrNatureOfCargoRefID[Q], new { @id = "MstrNatureOfCargoRefID" + Q, @value = Model.MyDatatable.Rows[Q]["CargoType"].ToString() })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrBillableCommodityRefID[Q], new { @id = "MstrBillableCommodityRefID" + Q, @value = Model.MyDatatable.Rows[Q]["MstrBillableCommodityID"].ToString() })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrSubCommodityRefID[Q], new { @id = "MstrSubCommodityRefID" + Q, @value = Model.MyDatatable.Rows[Q]["MstrSubCommodityID"].ToString() })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrDeliveryModeRefID[Q], new { @id = "MstrDeliveryModeRefID" + Q, @value = Model.MyDatatable.Rows[Q]["DeliveryModeID"].ToString() })</td>
+                                                    @*<td style="display:none;">@Html.TextBoxFor(Model => Model.MstrBatchRefID[Q], new { @id = "MstrBatchRefID" + Q, @value = Model.MyDatatable.Rows[Q]["MstrBatchID"].ToString() })</td>*@
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrUomRefID[Q], new { @id = "MstrUomRefID" + Q, @value = Model.MyDatatable.Rows[Q]["MstrUomID"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.CargoSize[Q], new { @id = "CargoSize" + Q, @placeholder = "Select Cont. Size", @style = "width: 65px;", @value = Model.MyDatatable.Rows[Q]["CargoSize"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.CargoType[Q], new { @id = "CargoType" + Q, @style = "width: 70px;", @placeholder = "Select Cargo Type", @value = Model.MyDatatable.Rows[Q]["CargoType"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.DeliveryMode[Q], new { @onblur = "EnabledDisaleComodity('DeliveryMode', '" + Q + "')", @id = "DeliveryMode" + Q, @placeholder = "Select DeliveryMode", @style = "width: 60px;", @value = Model.MyDatatable.Rows[Q]["DeliveryMode"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.BillCommodity[Q], new { @id = "BillCommodity" + Q, @placeholder = "Select Bill Commodity", @value = Model.MyDatatable.Rows[Q]["BillCommodity"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.SubCommodity[Q], new { @id = "SubCommodity" + Q, @placeholder = "Select Sub Commodity", @value = Model.MyDatatable.Rows[Q]["SubCommodity"].ToString() })</td>
+                                                    @*<td>@Html.TextBoxFor(Model => Model.Batch[Q], new { @id = "Batch" + Q, @placeholder = "Select Batch", @style = "width: 60px;", @value = Model.MyDatatable.Rows[Q]["Batch"].ToString() })</td>*@
+                                                    <td>@Html.TextBoxFor(Model => Model.Rate[Q], new { @onblur = "discountvalidation('Rate" + Q + "','Discount" + Q + "')", @id = "Rate" + Q, @style = "width: 70px;", @placeholder = "Select Rate", @value = Model.MyDatatable.Rows[Q]["Rate"].ToString(), @onkeypress = "return isNumberWithTwoDecimal(event,'Rate" + Q + "')" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.Discount[Q], new { @onblur = "discountvalidation('Rate" + Q + "','Discount" + Q + "')", @id = "Discount" + Q, @style = "width: 70px;", @placeholder = "Select Discount", @value = Model.MyDatatable.Rows[Q]["Discount"].ToString(), @onkeypress = "return isNumberWithTwoDecimal(event,'Discount" + Q + "')" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.UOM[Q], new { @id = "UOM" + Q, @style = "width: 70px;", @placeholder = "Select UOM", @value = Model.MyDatatable.Rows[Q]["UOM"].ToString() })</td>
+                                                    <td>@Html.DropDownListFor(Model => Model.StoragePattern[Q], Model.selectStoragePeriod, new { @id = "StoragePattern" + Q, @style = "width: 70px;", @placeholder = "Select Storage Pattern", @value = Model.MyDatatable.Rows[Q]["StoragePattern"].ToString() })</td>
+                                                    @if (ViewBag.gblBlnDelete)
+                                                    {
+                                                        <td><a class="" href="@Url.Action("delete", "MstrGeneralTariff", new { id = Model.MyDatatable.Rows[Q]["MstrGeneralTariffID"], MstrTariffHeadID = Model.MstrTariffHeadID ,Fromdate=Model.EffetiveDateFrom,Todate=Model.EffectiveToDate,TariffStatus=Model.StatusofTariff})" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a></td>
+                                                    }
+                                                </tr>
+                                            }
+
+                                        }
+                                        @{
+                                            Model.hdnGridCount = (Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)));
+
+                                        }
+                                        @Html.HiddenFor(Model => Model.hdnGridCount, new { @id = "hdnGridCount", @name = "hdnGridCount" })
+                                        @if ((count1 % 10) != Model.hdnGridCount)
+                                        {
+                                            for (int S = count1; S < Model.hdnGridCount; S++)
+                                            {
+                                                Model.MstrGeneralTariffID[S] = 0;
+                                                Model.ContSizeRefID[S] = 0;
+                                                Model.MstrNatureOfCargoRefID[S] = 0;
+                                                Model.MstrBillableCommodityRefID[S] = 0;
+                                                Model.MstrSubCommodityRefID[S] = 0;
+                                                Model.MstrDeliveryModeRefID[S] = 0;
+                                                Model.MstrBatchRefID[S] = 0;
+                                                Model.MstrUomRefID[S] = 0;
+
+                                                StrAutocomplete.Append(@" Autocompletebox('BillCommodity" + S + @"', 'MstrBillableCommodityRefID" + S + @"', 'MstrGeneralTariff', 'GetBillCommodity');
+                                                                                                        Autocompletebox('SubCommodity" + S + @"', 'MstrSubCommodityRefID" + S + @"', 'MstrGeneralTariff', 'GetSubCommodity');
+                                                                                                        Autocompletebox('DeliveryMode" + S + @"', 'MstrDeliveryModeRefID" + S + @"', 'MstrGeneralTariff', 'GetDeliveryMode');
+                                                                                                        Autocompletebox('Batch" + S + @"', 'MstrBatchRefID" + S + @"', 'MstrGeneralTariff', 'GetBatch');
+                                                                                                        Autocompletebox('CargoType" + S + @"', 'MstrNatureOfCargoRefID" + S + @"', 'MstrGeneralTariff', 'GetCargoType');
+                                                                                                        Autocompletebox('UOM" + S + @"', 'MstrUomRefID" + S + @"', 'MstrGeneralTariff', 'GetUOM');
+                                                                                                        Autocompletebox('CargoSize" + S + @"', 'ContSizeRefID" + S + @"', 'MstrGeneralTariff', 'GetCargoSize'); ");
+
+                                                for (int i = 0; i < Model.selectStoragePeriod.Count; i++)
+                                                {
+                                                    Model.selectStoragePeriod[i].Selected = false;
+                                                }
+                                                <tr>
+                                                    <td style="display:none;">@Html.HiddenFor(Model => Model.MstrGeneralTariffID[S], new { @id = "MstrGeneralTariffID" + S })</td>
+                                                    <td style="display:none;">@Html.HiddenFor(Model => Model.ContSizeRefID[S], new { @id = "ContSizeRefID" + S })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrNatureOfCargoRefID[S], new { @id = "MstrNatureOfCargoRefID" + S })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrBillableCommodityRefID[S], new { @id = "MstrBillableCommodityRefID" + S })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrSubCommodityRefID[S], new { @id = "MstrSubCommodityRefID" + S })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrDeliveryModeRefID[S], new { @id = "MstrDeliveryModeRefID" + S })</td>
+                                                    @*<td style="display:none;">@Html.TextBoxFor(Model => Model.MstrBatchRefID[S], new { @id = "MstrBatchRefID" + S })</td>*@
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrUomRefID[S], new { @id = "MstrUomRefID" + S })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.CargoSize[S], new { @id = "CargoSize" + S, @placeholder = "Select Cont. Size", @style = "width: 60px;" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.CargoType[S], new { @id = "CargoType" + S, @style = "width: 70px;", @placeholder = "Select Cargo Type" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.DeliveryMode[S], new { @onblur = "EnabledDisaleComodity('DeliveryMode', '" + S + "')", @id = "DeliveryMode" + S, @placeholder = "Select DeliveryMode", @style = "width: 65px;" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.BillCommodity[S], new { @id = "BillCommodity" + S, @placeholder = "Select Bill Commodity" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.SubCommodity[S], new { @id = "SubCommodity" + S, @placeholder = "Select Sub Commodity" })</td>
+                                                    @*<td>@Html.TextBoxFor(Model => Model.Batch[S], new { @id = "Batch" + S, @placeholder = "Select Batch", @style = "width: 60px;", })</td>*@
+                                                    <td>@Html.TextBoxFor(Model => Model.Rate[S], new { @onblur = "discountvalidation('Rate" + S + "','Discount" + S + "')", @id = "Rate" + S, @style = "width: 70px;", @placeholder = "Select Rate", @onkeypress = "return isNumberWithTwoDecimal(event,'Rate" + S + "')" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.Discount[S], new { @onblur = "discountvalidation('Rate" + S + "','Discount" + S + "')", @id = "Discount" + S, @style = "width: 70px;", @placeholder = "Select Discount", @onkeypress = "return isNumberWithTwoDecimal(event,'Discount" + S + "')" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.UOM[S], new { @id = "UOM" + S, @style = "width: 70px;", @placeholder = "Select UOM" })</td>
+                                                    <td>@Html.DropDownListFor(Model => Model.StoragePattern[S], Model.selectStoragePeriod, new { @id = "StoragePattern" + S, @style = "width: 70px;", @placeholder = "Select Storage Pattern" })</td>
+                                                    <td><a onclick="ClearMstrGeneralTariff('@S')"><i title="Click to Clear" style="font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-refresh"></i></a></td>
+                                                </tr>
+                                            }
+                                        }
+                                        @{
+                                            StrAutocomplete.Append(@" }, 1000);</script> ");
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else if (Model != null && Model.UnitType != null && Model.UnitType == "Weight Based")
+                            {
+                                <table id="tblterifftable" cellpadding="10" cellspacing="10" style="width:100%;">
+                                    <thead>
+
+                                        <tr>
+                                            <th>From Weight</th>
+                                            <th>To Weight</th>
+                                            <th>Cont. Size</th>
+                                            <th>Cargo Type</th>
+                                            <th>Bill Commodity</th>
+                                            <th>Sub Commodity</th>
+                                            @*<th>Batch</th>*@
+                                            <th>Rate Of Area</th>
+                                            <th>Discount</th>
+                                            <th>UOM</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            int count1 = 0;
+                                        }
+                                        @{
+                                            StrAutocomplete.Append(@" <script> setTimeout(function () {");
+                                            count1 = Model.MyDatatable.Rows.Count;
+                                            Model.MstrGeneralTariffID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.CargoSize = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.ContSizeRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.CargoType = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.MstrNatureOfCargoRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.MstrBillableCommodityRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.MstrSubCommodityRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.MstrUomRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.MstrBatchRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.BillCommodity = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.SubCommodity = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.Batch = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.Discount = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.UOM = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.RateOfArea = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.FromDays = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.ToDays = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        }
+                                        @if (Model.MyDatatable != null && Model.MyDatatable.Rows.Count > 0)
+                                        {
+                                            for (int Q = 0; Q < Model.MyDatatable.Rows.Count; Q++)
+                                            {
+                                                Model.MstrGeneralTariffID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["MstrGeneralTariffID"].ToString());
+                                                Model.CargoSize[Q] = Model.MyDatatable.Rows[Q]["CargoSize"].ToString();
+                                                Model.ContSizeRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["ContSizeID"]);
+                                                Model.CargoType[Q] = Model.MyDatatable.Rows[Q]["CargoType"].ToString();
+                                                Model.MstrNatureOfCargoRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["MstrNatureOfCargoID"]);
+                                                Model.MstrBillableCommodityRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["MstrBillableCommodityID"]);
+                                                Model.MstrSubCommodityRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["MstrSubCommodityID"]);
+                                                Model.MstrBatchRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["MstrBatchID"]);
+                                                Model.MstrUomRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["MstrUomID"]);
+                                                Model.BillCommodity[Q] = Model.MyDatatable.Rows[Q]["BillCommodity"].ToString();
+                                                Model.SubCommodity[Q] = Model.MyDatatable.Rows[Q]["SubCommodity"].ToString();
+                                                Model.Batch[Q] = Model.MyDatatable.Rows[Q]["Batch"].ToString();
+                                                Model.Discount[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["Discount"]);
+                                                Model.UOM[Q] = Model.MyDatatable.Rows[Q]["UOM"].ToString();
+                                                Model.FromDays[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["FromDays"]);
+                                                Model.ToDays[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["ToDays"]);
+                                                Model.RateOfArea[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["RateOfArea"]);
+
+                                                StrAutocomplete.Append(@" Autocompletebox('BillCommodity" + Q + @"', 'MstrBillableCommodityRefID" + Q + @"', 'MstrGeneralTariff', 'GetBillCommodity');
+                                                                                                                                                                                                                                                                                Autocompletebox('SubCommodity" + Q + @"', 'MstrSubCommodityRefID" + Q + @"', 'MstrGeneralTariff', 'GetSubCommodity');
+                                                                                                                                                                                                                                                                                Autocompletebox('Batch" + Q + @"', 'MstrBatchRefID" + Q + @"', 'MstrGeneralTariff', 'GetBatch');
+                                                                                                                                                                                                                                                                                Autocompletebox('CargoType" + Q + @"', 'MstrNatureOfCargoRefID" + Q + @"', 'MstrGeneralTariff', 'GetCargoType');
+                                                                                                                                                                                                                                                                                Autocompletebox('UOM" + Q + @"', 'MstrUomRefID" + Q + @"', 'MstrGeneralTariff', 'GetUOM');
+                                                                                                                                                                                                                                                                                Autocompletebox('CargoSize" + Q + @"', 'ContSizeRefID" + Q + @"', 'MstrGeneralTariff', 'GetCargoSize'); ");
+
+
+
+                                                <tr>
+                                                    <td style="display:none;">@Html.HiddenFor(Model => Model.MstrGeneralTariffID[Q], new { @id = "MstrGeneralTariffID" + Q, @value = Model.MyDatatable.Rows[Q]["MstrGeneralTariffID"].ToString() })</td>
+                                                    <td style="display:none;">@Html.HiddenFor(Model => Model.ContSizeRefID[Q], new { @id = "ContSizeRefID" + Q, @value = Model.MyDatatable.Rows[Q]["CargoSize"].ToString() })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrNatureOfCargoRefID[Q], new { @id = "MstrNatureOfCargoRefID" + Q, @value = Model.MyDatatable.Rows[Q]["CargoType"].ToString() })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrBillableCommodityRefID[Q], new { @id = "MstrBillableCommodityRefID" + Q, @value = Model.MyDatatable.Rows[Q]["MstrBillableCommodityID"].ToString() })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrSubCommodityRefID[Q], new { @id = "MstrSubCommodityRefID" + Q, @value = Model.MyDatatable.Rows[Q]["MstrSubCommodityID"].ToString() })</td>
+                                                    @*<td style="display:none;">@Html.TextBoxFor(Model => Model.MstrBatchRefID[Q], new { @id = "MstrBatchRefID" + Q, @value = Model.MyDatatable.Rows[Q]["MstrBatchID"].ToString() })</td>*@
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrUomRefID[Q], new { @id = "MstrUomRefID" + Q, @value = Model.MyDatatable.Rows[Q]["MstrUomID"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.FromDays[Q], new { @id = "FromDays" + Q, @style = "width: 70px;", @placeholder = "Select From Weight", @value = Model.MyDatatable.Rows[Q]["FromDays"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.ToDays[Q], new { @id = "ToDays" + Q, @style = "width: 70px;", @placeholder = "Select To Weight", @value = Model.MyDatatable.Rows[Q]["ToDays"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.CargoSize[Q], new { @id = "CargoSize" + Q, @placeholder = "Select Cont. Size", @style = "width: 60px;", @value = Model.MyDatatable.Rows[Q]["CargoSize"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.CargoType[Q], new { @id = "CargoType" + Q, @style = "width: 70px;", @placeholder = "Select Cargo Type", @value = Model.MyDatatable.Rows[Q]["CargoType"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.BillCommodity[Q], new { @id = "BillCommodity" + Q, @placeholder = "Select Bill Commodity", @value = Model.MyDatatable.Rows[Q]["BillCommodity"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.SubCommodity[Q], new { @id = "SubCommodity" + Q, @placeholder = "Select Sub Commodity", @value = Model.MyDatatable.Rows[Q]["SubCommodity"].ToString() })</td>
+                                                    @*<td>@Html.TextBoxFor(Model => Model.Batch[Q], new { @id = "Batch" + Q, @placeholder = "Select Batch", @style = "width: 60px;", @value = Model.MyDatatable.Rows[Q]["Batch"].ToString() })</td>*@
+                                                    <td>@Html.TextBoxFor(Model => Model.RateOfArea[Q], new { @onblur = "discountvalidation('RateOfArea" + Q + "','Discount" + Q + "')", @id = "RateOfArea" + Q, @placeholder = "Select Rate Of Area", @style = "width: 70px;", @value = Model.MyDatatable.Rows[Q]["RateOfArea"].ToString(), @onkeypress = "return isNumberWithTwoDecimal(event,'RateOfArea" + Q + "')" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.Discount[Q], new { @onblur = "discountvalidation('RateOfArea" + Q + "','Discount" + Q + "')", @id = "Discount" + Q, @style = "width: 70px;", @placeholder = "Select Discount", @value = Model.MyDatatable.Rows[Q]["Discount"].ToString(), @onkeypress = "return isNumberWithTwoDecimal(event,'Discount" + Q + "')" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.UOM[Q], new { @id = "UOM" + Q, @style = "width: 70px;", @placeholder = "Select UOM", @value = Model.MyDatatable.Rows[Q]["UOM"].ToString() })</td>
+                                                    @if (ViewBag.gblBlnDelete)
+                                                    {
+                                                        <td><a class="" href="@Url.Action("delete", "MstrGeneralTariff", new { id = Model.MyDatatable.Rows[Q]["MstrGeneralTariffID"], MstrTariffHeadID = Model.MstrTariffHeadID  ,Fromdate=Model.EffetiveDateFrom,Todate=Model.EffectiveToDate,TariffStatus=Model.StatusofTariff})" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a></td>
+                                                    }
+                                                </tr>
+                                            }
+                                        }
+                                        @{
+
+                                            Model.hdnGridCount = (Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)));
+                                        }
+
+                                        @Html.HiddenFor(Model => Model.hdnGridCount, new { @id = "hdnGridCount", @name = "hdnGridCount" })
+                                        @if ((count1 % 10) != Model.hdnGridCount)
+                                        {
+                                            for (int S = count1; S < Model.hdnGridCount; S++)
+                                            {
+                                                Model.MstrGeneralTariffID[S] = 0;
+                                                Model.ContSizeRefID[S] = 0;
+                                                Model.MstrNatureOfCargoRefID[S] = 0;
+                                                Model.MstrBillableCommodityRefID[S] = 0;
+                                                Model.MstrSubCommodityRefID[S] = 0;
+                                                Model.MstrBatchRefID[S] = 0;
+                                                Model.MstrUomRefID[S] = 0;
+                                                StrAutocomplete.Append(@" Autocompletebox('BillCommodity" + S + @"', 'MstrBillableCommodityRefID" + S + @"', 'MstrGeneralTariff', 'GetBillCommodity');
+                                                                                                                                                                                                                                                                            Autocompletebox('SubCommodity" + S + @"', 'MstrSubCommodityRefID" + S + @"', 'MstrGeneralTariff', 'GetSubCommodity');
+                                                                                                                                                                                                                                                                            Autocompletebox('Batch" + S + @"', 'MstrBatchRefID" + S + @"', 'MstrGeneralTariff', 'GetBatch');
+                                                                                                                                                                                                                                                                            Autocompletebox('CargoType" + S + @"', 'MstrNatureOfCargoRefID" + S + @"', 'MstrGeneralTariff', 'GetCargoType');
+                                                                                                                                                                                                                                                                            Autocompletebox('UOM" + S + @"', 'MstrUomRefID" + S + @"', 'MstrGeneralTariff', 'GetUOM');
+                                                                                                                                                                                                                                                                            Autocompletebox('CargoSize" + S + @"', 'ContSizeRefID" + S + @"', 'MstrGeneralTariff', 'GetCargoSize'); ");
+
+                                                <tr>
+                                                    <td style="display:none;">@Html.HiddenFor(Model => Model.MstrGeneralTariffID[S], new { @id = "MstrGeneralTariffID" + S })</td>
+                                                    <td style="display:none;">@Html.HiddenFor(Model => Model.ContSizeRefID[S], new { @id = "ContSizeRefID" + S })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrNatureOfCargoRefID[S], new { @id = "MstrNatureOfCargoRefID" + S })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrBillableCommodityRefID[S], new { @id = "MstrBillableCommodityRefID" + S })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrSubCommodityRefID[S], new { @id = "MstrSubCommodityRefID" + S })</td>
+                                                    @*<td style="display:none;">@Html.TextBoxFor(Model => Model.MstrBatchRefID[S], new { @id = "MstrBatchRefID" + S })</td>*@
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrUomRefID[S], new { @id = "MstrUomRefID" + S })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.FromDays[S], new { @id = "FromDays" + S, @style = "width: 70px;", @placeholder = "Select From Weight" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.ToDays[S], new { @id = "ToDays" + S, @style = "width: 70px;", @placeholder = "Select To Weight" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.CargoSize[S], new { @id = "CargoSize" + S, @placeholder = "Select Cont. Size", @style = "width: 60px;" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.CargoType[S], new { @id = "CargoType" + S, @style = "width: 70px;", @placeholder = "Select Cargo Type" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.BillCommodity[S], new { @id = "BillCommodity" + S, @placeholder = "Select Bill Commodity" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.SubCommodity[S], new { @id = "SubCommodity" + S, @placeholder = "Select Sub Commodity" })</td>
+                                                    @*<td>@Html.TextBoxFor(Model => Model.RatePerMetricTon[S], new { @id = "RatePerMetricTon" + S, @style = "width: 70px;", @placeholder = "Select Rate Per Metric Ton" })</td>*@
+                                                    @*<td>@Html.TextBoxFor(Model => Model.Batch[S], new { @id = "Batch" + S, @placeholder = "Select Batch", @style = "width: 60px;" })</td>*@
+                                                    <td>@Html.TextBoxFor(Model => Model.RateOfArea[S], new { @onblur = "discountvalidation('RateOfArea'" + S + ",'Discount'" + S + ")", @id = "RateOfArea" + S, @placeholder = "Select Rate Of Area", @style = "width: 70px;", @onkeypress = "return isNumberWithTwoDecimal(event,'RateOfArea" + S + "')" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.Discount[S], new { @onblur = "discountvalidation('RateOfArea'" + S + ",'Discount'" + S + ")", @id = "Discount" + S, @style = "width: 70px;", @placeholder = "Select Discount", @onkeypress = "return isNumberWithTwoDecimal(event,'Discount" + S + "')" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.UOM[S], new { @id = "UOM" + S, @style = "width: 70px;", @placeholder = "Select UOM" })</td>
+                                                    <td><a onclick="ClearMstrGeneralTariff('@S')"><i title="Click to Clear" style="font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-refresh"></i></a></td>
+                                                </tr>
+                                            }
+                                        }
+                                        @{
+                                            StrAutocomplete.Append(@" }, 1000);</script> ");
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else if (Model != null && Model.UnitType != null && Model.UnitType == "Storage Based")
+                            {
+                                <table id="tblterifftable" cellpadding="10" cellspacing="10">
+                                    <thead>
+
+                                        <tr>
+                                            <th>From Days</th>
+                                            <th>To Days</th>
+                                            <th>cont size</th>
+                                            <th>cargo type</th>
+                                            <th>Del. Mode</th>
+                                            <th>bill commodity</th>
+                                            <th>sub commodity</th>
+                                            <th>rate</th>
+                                            <th>Discount</th>
+                                            @*<th>batch</th>*@
+                                            <th style="display:none">Storage Pattern</th>
+                                            <th style="display:none">Number</th>
+                                            <th style="display:none">UOM</th>
+                                            <th>Ref. No</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            int count1 = 0;
+                                        }
+                                        @{
+                                            StrAutocomplete.Append(@" <script> setTimeout(function () {");
+                                            count1 = Model.MyDatatable.Rows.Count;
+                                            Model.MstrGeneralTariffID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.MstrDeliveryModeRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.DeliveryMode = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.CargoSize = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.ContSizeRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.CargoType = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.MstrNatureOfCargoRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.MstrBillableCommodityRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.MstrSubCommodityRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.MstrUomRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.MstrBatchRefID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.BillCommodity = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.SubCommodity = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.Batch = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.Rate = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.Discount = new decimal[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.UOM = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.StoragePattern = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.Number = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.FromDays = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.ToDays = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.StorageAreaReferenceNumber = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                        }
+                                        @if (Model.MyDatatable != null && Model.MyDatatable.Rows.Count > 0)
+                                        {
+
+                                            for (int Q = 0; Q < Model.MyDatatable.Rows.Count; Q++)
+                                            {
+                                                Model.MstrGeneralTariffID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["MstrGeneralTariffID"].ToString());
+                                                Model.CargoSize[Q] = Model.MyDatatable.Rows[Q]["CargoSize"].ToString();
+                                                Model.ContSizeRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["ContSizeID"]);
+                                                Model.CargoType[Q] = Model.MyDatatable.Rows[Q]["CargoType"].ToString();
+                                                Model.MstrNatureOfCargoRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["MstrNatureOfCargoID"]);
+                                                Model.MstrBillableCommodityRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["MstrBillableCommodityID"]);
+                                                Model.MstrSubCommodityRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["MstrSubCommodityID"]);
+                                                Model.MstrBatchRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["MstrBatchID"]);
+                                                Model.MstrUomRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["MstrUomID"]);
+                                                Model.BillCommodity[Q] = Model.MyDatatable.Rows[Q]["BillCommodity"].ToString();
+                                                Model.SubCommodity[Q] = Model.MyDatatable.Rows[Q]["SubCommodity"].ToString();
+                                                Model.Batch[Q] = Model.MyDatatable.Rows[Q]["Batch"].ToString();
+                                                Model.Rate[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["Rate"]);
+                                                Model.Discount[Q] = Convert.ToDecimal(Model.MyDatatable.Rows[Q]["Discount"]);
+                                                Model.UOM[Q] = Model.MyDatatable.Rows[Q]["UOM"].ToString();
+                                                Model.StoragePattern[Q] = Convert.ToString(Model.MyDatatable.Rows[Q]["StoragePattern"]);
+                                                Model.Number[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["Number"]);
+                                                Model.FromDays[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["FromDays"]);
+                                                Model.ToDays[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["ToDays"]);
+                                                Model.StorageAreaReferenceNumber[Q] = Convert.ToString(Model.MyDatatable.Rows[Q]["StorageAreaReferenceNumber"]);
+                                                Model.MstrDeliveryModeRefID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["DeliveryModeID"]);
+                                                Model.DeliveryMode[Q] = Model.MyDatatable.Rows[Q]["DeliveryMode"].ToString();
+
+                                                StrAutocomplete.Append(@"   Autocompletebox('BillCommodity" + Q + @"', 'MstrBillableCommodityRefID" + Q + @"', 'MstrGeneralTariff', 'GetBillCommodity');
+                                                                                                Autocompletebox('SubCommodity" + Q + @"', 'MstrSubCommodityRefID" + Q + @"', 'MstrGeneralTariff', 'GetSubCommodity');
+                                                                                                Autocompletebox('Batch" + Q + @"', 'MstrBatchRefID" + Q + @"', 'MstrGeneralTariff', 'GetBatch');
+                                                                                                Autocompletebox('CargoType" + Q + @"', 'MstrNatureOfCargoRefID" + Q + @"', 'MstrGeneralTariff', 'GetCargoType');
+                                                                                                Autocompletebox('UOM" + Q + @"', 'MstrUomRefID" + Q + @"', 'MstrGeneralTariff', 'GetUOM');
+                                                                                                Autocompletebox('CargoSize" + Q + @"', 'ContSizeRefID" + Q + @"', 'MstrGeneralTariff', 'GetCargoSize');
+                                                                                                Autocompletebox('DeliveryMode" + Q + @"', 'MstrDeliveryModeRefID" + Q + @"', 'MstrGeneralTariffNOCWise', 'GetDeliveryMode');
+                                                                                                EnabledDisaleComodity('DeliveryMode', '" + Q + "');");
+                                                for (int i = 0; i < Model.selectStoragePeriod.Count; i++)
+                                                {
+                                                    Model.selectStoragePeriod[i].Selected = false;
+                                                    if (Model.selectStoragePeriod[i].Value == Model.StoragePattern[Q])
+                                                    {
+                                                        Model.selectStoragePeriod[i].Selected = true;
+                                                        break;
+                                                    }
+                                                }
+                                                for (int i = 0; i < Model.SelectNoOfStoragePeriod.Count; i++)
+                                                {
+                                                    Model.SelectNoOfStoragePeriod[i].Selected = false;
+                                                    if (Model.SelectNoOfStoragePeriod[i].Value == Model.Number[Q].ToString())
+                                                    {
+                                                        Model.SelectNoOfStoragePeriod[i].Selected = true;
+                                                        break;
+                                                    }
+                                                }
+
+                                                <tr>
+                                                    <td style="display:none;">@Html.HiddenFor(Model => Model.MstrGeneralTariffID[Q], new { @id = "MstrGeneralTariffID" + Q, @value = Model.MyDatatable.Rows[Q]["MstrGeneralTariffID"].ToString() })</td>
+                                                    <td style="display:none;">@Html.HiddenFor(Model => Model.ContSizeRefID[Q], new { @id = "ContSizeRefID" + Q, @value = Model.MyDatatable.Rows[Q]["CargoSize"].ToString() })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrNatureOfCargoRefID[Q], new { @id = "MstrNatureOfCargoRefID" + Q, @value = Model.MyDatatable.Rows[Q]["CargoType"].ToString() })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrBillableCommodityRefID[Q], new { @id = "MstrBillableCommodityRefID" + Q, @value = Model.MyDatatable.Rows[Q]["MstrBillableCommodityID"].ToString() })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrSubCommodityRefID[Q], new { @id = "MstrSubCommodityRefID" + Q, @value = Model.MyDatatable.Rows[Q]["MstrSubCommodityID"].ToString() })</td>
+                                                    @*<td style="display:none;">@Html.TextBoxFor(Model => Model.MstrBatchRefID[Q], new { @id = "MstrBatchRefID" + Q, @value = Model.MyDatatable.Rows[Q]["MstrBatchID"].ToString() })</td>*@
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrUomRefID[Q], new { @id = "MstrUomRefID" + Q, @value = Model.MyDatatable.Rows[Q]["MstrUomID"].ToString() })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrDeliveryModeRefID[Q], new { @id = "MstrDeliveryModeRefID" + Q, @value = Model.MyDatatable.Rows[Q]["DeliveryModeID"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.FromDays[Q], new { @id = "FromDays" + Q, @style = "width: 70px;", @placeholder = "Select From weight", @value = Model.MyDatatable.Rows[Q]["FromDays"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.ToDays[Q], new { @id = "ToDays" + Q, @style = "width: 70px;", @placeholder = "Select To weight", @value = Model.MyDatatable.Rows[Q]["ToDays"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.CargoSize[Q], new { @id = "CargoSize" + Q, @placeholder = "Select Cont. Size", @style = "width: 60px;", @value = Model.MyDatatable.Rows[Q]["CargoSize"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.CargoType[Q], new { @id = "CargoType" + Q, @style = "width: 70px;", @placeholder = "Select Cargo Type", @value = Model.MyDatatable.Rows[Q]["CargoType"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.DeliveryMode[Q], new { @onblur = "EnabledDisaleComodity('DeliveryMode', '" + Q + "')", @id = "DeliveryMode" + Q, @placeholder = "Select DeliveryMode", @style = "width: 60px;", @value = Model.MyDatatable.Rows[Q]["DeliveryMode"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.BillCommodity[Q], new { @id = "BillCommodity" + Q, @placeholder = "Select Bill Commodity", @value = Model.MyDatatable.Rows[Q]["BillCommodity"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.SubCommodity[Q], new { @id = "SubCommodity" + Q, @placeholder = "Select Sub Commodity", @value = Model.MyDatatable.Rows[Q]["SubCommodity"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.Rate[Q], new { @onblur = "discountvalidation('Rate" + Q + "','Discount" + Q + "')", @id = "Rate" + Q, @style = "width: 70px;", @placeholder = "Select Rate", @value = Model.MyDatatable.Rows[Q]["Rate"].ToString(), @onkeypress = "return isNumberWithTwoDecimal(event,'Rate" + Q + "')" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.Discount[Q], new { @onblur = "discountvalidation('Rate" + Q + "','Discount" + Q + "')", @id = "Discount" + Q, @style = "width: 70px;", @placeholder = "Select Discount", @value = Model.MyDatatable.Rows[Q]["Discount"].ToString(), @onkeypress = "return isNumberWithTwoDecimal(event,'Discount" + Q + "')" })</td>
+                                                    @*<td>@Html.TextBoxFor(Model => Model.Batch[Q], new { @id = "Batch" + Q, @placeholder = "Select Batch", @style = "width: 60px;", @value = Model.MyDatatable.Rows[Q]["Batch"].ToString() })</td>*@
+                                                    <td style="display:none;">@Html.DropDownListFor(Model => Model.StoragePattern[Q], Model.selectStoragePeriod, new { @id = "StoragePattern" + Q, @style = "width: 70px;", @placeholder = "Select Storage Pattern", @value = Model.MyDatatable.Rows[Q]["StoragePattern"].ToString() })</td>
+                                                    <td style="display:none;">@Html.DropDownListFor(Model => Model.Number[Q], Model.SelectNoOfStoragePeriod, new { @id = "Number" + Q, @placeholder = "Select Number", @style = "width: 70px;", @value = Model.MyDatatable.Rows[Q]["Number"].ToString() })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.UOM[Q], new { @id = "UOM" + Q, @placeholder = "Select UOM", @style = "width: 70px;", @value = Model.MyDatatable.Rows[Q]["UOM"].ToString() })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.StorageAreaReferenceNumber[Q], new { @id = "StorageAreaReferenceNumber" + Q, @placeholder = "Select StorageAreaReferenceNumber", @value = Model.MyDatatable.Rows[Q]["StorageAreaReferenceNumber"].ToString() })</td>
+                                                    @if (ViewBag.gblBlnDelete)
+                                                    {
+                                                        <td><a href="@Url.Action("delete", "MstrGeneralTariff", new { id = Model.MyDatatable.Rows[Q]["MstrGeneralTariffID"], MstrTariffHeadID = Model.MstrTariffHeadID  ,Fromdate=Model.EffetiveDateFrom,Todate=Model.EffectiveToDate,TariffStatus=Model.StatusofTariff})" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a></td>
+                                                    }
+                                                </tr>
+                                            }
+                                        }
+                                        @{
+
+                                            Model.hdnGridCount = (Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)));
+                                        }
+
+                                        @Html.HiddenFor(Model => Model.hdnGridCount, new { @id = "hdnGridCount", @name = "hdnGridCount" })
+                                        @if ((count1 % 10) != Model.hdnGridCount)
+                                        {
+                                            for (int S = count1; S < Model.hdnGridCount; S++)
+                                            {
+                                                Model.MstrGeneralTariffID[S] = 0;
+                                                Model.ContSizeRefID[S] = 0;
+                                                Model.MstrNatureOfCargoRefID[S] = 0;
+                                                Model.MstrBillableCommodityRefID[S] = 0;
+                                                Model.MstrSubCommodityRefID[S] = 0;
+                                                Model.MstrBatchRefID[S] = 0;
+                                                Model.MstrUomRefID[S] = 0;
+                                                Model.MstrDeliveryModeRefID[S] = 0;
+
+                                                StrAutocomplete.Append(@"   Autocompletebox('BillCommodity" + S + @"', 'MstrBillableCommodityRefID" + S + @"', 'MstrGeneralTariff', 'GetBillCommodity');
+                                                                                                Autocompletebox('SubCommodity" + S + @"', 'MstrSubCommodityRefID" + S + @"', 'MstrGeneralTariff', 'GetSubCommodity');
+                                                                                                Autocompletebox('Batch" + S + @"', 'MstrBatchRefID" + S + @"', 'MstrGeneralTariff', 'GetBatch');
+                                                                                                Autocompletebox('DeliveryMode" + S + @"', 'MstrDeliveryModeRefID" + S + @"', 'MstrGeneralTariffNOCWise', 'GetDeliveryMode');
+                                                                                                Autocompletebox('CargoType" + S + @"', 'MstrNatureOfCargoRefID" + S + @"', 'MstrGeneralTariff', 'GetCargoType');
+                                                                                                Autocompletebox('UOM" + S + @"', 'MstrUomRefID" + S + @"', 'MstrGeneralTariff', 'GetUOM');
+                                                                                                Autocompletebox('CargoSize" + S + @"', 'ContSizeRefID" + S + @"', 'MstrGeneralTariff', 'GetCargoSize');
+                                                                                                EnabledDisaleComodity('DeliveryMode', '" + S + "');");
+                                                for (int i = 0; i < Model.selectStoragePeriod.Count; i++)
+                                                {
+                                                    Model.selectStoragePeriod[i].Selected = false;
+                                                }
+                                                for (int i = 0; i < Model.SelectNoOfStoragePeriod.Count; i++)
+                                                {
+                                                    Model.SelectNoOfStoragePeriod[i].Selected = false;
+                                                }
+                                                <tr>
+                                                    <td style="display:none;">@Html.HiddenFor(Model => Model.MstrGeneralTariffID[S], new { @id = "MstrGeneralTariffID" + S })</td>
+                                                    <td style="display:none;">@Html.HiddenFor(Model => Model.ContSizeRefID[S], new { @id = "ContSizeRefID" + S })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrNatureOfCargoRefID[S], new { @id = "MstrNatureOfCargoRefID" + S })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrBillableCommodityRefID[S], new { @id = "MstrBillableCommodityRefID" + S })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrSubCommodityRefID[S], new { @id = "MstrSubCommodityRefID" + S })</td>
+                                                    @*<td style="display:none;">@Html.TextBoxFor(Model => Model.MstrBatchRefID[S], new { @id = "MstrBatchRefID" + S })</td>*@
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrUomRefID[S], new { @id = "MstrUomRefID" + S })</td>
+                                                    <td style="display:none;">@Html.TextBoxFor(Model => Model.MstrDeliveryModeRefID[S], new { @id = "MstrDeliveryModeRefID" + S })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.FromDays[S], new { @id = "FromDays" + S, @style = "width: 70px;", @placeholder = "Select From Days" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.ToDays[S], new { @id = "ToDays" + S, @style = "width: 70px;", @placeholder = "Select To Days" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.CargoSize[S], new { @id = "CargoSize" + S, @placeholder = "Select Cont. Size", @style = "width: 60px;" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.CargoType[S], new { @id = "CargoType" + S, @style = "width: 70px;", @placeholder = "Select Cargo Type" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.DeliveryMode[S], new { @onblur = "EnabledDisaleComodity('DeliveryMode', '" + S + "')", @id = "DeliveryMode" + S, @placeholder = "Select DeliveryMode", @style = "width: 65px;" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.BillCommodity[S], new { @id = "BillCommodity" + S, @placeholder = "Select Bill Commodity" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.SubCommodity[S], new { @id = "SubCommodity" + S, @placeholder = "Select Sub Commodity" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.Rate[S], new { @onblur = "discountvalidation('Rate" + S + "','Discount" + S + "')", @id = "Rate" + S, @style = "width: 70px;", @placeholder = "Select Rate", @onkeypress = "return isNumberWithTwoDecimal(event,'Rate" + S + "')" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.Discount[S], new { @onblur = "discountvalidation('Rate" + S + "','Discount" + S + "')", @id = "Discount" + S, @style = "width: 70px;", @placeholder = "Select Discount", @onkeypress = "return isNumberWithTwoDecimal(event,'Discount" + S + "')" })</td>
+                                                    @*<td>@Html.TextBoxFor(Model => Model.Batch[S], new { @id = "Batch" + S, @placeholder = "Select Batch", @style = "width: 60px;" })</td>*@
+                                                    <td style="display:none">@Html.DropDownListFor(Model => Model.StoragePattern[S], Model.selectStoragePeriod, new { @id = "StoragePattern" + S, @style = "width: 70px;", @placeholder = "Select Storage Pattern" })</td>
+                                                    <td style="display:none">@Html.DropDownListFor(Model => Model.Number[S], Model.SelectNoOfStoragePeriod, new { @id = "Number" + S, @style = "width: 70px;", @placeholder = "Select Number" })</td>
+                                                    <td style="display:none">@Html.TextBoxFor(Model => Model.UOM[S], new { @id = "UOM" + S, @style = "width: 70px;", @placeholder = "Select UOM" })</td>
+                                                    <td>@Html.TextBoxFor(Model => Model.StorageAreaReferenceNumber[S], new { @id = "StorageAreaReferenceNumber" + S, @placeholder = "Select StorageAreaReferenceNumber" })</td>
+                                                    <td><a onclick="ClearMstrGeneralTariff('@S')"><i title="Click to Clear" style="font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-refresh"></i></a></td>
+                                                </tr>
+                                            }
+                                        }
+                                        @{
+                                            StrAutocomplete.Append(@" }, 1000);</script> ");
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                        @if (!string.IsNullOrEmpty(heading))
+                        {
+                            <div class="col-md-12 box-footer">
+                                <div class="pull-right">
+                                    <button type="submit" onclick="return validateForm()" class="btn btn-primary">Submit</button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade in" id="CopyTarrifHead" style="display: none; padding-right: 17px;">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title">Copy Tarrif Head Rate</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <input type="hidden" id="HDNTeriffID" name="HDNTeriffID" />
+                            <input type="hidden" id="hdnCurrentFromDate" name="hdnCurrentFromDate" />
+                            <input type="hidden" id="hdnCurrentToDate" name="hdnCurrentToDate" />
+                            <div class="col-md-12">
+                                <div class="col-md-3 EffetiveDateFrom">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.EffetiveDateFrom, new { @for = "mdlEffetiveDateFrom" })
+                                        <div class="input-group">
+                                            <input type="text" id="mdlEffetiveDateFrom" name="mdlEffetiveDateFrom" class="form-control DatePicker" placeholder="Enter Effetive Date From" />
+                                            <span class="input-group-addon" onclick="getElementById('mdlEffetiveDateFrom').focus()"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 EffectiveToDate">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.EffectiveToDate, new { @for = "mdlEffectiveToDate" })
+                                        <div class="input-group">
+                                            <input type="text" id="mdlEffectiveToDate" name="mdlEffectiveToDate" class="form-control DatePicker" placeholder="Enter Effetive Date From" />
+                                            <span class="input-group-addon" onclick="getElementById('mdlEffectiveToDate').focus()"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.SelectTariffToCopy, new { @for = "SelectTariffToCopy" })<span class="text-red"> *</span>
+                                        <input type="text" id="SelectTariffToCopy" name="SelectTariffToCopy" class="form-control" placeholder="Please select Tariff" />
+                                        <input type="hidden" id="SelectTariffToCopyID" name="SelectTariffToCopyID" />
+                                    </div>
+                                </div>
+                                <div class="col-md-1 EffectiveToDate">
+                                    <br />
+                                    <button type="button" onclick="Copydate()" class="btn btn-warning">Copy</button>
+                                </div>
+                                <br />
+                                <div class="col-md-3">
+                                    <table>
+                                        <tbody id="tblEffectiveDate"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <div class="modal fade in" id="CopyTarrifHeadWithNOC" style="display: none; padding-right: 17px;">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title">Copy Tarrif Head Rate</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <input type="hidden" id="HDNNOCTeriffID" name="HDNTeriffID" />
+                            <input type="hidden" id="hdnNOCCurrentFromDate" name="hdnNOCCurrentFromDate" />
+                            <input type="hidden" id="hdnNOCCurrentToDate" name="hdnNOCCurrentToDate" />
+                            <input type="hidden" id="hdnNOCID" name="hdnNOCID" />
+                            <div class="col-md-12">
+                                <div class="col-md-3 EffetiveDateFrom">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.EffetiveDateFrom, new { @for = "mdlNOCEffetiveDateFrom" }) <span class="text-red"> *</span>
+                                        <div class="input-group">
+                                            <input type="text" id="mdlNOCEffetiveDateFrom" name="mdlNOCEffetiveDateFrom" class="form-control DatePicker" placeholder="Enter Effetive Date From" />
+                                            <span class="input-group-addon" onclick="getElementById('mdlNOCEffetiveDateFrom').focus()"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 EffectiveToDate">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.EffectiveToDate, new { @for = "mdlNOCEffectiveToDate" }) <span class="text-red"> *</span>
+                                        <div class="input-group">
+                                            <input type="text" id="mdlNOCEffectiveToDate" name="mdlNOCEffectiveToDate" class="form-control DatePicker" placeholder="Enter Effetive Date From" />
+                                            <span class="input-group-addon" onclick="getElementById('mdlNOCEffectiveToDate').focus()"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="mdlSpaceCertificateNo">Noc No</label><span class="text-red"> *</span>
+                                        <input type="text" id="mdlSpaceCertificateNo" name="mdlSpaceCertificateNo" class="form-control" placeholder="Please select NOC" />
+                                        <input type="hidden" id="mdlSpaceCertificateID" name="mdlSpaceCertificateID" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 EffectiveToDate">
+                                    <br />
+                                    <button type="button" onclick="CopydateNOC()" class="btn btn-warning">Copy</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+
+        <div class="modal fade in" id="AddTariffHead" style="display: none; padding-right: 17px;">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title">Add TariffHead EffetiveDate</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="col-md-3 EffetiveDateFrom">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.txtEffetiveDateFrom, new { @for = "txtEffetiveDateFrom" }) @Html.ValidationMessageFor(Model => Model.txtEffetiveDateFrom, String.Empty, new { @id = "spn_txtEffetiveDateFrom", @class = "help-inline text-red" })
+                                        @if (Model != null && !string.IsNullOrEmpty(Model.txtEffetiveDateFrom))
+                                        {
+                                            <div class="input-group">
+                                                @Html.TextBoxFor(Model => Model.txtEffetiveDateFrom, new { @id = "txtEffetiveDateFrom", @name = "txtEffetiveDateFrom", @class = "form-control DatePicker", @placeholder = "Enter Effetive Date From", @onblur = "AddDate()" })
+                                                <span class="input-group-addon" onclick="getElementById('txtEffetiveDateFrom').focus()"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="input-group">
+                                                @Html.TextBoxFor(Model => Model.txtEffetiveDateFrom, new { @id = "txtEffetiveDateFrom", @name = "txtEffetiveDateFrom", @class = "form-control DatePicker", @placeholder = "Enter Effetive Date From", @onblur = "AddDate()" })
+                                                <span class="input-group-addon" onclick="getElementById('txtEffetiveDateFrom').focus()"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 EffectiveToDate">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.txtEffectiveToDate, new { @for = "txtEffectiveToDate" })@Html.ValidationMessageFor(Model => Model.txtEffectiveToDate, String.Empty, new { @id = "spn_txtEffectiveToDate", @class = "help-inline text-red" })
+                                        @if (Model != null && !string.IsNullOrEmpty(Model.txtEffectiveToDate))
+                                        {
+                                            <div class="input-group">
+                                                @Html.TextBoxFor(Model => Model.txtEffectiveToDate, new { @id = "txtEffectiveToDate", @name = "txtEffectiveToDate", @class = "form-control DatePicker", @placeholder = "Enter Effective To Date", @onblur = "AddDate()" })
+                                                <span class="input-group-addon" onclick="getElementById('txtEffectiveToDate').focus()"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="input-group">
+                                                @Html.TextBoxFor(Model => Model.txtEffectiveToDate, new { @id = "txtEffectiveToDate", @name = "txtEffectiveToDate", @class = "form-control DatePicker", @placeholder = "Enter Effective To Date", @onblur = "AddDate()" })
+                                                <span class="input-group-addon" onclick="getElementById('txtEffectiveToDate').focus()"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <br />
+                                    <div class="form-group">
+                                        <button type="button" onclick="AddNewTariffHead()" class="btn btn-warning">Add</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <table>
+                                    <tbody id="tblTariffEffectiveDate"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    }
+
+</section>
+<script>
+    var doaction = '@Model.doaction';
+
+    setTimeout(function () {
+        $("#headDetail").click();
+    }, 100);
+
+    function EnabledDisaleComodity(delmode, recID)
+    {        
+        if ($("#" + delmode + recID).val().toUpperCase() == "LOADED")
+        {
+            $("#BillCommodity" + recID).val("ALL");
+            $("#BillCommodity" + recID).attr("readonly", true);
+            $("#BillCommodity" + recID).css("background", "#eee");
+
+        }
+        else
+        {
+             
+            $("#BillCommodity" + recID).attr("readonly", false);
+            $("#BillCommodity" + recID).css("background", "#FFF");
+        }
+        
+    }
+</script>
+
+@{
+
+    System.Web.HtmlString HtmlDeatails = new HtmlString(StrAutocomplete.ToString());
+}
+@HtmlDeatails
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrGeneralTariff.js")"></script>
+<style>
+    .ui-menu-item {
+        font-size: 12px !important;
+    }
+</style>
+
+
+

@@ -1,0 +1,192 @@
+﻿@model CFS.Models.trnContainerSSR
+@{
+    ViewBag.Title = "View Container SSR";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-left">
+                        <div style="display: inline-flex">
+                            <span class="badge bg-light-blue" style="font-size:15px;">SSR WO No: @Model.SSRPrefix@Model.SSRWONo</span>
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <a href="@Url.Action("Index","trnContainerSSR", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12">
+                        <div class="box-body">                            
+                            <div class="col-md-4 isDisplayOnlyinEdit">
+
+                                @Html.LabelFor(Model => Model.SSRNo) : <span style="margin-right:50px">@Model.SSRNo</span>
+
+                            </div>                            
+                            <div class="col-md-4 isDisplayOnlyinEdit">
+
+                                @Html.LabelFor(Model => Model.Cycle) <span style="margin-right:50px">@Model.Cycle</span>
+
+                            </div>
+                            <div class="col-md-4 isDisplayOnlyinEdit">
+
+                                @Html.LabelFor(Model => Model.InBOENo) <span style="margin-right:50px">@Model.InBOENo</span>
+
+                            </div>                              <div class="col-md-4 isDisplayOnlyinEdit">
+                                @Html.LabelFor(Model => Model.trnDocumentNo) : <span style="margin-right:50px">@Model.trnDocumentNo</span>
+                            </div>
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.DOCDate) : <span id="CycleName">@Model.DOCDate</span>
+
+                            </div>                           
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.Remarks, new { @for = "CHAName" }) : <span>@Model.Remarks</span>
+
+                            </div>
+
+                            <div class="col-md-12">
+                                <hr />
+                            </div>
+                            <div class="col-md-12" style="overflow:scroll">
+
+                                <table style="white-space: nowrap;" class="table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>IGM No</th>
+                                            <th>BOE No</th>
+                                            <th>BOE Date</th>
+                                            <th>BL No</th>
+                                            <th>BL Date</th>
+                                            <th>Cargo Desc</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.LotNoDatatable != null && Model.LotNoDatatable.Rows.Count > 0)
+                                        {
+                                            for (int i = 0; i < Model.LotNoDatatable.Rows.Count; i++)
+                                            {
+                                                string ischeck = "";
+                                                if (Model != null && Model.CheckDocumentID != null && Model.CheckDocumentID.Contains(Convert.ToString(Model.LotNoDatatable.Rows[i]["trnDocumentLotDetailsID"]) + "|"))
+                                                {
+                                                    ischeck = "checked = 'true'";
+                                                }
+                                        <tr>
+                                            <td><input type="checkbox" id="ChkLotDetails_@Model.LotNoDatatable.Rows[i]["trnDocumentLotDetailsID"]" @ischeck name="ChkLotDetails" value="@Model.LotNoDatatable.Rows[i]["trnDocumentLotDetailsID"]" disabled></td>
+                                            <td style="display:none;"><span id="LOTNO_@Model.LotNoDatatable.Rows[i]["trnDocumentLotDetailsID"]">@Model.LotNoDatatable.Rows[i]["LOTNO"].ToString()</span></td>
+                                            <td><span id="IGMNo_@Model.LotNoDatatable.Rows[i]["trnDocumentLotDetailsID"]">@Model.LotNoDatatable.Rows[i]["IGMNo"].ToString()</span></td>
+                                            <td><span id="BOENo_@Model.LotNoDatatable.Rows[i]["trnDocumentLotDetailsID"]">@Model.LotNoDatatable.Rows[i]["BOENo"]</span></td>
+                                            @if (!string.IsNullOrEmpty(Model.LotNoDatatable.Rows[i]["BOEDate"].ToString()))
+                                            {
+                                                <td><span id="BOEDate_@Model.LotNoDatatable.Rows[i]["trnDocumentLotDetailsID"]">@Convert.ToDateTime(Model.LotNoDatatable.Rows[i]["BOEDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat)</span></td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+
+                                            <td><span id="BLNo_@Model.LotNoDatatable.Rows[i]["trnDocumentLotDetailsID"]">@Model.LotNoDatatable.Rows[i]["BLNo"]</span></td>
+
+                                            @if (!string.IsNullOrEmpty(Model.LotNoDatatable.Rows[i]["BLDate"].ToString()))
+                                            {
+                                                <td><span id="BLDate_@Model.LotNoDatatable.Rows[i]["trnDocumentLotDetailsID"]">@Convert.ToDateTime(Model.LotNoDatatable.Rows[i]["BLDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat)</span></td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+                                            <td><span id="CARGODESC_@Model.LotNoDatatable.Rows[i]["trnDocumentLotDetailsID"]">@Model.LotNoDatatable.Rows[i]["CARGODESC"]</span></td>
+                                        </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-12">
+                                <hr />
+                            </div>
+                            @*<div class="col-md-3">
+                                @Html.LabelFor(Model => Model.CHA) : <span> @Model.CHA</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.Forwarder, new { @for = "Forwarder" })  : <span>@Model.Forwarder</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.ImporterExporter, new { @for = "ImporterExporter" })  : <span>@Model.ImporterExporter</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.Consoler) : <span>@Model.Consoler</span>
+                            </div>*@
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.InvoiceNo, new { @for = "InvoiceNo" }) : <span>@Model.InvoiceNo</span>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.InvoiceDate, new { @for = "InvoiceDate" }) : <span>@Model.InvoiceDate</span>
+                            </div>
+
+                            <div class="col-md-12">
+                                <hr />
+                            </div>
+                        </div>
+                    </div>
+                    <table id="SSRdetail" style="width:100%" class="table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Cont No</th>
+                                <th>Size</th>
+                                <th>Type</th>
+                                <th>Cargo Type</th>
+                                <th>SSR Billable Head</th>
+                                <th>Quantity</th>
+                                <th>Rate</th>
+                                <th>Additional Rate</th>
+                                <th>Total Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.MySubDatatable != null && Model.MySubDatatable.Rows.Count > 0)
+                            {
+                                for (int i = 0; i < Model.MySubDatatable.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td style="display:none"><span id="trnContainerSSRDetailsID_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]</span></td>
+                                        <td><span id="ContNo_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["ContNo"].ToString()</span></td>
+                                        <td><span id="Size_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["Size"]</span></td>
+                                        <td><span id="Type_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["Type"]</span></td>
+                                        <td><span id="CargoType_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["CargoType"]</span></td>
+                                        <td><span id="SSRBillableHead_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["SSRBillableHead"]</span></td>
+                                        <td><span id="Quantity_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["Quantity"]</span></td>
+                                        <td><span id="Rate_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["Rate"]</span></td>
+                                        <td><span id="AdditionalRate_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["AdditionalRate"]</span></td>
+                                        <td><span id="TotalAmount_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@Model.MySubDatatable.Rows[i]["TotalAmount"]</span></td>
+                                        <td><span id="Status_@Model.MySubDatatable.Rows[i]["trnContainerSSRDetailsID"]">@(!Convert.ToBoolean(Model.MySubDatatable.Rows[i]["flagdeleted"]) ? "Active" : "Cancelled")</span></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnContainerSSR.js")"></script>

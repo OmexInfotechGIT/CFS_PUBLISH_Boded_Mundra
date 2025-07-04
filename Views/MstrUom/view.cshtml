@@ -1,0 +1,67 @@
+﻿@model CFS.Models.MstrUom
+@{
+    ViewBag.Title = "View UOM Master";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrUom","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrUom", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div class="col-md-6">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>Uom Code: </label> <span>@Model.UomCode</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Uom Name: </label> <span>@Model.UomName</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Status: </label> <span>@(Model.IsActive == true ? "Active" : "InActive")</span>
+                            </div>
+                            @if (!Model.IsActive)
+                            {
+                                <div class="form-group">
+                                    <label>Inactivate Reason: </label> <span>@Model.InActiveReason</span>
+                                </div>
+                            }
+                            <div class="form-group">
+                                <label>IsOther: </label> <span>@(Model.IsOther == true ? "Yes" : "No")</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>Length (ft): </label> <span>@Model.Length</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Width (ft): </label> <span>@Model.Width</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Height (ft): </label> <span>@Model.Height</span>
+                            </div>
+                            <div class="form-group">
+                                <label>CFT: </label> <span>@Model.CFT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

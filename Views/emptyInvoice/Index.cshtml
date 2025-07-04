@@ -1,0 +1,126 @@
+﻿@model CFS.Models.emptyInvoice
+@{
+    ViewBag.Title = "Empty Container Invoice";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a href="@Url.Action("Action", "emptyInvoice", new { doaction = "add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Container Gate In"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+
+
+                    <div style="overflow-x:scroll">
+                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "emptyInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.EmptyInvoiceNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.emptyinvoiceno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.emptyinvoiceno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Empty Invoice No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "emptyInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "EmptyInvoiceDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "emptyinvoicedate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "emptyinvoicedate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Empty Invoice Date</a>
+                                    </th>                                    
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "emptyInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.NOCNO", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.nocno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.nocno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> NOC NO</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "emptyInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.BillingParty", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.billingparty" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.billingparty" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Billing Party</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "emptyInvoice", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.PaymentMode", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.paymentmode" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.paymentmode" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Payment Mode</a>
+                                    </th>
+                                    <th class="freezeLastColumn">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @if (Model.MyDatatable != null && Model.MyDatatable.Rows.Count > 0)
+                                {
+                                    for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                    {
+                                        bool IsExpired = false;
+                                        if (Model.MyDatatable.Rows[i]["CreatedDate"] != null && Model.MyDatatable.Rows[i]["CreatedDate"].ToString() != "")
+                                        {
+                                            DateTime CurrentDate = DateTime.Now;
+                                            DateTime IsInvoiceExpired = Convert.ToDateTime(Model.MyDatatable.Rows[i]["CreatedDate"]);
+                                            if (CurrentDate > IsInvoiceExpired)
+                                            {
+                                                IsExpired = true;
+                                            }
+                                            else
+                                            {
+                                                IsExpired = false;
+                                            }
+                                        }
+                                        <tr>
+                                            <td>@Model.MyDatatable.Rows[i]["EmptyInvoiceNo"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["EmptyInvoiceDate"]</td>                                           
+                                            <td>@Model.MyDatatable.Rows[i]["NOCNO"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["BillingParty"]</td>
+                                            <td>@Model.MyDatatable.Rows[i]["PaymentMode"]</td>
+                                            <td class="freezeLastColumnwithWhite">
+                                                @if (!(Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"])) && ViewBag.gblBlnApprove && Convert.ToInt32(Model.MyDatatable.Rows[i]["IsFinished"]) == 1)
+                                                {
+                                                    <a href="@Url.Action("Confirmation", "emptyInvoice", new { id = Model.MyDatatable.Rows[i]["EmptyInvoiceID"], ContStatus=Model.MyDatatable.Rows[i]["ContainerStatus"] })"><i title="Click to Approve" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i></a>
+                                                }
+                                                else if (ViewBag.gblBlnUnapprove && Convert.ToInt32(Model.MyDatatable.Rows[i]["IsFinished"]) == 1 && Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]) && @IsExpired != true)
+                                                {
+                                                    <a href="@Url.Action("Confirmation", "emptyInvoice", new { id = Model.MyDatatable.Rows[i]["EmptyInvoiceID"], ContStatus=Model.MyDatatable.Rows[i]["ContainerStatus"] })"><i title="Click to Unapprove" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-down"></i></a>
+                                                }
+                                                @if (ViewBag.gblBlnView)
+                                                {
+                                                    <a href="@Url.Action("view", "emptyInvoice", new { id = Model.MyDatatable.Rows[i]["EmptyInvoiceID"], ContStatus=Model.MyDatatable.Rows[i]["ContainerStatus"]})"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                                }
+                                                <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('MstrBank','@Model.MyDatatable.Rows[i]["EmptyInvoiceID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+
+                                                <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", "emptyInvoice", new { id = Model.MyDatatable.Rows[i]["EmptyInvoiceID"], format = "pdf" ,@IsSearch = true , @NOCID=Convert.ToInt32(Model.MyDatatable.Rows[i]["NOCID"]), ContStatus=Model.MyDatatable.Rows[i]["ContainerStatus"]  })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+
+                                                @if (ViewBag.gblBlnDelete && !(Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"])))
+                                                {
+                                                    <a href="@Url.Action("delete", "emptyInvoice", new { id = Model.MyDatatable.Rows[i]["EmptyInvoiceID"] })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    @Html.Partial("_pagination")
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/emptyInvoice.js")"></script>

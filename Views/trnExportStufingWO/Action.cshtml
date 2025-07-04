@@ -1,0 +1,453 @@
+﻿@model CFS.Models.trnExportStufingWO
+
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    bool IsEdit = false;
+    if (Model.doaction == "edit")
+    {
+        IsEdit = true;
+        ViewBag.Title = "Update Export Stufing WorkOrder";
+        if (!ViewBag.gblBlnEdit && !ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add new Export Stufing WorkOrder";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            @using (Html.BeginForm("Action", "trnExportStufingWO", FormMethod.Post))
+            {
+                <div class="box">
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="box-body">
+                                    @if (IsEdit == true)
+                                    {
+                                        <div class="pull-left">
+                                            <div style="display: inline-flex">
+                                                <h4>
+                                                    <b>
+                                                        <span class="badge bg-light-blue" style="font-size:15px;">Stuffing WO No:@Model.trnExportStufingWONo</span>
+                                                        <span class="badge bg-light-blue" style="font-size:15px;">Stuffing WO Date:@Model.CreatedDate</span>
+                                                        <span class="badge bg-light-blue" style="font-size:15px;">User :@Model.UserName</span>
+                                                    </b>
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <div class="pull-right">
+                                        <div style="display: inline-flex">
+                                            <a href="@Url.Action("Index","trnExportStufingWO", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <br />
+                                    @Html.HiddenFor(Model => Model.trnExportStuffingWOID, new { @id = "trnExportStuffingWOID" })
+                                    @Html.HiddenFor(Model => Model.doaction)
+                                    @Html.HiddenFor(Model => Model.page)
+                                    @Html.HiddenFor(Model => Model.filter)
+                                    @Html.HiddenFor(Model => Model.IsFinished, new { @id = "IsFinished", @name = "IsFinished" })
+                                    @Html.HiddenFor(Model => Model.trnExportStufingWONo, new { @id = "trnExportStufingWONo", @name = "trnExportStufingWONo" })
+                                    @Html.HiddenFor(Model => Model.trnExportStuffingWOGWNewNo, new { @id = "trnExportStuffingWOGWNewNo", @name = "trnExportStuffingWOGWNewNo" })
+                                    @Html.HiddenFor(Model => Model.trnExportStuffingWOGWPrefix, new { @id = "trnExportStuffingWOGWPrefix", @name = "trnExportStuffingWOGWPrefix" })
+                                    <input type="hidden" id="hdntrnExportStuffingWOID" name="hdntrnExportStuffingWOID" value="@Model.trnExportStuffingWOID" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Agent, new { @for = "Agent" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.hdnAgentID, String.Empty, new { @id = "spn_hdnAgentID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.Agent, new { @id = "Agent", @name = "Agent", @class = "form-control", @placeholder = "Enter Agent" })
+                                @Html.HiddenFor(Model => Model.hdnAgentID, new { @id = "hdnAgentID", @name = "hdnAgentID" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Line, new { @for = "Line" })<span class="text-red">*</span>
+                                @Html.ValidationMessageFor(Model => Model.hdnLineID, String.Empty, new { @id = "spn_hdnLineID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.Line, new { @id = "Line", @name = "Line", @class = "form-control", @placeholder = "Enter Line" })
+                                @Html.HiddenFor(Model => Model.hdnLineID, new { @id = "hdnLineID", @name = "hdnLineID" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Consoler, new { @for = "Consoler" })
+                                @Html.ValidationMessageFor(Model => Model.hdnConsolerID, String.Empty, new { @id = "spn_hdnConsolerID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.Consoler, new { @id = "Consoler", @name = "Consoler", @class = "form-control", @placeholder = "Enter Consoler" })
+                                @Html.HiddenFor(Model => Model.hdnConsolerID, new { @id = "hdnConsolerID", @name = "hdnConsolerID" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.VcnNo, new { @for = "VcnNo" })
+                                @Html.TextBoxFor(Model => Model.VcnNo, new { @id = "VcnNo", @name = "VcnNo", @class = "form-control", @placeholder = "Enter VcnNo" })
+                                @Html.HiddenFor(Model => Model.hdnVcnNo, new { @id = "hdnVcnNo", @name = "hdnVcnNo" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.VoyNo, new { @for = "VoyNo" })
+                                @Html.TextBoxFor(Model => Model.VoyNo, new { @id = "VoyNo", @name = "VoyNo", @class = "form-control", @readonly = "readonly", @placeholder = "VOY No" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Veseelnm, new { @for = "Veseelnm" })
+                                @Html.TextBoxFor(Model => Model.Veseelnm, new { @id = "Veseelnm", @name = "Veseelnm", @class = "form-control", @readonly = "readonly", @placeholder = "Veseel Name" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.CoffD, new { @for = "CoffD" })
+                                @Html.TextBoxFor(Model => Model.CoffD, new { @id = "CoffD", @name = "CoffD", @class = "form-control", @readonly = "readonly", @placeholder = "Cut Off Date" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Contractor, new { @for = "Contractor" })<span class="text-red">*</span>
+                                @Html.ValidationMessageFor(Model => Model.hdnContractorID, String.Empty, new { @id = "spn_hdnContractorID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.Contractor, new { @id = "Contractor", @name = "Contractor", @class = "form-control", @placeholder = "Enter Contractor" })
+                                @Html.HiddenFor(Model => Model.hdnContractorID, new { @id = "hdnContractorID", @name = "hdnContractorID" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Surveyor, new { @for = "Surveyor" })<span class="text-red">*</span>
+                                @Html.ValidationMessageFor(Model => Model.hdnSurveyorID, String.Empty, new { @id = "spn_hdnSurveyorID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.Surveyor, new { @id = "Surveyor", @name = "Surveyor", @class = "form-control", @placeholder = "Surveyor" })
+                                @Html.HiddenFor(Model => Model.hdnSurveyorID, new { @id = "hdnSurveyorID", @name = "hdnSurveyorID" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" })
+                                @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control", @placeholder = "Enter Remark" })
+                            </div>
+                        </div>
+                        @if (Model.doaction != "edit")
+                        {
+                            <div class="pull-right">
+                                <div class="form-group">
+                                    <br />
+                                    <button type="submit" class="btn btn-primary" id="SaveDoc" name="submit" value="Submit" onclick="return ExportStuffingValidation()">Continue</button>
+                                    <a href="@Url.Action("index", "trnExportStufingWO")" class="btn btn-danger">Cancel</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                @Html.HiddenFor(Model => Model.trnExportStuffingSBDetail.IsBulk, new { @id = "IsBulk" })
+                if (IsEdit)
+                {
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h4><b>SB Details</b></h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="col-lg-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExportStuffingSBDetail.BOENo, new { @for = "BOENo" })<span class="text-red">*</span>
+                                    @Html.TextBoxFor(Model => Model.trnExportStuffingSBDetail.BOENo, new { @id = "BOENo", @name = "BOENo", @class = "form-control", @placeholder = "Enter BOENo" })
+                                    @Html.HiddenFor(Model => Model.trnExportStuffingSBDetail.hdnBOENo, new { @id = "hdnBOENo", @name = "hdnBOENo" })
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExportStuffingSBDetail.BLNo, new { @for = "BLNo" })<span class="text-red">*</span>
+                                    @Html.TextBoxFor(Model => Model.trnExportStuffingSBDetail.BLNo, new { @id = "BLNo", @name = "BLNo", @class = "form-control", @placeholder = "Enter Invoice No." })
+                                    @Html.HiddenFor(Model => Model.trnExportStuffingSBDetail.hdnBLNo, new { @id = "hdnBLNo", @name = "hdnBLNo" })
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExportStuffingSBDetail.WoPkg, new { @for = "WoPkg" })<span class="text-red">*</span>
+                                    @Html.TextBoxFor(Model => Model.trnExportStuffingSBDetail.WoPkg, new { @id = "WoPkg", @name = "WoPkg", @class = "form-control", @placeholder = "Enter Wo packages", @onkeypress = "return isNumberWithTwoDecimal(event,'WoPkg')", @onblur = "return WeightCalculation('WoPkg','WoPieces','TotalDecPkg','TotalDecWt','WoWt')" })
+                                    @Html.HiddenFor(Model => Model.trnExportStuffingSBDetail.trnExportStufingWOSBDetailsID, new { @id = "trnExportStufingWOSBDetailsID", @name = "trnExportStufingWOSBDetailsID" })
+                                    @Html.HiddenFor(Model => Model.trnExportStuffingSBDetail.hdntotalpkgs, new { @id = "hdntotalpkgs", @name = "hdntotalpkgs" })
+                                    @Html.HiddenFor(Model => Model.trnExportStuffingSBDetail.hdnActualpkgs, new { @id = "hdnActualpkgs", @name = "hdnActualpkgs" })
+                                    <span class="QTYLABEL" style="font-size:12px;" id="totalpkg"></span> @Html.ValidationMessageFor(Model => Model.trnExportStuffingSBDetail.WoPkg, String.Empty, new { @id = "spn_WoPkg", @class = "help-inline text-red" })
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExportStuffingSBDetail.WoPieces, new { @for = "WoPieces" })<span class="text-red">*</span>
+                                    @Html.TextBoxFor(Model => Model.trnExportStuffingSBDetail.WoPieces, new { @id = "WoPieces", @name = "WoPieces", @class = "form-control", @placeholder = "Enter Wo Pieces", @onkeypress = "return isNumberWithTwoDecimal(event,'WoPieces')" })
+                                    @Html.HiddenFor(Model => Model.trnExportStuffingSBDetail.hdntotalPiece, new { @id = "hdntotalPiece", @name = "hdntotalPiece" })
+                                    @Html.HiddenFor(Model => Model.trnExportStuffingSBDetail.hdnActualPiece, new { @id = "hdnActualPiece", @name = "hdnActualPiece" })
+                                    <span class="QTYLABEL" style="font-size:12px;" id="totalPiece"></span>  @Html.ValidationMessageFor(Model => Model.trnExportStuffingSBDetail.WoPieces, String.Empty, new { @id = "spn_WoPieces", @class = "help-inline text-red" })
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExportStuffingSBDetail.WoWt, new { @for = "WoWt" })<span class="text-red">*</span>
+                                    @Html.TextBoxFor(Model => Model.trnExportStuffingSBDetail.WoWt, new { @id = "WoWt", @name = "WoWt", @class = "form-control", @placeholder = "Enter Wo Weight", @onkeypress = "return isNumberWithTwoDecimal(event,'WoWt')" })
+                                    @Html.HiddenFor(Model => Model.trnExportStuffingSBDetail.hdntotalWeight, new { @id = "hdntotalWeight", @name = "hdntotalWeight" })
+                                    @Html.HiddenFor(Model => Model.trnExportStuffingSBDetail.hdnActualWeight, new { @id = "hdnActualWeight", @name = "hdnActualWeight" })
+                                    <span class="QTYLABEL" style="font-size:12px;" id="totalWeight"></span> @Html.ValidationMessageFor(Model => Model.trnExportStuffingSBDetail.WoWt, String.Empty, new { @id = "spn_WoWt", @class = "help-inline text-red" })
+                                </div>
+                            </div>
+                            <div class="col-lg-1">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExportStuffingSBDetail.FOB, new { @for = "FOB" })
+                                    @Html.TextBoxFor(Model => Model.trnExportStuffingSBDetail.FOB, new { @id = "FOB", @name = "FOB", @class = "form-control", @placeholder = "Enter FOB" ,@Readonly=true})
+                                </div>
+                            </div>
+                            <div class="col-lg-1">
+                                @Html.LabelFor(Model => Model.trnExportStuffingSBDetail.POD, new { @for = "POD" })
+                                @Html.TextBoxFor(Model => Model.trnExportStuffingSBDetail.POD, new { @id = "POD", @name = "POD", @class = "form-control", @placeholder = "Enter POD" })
+                            </div>
+                            <div id="lblSBDeatil" class="hide">
+                                <div class="col-md-3">
+                                    <label>SB Date : </label><span id="BOEDate"></span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Bulk/Non-Bulk :</label><span id="Bulk"></span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>CHA/Customer : </label><span id="Customer"></span>
+                                    <input type="hidden" id="hdnCustomerID" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Forwarder :</label><span id="Forwarder"></span>
+                                    <input type="hidden" id="hdnForwarderID" />
+
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Exporter : </label><span id="Exporter"></span>
+                                    <input type="hidden" id="hdnExporter" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Cargo :</label><span id="Cargo"></span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Cargo Type : </label><span id="Cargotype"></span>
+                                    <input type="hidden" id="hdnCargotype" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Bill Commodity :</label><span id="BillCommodity"></span>
+                                    <input type="hidden" id="hdnBillCommodity" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Class :</label><span id="Class"></span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>UN : </label><span id="UN"></span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Temp : </label><span id="Temp"></span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Declared Packages : </label><span id="DecPkg"></span>
+                                    <input type="hidden" id="TotalDecPkg" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Declared Pieces : </label><span id="DecPieces"></span>
+                                    <input type="hidden" id="TotalDecPieces" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Declared Weight : </label><span id="DecWt"></span>
+                                    <input type="hidden" id="TotalDecWt" />
+                                </div>
+                            </div>
+                            <div class="pull-right">
+                                <div class="form-group">
+                                    <br />
+                                    <button type="button" class="btn btn-primary" id="SaveSBD" name="submit" value="Submit" onclick="return BOENoValidition()">ADD</button>
+                                    <button type="button" class="btn btn-default" id="SaveDocs" onclick="ClearSBData()">Cancel</button>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 form-group table-responsive">
+                                <table id="example1" class="table table-bordered table-hover" width="275%" style="white-space:nowrap;">
+                                    <thead>
+                                        <tr>
+                                            <th>SB No</th>
+                                            <th>SB Date</th>
+                                            <th>INV No</th>
+                                            <th>INV Date</th>
+                                            <th>Bulk/Non-Bulk</th>
+                                            <th>CHA/Customer</th>
+                                            <th>Forwarder</th>
+                                            <th>Exporter</th>
+                                            <th>Cargo</th>
+                                            <th>FOB</th>
+                                            <th>Cargo Type</th>
+                                            <th>Bill Commodity</th>
+                                            <th>POD</th>
+                                            <th>Class</th>
+                                            <th>UN</th>
+                                            <th>Temp</th>
+                                            <th>Declared Packages</th>
+                                            <th>Declared Pieces</th>
+                                            <th>Declared Weight</th>
+                                            <th>WO Packages</th>
+                                            <th>WO Pieces</th>
+                                            <th>WO Weight</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblSBDetails"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box" id="divContainer">
+                        <div class="box-header with-border">
+                            <h4>Container Details</h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExportStuffingContDetails.ContainerNo, new { @for = "ContainerNo" })
+                                    @Html.TextBoxFor(Model => Model.trnExportStuffingContDetails.ContainerNo, new { @id = "ContainerNo", @name = "ContainerNo", @class = "form-control", @placeholder = "Select Container" })
+                                    @Html.HiddenFor(Model => Model.trnExportStuffingContDetails.hdnContainerID, new { @id = "hdnContainerID", @name = "hdnContainerID" })
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExportStuffingContDetails.Size, new { @for = "Size" })
+                                    @Html.TextBoxFor(Model => Model.trnExportStuffingContDetails.Size, new { @id = "Size", @name = "Size", @class = "form-control", @placeholder = "Enter Size", @readonly = "readonly" })
+                                    @Html.HiddenFor(Model => Model.trnExportStuffingContDetails.trnExportStufingWOContainerDetailsID, new { @id = "trnExportStufingWOContainerDetailsID", @name = "trnExportStufingWOContainerDetailsID" })
+
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExportStuffingContDetails.Type, new { @for = "Type" })
+                                    @Html.TextBoxFor(Model => Model.trnExportStuffingContDetails.Type, new { @id = "Type", @name = "Type", @class = "form-control", @placeholder = "Enter Type", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExportStuffingContDetails.StuffModeForContainer, new { @for = "StuffModeForContainer" }) <span class="text-red">*</span>
+                                    @Html.DropDownListFor(Model => Model.trnExportStuffingContDetails.StuffModeForContainer, Model.trnExportStuffingContDetails.SelectDDLStuffModeForContainer, new { @id = "StuffModeForContainer", @name = "StuffModeForContainer", @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExportStuffingContDetails.ContWOPakg, new { @for = "ContWOPakg" })<span class="text-red">*</span>
+                                    @Html.TextBoxFor(Model => Model.trnExportStuffingContDetails.ContWOPakg, new { @id = "ContWOPakg", @name = "ContWOPakg", @class = "form-control", @placeholder = "Enter Packages", @onkeypress = "return isNumberWithTwoDecimal(event,'ContWOPakg')", @onblur = "return WeightCalculation('ContWOPakg','ContWOPieces','totalBalSBPack','totalBalSBWt','ContWOWt')" })
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExportStuffingContDetails.ContWOPieces, new { @for = "ContWOPieces" })<span class="text-red">*</span>
+                                    @Html.TextBoxFor(Model => Model.trnExportStuffingContDetails.ContWOPieces, new { @id = "ContWOPieces", @name = "ContWOPieces", @class = "form-control", @placeholder = "Enter Pieces", @onkeypress = "return isNumberWithTwoDecimal(event,'ContWOPieces')" })
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExportStuffingContDetails.ContWOWt, new { @for = "ContWOWt" })<span class="text-red">*</span>
+                                    @Html.TextBoxFor(Model => Model.trnExportStuffingContDetails.ContWOWt, new { @id = "ContWOWt", @name = "ContWOWt", @class = "form-control", @placeholder = "Enter Weight", @onkeypress = "return isNumberWithTwoDecimal(event,'ContWOWt')" })
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.trnExportStuffingContDetails.CLPStatus, new { @for = "CLPStatus" })
+                                    @Html.TextBoxFor(Model => Model.trnExportStuffingContDetails.CLPStatus, new { @id = "CLPStatus", @name = "CLPStatus", @class = "form-control", @readonly = true })
+                                </div>
+                            </div>
+                            <div class="pull-right">
+                                <div class="form-group">
+                                    <br />
+                                    <button type="button" class="btn btn-primary" id="SaveCont" name="submit" value="Submit" onclick="return ContainerValidation()">ADD</button>
+                                    <button type="button" class="btn btn-default" id="SaveCont" onclick="ClearContainerData()">Cancel</button>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 table-responsive">
+                                <table class="table table-bordered table-hover" id="example2">
+                                    <thead>
+                                        <tr>
+                                            <th>Container No</th>
+                                            <th>Size </th>
+                                            <th>Type</th>
+                                            <th>Stuffing Mode</th>
+                                            <th>Wo Packages</th>
+                                            <th>Wo Pieces</th>
+                                            <th>Wo Weight</th>
+                                            <th>CLP Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblConatinerDetail"></tbody>
+                                    @Html.HiddenFor(Model => Model.trnExportStuffingContDetails.ActualNoOfPackageForContainer, new { @id = "ActualNoOfPackageForContainer", @name = "ActualNoOfPackageForContainer" })
+                                    @Html.HiddenFor(Model => Model.trnExportStuffingContDetails.ActualNoOfPiecesForContainer, new { @id = "ActualNoOfPiecesForContainer", @name = "ActualNoOfPiecesForContainer" })
+                                    @Html.HiddenFor(Model => Model.trnExportStuffingContDetails.ActualWeightForContainer, new { @id = "ActualWeightForContainer", @name = "ActualWeightForContainer" })
+                                </table>
+                            </div>
+                            <div class="pull-right">
+                                <div class="form-group">
+                                    <br />
+                                    <button type="submit" class="btn btn-primary" id="SaveDoc" name="submit" value="Submit" onclick="return ExportStuffingValidation()">Save</button>
+                                    <a href="@Url.Action("Index", "trnExportStufingWO", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+<script>
+    var IsEdit = '@ViewBag.IsEdit';
+    var IsSearch = '@Model.IsSearch';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnExportStufingWO.js")"></script>
+<div class="modal fade in" id="viewSBDetails" style="display: none; padding-right: 17px;">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">Lot Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row" style="padding:15px;" id="lotdetailnoc">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Okay</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<div class="modal fade in" id="viewContainerDetails" style="display: none; padding-right: 17px;">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">Container Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row" style="padding:15px;" id="lotdetailnoc">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Okay</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

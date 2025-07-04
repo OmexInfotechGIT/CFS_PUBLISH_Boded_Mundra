@@ -1,0 +1,144 @@
+﻿@model CFS.Models.Company
+@{
+    ViewBag.Title = "View Company Details";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-left">
+                        <div style="display: inline-flex">
+                            <span class="badge bg-light-blue" style="font-size:15px;">Location ID: @Model.LocationID</span>
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <a href="@CFS.Com.ClsCommon.GetUrlReferrer("Company","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    <div class="col-md-6">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>Company Name : </label> <span>@Model.CompanyName</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Company Address : </label> <span>@Model.CompanyAddress</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Registered Office Address : </label> <span>@Model.OfficeAddress</span>
+                            </div>
+                            <div class="form-group">
+                                <label>City : </label> <span>@Model.City</span>
+                            </div>
+                            <div class="form-group">
+                                <label>PIN Code : </label> <span>@Model.PinCode</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Country : </label> <span>@Model.CountryName</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Office Contact No : </label> <span>@Model.ContactNo</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Status: </label> <span>@(Model.IsActive == true ? "Active" : "InActive")</span>
+                            </div>
+                            @if (!Model.IsActive)
+                            {
+                                <div class="form-group">
+                                    <label>InActivate Reason: </label> <span>@Model.InActiveReason</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>Email ID : </label> <span>@Model.Email</span>
+                            </div>
+                            <div class="form-group">
+                                <label>GST No : </label> <span>@Model.GSTNo</span>
+                            </div>
+                            <div class="form-group">
+                                <label>PAN No : </label> <span>@Model.PANNo</span>
+                            </div>
+                            <div class="form-group">
+                                <label>CIN No : </label> <span>@Model.CINNo</span>
+                            </div>
+                            <div class="form-group">
+                                <label>FSSAI No : </label> <span>@Model.FSSAINo</span>
+                            </div>
+                            <div class="form-group">
+                                <label>TAN No : </label> <span>@Model.TANNo</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Website Link : </label> <span>@Model.Website</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Bond Code : </label> <span>@Model.BondCode</span>
+                            </div>
+                            @if (Model.CompanyLogo != null)
+                            {
+                                <div class="form-group">
+
+                                    <label>Company Logo : </label><a href="@CFS.Com.ClsCommon.GetRootPath()@Model.CompanyLogo" target="_blank">
+
+                                        <img src="@Model.CompanyLogo" width="100px" />
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-body">
+                    <table id="example2" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Bank Name</th>
+                                <th>IFSC Code</th>
+                                <th>A/c No.</th>
+                                <th>A/C Holder Name</th>
+                                <th>Account Type</th>
+                                <th>Default Billing</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Bank.MySubDatatable != null && Model.Bank.MySubDatatable.Rows.Count > 0)
+                            {
+                                for (int i = 0; i < Model.Bank.MySubDatatable.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td style="display:none"><span id="BankDetailsID_@Model.Bank.MySubDatatable.Rows[i]["MstrBankDetailsID"]">@Model.Bank.MySubDatatable.Rows[i]["MstrBankDetailsID"]</span></td>
+                                        <td style="display:none"><span id="BankID_@Model.Bank.MySubDatatable.Rows[i]["MstrBankDetailsID"]">@Model.Bank.MySubDatatable.Rows[i]["MstrBankID"]</span></td>
+                                        <td><span id="BankName_@Model.Bank.MySubDatatable.Rows[i]["MstrBankDetailsID"]">@Model.Bank.MySubDatatable.Rows[i]["BankName"]</span></td>
+                                        <td><span id="IFSCCode_@Model.Bank.MySubDatatable.Rows[i]["MstrBankDetailsID"]">@(Model.Bank.MySubDatatable.Rows[i]["IFSCCode"].ToString())</span></td>
+                                        <td><span id="AccountNo_@Model.Bank.MySubDatatable.Rows[i]["MstrBankDetailsID"]">@(Model.Bank.MySubDatatable.Rows[i]["AccountNo"].ToString())</span></td>
+                                        <td><span id="AccountName_@Model.Bank.MySubDatatable.Rows[i]["MstrBankDetailsID"]">@(Model.Bank.MySubDatatable.Rows[i]["AccountName"].ToString())</span></td>
+                                        <td><span id="AccountType_@Model.Bank.MySubDatatable.Rows[i]["MstrBankDetailsID"]">@(Model.Bank.MySubDatatable.Rows[i]["AccountType"].ToString())</span></td>
+                                        <td><span id="IsDefaultBilling_@Model.Bank.MySubDatatable.Rows[i]["MstrBankDetailsID"]">@(Model.Bank.MySubDatatable.Rows[i]["IsDefaultBilling"].ToString())</span></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

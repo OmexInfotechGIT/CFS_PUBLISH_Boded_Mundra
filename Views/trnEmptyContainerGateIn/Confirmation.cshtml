@@ -1,0 +1,194 @@
+﻿@model CFS.Models.trnEmptyContainerGateIn
+@{
+    ViewBag.Title = "Confirmation Empty Container Gate In";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    Model.IsView = true;
+    if (!ViewBag.gblBlnUnapprove && !ViewBag.gblBlnApprove)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            @using (Html.BeginForm("Action", "trnEmptyContainerGateIn", FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+            {
+                <div class="box">
+                    <div class="box-body">
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">Empty Container Gate In No : @Model.trnEmptyContainerGateInFullNo</span>
+                            </div>
+                        </div>
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                @if (ViewBag.gblBlnEdit && !Model.IsApproved)
+                                {
+                                    <a class="btn btn-primary" href="@Url.Action("Action", "trnEmptyContainerGateIn", new { id = Model.trnEmptyContainerGateInID, doaction = "edit", @IsSearch = true,@TransporterName = Model.TransporterName,@TransporterID =Model.TransporterID,@TrailerNo = Model.TrailerNo,@TrailerID = Model.TrailerID })"><i title="Click to Edit" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                }
+                                <a class="btn btn-block btn-primary" data-toggle="modal" data-target="#myModalConfirmation">
+                                    @if (!Model.IsApproved && ViewBag.gblBlnApprove)
+                                    {
+                                        <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                    }
+                                    else if (Model.IsApproved && ViewBag.gblBlnUnapprove)
+                                    {
+                                        <i title="Click to UnApprove" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-down"></i>
+                                    }
+                                </a>
+                                @if (Model.IsApproved)
+                                {
+                                    @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                    <a target="_blank" class="btn btn-primary" href="@Url.Action("GenerateAndDisplayReport", "trnEmptyContainerGateIn", new { id = Model.trnEmptyContainerGateInID, format = "pdf" })"><i title="Click to print" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                }
+                                @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                <a href="@Url.Action("Index","trnEmptyContainerGateIn", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+
+                        </div>
+                        @if (Model.IsSearch)
+                        {
+                            @Html.HiddenFor(Model => Model.pagger.Search)
+                            @Html.HiddenFor(Model => Model.doaction)
+                            @Html.HiddenFor(Model => Model.IsSearch)
+                            @Html.HiddenFor(Model => Model.IsView)
+                            <input type="hidden" id="EmptyContainerGateInTab" name="EmptyContainerGateInTab" value="@Model.EmptyContainerGateInTab" />
+                            <input type="hidden" id="IsChangeStep" name="IsChangeStep" value="0" />
+                            <input type="hidden" id="TruckNo" name="TruckNo" value="@Model.TrailerNo" />
+                            <input type="hidden" id="TruckID" name="TruckID" value="@Model.TrailerID" />
+                            <input type="hidden" id="TransporterName" name="TransporterName" value="@Model.TransporterName" />
+                            <input type="hidden" id="TransporterID" name="TransporterID" value="@Model.TransporterID" />
+                            @Html.HiddenFor(Model => Model.IsFinished, new { @id = "IsFinished", @name = "IsFinished" })
+                            @Html.HiddenFor(Model => Model.trnEmptyContainerGateInID, new { @id = "trnEmptyContainerGateInID", @name = "trnEmptyContainerGateInID" })
+                            @Html.HiddenFor(Model => Model.trnEmptyContainerGateInFullNo, new { @id = "trnEmptyContainerGateInFullNo", @name = "trnEmptyContainerGateInFullNo" })
+                            @Html.HiddenFor(Model => Model.trnEmptyContainerGateInPrefix, new { @id = "trnEmptyContainerGateInPrefix", @name = "trnEmptyContainerGateInPrefix" })
+                            @Html.HiddenFor(Model => Model.trnEmptyContainerGateInNo, new { @id = "trnEmptyContainerGateInNo", @name = "trnEmptyContainerGateInNo" })
+
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.TransporterName) : <span style="margin-right:50px">@Model.TransporterName</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.TrailerNo) : <span style="margin-right:50px">@Model.TrailerNo</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.TrailerType) : <span style="margin-right:50px">@Model.TrailerType</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.LICNo) : <span style="margin-right:50px">@Model.LICNo</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.Driver) : <span style="margin-right:50px">@Model.Driver</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.MobileNo) : <span style="margin-right:50px">@Model.MobileNo</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.Address) : <span style="margin-right:50px">@Model.Address</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.FRBundlingStatus) : <span style="margin-right:50px">@Model.FRBundlingStatus</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.SameTruckIsUsed) : <span style="margin-right:50px">@Model.SameTruckIsUsed</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.TruckWeighmentStatus) : <span style="margin-right:50px">@Model.TruckWeighmentStatus</span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.Remarks) : <span style="margin-right:50px">@Model.Remarks</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+                if (Model.IsSearch)
+                {
+                    if (Model != null && Model.doaction.ToLower() == "edit")
+                    {
+                        <div class="box">
+                            <div class="box-header with-border" data-widget="collapse">
+                                <h4><b>Container Details</b></h4>
+                            </div>
+                            <div class="box-body">
+                                <div class="col-md-12" style="overflow:scroll">
+                                    <div class="pull-right">
+                                        <div style="display: inline-flex">
+                                            <div class="input-group input-group-sm">
+                                                <input id="txtlotdetail" name="txtlotdetail" type="text" class="form-control" onkeyup="DataTableSeachEngine('txtlotdetail','lotdetail','btnlotdetail')" placeholder="Search for Common" value="">
+                                                <span class="input-group-btn">
+                                                    <button type="button" id="btnlotdetail" onclick="DataTableSeachEngine('txtlotdetail','lotdetail','btnlotdetail','yes')" class="btn btn-primary btn-flat">Search</button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <table id="lotdetail" style="white-space: nowrap;" class="table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Cont No.</th>
+                                                <th>ISO Code</th>
+                                                <th>WO ISO Code</th>
+                                                <th>WO Size</th>
+                                                <th>WO Type</th>
+                                                <th>Gross Weight</th>
+                                                <th>Container Tare Weight</th>
+                                                <th>Net Weight</th>
+                                                <th>Agent</th>
+                                                <th>Line</th>
+                                                <th>Condition</th>
+                                                <th>Condition Remarks</th>
+                                                <th>CHA</th>
+                                                <th>Forwarder</th>
+                                                <th>Exporter</th>
+                                                <th>Consoler</th>
+                                                <th>From Location</th>
+                                                <th>WO No</th>
+                                                <th>WO Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tblEmptyContainerGateInDetails"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                }
+            }
+        </div>
+    </div>
+
+</section>
+<script>
+    var IsSearch = '@Model.IsSearch.ToString().ToLower()';
+    var doaction = '@Model.doaction.ToString().ToLower()';
+    var IsAprroved = '@Model.IsApproved.ToString()';
+
+    function changestepValue(tabNo) {
+        $("#DocumentGWTab").val(tabNo);
+        if (tabNo != "1") {
+            if (tabNo == "5") {
+                $("#IsChangeStep").val(2);
+            }
+        }
+        //$("frmpost").submit();
+    }
+    function HideIfView() {
+        setTimeout(function () {
+            $(".HideIfView").hide();
+        }, 400);
+    }
+    setTimeout(function () {
+        $(".HideIfView").hide();
+    }, 500);
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnEmptyContainerGateIn.js")"></script>

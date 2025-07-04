@@ -1,0 +1,30 @@
+﻿@{
+    CFS.Models.ReportsModal ReportsModal = new CFS.Models.ReportsModal();
+    ViewBag.Title = "Export Loaded Container Balance Report";
+}
+@using (Html.BeginForm("ExportLoadedContainerBalanceReport", "Reports", FormMethod.Post))
+{
+    <div class="">
+        <div class="box">
+            <div class="box-body">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => ReportsModal.OnDate, new { @for = "OnDate" })
+                        <div class="input-group">
+                            @Html.TextBoxFor(Model => ReportsModal.OnDate, new { @id = "OnDate", @name = "OnDate", @class = "form-control DateTimePicker" })
+                            <span class="input-group-addon" onclick="getElementById('OnDate').focus()"><i class="fa fa-calendar"></i></span>
+                        </div>
+                    </div>
+                </div>
+                @Html.Partial("_ReportModalAgent")
+                @Html.Partial("_ReportModalLine")
+                @Html.Partial("_ReportsModalCHA")
+                @Html.Partial("_ReportsModalForwarder")
+                @Html.Partial("_ReportsModalExporter")
+                @Html.Partial("_ReportsModalSearchClearButton")
+            </div>
+        </div>
+    </div>
+}
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/ReportsModal.js")"></script>
+

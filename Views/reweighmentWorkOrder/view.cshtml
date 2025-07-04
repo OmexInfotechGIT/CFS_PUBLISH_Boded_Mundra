@@ -1,0 +1,256 @@
+﻿@model CFS.Models.reweighmentWorkOrder
+@using System.Globalization;
+@{
+    ViewBag.Title = "Re-Weighment Work Order";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            @using (Html.BeginForm("Action", CFS.Com.ClsCommon.Controller(), FormMethod.Post))
+            {
+                <div id="dvweighmentworkOrderDetails" class="box">
+                    @if (Model != null && Model.doaction == "view")
+                    {
+                        <div class="pull-left" style="margin-left: 1% !important;">
+                            <div style="display: inline-flex">
+                                <h4>
+                                    <b>
+                                        <span class="badge bg-light-blue" style="font-size:15px;">Work Order No : @Model.trnReWeighmentWorkOrderNo</span>
+                                        <span class="badge bg-light-blue" style="font-size:15px;">Datetime. : @Model.CreatedDate</span>
+                                        <span class="badge bg-light-blue" style="font-size:15px;">User. : @Model.CreatedUser</span>
+                                    </b>
+                                </h4>
+                            </div>
+                        </div>
+                    }
+                    <div class="box-header" style="padding-bottom: 0 !important;">
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                <a href="@Url.Action("Index",CFS.Com.ClsCommon.Controller(), new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box-body">
+                        <div id="dvAddReWeighmentDetails">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.HiddenFor(Model => Model.doaction)
+                                    @Html.LabelFor(Model => Model.WHVType, new { @for = "WHVType" }) <span class="text-red"> *</span> @Html.ValidationMessageFor(Model => Model.WHVType, String.Empty, new { @id = "spn_WHVType", @class = "help-inline text-red" })
+                                    @Html.DropDownListFor(Model => Model.WHVType, Model.WHVTypeList, new { @id = "WHVType", @name = "WHVType", @class = "form-control", @onchange = "MEWHVType()", @disabled = "disabled" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.WHVCategory, new { @for = "WHVCategory" }) <span class="text-red"> *</span> @Html.ValidationMessageFor(Model => Model.WHVCategory, String.Empty, new { @id = "spn_WHVCategory", @class = "help-inline text-red" })
+                                    @Html.DropDownListFor(Model => Model.WHVCategory, Model.WHVCategoryList, new { @id = "WHVCategory", @name = "WHVCategory", @class = "form-control", @onchange = "MEWHVCategory()", @disabled = "disabled" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.WHInvoiceMode, new { @for = "WHInvoiceMode" }) <span class="text-red"> *</span> @Html.ValidationMessageFor(Model => Model.WHInvoiceMode, String.Empty, new { @id = "spn_WHInvoiceMode", @class = "help-inline text-red" })
+                                    @Html.DropDownListFor(Model => Model.WHInvoiceMode, Model.WHInvoiceModeList, new { @id = "WHInvoiceMode", @name = "WHInvoiceMode", @class = "form-control", @onchange = "MEWHInvoiceMode()" })
+                                </div>
+                            </div>
+                            <div id="dvMANUALSSRNO" class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.MANUALSSRNO, new { @for = "MANUALSSRNO" }) <span class="text-red"> *</span> @Html.ValidationMessageFor(Model => Model.MANUALSSRNO, String.Empty, new { @id = "spn_MANUALSSRNO", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.MANUALSSRNO, new { @id = "MANUALSSRNO", @name = "MANUALSSRNO", @class = "form-control", @placeholder = "Enter Manual SSR No" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="dvContaineDetails" class="box-body" style="padding-top: 0 !important;">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.WHContNO, new { @for = "WHContNO" }) <span class="text-red">*</span>
+                                @Html.TextBoxFor(Model => Model.WHContNO, new { @id = "WHContNO", @name = "WHContNO", @class = "form-control", @placeholder = "Enter Container No" })
+                                @Html.HiddenFor(Model => Model.trnDocumentGWContID, new { @id = "trnDocumentGWContID", @name = "trnDocumentGWContID" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.WHCNSize, new { @for = "WHCNSize" }) <span class="text-red"> *</span> @Html.ValidationMessageFor(Model => Model.WHCNSize, String.Empty, new { @id = "spn_WHCNSize", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.WHCNSize, new { @id = "WHCNSize", @name = "WHCNSize", @class = "form-control", @placeholder = "Enter Size" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.WHCNType, new { @for = "WHCNType" }) <span class="text-red"> *</span> @Html.ValidationMessageFor(Model => Model.WHCNType, String.Empty, new { @id = "spn_WHCNType", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.WHCNType, new { @id = "WHCNType", @name = "WHCNType", @class = "form-control", @placeholder = "Enter Type" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.WHCARGOType, new { @for = "WHCARGOType" }) <span class="text-red"> *</span> @Html.ValidationMessageFor(Model => Model.WHCARGOType, String.Empty, new { @id = "spn_WHCARGOType", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.WHCARGOType, new { @id = "WHCARGOType", @name = "WHCARGOType", @class = "form-control", @placeholder = "Enter CARGO Type" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.WHCONTArrivalDate, new { @for = "WHCONTArrivalDate" })  @Html.ValidationMessageFor(Model => Model.WHCONTArrivalDate, String.Empty, new { @id = "spn_WHCONTArrivalDate", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.WHCONTArrivalDate, new { @id = "WHCONTArrivalDate", @name = "WHCONTArrivalDate", @class = "form-control DatePicker", @placeholder = "Select Arrival Date" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.WHCONTMode, new { @for = "WHCONTMode" }) <span class="text-red"> *</span> @Html.ValidationMessageFor(Model => Model.WHCONTMode, String.Empty, new { @id = "spn_WHCONTMode", @class = "help-inline text-red" })
+                                @Html.DropDownListFor(Model => Model.WHCONTMode, Model.WHCONTModeList, new { @id = "WHCONTMode", @name = "WHCONTMode", @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="dvTruckDetails" class="box-body" style="padding-top: 0 !important;">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.WHTruckNO, new { @for = "WHTruckNO" }) <span class="text-red">*</span>
+                                @Html.TextBoxFor(Model => Model.WHTruckNO, new { @id = "WHTruckNO", @name = "WHTruckNO", @class = "form-control", @placeholder = "Enter Container No", @disabled = "disabled" })
+                                @Html.HiddenFor(Model => Model.TruckID, new { @id = "TruckID", @name = "TruckID" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.WHTruckArrivalDate, new { @for = "WHTruckArrivalDate" })  @Html.ValidationMessageFor(Model => Model.WHTruckArrivalDate, String.Empty, new { @id = "spn_WHTruckArrivalDate", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.WHTruckArrivalDate, new { @id = "WHTruckArrivalDate", @name = "WHTruckArrivalDate", @class = "form-control DatePicker", @placeholder = "Select Arrival Date" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="dvInvoiceDetails" class="box-body">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.WHCASHInvoiceNO, new { @for = "WHCASHInvoiceNO" }) <span class="text-red"> *</span> @Html.ValidationMessageFor(Model => Model.WHCASHInvoiceNO, String.Empty, new { @id = "spn_WHCASHInvoiceNO", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.WHCASHInvoiceNO, new { @id = "WHCASHInvoiceNO", @name = "WHCASHInvoiceNO", @class = "form-control", @placeholder = "Enter Cash Invoice No" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.WHCASHInvoiceDate, new { @for = "WHCASHInvoiceDate" })  @Html.ValidationMessageFor(Model => Model.WHCASHInvoiceDate, String.Empty, new { @id = "spn_WHCASHInvoiceDate", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.WHCASHInvoiceDate, new { @id = "WHCASHInvoiceDate", @name = "WHCASHInvoiceDate", @class = "form-control DatePicker", @placeholder = "Select Cash Invoice Date" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.WHSlipNO, new { @for = "WHSlipNO" }) <span class="text-red"> *</span> @Html.ValidationMessageFor(Model => Model.WHSlipNO, String.Empty, new { @id = "spn_WHSlipNO", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.WHSlipNO, new { @id = "WHSlipNO", @name = "WHSlipNO", @class = "form-control", @placeholder = "Enter Weighment Slip No " })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.WHSlipDate, new { @for = "WHSlipDate" })  @Html.ValidationMessageFor(Model => Model.WHSlipDate, String.Empty, new { @id = "spn_WHSlipDate", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.WHSlipDate, new { @id = "WHSlipDate", @name = "WHSlipDate", @class = "form-control DatePicker", @placeholder = "Ente rWeighment Slip Date" })
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id="dvShowRemarks" class="box">
+                    <div class="box-body">
+                        <div id="dvAddReWeighmentDetails">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.WHRemarks, new { @for = "WHRemarks" }) <span class="text-red"> *</span> @Html.ValidationMessageFor(Model => Model.WHRemarks, String.Empty, new { @id = "spn_WHRemarks", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.WHRemarks, new { @id = "WHRemarks", @name = "WHRemarks", @class = "form-control", @placeholder = "Enter Remarks", @disabled = "disabled" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                if (Model.doaction == "edit" && CFS.Com.ClsCommon.NocDatatable.Rows.Count > 0)
+                {
+                    <div class="box">
+                        <div class="box-header with-border" data-widget="collapse">
+                            <h4><b>NOC Details </b></h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="col-md-12" style="overflow:scroll;">
+                                <table id="NOC-detail" style="width:100%" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Noc no</th>
+                                            <th>LOT NO</th>
+                                            <th>Shiiping Bill No./BOE No.</th>
+                                            <th>Shiping Bill Date/BOE Date</th>
+                                            <th>Invoice No.</th>
+                                            <th>Invoice Date</th>
+                                            <th>CHA/BROKER</th>
+                                            <th>IMPORTER/PARTY</th>
+                                            <th>BULK/NB STATUS</th>
+                                            <th>Cargo Desc</th>
+                                            <th>PACKAGE TYPE</th>
+                                            <th>NO OF PKGS</th>
+                                            <th>NO.OF PIECES</th>
+                                            <th>WEIGHT (KGS)</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < CFS.Com.ClsCommon.NocDatatable.Rows.Count; i++)
+                                        {
+                                            <tr>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["SpaceCertificateNo"]</td>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["LotNo"]</td>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["ShiipingBillNo"]</td>
+                                                @if (CFS.Com.ClsCommon.NocDatatable.Rows[i]["ShipingBillDate"] != null && CFS.Com.ClsCommon.NocDatatable.Rows[i]["ShipingBillDate"].ToString() != "")
+                                                {
+                                                    <td>@(Convert.ToDateTime(CFS.Com.ClsCommon.NocDatatable.Rows[i]["ShipingBillDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture))</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["InvoiceNumber"]</td>
+                                                @if (CFS.Com.ClsCommon.NocDatatable.Rows[i]["InvoiceDate"] != null && CFS.Com.ClsCommon.NocDatatable.Rows[i]["InvoiceDate"].ToString() != "")
+                                                {
+                                                    <td>@(Convert.ToDateTime(CFS.Com.ClsCommon.NocDatatable.Rows[i]["InvoiceDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture))</td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["CHAName"]</td>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["ImporterName"]</td>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["BULKSTATUS"]</td>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["CARGODESC"]</td>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["PACKAGETYPE"]</td>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["TotalNOOFPKGS"]</td>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["TotalNOOFPIECES"]</td>
+                                                <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["TotalWEIGHT"]</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/reweighmentWorkOrder.js")"></script>
+<script>
+    var IsEdit = "true";
+    var IsSearch = '@Model.IsSearch';
+    var doaction = '@Model.doaction';
+
+    setTimeout(function () {
+        $(".hideinViewMode").hide();
+    }, 500);
+</script>

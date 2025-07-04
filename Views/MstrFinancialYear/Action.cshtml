@@ -1,0 +1,132 @@
+﻿@model CFS.Models.MstrFinancialYear
+
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Financial Year";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Financial Year";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+
+
+
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (Model.doaction == "edit")
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">Financial Year Code: @Model.FinancialYearcode</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrFinancialYear","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrFinancialYear", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "MstrFinancialYear", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.MstrFinancialYearID)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.FinancialYearcode)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+                        <div class="col-md-2">
+
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.FinancialYearname, new { @for = "txtFinancialYearname" })<span class="text-red">*</span>
+                                @Html.TextBoxFor(Model => Model.FinancialYearname, new { @id = "txtFinancialYearname", @name = "txtFinancialYearname", @class = "form-control", @placeholder = "Enter Financial Year Name", @onkeypress = "return isNumberWithDash(event)" })
+                                @Html.ValidationMessageFor(Model => Model.FinancialYearname, String.Empty, new { @class = "help-inline text-red" })
+                                @Html.HiddenFor(Model => Model.RefID)
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.VoucherNo, new { @for = "txtVoucherNo" })<span class="text-red">*</span>
+                                @Html.TextBoxFor(Model => Model.VoucherNo, new { @id = "txtVoucherNo", @name = "txtVoucherNo", @class = "form-control", @placeholder = "Enter Voucher Number" })
+                                @Html.ValidationMessageFor(Model => Model.VoucherNo, String.Empty, new { @class = "help-inline text-red" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.FromDate, new { @for = "txtFromDate" })<span class="text-red">*</span>
+                            <div class="input-group">
+                                @Html.TextBoxFor(Model => Model.FromDate, new { @id = "txtFromDate", @name = "txtFromDate", @class = "form-control DatePicker", @placeholder = "Select From Date"})
+                                @Html.ValidationMessageFor(Model => Model.FromDate, String.Empty, new { @class = "help-inline text-red" })
+                                <span class="input-group-addon" onclick="getElementById('txtFromDate').focus()" ><i class="fa fa-calendar"></i></span>
+                            </div>
+                             
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.ToDate, new { @for = "txtToDate" })<span class="text-red">*</span>
+                            <div class="input-group">
+                                @Html.TextBoxFor(Model => Model.ToDate, new { @id = "txtToDate", @name = "txtToDate", @class = "form-control DatePicker", @placeholder = "Select To Date"})
+                                @Html.ValidationMessageFor(Model => Model.ToDate, String.Empty, new { @class = "help-inline text-red" })
+                                <span class="input-group-addon" onclick="getElementById('txtToDate').focus()"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <br />
+                                @Html.CheckBoxFor(Model => Model.IsActive, new { @class = "form-control" })
+                                @Html.Label("IsActive") @Html.ValidationMessageFor(Model => Model.IsActive, String.Empty, new { @class = "help-inline text-red" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group" id="dvInActiveReason">
+                                @Html.LabelFor(Model => Model.InActiveReason, new { @for = "InActiveReason" }) @Html.ValidationMessageFor(Model => Model.InActiveReason, String.Empty, new { @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.InActiveReason, new { @class = "form-control", @placeholder = "Enter Inactivate Reason" })
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="col-md-12">
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrFinancialYear","Index")" class="btn btn-danger">Cancel</a>*@
+                                <a href="@Url.Action("Index", "MstrFinancialYear", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrFinancialYear.js")"></script>

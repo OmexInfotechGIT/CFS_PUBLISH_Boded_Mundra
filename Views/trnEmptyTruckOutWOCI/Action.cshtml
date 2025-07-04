@@ -1,0 +1,10 @@
+﻿@model CFS.Models.trnEmptyTruckOutWO
+@if (Model.doaction == "edit")
+{
+    ViewBag.Title = "Update Empty Truck Out";
+}
+else
+{
+    ViewBag.Title = "Add new Empty Truck Out";
+}
+@Html.Partial("../trnEmptyTruckOutWO/action")

@@ -1,0 +1,105 @@
+﻿
+@{
+    Layout = null;
+	 
+}
+@model CFS.Models.Expiry
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>CFS | Expiry</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <!-- Bootstrap 3.3.7 -->
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/bower_components/bootstrap/dist/css/bootstrap.min.css")" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/bower_components/font-awesome/css/font-awesome.min.css")" />
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/bower_components/Ionicons/css/ionicons.min.css")" />
+    <!-- Theme style -->
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/dist/css/AdminLTE.min.css")" />
+    <!-- iCheck -->
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/plugins/iCheck/square/blue.css")" />
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/js/plugins/toastr/css/toastr.min.css")" />
+
+    <!-- Google Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+<body class="hold-transition lockscreen">
+    <!-- Automatic element centering -->
+    <div class="lockscreen-wrapper">
+        <div class="lockscreen-logo">
+            <a><b>License Expired</b></a>
+        </div>
+
+        <!-- START LOCK SCREEN ITEM -->
+        <div class="lockscreen-item" style="margin-left: unset !important;">
+            <!-- lockscreen image -->
+            @*<div class="lockscreen-image">
+                <img src="/Content/img/user.jpg" alt="User Image">
+            </div>*@
+            <!-- /.lockscreen-image -->
+            <!-- lockscreen credentials (contains the form) -->
+            @*@using (Html.BeginForm("Index", "Expiry", FormMethod.Post, new { @class= "lockscreen-credentials" }))
+            {
+            <div class="input-group" style="width: 400px;">
+                @Html.TextBoxFor(model => model.LicenseKey, new { @class = "form-control", @id = "txtLicenseKey", @name = "txtLicenseKey", placeholder = "License Key" })
+
+                <div class="input-group-btn">
+                    <button type="submit" style="height: 34px;" onclick="return Validate()" class="btn"><i class="fa fa-arrow-right text-muted"></i></button>
+                </div>
+            </div>
+            }*@
+                <!-- /.lockscreen credentials -->
+
+            </div>
+        <div class="lockscreen-footer text-center">
+            Sorry! Your software license has been expired. Please share the key [<b>@CFS.Com.ClsCommon.GetCPUID()|@CFS.Com.ClsCommon.GetRootPath()|@CFS.Com.ClsCommon.GetmacAddr()</b>] via email, SMS, or WhatsApp. You may send WhatsApp or SMS at +917048000044 and for email use <a href="mailto:info@omexinfotech.com?subject=License Expired For &body=Hi Omex Team, Please Renew License [@Model.CPUID]"> info@omexinfotech.com.
+        </div>
+    </div>
+    <!-- /.login-box -->
+    <!-- jQuery 3 -->
+    <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/bower_components/jquery/dist/jquery.min.js")"></script>
+
+    <!-- Bootstrap 3.3.7 -->
+    <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/bower_components/bootstrap/dist/js/bootstrap.min.js")"></script>
+
+    <!-- iCheck -->
+    <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/plugins/iCheck/icheck.min.js")"></script>
+    <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/js/plugins/toastr/js/toastr.min.js")"></script>
+    <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/js/plugins/toastr-init.js")"></script>
+    <script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/Common.js")"></script>
+
+    <script type="text/javascript">
+        var _MessageType = '@ViewBag.AlertMessageType';
+        var _Messages = '@ViewBag.AlertMessages';
+        var _MessageTitle = '@ViewBag.AlertMessageTitle';
+    </script>
+    <script>
+
+        function Validate() {
+            var LicenseKey = $("#txtLicenseKey").val();
+            var IsValid = true;
+            var Error = "";
+            if (LicenseKey == "" || LicenseKey == null || LicenseKey == undefined) {
+                IsValid = false;
+                Error += "Please enter License Key. <br />";
+                $("#txtLicenseKey").addClass("redborder");
+            }
+            else { $("#txtLicenseKey").removeClass("redborder"); }
+            
+            if (!IsValid) {
+                TosterAlert(AlertMessageType.ERROR, Error, AlertMessageTitle.REQUIRED);
+                return false;
+            }
+            else {
+                return true;
+            }
+
+        }
+
+    </script>
+</body>
+</html>

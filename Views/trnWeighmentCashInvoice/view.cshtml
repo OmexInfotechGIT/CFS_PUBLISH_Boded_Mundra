@@ -1,0 +1,267 @@
+﻿@model CFS.Models.trnWeighmentCashInvoice
+
+@{
+    ViewBag.Title = "View Weighment Cash Invoice";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            @using (Html.BeginForm("Action", CFS.Com.ClsCommon.Controller(), FormMethod.Post))
+            {
+                <div class="box">
+                    <div class="box-body">
+
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <h4>
+                                    <b>
+                                        <span class="badge bg-light-blue" style="font-size:15px;">Weighment Cash Invoice No : @Model.trnWeighmentCashInvoiceNo </span>
+                                        <span class="badge bg-light-blue" style="font-size:15px;">Datetime : @Model.CreatedDate</span>
+                                        <span class="badge bg-light-blue" style="font-size:15px">User :@Model.CreatedUser</span>
+                                    </b>
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="pull-right" id="divBack">
+                            <div style="display: inline-flex">
+                                @if (!Model.status)
+                                {
+
+                                    <a id="btnPrint" class="btn btn-primary btn-sm" target="_blank" href="@Url.Action("GenerateAndDisplayReport", "trnWeighmentCashInvoice", new { id = Model.trnWeighmentCashInvoiceID, format = "pdf" })"><i title="Click to print" style=" font-size: medium; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                }
+                                <a id="btnBack" href="@Url.Action("Index", CFS.Com.ClsCommon.Controller(), new {pg = Request.Params["pg"], search = Request.Params["search"], status = Model.status })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+                        @Html.HiddenFor(Model => Model.status)
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.trnWeighmentCashInvoiceID)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        <input type="hidden" id="trnWeighmentCashInvoiceTab" name="trnWeighmentCashInvoiceTab" value="@Model.trnWeighmentCashInvoiceTab" />
+                        @*<div class="col-md-3">
+                            <label>Transaction Type : </label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @(Model.TransactionType) </span>
+                        </div>*@
+                        <div class="col-lg-12">
+                            <div class="col-md-3">
+                                <label>Carriar : </label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @(Model.Carriar) </span>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Mode : </label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @(Model.Mode) </span>
+                            </div>
+                            @*<div class="col-md-6">
+            @{
+                string DisplayName = "";
+                if (Model.Carriar == "Container") { DisplayName = "Container No"; } else { DisplayName = "Vehicle No"; }
+            }
+            <label>@DisplayName</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @(Model.VehicleNo) </span>
+        </div>*@
+
+                            <div class="col-md-6">
+                                <label> Paid By :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.PaidBy</span>
+                            </div>
+                            <div class="col-md-3">
+                                <label> GSTIN No. :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.GSTINNo</span>
+                            </div>
+                            <div class="col-md-3">
+                                <label> State Of Supply :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.StateOfSupply</span>
+                            </div>
+                            <div class="col-md-12">
+                                <label> Address : </label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.Address</span>
+                            </div>
+                            <div class="col-md-12">
+                                <label> Remarks :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.Remarks</span>
+                            </div>
+                            @if (Model.Carriar != "Truck")
+                            {
+
+                                <div class="col-md-3">
+                                    <label> Cont. No. (1) :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.ContNo1</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label> Size (1) :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.Size1</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label> Type (1) :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.Type1</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label> Cargo Type (1) : </label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.CargoType1</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label> Cont. No. (2) :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.ContNo2</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label> Size (2) :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.Size2</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label> Type (2) :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.Type2</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label> Cargo Type (2) : </label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.CargoType2</span>
+                                </div>
+                            }
+
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <div id="dvContainerDetails" class="box">
+                    <div class="box-header with-border">
+                        <h4><b>Billing Details</b></h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12">
+                            <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        @if (Model.Carriar == "Truck")
+                                        {
+                                            <th>Truck No.</th>
+                                        }
+                                        else
+                                        {
+                                            <th>Container No.</th>
+                                        }
+                                        <th>Size</th>
+                                        <th>Tarrif Head</th>
+                                        <th>Qty</th>
+                                        <th>Rate</th>
+                                        <th>Amount</th>
+                                        <th>Discount</th>
+                                        <th>Gross Amount</th>
+                                        <th>GST Per</th>
+                                        <th>GST Amount</th>
+                                        <th>Total Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.dtInvoiceDetails != null)
+                                    {
+                                        string TotalAllRate = "0";
+                                        string TotalAllAmount = "0";
+                                        string TotalAllDiscount = "0";
+                                        string TotalAllGrossAmount = "0";
+                                        string TotalAllGSTamt = "0";
+                                        string TotalAllTotalAmount = "0";
+                                        for (int i = 0; i < Model.dtInvoiceDetails.Rows.Count; i++)
+                                        {
+                                            string Rate = Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["Rate"]).ToString("0.00");
+                                            string Amount = Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["Amount"]).ToString("0.00");
+                                            string Discount = Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["Discount"]).ToString("0.00");
+                                            string GrossAmount = Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["GrossAmount"]).ToString("0.00");
+                                            string GSTPer = Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["GSTPer"]).ToString("0.00");
+                                            string GSTamt = Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["GSTamt"]).ToString("0.00");
+                                            string TotalAmount = Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["TotalAmount"]).ToString("0.00");
+
+                                            if (i > 0)
+                                            {
+                                                TotalAllRate = (Convert.ToDecimal(Rate) + Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["Rate"])).ToString("0.00");
+                                                TotalAllAmount = (Convert.ToDecimal(Amount) + Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["Amount"])).ToString("0.00");
+                                                TotalAllDiscount = (Convert.ToDecimal(Discount) + Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["Discount"])).ToString("0.00");
+                                                TotalAllGrossAmount = (Convert.ToDecimal(GrossAmount) + Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["GrossAmount"])).ToString("0.00");
+                                                TotalAllGSTamt = (Convert.ToDecimal(GSTamt) + Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["GSTamt"])).ToString("0.00");
+                                                TotalAllTotalAmount = (Convert.ToDecimal(TotalAmount) + Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["TotalAmount"])).ToString("0.00");
+                                            }
+                                            else
+                                            {
+                                                TotalAllRate = Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["Rate"]).ToString("0.00");
+                                                TotalAllAmount = Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["Amount"]).ToString("0.00");
+                                                TotalAllDiscount = Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["Discount"]).ToString("0.00");
+                                                TotalAllGrossAmount = Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["GrossAmount"]).ToString("0.00");
+                                                TotalAllGSTamt = Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["GSTamt"]).ToString("0.00");
+                                                TotalAllTotalAmount = Convert.ToDecimal(Model.dtInvoiceDetails.Rows[i]["TotalAmount"]).ToString("0.00");
+                                            }
+                                            <tr>
+                                                <td>@Model.dtInvoiceDetails.Rows[i]["VehicleNo"]</td>
+                                                <td>@Model.dtInvoiceDetails.Rows[i]["Size"]</td>
+                                                <td>@Model.dtInvoiceDetails.Rows[i]["TariffHeadName"]</td>
+                                                <td style="text-align:right">@Model.dtInvoiceDetails.Rows[i]["Qty"]</td>
+                                                <td style="text-align:right">@Rate</td>
+                                                <td style="text-align:right">@Amount</td>
+                                                <td style="text-align:right">@Discount</td>
+                                                <td style="text-align:right">@GrossAmount</td>
+                                                <td style="text-align:right">@GSTPer</td>
+                                                <td style="text-align:right">@GSTamt</td>
+                                                <td style="text-align:right">@TotalAmount</td>
+                                            </tr>
+                                        }
+                                        Model.TotalAmount = Math.Round(Convert.ToDecimal(TotalAllTotalAmount));
+                                        TotalAllTotalAmount = Model.TotalAmount.ToString("0.00");
+
+                                        <tr>
+                                            <td colspan='4' style="font-weight:bold;text-align:right"> Total : </td>
+                                            <td id="TotalAllRate" style="text-align:right">@TotalAllRate</td>
+                                            <td id="TotalAllAmount" style="text-align:right">@TotalAllAmount</td>
+                                            <td id="TotalAllDiscount" style="text-align:right">@TotalAllDiscount</td>
+                                            <td id="TotalAllGrossAmount" style="text-align:right">@TotalAllGrossAmount</td>
+                                            <td></td>
+                                            <td id="TotalAllGSTamt" style="text-align:right">@TotalAllGSTamt</td>
+                                            <td id="TotalAllTotalAmount" style="text-align:right">@TotalAllTotalAmount  @Html.HiddenFor(Model => Model.TotalAmount)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div id="ReceiptDetails" class="box">
+                    <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                        <h4><b>Receipt Details</b></h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12">
+                            <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Payment Mode</th>
+                                        <th>Cheque/DD/Ref No</th>
+                                        <th>Cheque/DD/Ref Dt</th>
+                                        <th>Bank Name</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblWeighmentCashReceiptDetails"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div id="dvDoDetails">
+                    @if (Model.Mode == "Gate In")
+                    {
+                        @Html.Partial("_DOCDetailsGrid")
+                    }
+                    @if (Model.Mode == "Gate Out")
+                    {
+                        @Html.Partial("_EXBondDOCDetailsGrid")
+                    }
+                </div>
+
+            }
+        </div>
+    </div>
+</section>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnWeighmentCashInvoice.js")"></script>
+<script>
+    var IsEdit = "true";
+    var IsSearch = '@Model.IsSearch';
+    var Carriarval = '@Model.Carriar';
+    var VehicleID = '@Model.VehicleID';
+    var doaction = '@Model.doaction';
+
+    setTimeout(function () {
+        $(".hideinViewMode").hide();
+    }, 500);
+</script>

@@ -1,0 +1,11 @@
+﻿@model CFS.Models.trnExBondDocumentEntry
+@if (Model.doaction == "edit")
+{
+    ViewBag.Title = "Update Ex-Bond Document Entry";
+}
+else
+{
+    ViewBag.Title = "Add new Ex-Bond Document Entry";
+}
+@Html.Partial("../trnExBondDocumentEntry/action")
+

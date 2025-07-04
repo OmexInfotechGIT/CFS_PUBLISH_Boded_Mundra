@@ -1,0 +1,195 @@
+﻿@model CFS.Models.trnContainerGateIn
+@{
+    ViewBag.Title = "View Container Gate In";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+@using (Html.BeginForm("Action", "trnContainerGateIn", FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+{
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <h4>
+                                    <b>
+                                        <span class="badge bg-light-blue" style="font-size:15px;"> Container Gate In No : @Model.trnContainerGateInNo</span>
+                                        <span class="badge bg-light-blue" style="font-size:15px;">Datetime :@Model.CreatedDate</span>
+                                        <span class="badge bg-light-blue" style="font-size:15px;">User :@Model.User</span>
+                                    </b>
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                <a href="@Url.Action("index", "trnContainerGateIn", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.CycleName) : <span>@Model.CycleName</span>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.User) : <span>@Model.User</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.GatepassDate) : <span>@Model.GatepassDate</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.ActualGateInDate) : <span>@Model.ActualGateInDate</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.WeighmentInvoiceNo) : <span>@Model.WeighmentInvoiceNo</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.WeighmentReceiptNo) : <span>@Model.WeighmentReceiptNo</span>
+                        </div>
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.TRANSPORTATIONTYPE) : <span>@Model.TRANSPORTATIONTYPE</span>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.TRUCKNO, new { @for = "TRUCKNO" })  :
+                            @if (Model.TRANSPORTATIONTYPE == "Party")
+                            {
+                                <span>@Model.PARTYTRUCKNO</span>
+                            }
+                            else
+                            {
+                                <span>@Model.TRUCKNO</span>
+                            }
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.Transporter, new { @for = "Transporter" })  :
+                            @if (Model.TRANSPORTATIONTYPE == "Party")
+                            {
+                                <span>@Model.PartyTransporter</span>
+                            }
+                            else
+                            {
+                                <span>@Model.Transporter</span>
+                            }
+                        </div>
+                        <div class="col-md-2">
+
+                            @Html.LabelFor(Model => Model.VehicleType, new { @for = "VehicleType" }) : <span>@Model.VehicleType</span>
+
+                        </div>
+                        <div class="col-md-2">
+
+                            @Html.LabelFor(Model => Model.Driver, new { @for = "Driver" })  : <span>@Model.Driver</span>
+
+                        </div>
+                        <div class="col-md-2">
+
+                            @Html.LabelFor(Model => Model.LicenceNo, new { @for = "LicenceNo" })  : <span>@Model.LicenceNo</span>
+
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.MobileNo, new { @for = "MobileNo" })  : <span>@Model.MobileNo</span>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.LabelFor(Model => Model.Address, new { @for = "Address" })  : <span>@Model.Address</span>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.Surveyor, new { @for = "Surveyor" }) : <span>@Model.Surveyor</span>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.Vendor, new { @for = "Vendor" }) : <span>@Model.Vendor</span>
+                        </div>
+                        @*<div class="col-md-2">
+                            @Html.LabelFor(Model => Model.VCNNO, new { @for = "VCNNO" }) : <span>@Model.VCNNO</span>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.VesselName, new { @for = "VesselName" }) : <span>@Model.VesselName</span>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(Model => Model.VOYNO, new { @for = "VOYNO" }) : <span>@Model.VOYNO</span>
+                        </div>*@
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="col-md-12">
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.IsSearch)
+                        @Html.HiddenFor(Model => Model.trnContainerGateInID, new { @id = "trnContainerGateInID", @name = "trnContainerGateInID" })
+                        @Html.HiddenFor(Model => Model.ContainerNumber, new { @id = "ContainerNumber", @name = "ContainerNumber" })
+                        @Html.HiddenFor(Model => Model.trnDocumentContainerID, new { @id = "trnDocumentContainerID", @name = "trnDocumentContainerID" })
+                    </div>
+                    <div class="box-header with-border" data-widget="collapse">
+                        <h4><b>Container Details </b></h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12" style="overflow:auto">
+                            <table id="example2" style="white-space: nowrap; font-size: 13px;" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Cont No</th>
+                                        <th>ISO Code</th>
+                                        <th>ISO Size</th>
+                                        <th>ISO Type</th>
+                                        <th>FCL/LCL</th>
+                                        <th>Cargo Type</th>
+                                        <th>Delievery Mode</th>
+                                        <th>Pkgs</th>
+                                        <th>Piece</th>
+                                        <th>Weight</th>
+                                        <th>Port EIR No</th>
+                                        <th>Port Out Date</th>
+                                        <th>Seal No. 1</th>
+                                        <th>Seal No. 2</th>
+                                        <th>Do No</th>
+                                        <th>Do Date</th>
+                                        <th>From Location</th>
+                                        <th>Gross Wgt.</th>
+                                        <th>Tare Wgt.</th>
+                                        <th>Payload Wgt.</th>
+                                        <th>Condition</th>
+                                        <th>HAZ Class</th>
+                                        <th>UN</th>
+                                        <th>Temp</th>
+                                        <th>High Value Status</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody id="tblContainer"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    @Html.Partial("_DOCDetailsCard")
+                </div>
+            </div>
+        </div>
+    </section>
+}
+<script>
+    var VCNDeatails = '@Model.HtmlVCNDeatails';
+    var IsSearch = '@Model.IsSearch.ToString().ToLower()';
+    var doaction = '@Model.doaction.ToString().ToLower()';
+
+
+</script>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnContainerGateIn.js")"></script>
+<script>
+    setTimeout(function () {
+        $(".trnviewAction").hide();
+    }, 500);
+</script>

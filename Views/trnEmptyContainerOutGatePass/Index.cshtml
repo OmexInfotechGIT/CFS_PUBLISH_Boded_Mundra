@@ -1,0 +1,130 @@
+﻿@model CFS.Models.trnEmptyContainerOutGatePass
+@{
+    ViewBag.Title = "Empty Container Out Gate Pass List";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a href="@Url.Action("Action", "trnEmptyContainerOutGatePass", new { doaction = "add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Empty Container Out Gate Pass"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+
+
+                    <div style="overflow-x:scroll">
+                        <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnEmptyContainerOutGatePass", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "trnEmptyContainerOutGatePassNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "trnemptycontaineroutgatepassno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "trnemptycontaineroutgatepassno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Empty Container Out Gate Pass No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnEmptyContainerOutGatePass", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "OutDate".ToLower(), SortOrder = (Model.pagger.SortColumn.ToLower() == "outdate".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "outdate".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Out Date</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnEmptyContainerOutGatePass", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "ContNo".ToLower(), SortOrder = (Model.pagger.SortColumn.ToLower() == "ContNo".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "ContNo".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Cont No.</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnEmptyContainerOutGatePass", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "Location".ToLower(), SortOrder = (Model.pagger.SortColumn.ToLower() == "Location".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "Location".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Move To Location </a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnEmptyContainerOutGatePass", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "TruckNo".ToLower(), SortOrder = (Model.pagger.SortColumn.ToLower() == "truckno".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "truckno".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Truck No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnEmptyContainerOutGatePass", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "transporter".ToLower(), SortOrder = (Model.pagger.SortColumn.ToLower() == "transporter".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "transporter".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Transporter</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnEmptyContainerOutGatePass", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "BOENO".ToLower(), SortOrder = (Model.pagger.SortColumn.ToLower() == "boeno".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "boeno".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> BOE No</a>
+                                    </th>                                    
+                                    <th class="freezeLastColumn">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@Model.MyDatatable.Rows[i]["trnEmptyContainerOutGatePassNo"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["OutDate"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["ContNo"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["Location"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["TruckNo"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["Transporter"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["BOENO"]</td>
+                                        <td class="freezeLastColumnwithWhite">
+                                            @if (!Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]) && ViewBag.gblBlnApprove)
+                                            {
+                                                <a href="@Url.Action("Confirmation", "trnEmptyContainerOutGatePass", new { id = Model.MyDatatable.Rows[i]["trnEmptyContainerOutGatePassID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit" })"><i title="Click to Unapprove" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i></a>
+                                            }
+                                            else if (Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]) && ViewBag.gblBlnUnapprove)
+                                            {
+                                                <a href="@Url.Action("Confirmation", "trnEmptyContainerOutGatePass", new { id = Model.MyDatatable.Rows[i]["trnEmptyContainerOutGatePassID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit"})"><i title="Click to Approve" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-down"></i></a>
+                                            }
+                                            @if (ViewBag.gblBlnEdit && !Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]))
+                                            {
+                                                <a href="@Url.Action("Action", "trnEmptyContainerOutGatePass", new { id = Model.MyDatatable.Rows[i]["trnEmptyContainerOutGatePassID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit" })"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                            }
+                                            @if (ViewBag.gblBlnView)
+                                            {
+                                                <a href="@Url.Action("view", "trnEmptyContainerOutGatePass", new { id = Model.MyDatatable.Rows[i]["trnEmptyContainerOutGatePassID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit"})"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                            }
+                                            @*<a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('trnEmptyContainerOutGatePass','@Model.MyDatatable.Rows[i]["trnEmptyContainerOutGatePassID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>*@
+                                            @if (ViewBag.gblBlnDelete && !Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]))
+                                            {
+                                                <a href="@Url.Action("delete", "trnEmptyContainerOutGatePass", new { id = Model.MyDatatable.Rows[i]["trnEmptyContainerOutGatePassID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                            }
+                                            @if (Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]))
+                                            {
+                                            }
+                                            @if (ViewBag.gblBlnApprove)
+                                            {
+                                                <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", "trnEmptyContainerOutGatePass", new { id = Model.MyDatatable.Rows[i]["trnEmptyContainerOutGatePassID"], format = "pdf" })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                            }
+                                            @if (Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]))
+                                            {
+                                                <a target="_blank" href="@Url.Action("GenerateAndDisplayConfirmationReport", "trnEmptyContainerOutGatePass", new { id = Model.MyDatatable.Rows[i]["trnEmptyContainerOutGatePassID"], format = "pdf" })"><i title="Click to Confirm Gate Pass Print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-floppy-o"></i></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+                        @Html.Partial("_pagination")
+                    </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+ var IsSearch = '@Model.IsSearch.ToString().ToLower()'; var doaction = '@Model.doaction';</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnEmptyContainerOutGatePass.js")"></script>

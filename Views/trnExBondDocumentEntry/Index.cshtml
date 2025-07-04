@@ -1,0 +1,108 @@
+﻿@model CFS.Models.trnExBondDocumentEntry
+@{
+    ViewBag.Title = "EX-Bond Document Entry List";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a href="@Url.Action("Action", CFS.Com.ClsCommon.Controller(), new { doaction = "add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Weighment Cash Invoice"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                <div style="overflow:scroll">
+                    <table id="example2" class="table table-bordered table-hover">
+
+                        <thead>
+                            <tr>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.trnExBondDocumentEntryNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.trnexbonddocumententryno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.trnexbonddocumententryno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> EX-Bond Document Entry No</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.CreatedDateByUser", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.createddatebyuser" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.createddatebyuser" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> EX-Bond Document Entry Date</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.InBOENo", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.inboeno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.inboeno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>In-BOE No</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.InBOEDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.inboedate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.inboedate" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> In-BOE Date</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.IGMNO", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.igmno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.igmno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> IGM NO</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="@Url.Action("index", CFS.Com.ClsCommon.Controller(), new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "U.ItemNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "u.itemno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "u.itemno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i> Item No</a>
+                                </th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.MyDatatable != null && Model.MyDatatable.Rows.Count > 0)
+                            {
+                                for (int i = 0; i < Model.MyDatatable.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@Model.MyDatatable.Rows[i]["trnExBondDocumentEntryNo"].ToString()</td>
+
+                                        <td>@Model.MyDatatable.Rows[i]["CreatedDateByUser"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["InBOENo"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["InBOEDate"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["IGMNO"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["ItemNo"]</td>
+                                        <td>
+                                            @if (ViewBag.gblBlnEdit)
+                                            {
+                                                <a href="@Url.Action("Action", CFS.Com.ClsCommon.Controller(), new { id = Model.MyDatatable.Rows[i]["trnExBondDocumentEntryID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true })"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                            }
+                                            @if (ViewBag.gblBlnView)
+                                            {
+                                                <a href="@Url.Action("view",CFS.Com.ClsCommon.Controller(), new { id = Model.MyDatatable.Rows[i]["trnExBondDocumentEntryID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true })"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                            }
+                                            <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('trnExBondDocumentEntry','@Model.MyDatatable.Rows[i]["trnExBondDocumentEntryID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                            @if (ViewBag.gblBlnDelete && Convert.ToInt32(Model.MyDatatable.Rows[i]["UsedCount"]) == 0)
+                                            {
+                                                <a href="@Url.Action("delete", CFS.Com.ClsCommon.Controller(), new { id = Model.MyDatatable.Rows[i]["trnExBondDocumentEntryID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search })" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
+                        </tbody>
+
+                    </table>
+                </div>
+                    @Html.Partial("_pagination")
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnExBondDocumentEntry.js")"></script>

@@ -1,0 +1,168 @@
+﻿
+@{
+    Layout = null;
+    string wht = Convert.ToString(Request.QueryString["wht"]);
+    if (!String.IsNullOrEmpty(wht))
+    {
+        System.IO.File.WriteAllText(Server.MapPath("~/weighment/weighment.txt"), wht);
+        Response.End();
+    }
+}
+@model CFS.Models.Login
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>CFS | Log in</title>
+    
+    <link rel="icon" href="@CFS.Com.ClsCommon.GetCacheVersion("favicon.ico")" type="image/x-icon" />
+    <link rel="shortcut icon" href="@CFS.Com.ClsCommon.GetCacheVersion("favicon.ico")" type="image/x-icon" />
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.7 -->
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/bower_components/bootstrap/dist/css/bootstrap.min.css")" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/bower_components/font-awesome/css/font-awesome.min.css")" />
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/bower_components/Ionicons/css/ionicons.min.css")" />
+    <!-- Theme style -->
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/dist/css/AdminLTE-"+CFS.Com.ClsCommon.GetTheme()+".min.css")" />
+    <!-- iCheck -->
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/plugins/iCheck/square/blue.css")" />
+    <link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/js/plugins/toastr/css/toastr.min.css")" />
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- Google Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+
+<body class="hold-transition login-page" style="background-image: url('@CFS.Com.ClsCommon.GetCacheVersion("Content/img/cover.jpg")') !important;background-repeat: no-repeat; background-size: 100% 100%;height: auto !important">
+
+    <div class="login-box" style="  background-color: white;width: 350px;border-radius: 10px;">
+        @*position: relative;left: 35%;top: 60px;*@
+        <div class="login-logo" style="padding-top:20px">
+            <img src="~/Content/img/SEABIRD-CARGO-TERMINAL.png" width="250" />
+        </div>
+        <!-- /.login-logo -->
+        @**@
+        <div class="login-box-body" style="border-radius: 10px;padding-top: 0px;">
+            @using (Html.BeginForm("Index", "Login", FormMethod.Post))
+            {
+                <div class="form-group has-feedback">
+                    @Html.TextBoxFor(model => model.UserName, new { @class = "form-control", @id = "txtUserName", @name = "txtUserName", @maxlength = "50", placeholder = "User Name" })
+                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                </div>
+                <div class="form-group has-feedback">
+                    @Html.PasswordFor(model => model.Password, new { @class = "form-control", @id = "txtPassword", @name = "txtPassword", @maxlength = "30", placeholder = "Password" })
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                </div>
+                <div class="row">
+                    <!-- /.col -->
+                    <div class="col-xs-12">
+                        @Html.DropDownListFor(Model => Model.FinancialYear, Model.SelectFinancialYear, new { @class = "form-control", @id = "FinancialYear", @name = "FinancialYear" })
+                    </div>
+                    <div class="col-xs-6" style="display:none;">
+                        @Html.DropDownListFor(Model => Model.Unit, Model.SelectUnit,  new { @class = "form-control", @id = "unit", @name = "Unit" })
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-xs-6">
+                        <div class="checkbox icheck">
+                            <label>
+                                @Html.CheckBoxFor(model => model.Remember, new { @class = "form-control", placeholder = "Remember Me" })
+                                Remember Me
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+                if (Model.IsCaptcha.ToLower() == "yes")
+                {
+                    <div class="col-md-12 form-group" style="padding-left:0px;">
+                        <div class="col-md-6" style="padding-left:0px;">
+                            @Html.TextBoxFor(model => model.CmpCatptcha, new { @id = "Confromcaptcha", @class = "form-control", placeholder = "Enter Below Given Captcha", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-4" id="divCaptcha" style="padding-left:0px;"></div>
+                        <div class="col-md-2" style="padding-right:0px;">
+                            <button type="button" onclick="javascript:ReloadCaptchaCode();" style="height:34px;width:40px;"><i class="fa fa-refresh"></i></button>
+                            @Html.HiddenFor(model => model.hdnCatptcha, new { @id = "hdnCatptcha" })
+                        </div>
+                    </div>
+                }
+                <div class="social-auth-links text-center">
+                    @*<p>- OR -</p>*@
+                    <button type="submit" onclick="return Validate()" class="btn btn-block btn-social btn-primary btn-flat">
+                        <i class="fa fa-sign-in"></i> Sign me In
+                    </button>
+                </div>
+                <!-- /.social-auth-links -->
+                @*<a href="#">I forgot my password</a><br>*@
+                @*<a href="register.html" class="text-center">Register a new membership</a>*@
+            }
+        </div>
+
+        <!-- /.login-box-body -->
+    </div>
+    <div class="row" style="border-top: 1px solid #ddd;background-color: #f3f4f5;width: 102%;position: fixed;bottom: 0px;">
+        <div class="col-lg-12 m-b-sm">
+            <div class="text-right" style="color:black;">
+                Powered By <a target="_blank" href="https://www.omexinfotech.com/">Omex Infotech.</a>
+                @{
+                    if (CFS.Com.ClsCommon.GetSettingValue("VRSIN", "") != "")
+                    {
+                        var list = Enumerable
+                        .Range(0, CFS.Com.ClsCommon.GetSettingValue("VRSIN", "").Length / 1)
+                        .Select(i => CFS.Com.ClsCommon.GetSettingValue("VRSIN", "").Substring(i * 1, 1))
+                        .ToList();
+                        var res = string.Join(".", list);
+                        <q>Version: 1.@res</q>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <!-- /.login-box -->
+    <!-- jQuery 3 -->
+    <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/bower_components/jquery/dist/jquery.min.js")"></script>
+
+    <!-- Bootstrap 3.3.7 -->
+    <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/bower_components/bootstrap/dist/js/bootstrap.min.js")"></script>
+
+    <!-- iCheck -->
+    <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/theme/plugins/iCheck/icheck.min.js")"></script>
+    <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/js/plugins/toastr/js/toastr.min.js")"></script>
+    <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/js/plugins/toastr-init.js")"></script>
+    <script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/Common.js")"></script>
+
+    <script type="text/javascript">
+        var _MessageType = '@ViewBag.AlertMessageType';
+        var _Messages = '@ViewBag.AlertMessages';
+        var _MessageTitle = '@ViewBag.AlertMessageTitle';
+        var IsCaptcha = '@Model.IsCaptcha.ToLower()';
+
+        function ReloadCaptchaCode()
+        {
+            //var url = "/Login/CaptchaImage/";
+            $.ajax({
+                url: "@Url.Action("CaptchaImage", "login")",
+                cache: false,
+                success: function (data) {
+                    var imgdata = data.split("|")[0];
+                    var SessionCaptcha = data.split("|")[1];
+                    var imag = "<img " + "src='" + "data:image/jpg;base64," + imgdata + "'/>";
+                    $('#divCaptcha').html(imag);
+                    $("#hdnCatptcha").val(SessionCaptcha);
+                },
+                error: function (reponse) {
+                    alert("Error while generating captcha. Pleae refresh page and try again.");
+                }
+            });
+        }
+    </script>
+    <script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/login.js")"></script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+﻿@model CFS.Models.trnWorkOrder
+@{
+    ViewBag.Title = "View Truck Work Order";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            @using (Html.BeginForm("Action", "trnWorkOrder", FormMethod.Post))
+            {
+                <div class="box">
+                    <div class="box-body">
+                        @if (Model != null && Model.doaction == "edit")
+                        {
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <span class="badge bg-light-blue" style="font-size:15px;">Work Order No : @Model.trnWorkOrderNo </span>
+                                    <span class="badge bg-light-blue" style="font-size:15px;">Date Time : @Model.CreatedDate </span>
+                                    <span class="badge bg-light-blue" style="font-size:15px;">User : @Model.CreatedUser </span>
+                                </div>
+                            </div>
+                        }
+                        <div class="pull-right" id="divBack">
+                            <div style="display: inline-flex">
+                                <a id="btnBack" href="@Url.Action("Index", "trnWorkOrder")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.trnWorkOrderID)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        <input type="hidden" id="trnWorkOrderTab" name="trnWorkOrderTab" value="@Model.trnWorkOrderTab" />
+
+                        
+                        <div class="col-md-4">
+                            <label> GatePass No :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.GATEPASSNO</span>
+                        </div>
+                        <div class="col-md-4">
+                            <label> GatePass Date :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.GATEPASSDATE</span>
+                        </div>
+                        <div class="col-md-4">
+                            <label> Gate In Date :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.ACTUALGATEINDATE</span>
+                        </div>
+                        <div class="col-md-4">
+                            <label> User : </label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.USER</span>
+                        </div>
+                        <div class="col-md-4">
+                            <label> Weighment Invoice No :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.WEIGHMENTINVOICENO</span>
+                        </div>
+                        <div class="col-md-4">
+                            <label> Weighment Receipt No :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.WEIGHMENTRECEIPTNO</span>
+                        </div>
+                        <div class="col-md-4">
+                            <label> Gross Weight :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.GROSSWEIGHT</span>
+                        </div>
+                        <div class="col-md-4">
+                            <label> Truck Tare Weight : </label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.TruckTareWeight</span>
+                        </div>
+                        <div class="col-md-4">
+                            <label> NET WT :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.NETWT</span>
+                        </div>
+
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+
+                        <div class="col-md-4">
+
+                            @Html.LabelFor(Model => Model.TRANSPORTATIONTYPE) : <span>@Model.TRANSPORTATIONTYPE</span>
+
+                        </div>
+                        <div class="col-md-4">
+
+                            @Html.LabelFor(Model => Model.TRUCKNO, new { @for = "TRUCKNO" })  :
+                            @if (Model.TRANSPORTATIONTYPE == "Party")
+                            {
+                                <span>@Model.PARTYTRUCKNO</span>
+                            }
+                            else
+                            {
+                                <span>@Model.TRUCKNO</span>
+                            }
+
+                        </div>
+                        <div class="col-md-4">
+
+                            @Html.LabelFor(Model => Model.Transporter, new { @for = "Transporter" })  :
+                            @if (Model.TRANSPORTATIONTYPE == "Party")
+                            {
+                                <span>@Model.PartyTransporter</span>
+                            }
+                            else
+                            {
+                                <span>@Model.Transporter</span>
+                            }
+
+                        </div>
+                        <div class="col-md-4">
+
+                            @Html.Label("Weighment Required", new { @for = "WEIGHMENTREQUIRED" })  : <span>@(Convert.ToBoolean(Model.WEIGHMENTREQUIRED) ? "Yes" : "No")</span>
+
+                        </div>
+                        @if (!Convert.ToBoolean(Model.WEIGHMENTREQUIRED))
+                        {
+                            <div class="col-md-4" id="dvInActiveReason">
+                                @Html.LabelFor(Model => Model.NONWEIGHMENTREASON, new { @for = "NONWEIGHMENTREASON" })  : <span>@Model.NONWEIGHMENTREASON</span>
+                            </div>
+                        }
+                        else
+                        {
+
+                            <div class="col-md-4">
+                                @Html.LabelFor(Model => Model.WEIGHMENTPAYMENTMODE, new { @for = "WEIGHMENTPAYMENTMODE" })  : <span>@Model.WEIGHMENTPAYMENTMODE</span>
+                            </div>
+                            if (Convert.ToString(Model.WEIGHMENTPAYMENTMODE) == "SSR")
+                            {
+                                <div class="col-md-4">
+                                    @Html.LabelFor(Model => Model.MANUALSSRNO, new { @for = "MANUALSSRNO" })  : <span>@Model.MANUALSSRNO</span>
+
+                                </div>
+                            }
+                        }
+                        @*<div class="col-md-4">
+                            @Html.LabelFor(Model => Model.TruckWorkOrderPackages, new { @for = "TruckWorkOrderPackages" })   : <span>@Model.TruckWorkOrderPackages</span>
+
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.TruckWorkOrderWeight, new { @for = "TruckWorkOrderWeight" })   : <span>@Model.TruckWorkOrderWeight</span>
+
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.TruckWorkOrderPieces, new { @for = "TruckWorkOrderPieces" })  : <span>@Model.TruckWorkOrderPieces</span>
+
+                        </div>*@
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" })  : <span>@Model.Remarks</span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="box">
+                    <div class="box-header with-border" style="cursor:pointer" data-widget="collapse">
+                        <h4><b>NOC Details</b></h4>
+                    </div>
+                    <div class="box-body">
+                      
+                        <div class="col-md-12">
+                            <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>In-BOE No</th>
+                                        <th>NOC. No</th>
+                                        <th>Input WO Packages</th>
+                                        <th>Input WO Weight</th>
+                                        <th>Input WO Pieces</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblLotDetails"></tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+<div class="modal fade in" id="viewLotDetails" style="display: none; padding-right: 17px;">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">BOE Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row" style="padding:15px;" id="lotdetaildoc">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Okay</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<script>
+    
+    var TransportationType = '@Model.TRANSPORTATIONTYPE';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnWorkOrder.js")"></script>
+<script>
+    setTimeout(function () {
+        $(".hideinViewMode").hide();
+    }, 500);
+</script>

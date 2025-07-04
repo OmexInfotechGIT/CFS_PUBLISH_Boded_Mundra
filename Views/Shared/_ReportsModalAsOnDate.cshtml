@@ -1,0 +1,14 @@
+﻿@{
+    CFS.Models.ReportsModal ReportsModal = new CFS.Models.ReportsModal();
+    if (ViewBag.ReportsModal != null)
+    {
+        ReportsModal = ViewBag.ReportsModal;
+    }
+}
+<div class="col-md-2">
+    @Html.LabelFor(Model => ReportsModal.OnDate, new { @for = "OnDate" })
+    <div class="input-group">
+        @Html.TextBoxFor(Model => ReportsModal.OnDate, new { @id = "OnDate", @name = "OnDate", @class = "form-control DateTimePicker", @placeholder = "Enter From Date" })
+        <span class="input-group-addon" onclick="getElementById('OnDate').focus()"><i class="fa fa-calendar"></i></span>
+    </div>
+</div>

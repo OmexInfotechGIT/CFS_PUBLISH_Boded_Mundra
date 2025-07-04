@@ -1,0 +1,1343 @@
+﻿@model CFS.Models.trnpreproforma
+@{
+
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    bool isEdit = false;
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Pre-Proforma";
+        isEdit = true;
+        if (!ViewBag.gblBlnEdit && !ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add new Pre-Proforma";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+    .ui-autocomplete {
+        z-index: 9999 !important;
+    }
+</style>
+@using (Html.BeginForm("Action", "trnpreproforma", FormMethod.Post))
+{
+<section >
+    @Html.HiddenFor(Model => Model.trnpreproformaID, new { @id = "trnpreproformaID", @name = "trnpreproformaID" })
+    @Html.HiddenFor(Model => Model.doaction)
+    @Html.HiddenFor(Model => Model.isFinished)
+    @Html.HiddenFor(Model => Model.isApproved)
+    <div class="row">
+        <div class="box">
+            <div class="box-header with-border" style="cursor:pointer">
+                <div class="pull-left">
+                    <div style="display: inline-flex">
+                        <h4>
+                            <b>
+                                Basic Details ?
+
+                                @if (isEdit)
+                                {
+                                    <span class="badge bg-light-blue" style="font-size:15px;">Pre-Proforma GW Invoice NO : @CFS.Com.ClsCommon.AddhtmlSpace(3)@Model.trnPreProformaPrefix@Model.trnPreProformaNo</span>
+                                }
+                            </b>
+                        </h4>
+                    </div>
+                </div>
+                <div class="pull-right">
+                    <div style="display: inline-flex">
+                        <a href="@Url.Action("Index","trnpreproforma")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                    </div>
+                </div>
+                <br />
+            </div>
+            @Html.HiddenFor(Model => Model.isFinished, new { @id= "isFinished", @name= "isFinished" })
+            <div class="box-body">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => Model.ImporterExporter, new { @id = "lblImporterExporter", @for = "ImporterExporter" })
+                        @Html.TextBoxFor(Model => Model.ImporterExporter, new { @id = "ImporterExporter", @name = "ImporterExporter", @class = "form-control", @placeholder = "Enter EXPORTER/IMPORTER" })
+                        @Html.HiddenFor(Model => Model.ImporterExporterID, new { @id = "ImporterExporterID", @name = "ImporterExporterID" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => Model.CHAName, new { @for = "CHAName" })
+                        @Html.TextBoxFor(Model => Model.CHAName, new { @id = "CHAName", @name = "CHAName", @class = "form-control", @placeholder = "Enter Customs Broker/Customer" })
+                        @Html.HiddenFor(Model => Model.CHAID, new { @id = "CHAID", @name = "CHAID" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => Model.ForwarderName, new { @for = "ForwarderName" })
+                        @Html.TextBoxFor(Model => Model.ForwarderName, new { @id = "ForwarderName", @name = "ForwarderName", @class = "form-control", @placeholder = "Enter Forwarder" })
+                        @Html.HiddenFor(Model => Model.ForwarderID, new { @id = "ForwarderID", @name = "ForwarderID" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => Model.ConsolerName, new { @for = "ConsolerName" })
+                        @Html.TextBoxFor(Model => Model.ConsolerName, new { @id = "ConsolerName", @name = "ConsolerName", @class = "form-control", @placeholder = "Enter Consoler" })
+                        @Html.HiddenFor(Model => Model.ConsolerID, new { @id = "ConsolerID", @name = "ConsolerID" })
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => Model.BillToCustomerName, new { @for = "BillToCustomerName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.BillToCustomerID, String.Empty, new { @id = "spn_BillToCustomerID", @class = "help-inline text-red" })
+                        @Html.TextBoxFor(Model => Model.BillToCustomerName, new { @id = "BillToCustomerName", @name = "BillToCustomerName", @class = "form-control", @placeholder = "Enter Billing to party" })
+                        @Html.HiddenFor(Model => Model.BillToCustomerID, new { @id = "BillToCustomerID", @name = "BillToCustomerID" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => Model.BillToCustomerAddress, new { @for = "BillToCustomerAddress" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.BillToCustomerAddressID, String.Empty, new { @id = "spn_BillToCustomerAddressID", @class = "help-inline text-red" })
+                        @Html.TextBoxFor(Model => Model.BillToCustomerAddress, new { @id = "BillToCustomerAddress", @name = "BillToCustomerAddress", @class = "form-control", @placeholder = "Enter Billing to Address" })
+                        @Html.HiddenFor(Model => Model.BillToCustomerAddressID, new { @id = "BillToCustomerAddressID", @name = "BillToCustomerAddressID" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => Model.BillToCustomerGSTNo, new { @for = "BillToCustomerGSTNo" })      <span class="form-control-lable" id="spn_BillToCustomerGSTNo">@Model.BillToCustomerGSTNo</span>
+                        @Html.HiddenFor(Model => Model.BillToCustomerGSTNo, new { @id = "BillToCustomerGSTNo", @name = "BillToCustomerGSTNo" })
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => Model.StateName, new { @for = "state" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.StateId, String.Empty, new { @id = "spn_StateId", @class = "help-inline text-red" })
+                        @Html.TextBoxFor(Model => Model.StateName, new { @id = "state", @name = "state", @class = "form-control", @placeholder = "Enter State" })
+                        @Html.HiddenFor(Model => Model.StateId, new { @id = "MainStateId" })
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => Model.GSTCustomerTypeId)<span class="text-red">*</span>
+                        @Html.ValidationMessageFor(Model => Model.GSTCustomerTypeId, String.Empty, new { @class = "help-inline text-red" })
+                        @Html.DropDownListFor(Model => Model.GSTCustomerTypeId, Model.GSTCustomerType, new { @id = "dpdGSTCustomerType", onchange = "GSTCustomerTypeChanged()", @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => Model.BookingType)<span class="text-red">*</span> <br />
+                        @Html.RadioButtonFor(model => model.BookingType, "F", new { @id = "Fixed", @class = "form-control" })@CFS.Com.ClsCommon.AddhtmlSpace(3)@Html.Label("Fixed", new { @for = "Fixed", @style = "font-weight: 600;" })@CFS.Com.ClsCommon.AddhtmlSpace(4)
+                        @Html.RadioButtonFor(model => model.BookingType, "V", new { @id = "Flexible", @class = "form-control" })@CFS.Com.ClsCommon.AddhtmlSpace(3)@Html.Label("Flexible", new { @for = "Flexible", @style = "font-weight: 600;" })@CFS.Com.ClsCommon.AddhtmlSpace(16)
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => Model.CARGOVALUE, new { @for = "CARGOVALUE" })
+                        @Html.TextBoxFor(Model => Model.CARGOVALUE, new { @id = "CARGOVALUE", @name = "CARGOVALUE", @class = "form-control", @placeholder = "Enter CARGO VALUE", @onkeypress = "return isNumberWithTwoDecimal(event,'CARGOVALUE')" })
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => Model.Dutyvalue)
+                        @Html.TextBoxFor(Model => Model.Dutyvalue, new { @id = "Dutyvalue", @name = "Dutyvalue", @class = "form-control", @placeholder = "Enter Duty value", @onkeypress = "return isNumberWithTwoDecimal(event,'Dutyvalue')" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => Model.Remarks)
+                        @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control", @placeholder = "Enter Remarks" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @for (int i = 0; i < Model.LSTHandlingTypes.Count; i++)
+                        {
+                            @Html.CheckBoxFor(m => Model.LSTHandlingTypes[i].IsChecked, new { @id = Model.LSTHandlingTypes[i].Text + "_" + Model.LSTHandlingTypes[i].Value }) @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                            @Html.Label(Model.LSTHandlingTypes[i].Text, new { @style = "font-weight: bold", @for = Model.LSTHandlingTypes[i].Text + "_" + Model.LSTHandlingTypes[i].Value })
+                            @Html.HiddenFor(m => Model.LSTHandlingTypes[i].Value) @Html.HiddenFor(m => Model.LSTHandlingTypes[i].Text) @CFS.Com.ClsCommon.AddhtmlSpace(10)
+                        }
+                    </div>
+                </div>
+                <div class="col-md-3 pull-right">
+                    <div class="form-group pull-right">
+                        <br />
+                        @if (!isEdit)
+                        {
+                            <button type="submit" onclick="return Validation()" class="btn btn-primary">Continue</button>
+                        }
+                        else
+                        {
+                            <button type="submit" onclick="return Validation()" class="btn btn-primary">Update</button>
+                        }
+                        <a href="@Url.Action("Index","trnpreproforma")" class="btn btn-danger">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (Model != null && Model.LSTHandlingTypes[0].IsChecked)
+    {
+        <div class="row" onclick="SetfuncationModelValue('ContainerHandling')">
+            <div class="box">
+                <div class="box-header with-border" data-widget="collapse">
+                    <h4><b>@Model.LSTHandlingTypes[0].Text </b></h4>
+                </div>
+                <div class="box-body">
+                    @Html.HiddenFor(Model => Model.ContainerHandling.trnPreProformaContainerHandlingID, new { @id = "trnPreProformaContainerHandlingGWID", @name = "trnPreProformaContainerHandlingGWID" })
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerHandling.ContainerHandlingContSizeName)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerHandling.ContainerHandlingContSizeID, String.Empty, new { @id = "spn_ContainerHandlingContSizeID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerHandling.ContainerHandlingContSizeName, new { @id = "ContainerHandlingContSizeName", @name = "ContainerHandlingContSizeName", @class = "form-control", @placeholder = "Enter Cont Size" })
+                            @Html.HiddenFor(Model => Model.ContainerHandling.ContainerHandlingContSizeID, new { @id = "ContainerHandlingContSizeID", @name = "ContainerHandlingContSizeID" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerHandling.ContainerHandlingNoofContainers)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerHandling.ContainerHandlingNoofContainers, String.Empty, new { @id = "spn_ContainerHandlingNoofContainers", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerHandling.ContainerHandlingNoofContainers, new { @id = "ContainerHandlingNoofContainers", @name = "ContainerHandlingNoofContainers", @class = "form-control", @placeholder = "Enter No of Containers", @maxlength = "11", @onblur = "CalculateAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'ContainerHandlingNoofContainers')" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerHandling.ContainerHandlingCargoType)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerHandling.ContainerHandlingCargoTypeID, String.Empty, new { @id = "spn_ContainerHandlingCargoTypeID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerHandling.ContainerHandlingCargoType, new { @id = "ContainerHandlingCargoType", @name = "ContainerHandlingCargoType", @class = "form-control", @placeholder = "Enter Cargo Type" })
+                            @Html.HiddenFor(Model => Model.ContainerHandling.ContainerHandlingCargoTypeID, new { @id = "ContainerHandlingCargoTypeID", @name = "ContainerHandlingCargoTypeID" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerHandling.ContainerHandlingDeliveryMode)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerHandling.ContainerHandlingDeliveryMode, String.Empty, new { @id = "spn_ContainerHandlingDeliveryMode", @class = "help-inline text-red" })
+                            @Html.DropDownListFor(Model => Model.ContainerHandling.ContainerHandlingDeliveryMode, Model.ContainerHandling.ContainerHandlingDDLDeliveryMode, new { @onchange = "EnabledDisaleComodity('ContainerHandlingDeliveryMode','ContainerHandlingBillCommodity');", @id = "ContainerHandlingDeliveryMode", @name = "ContainerHandlingDeliveryMode", @class = "form-control", @placeholder = "Enter Delivery Mode" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerHandling.ContainerHandlingBillCommodity)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerHandling.ContainerHandlingBillCommodityID, String.Empty, new { @id = "spn_ContainerHandlingBillCommodityID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerHandling.ContainerHandlingBillCommodity, new {  @id = "ContainerHandlingBillCommodity", @name = "ContainerHandlingBillCommodity", @class = "form-control", @placeholder = "Enter Bill Commodity" })
+                            @Html.HiddenFor(Model => Model.ContainerHandling.ContainerHandlingBillCommodityID, new { @id = "ContainerHandlingBillCommodityID", @name = "ContainerHandlingBillCommodityID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerHandling.ContainerHandlingSubcommodity)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerHandling.ContainerHandlingSubcommodityID, String.Empty, new { @id = "spn_ContainerHandlingSubcommodityID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerHandling.ContainerHandlingSubcommodity, new { @id = "ContainerHandlingSubcommodity", @name = "ContainerHandlingSubcommodity", @class = "form-control", @placeholder = "Enter Sub commodity" })
+                            @Html.HiddenFor(Model => Model.ContainerHandling.ContainerHandlingSubcommodityID, new { @id = "ContainerHandlingSubcommodityID", @name = "ContainerHandlingSubcommodityID" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerHandling.ContainerHandlingTarrifHeadtxt)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerHandling.ContainerHandlingTarrifHeadID, String.Empty, new { @id = "spn_ContainerHandlingTarrifHeadID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerHandling.ContainerHandlingTarrifHeadtxt, new { @id = "ContainerHandlingTarrifHeadtxt", @name = "ContainerHandlingTarrifHeadtxt", @class = "form-control", @placeholder = "Enter TarrifHead" })
+                            @Html.HiddenFor(Model => Model.ContainerHandling.ContainerHandlingTarrifHeadID, new { @id = "ContainerHandlingTarrifHeadID", @name = "ContainerHandlingTarrifHeadID" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerHandling.ContainerHandlingRate)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerHandling.ContainerHandlingRate, String.Empty, new { @id = "spn_ContainerHandlingRate", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerHandling.ContainerHandlingRate, new { @id = "ContainerHandlingRate", @name = "ContainerHandlingRate", @class = "form-control", @placeholder = "Enter Rate", @maxlength = "11", @onblur = "CalculateAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'ContainerHandlingRate')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerHandling.ContainerHandlingTotal)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerHandling.ContainerHandlingTotal, String.Empty, new { @id = "spn_ContainerHandlingTotal", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerHandling.ContainerHandlingTotal, new { @id = "ContainerHandlingTotal", @name = "ContainerHandlingTotal", @class = "form-control", @placeholder = "Enter Total", @readonly = "true" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <input type="hidden" id="ContainerHandlingDiscountamtBase" />
+                            @Html.LabelFor(Model => Model.ContainerHandling.ContainerHandlingDiscountamt) @Html.ValidationMessageFor(Model => Model.ContainerHandling.ContainerHandlingDiscountamt, String.Empty, new { @id = "spn_ContainerHandlingDiscountamt", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerHandling.ContainerHandlingDiscountamt, new { @id = "ContainerHandlingDiscountamt", @name = "ContainerHandlingDiscountamt", @class = "form-control", @placeholder = "Enter Discount Amt", @onblur = "CalculateAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'ContainerHandlingDiscountamt')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerHandling.ContainerHandlingGSTPer) @Html.ValidationMessageFor(Model => Model.ContainerHandling.ContainerHandlingGSTPer, String.Empty, new { @id = "spn_ContainerHandlingGSTPer", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerHandling.ContainerHandlingGSTPer, new { @id = "ContainerHandlingGSTPer", @name = "ContainerHandlingGSTPer", @class = "form-control", @placeholder = "Enter GST(%)", @onblur = "CalculateAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'ContainerHandlingGSTPer')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerHandling.ContainerHandlingNetamount)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerHandling.ContainerHandlingNetamount, String.Empty, new { @id = "spn_ContainerHandlingNetamount", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerHandling.ContainerHandlingNetamount, new { @id = "ContainerHandlingNetamount", @name = "ContainerHandlingNetamount", @class = "form-control", @placeholder = "Enter Net Amount", @readonly = "true" })
+                        </div>
+                    </div>
+                    <div class="col-md-2 pull-right">
+                        <div class="form-group pull-right">
+                            <br />
+                            <button type="button" onclick="return AddtrnPreProformaContainerHandling()" id="btnContainerHandlingGW" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-primary" id="tmpbtnContainerHandlingGW" style="display:none;">Saving...</button>
+                            <a onclick="CleartrnPreProformaContainerHandling()" class="btn btn-danger">Clear</a>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div style="overflow-x:scroll">
+                            <table id="example2" style="white-space:nowrap" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Cont Size</th>
+                                        <th>No of Containers</th>
+                                        <th>Delivery Mode</th>
+                                        <th>Cargo Type </th>
+                                        <th>Bill Commodity </th>
+                                        <th>Sub commodity </th>
+                                        <th>Tarrif Head </th>
+                                        <th>Rate </th>
+                                        <th>Total </th>
+                                        <th>Discount amt </th>
+                                        <th>GST(%) </th>
+                                        <th>Net amount </th>
+                                        <th class="freezeLastColumn">Action </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ContainerDetails"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (Model != null && Model.LSTHandlingTypes[1].IsChecked)
+    {
+        <div class="row" onclick="SetfuncationModelValue('CargoHandling')" >
+            <div class="box">
+                <div class="box-header with-border" data-widget="collapse">
+                    <h4><b>@Model.LSTHandlingTypes[1].Text </b></h4>
+                </div>
+                <div class="box-body">
+                    @Html.HiddenFor(Model => Model.CargoHandling.trnPreProformaCargoHandlingID, new { @id = "trnPreProformaCargoHandlingID", @name = "trnPreProformaCargoHandlingID" })
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoHandling.CargoHandlingCargoType)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoHandling.CargoHandlingCargoTypeID, String.Empty, new { @id = "spn_CargoHandlingCargoTypeID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoHandling.CargoHandlingCargoType, new { @id = "CargoHandlingCargoType", @name = "CargoHandlingCargoType", @class = "form-control", @placeholder = "Enter Cargo Type" })
+                            @Html.HiddenFor(Model => Model.CargoHandling.CargoHandlingCargoTypeID, new { @id = "CargoHandlingCargoTypeID", @name = "CargoHandlingCargoTypeID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoHandling.CargoHandlingBillCommodity)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoHandling.CargoHandlingBillCommodityID, String.Empty, new { @id = "spn_CargoHandlingBillCommodityID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoHandling.CargoHandlingBillCommodity, new { @id = "CargoHandlingBillCommodity", @name = "CargoHandlingBillCommodity", @class = "form-control", @placeholder = "Enter Bill Commodity" })
+                            @Html.HiddenFor(Model => Model.CargoHandling.CargoHandlingBillCommodityID, new { @id = "CargoHandlingBillCommodityID", @name = "CargoHandlingBillCommodityID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoHandling.CargoHandlingSubcommodity)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoHandling.CargoHandlingSubcommodityID, String.Empty, new { @id = "spn_CargoHandlingSubcommodityID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoHandling.CargoHandlingSubcommodity, new { @id = "CargoHandlingSubcommodity", @name = "CargoHandlingSubcommodity", @class = "form-control", @placeholder = "Enter Sub commodity" })
+                            @Html.HiddenFor(Model => Model.CargoHandling.CargoHandlingSubcommodityID, new { @id = "CargoHandlingSubcommodityID", @name = "CargoHandlingSubcommodityID" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoHandling.CargoHandlingTarrifHead)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoHandling.CargoHandlingTarrifHeadID, String.Empty, new { @id = "spn_CargoHandlingTarrifHeadID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoHandling.CargoHandlingTarrifHead, new { @id = "CargoHandlingTarrifHead", @name = "CargoHandlingTarrifHead", @class = "form-control", @placeholder = "Enter TarrifHead" })
+                            @Html.HiddenFor(Model => Model.CargoHandling.CargoHandlingTarrifHeadID, new { @id = "CargoHandlingTarrifHeadID", @name = "CargoHandlingTarrifHeadID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoHandling.CargoHandlingPackageType)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoHandling.CargoHandlingPackageTypeID, String.Empty, new { @id = "spn_CargoHandlingPackageTypeID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoHandling.CargoHandlingPackageType, new { @id = "CargoHandlingPackageType", @name = "CargoHandlingPackageType", @class = "form-control", @placeholder = "Enter PackageType" })
+                            @Html.HiddenFor(Model => Model.CargoHandling.CargoHandlingPackageTypeID, new { @id = "CargoHandlingPackageTypeID", @name = "CargoHandlingPackageTypeID" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoHandling.CargoHandlingUOM)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoHandling.CargoHandlingUOMID, String.Empty, new { @id = "spn_CargoHandlingUOMID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoHandling.CargoHandlingUOM, new { @id = "CargoHandlingUOM", @name = "CargoHandlingUOM", @class = "form-control", @placeholder = "Enter UOM" })
+                            @Html.HiddenFor(Model => Model.CargoHandling.CargoHandlingUOMID, new { @id = "CargoHandlingUOMID", @name = "CargoHandlingUOMID" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoHandling.CargoHandlingQTY)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoHandling.CargoHandlingQTY, String.Empty, new { @id = "spn_CargoHandlingQTY", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoHandling.CargoHandlingQTY, new { @id = "CargoHandlingQTY", @name = "CargoHandlingQTY", @class = "form-control", @placeholder = "Enter QTY", @maxlength = "11", @onblur = "CalculateCargoAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'CargoHandlingQTY')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoHandling.CargoHandlingWeight)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoHandling.CargoHandlingWeight, String.Empty, new { @id = "spn_CargoHandlingWeight", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoHandling.CargoHandlingWeight, new { @id = "CargoHandlingWeight", @name = "CargoHandlingWeight", @class = "form-control", @placeholder = "Enter Weight", @maxlength = "11", @onblur = "CalculateCargoAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'CargoHandlingWeight')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoHandling.CargoHandlingRate)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoHandling.CargoHandlingRate, String.Empty, new { @id = "spn_CargoHandlingRate", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoHandling.CargoHandlingRate, new { @id = "CargoHandlingRate", @name = "CargoHandlingRate", @class = "form-control", @placeholder = "Enter Rate", @maxlength = "11", @onblur = "CalculateCargoAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'CargoHandlingRate')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoHandling.CargoHandlingTotal)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoHandling.CargoHandlingTotal, String.Empty, new { @id = "spn_CargoHandlingTotal", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoHandling.CargoHandlingTotal, new { @id = "CargoHandlingTotal", @name = "CargoHandlingTotal", @class = "form-control", @placeholder = "Enter Total", @readonly = "true" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <input type="hidden" id="CargoHandlingDiscountamtBaseValue" />
+                            @Html.LabelFor(Model => Model.CargoHandling.CargoHandlingDiscountamt) @Html.ValidationMessageFor(Model => Model.CargoHandling.CargoHandlingDiscountamt, String.Empty, new { @id = "spn_CargoHandlingDiscountamt", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoHandling.CargoHandlingDiscountamt, new { @id = "CargoHandlingDiscountamt", @name = "CargoHandlingDiscountamt", @class = "form-control", @placeholder = "Enter Discount Amt", @onblur = "CalculateCargoAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'CargoHandlingDiscountamt')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoHandling.CargoHandlingGSTPer) @Html.ValidationMessageFor(Model => Model.CargoHandling.CargoHandlingGSTPer, String.Empty, new { @id = "spn_CargoHandlingGSTPer", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoHandling.CargoHandlingGSTPer, new { @id = "CargoHandlingGSTPer", @name = "CargoHandlingGSTPer", @class = "form-control", @placeholder = "Enter GST(%)", @onblur = "CalculateCargoAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'CargoHandlingGSTPer')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoHandling.CargoHandlingNetamount)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoHandling.CargoHandlingNetamount, String.Empty, new { @id = "spn_CargoHandlingNetamount", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoHandling.CargoHandlingNetamount, new { @id = "CargoHandlingNetamount", @name = "CargoHandlingNetamount", @class = "form-control", @placeholder = "Enter Net Amount", @readonly = "true" })
+                        </div>
+                    </div>
+                    <div class="col-md-2 pull-right">
+                        <div class="form-group pull-right">
+                            <br />
+                            <button type="button" onclick="return AddtrnPreProformaCargoHandling()" id="btnCargoHandlingGW" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-primary" id="tmpbtnCargoHandlingGW" style="display:none;">Saving...</button>
+                            <a onclick="CleartrnPreProformaCargoHandling()" class="btn btn-danger">Clear</a>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="overflow: scroll;">
+                        <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Cargo Type </th>
+                                    <th>Bill Commodity </th>
+                                    <th>Sub commodity </th>
+                                    <th>Tarrif Head </th>
+                                    <th>Package Type </th>
+                                    <th>UOM </th>
+                                    <th>Qty </th>
+                                    <th>Weight </th>
+                                    <th>Rate </th>
+                                    <th>Total </th>
+                                    <th>Discount amt </th>
+                                    <th>GST(%) </th>
+                                    <th>Net amount </th>
+                                    <th class="freezeLastColumn">Action </th>
+                                </tr>
+                            </thead>
+                            <tbody id="CargoDetails"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (Model != null && Model.LSTHandlingTypes[2].IsChecked)
+    {
+        <div class="row"  onclick="SetfuncationModelValue('ContainerBasedStorage')">
+            <div class="box">
+                <div class="box-header with-border" data-widget="collapse">
+                    <h4><b>@Model.LSTHandlingTypes[2].Text </b></h4>
+                </div>
+                <div class="box-body">
+                    @Html.HiddenFor(Model => Model.ContainerBasedStorage.trnPreProformaContainerBasedStorageID, new { @id = "trnPreProformaContainerBasedStorageID", @name = "trnPreProformaContainerBasedStorageID" })
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageContSizeName)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageContSizeID, String.Empty, new { @id = "spn_ContainerBasedStorageContSizeID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageContSizeName, new { @id = "ContainerBasedStorageContSizeName", @name = "ContainerBasedStorageContSizeName", @class = "form-control", @placeholder = "Enter Cont Size" })
+                            @Html.HiddenFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageContSizeID, new { @id = "ContainerBasedStorageContSizeID", @name = "ContainerBasedStorageContSizeID" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageNoofContainers)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageNoofContainers, String.Empty, new { @id = "spn_ContainerBasedStorageNoofContainers", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageNoofContainers, new { @id = "ContainerBasedStorageNoofContainers", @name = "ContainerBasedStorageNoofContainers", @class = "form-control", @placeholder = "Enter No of Containers", @maxlength = "11", @onblur = "CalculateContainerBasedStorageAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'ContainerBasedStorageNoofContainers')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageDeliveryMode)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageDeliveryMode, String.Empty, new { @id = "spn_ContainerBasedStorageDeliveryMode", @class = "help-inline text-red" })
+                            @Html.DropDownListFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageDeliveryMode, Model.ContainerBasedStorage.ContainerBasedStorageDDLDeliveryMode, new { @onchange = "EnabledDisaleComodity('ContainerBasedStorageDeliveryMode','ContainerBasedStorageBillCommodity');", @id = "ContainerBasedStorageDeliveryMode", @name = "ContainerBasedStorageDeliveryMode", @class = "form-control", @placeholder = "Enter Delivery Mode" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageCargoType)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageCargoTypeID, String.Empty, new { @id = "spn_ContainerBasedStorageCargoTypeID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageCargoType, new { @id = "ContainerBasedStorageCargoType", @name = "ContainerBasedStorageCargoType", @class = "form-control", @placeholder = "Enter Cargo Type" })
+                            @Html.HiddenFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageCargoTypeID, new { @id = "ContainerBasedStorageCargoTypeID", @name = "ContainerBasedStorageCargoTypeID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageBillCommodity)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageBillCommodityID, String.Empty, new { @id = "spn_ContainerBasedStorageBillCommodityID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageBillCommodity, new { @id = "ContainerBasedStorageBillCommodity", @name = "ContainerBasedStorageBillCommodity", @class = "form-control", @placeholder = "Enter Bill Commodity" })
+                            @Html.HiddenFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageBillCommodityID, new { @id = "ContainerBasedStorageBillCommodityID", @name = "ContainerBasedStorageBillCommodityID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageSubcommodity)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageSubcommodityID, String.Empty, new { @id = "spn_ContainerBasedStorageSubcommodityID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageSubcommodity, new { @id = "ContainerBasedStorageSubcommodity", @name = "ContainerBasedStorageSubcommodity", @class = "form-control", @placeholder = "Enter Sub commodity" })
+                            @Html.HiddenFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageSubcommodityID, new { @id = "ContainerBasedStorageSubcommodityID", @name = "ContainerBasedStorageSubcommodityID" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageTarrifHead)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageTarrifHeadID, String.Empty, new { @id = "spn_ContainerBasedStorageTarrifHeadID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageTarrifHead, new { @id = "ContainerBasedStorageTarrifHead", @name = "ContainerBasedStorageTarrifHead", @class = "form-control", @placeholder = "Enter TarrifHead" })
+                            @Html.HiddenFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageTarrifHeadID, new { @id = "ContainerBasedStorageTarrifHeadID", @name = "ContainerBasedStorageTarrifHeadID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageStorageStartDate)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageStorageStartDate, String.Empty, new { @id = "spn_ContainerBasedStorageStorageStartDate", @class = "help-inline text-red" })
+
+                            @Html.TextBoxFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageStorageStartDate, new { @id = "ContainerBasedStorageStorageStartDate", @name = "ContainerBasedStorageStorageStartDate", @class = "form-control DatePicker", @placeholder = "Enter Storage From Date", @onblur = "ContainerBasedStoragecalculateTermEndDate()"})
+
+                            @Html.HiddenFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageStorageEndDate, new { @id = "ContainerBasedStorageStorageEndDate", @name = "ContainerBasedStorageStorageEndDate" })
+
+
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>End Date :</label>
+                            <label class="form-control-lable"><span id="ContainerBasedStoragetxtEndDate"></span></label>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageNoOfStoragePeriod)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageNoOfStoragePeriod, String.Empty, new { @id = "spn_ContainerBasedStorageNoOfStoragePeriod", @class = "help-inline text-red" })
+                            @Html.DropDownListFor(model => Model.ContainerBasedStorage.ContainerBasedStorageNoOfStoragePeriod, Model.ContainerBasedStorage.ContainerBasedStorageSelectNoOfStoragePeriod, new { @class = "form-control", @id = "ContainerBasedStorageNoOfStoragePeriod", @name = "ContainerBasedStorageNoOfStoragePeriod", @onchange = "ContainerBasedStoragecalculateTermEndDate()", @onblur = "GetDifferenceDays()" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageStoragePeriod)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageStoragePeriod, String.Empty, new { @id = "spn_ContainerBasedStorageStoragePeriod", @class = "help-inline text-red" })
+                            @Html.DropDownListFor(model => Model.ContainerBasedStorage.ContainerBasedStorageStoragePeriod, Model.ContainerBasedStorage.ContainerBasedStorageselectStoragePeriod, new { @class = "form-control", @id = "ContainerBasedStorageStoragePeriod", @name = "ContainerBasedStorageStoragePeriod", @onchange = "ContainerBasedStoragecalculateTermEndDate()", @onblur = "GetDifferenceDays()" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageRate)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageRate, String.Empty, new { @id = "spn_ContainerBasedStorageRate", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageRate, new { @id = "ContainerBasedStorageRate", @name = "ContainerBasedStorageRate", @class = "form-control", @placeholder = "Enter Rate", @maxlength = "11", @onblur = "CalculateContainerBasedStorageAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'ContainerBasedStorageRate')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageTotal)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageTotal, String.Empty, new { @id = "spn_ContainerBasedStorageTotal", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageTotal, new { @id = "ContainerBasedStorageTotal", @name = "ContainerBasedStorageTotal", @class = "form-control", @placeholder = "Enter Total", @readonly = "true" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <input type="hidden" id="ContainerBasedStorageDiscountamtBase" />
+                            @Html.LabelFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageDiscountamt) @Html.ValidationMessageFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageDiscountamt, String.Empty, new { @id = "spn_ContainerBasedStorageDiscountamt", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageDiscountamt, new { @id = "ContainerBasedStorageDiscountamt", @name = "ContainerBasedStorageDiscountamt", @class = "form-control", @placeholder = "Enter Discount Amt", @onblur = "CalculateContainerBasedStorageAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'ContainerBasedStorageDiscountamt')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageGSTPer) @Html.ValidationMessageFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageGSTPer, String.Empty, new { @id = "spn_ContainerBasedStorageGSTPer", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageGSTPer, new { @id = "ContainerBasedStorageGSTPer", @name = "ContainerBasedStorageGSTPer", @class = "form-control", @placeholder = "Enter GST(%)", @onblur = "CalculateContainerBasedStorageAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'ContainerBasedStorageGSTPer')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageNetamount)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageNetamount, String.Empty, new { @id = "spn_ContainerBasedStorageNetamount", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerBasedStorage.ContainerBasedStorageNetamount, new { @id = "ContainerBasedStorageNetamount", @name = "ContainerBasedStorageNetamount", @class = "form-control", @placeholder = "Enter Net Amount", @readonly = "true" })
+                        </div>
+                    </div>
+                    <div class="col-md-2 pull-right">
+                        <div class="form-group pull-right">
+                            <br />
+                            <button type="button" onclick="return AddtrnPreProformaContainerBasedStorage()" id="btnContainerBasedStorageGW" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-primary" id="tmpbtnContainerBasedStorageGW" style="display:none;">Saving...</button>
+                            <a onclick="CleartrnPreProformaContainerBasedStorage()" class="btn btn-danger">Clear</a>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="overflow: scroll;">
+                        <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Cont Size</th>
+                                    <th>No of Containers</th>
+                                    <th>Delivery Mode</th>
+                                    <th>Cargo Type </th>
+                                    <th>Bill Commodity </th>
+                                    <th>Sub-Commodity </th>
+                                    <th>Tarrif Head </th>
+                                    <th>From Date </th>
+                                    <th>Pattern </th>
+                                    <th>Pattern-Time </th>
+                                    <th>End Date </th>
+                                    <th>Rate </th>
+                                    <th>Total </th>
+                                    <th>Discount amt </th>
+                                    <th>GST(%) </th>
+                                    <th>Net amount </th>
+                                    <th class="freezeLastColumn">Action </th>
+                                </tr>
+                            </thead>
+                            <tbody id="ContainerBasedStorageDetails"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (Model != null && Model.LSTHandlingTypes[3].IsChecked)
+    {
+        <div class="row"  onclick="SetfuncationModelValue('CargoBasedStorage')">
+            <div class="box">
+                <div class="box-header with-border" data-widget="collapse">
+                    <h4><b>@Model.LSTHandlingTypes[3].Text </b></h4>
+                </div>
+                <div class="box-body">
+                    @Html.HiddenFor(Model => Model.CargoBasedStorage.trnPreProformaCargoBasedStorageID, new { @id = "trnPreProformaCargoBasedStorageID", @name = "trnPreProformaCargoBasedStorageID" })
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoBasedStorage.CargoBasedStorageCargoType)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoBasedStorage.CargoBasedStorageCargoTypeID, String.Empty, new { @id = "spn_CargoBasedStorageCargoTypeID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoBasedStorage.CargoBasedStorageCargoType, new { @id = "CargoBasedStorageCargoType", @name = "CargoBasedStorageCargoType", @class = "form-control", @placeholder = "Enter Cargo Type" })
+                            @Html.HiddenFor(Model => Model.CargoBasedStorage.CargoBasedStorageCargoTypeID, new { @id = "CargoBasedStorageCargoTypeID", @name = "CargoBasedStorageCargoTypeID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoBasedStorage.CargoBasedStorageBillCommodity)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoBasedStorage.CargoBasedStorageBillCommodityID, String.Empty, new { @id = "spn_CargoBasedStorageBillCommodityID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoBasedStorage.CargoBasedStorageBillCommodity, new { @id = "CargoBasedStorageBillCommodity", @name = "CargoBasedStorageBillCommodity", @class = "form-control", @placeholder = "Enter Bill Commodity" })
+                            @Html.HiddenFor(Model => Model.CargoBasedStorage.CargoBasedStorageBillCommodityID, new { @id = "CargoBasedStorageBillCommodityID", @name = "CargoBasedStorageBillCommodityID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoBasedStorage.CargoBasedStorageSubcommodity)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoBasedStorage.CargoBasedStorageSubcommodityID, String.Empty, new { @id = "spn_CargoBasedStorageSubcommodityID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoBasedStorage.CargoBasedStorageSubcommodity, new { @id = "CargoBasedStorageSubcommodity", @name = "CargoBasedStorageSubcommodity", @class = "form-control", @placeholder = "Enter Sub commodity" })
+                            @Html.HiddenFor(Model => Model.CargoBasedStorage.CargoBasedStorageSubcommodityID, new { @id = "CargoBasedStorageSubcommodityID", @name = "CargoBasedStorageSubcommodityID" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoBasedStorage.CargoBasedStorageTarrifHead)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoBasedStorage.CargoBasedStorageTarrifHeadID, String.Empty, new { @id = "spn_CargoBasedStorageTarrifHeadID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoBasedStorage.CargoBasedStorageTarrifHead, new { @id = "CargoBasedStorageTarrifHead", @name = "CargoBasedStorageTarrifHead", @class = "form-control", @placeholder = "Enter TarrifHead" })
+                            @Html.HiddenFor(Model => Model.CargoBasedStorage.CargoBasedStorageTarrifHeadID, new { @id = "CargoBasedStorageTarrifHeadID", @name = "CargoBasedStorageTarrifHeadID" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoBasedStorage.CargoBasedStorageUOM)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoBasedStorage.CargoBasedStorageUOMID, String.Empty, new { @id = "spn_CargoBasedStorageUOMID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoBasedStorage.CargoBasedStorageUOM, new { @id = "CargoBasedStorageUOM", @name = "CargoBasedStorageUOM", @class = "form-control", @placeholder = "Enter UOM" })
+                            @Html.HiddenFor(Model => Model.CargoBasedStorage.CargoBasedStorageUOMID, new { @id = "CargoBasedStorageUOMID", @name = "CargoBasedStorageUOMID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoBasedStorage.CargoBasedStorageStorageStartDate)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoBasedStorage.CargoBasedStorageStorageStartDate, String.Empty, new { @id = "spn_CargoBasedStorageStorageStartDate", @class = "help-inline text-red" })
+
+                            @Html.TextBoxFor(Model => Model.CargoBasedStorage.CargoBasedStorageStorageStartDate, new { @id = "CargoBasedStorageStorageStartDate", @name = "CargoBasedStorageStorageStartDate", @class = "form-control DatePicker", @placeholder = "Enter Storage From Date", @onblur = "CargoBasedStoragecalculateTermEndDate()"})
+
+                            @Html.HiddenFor(Model => Model.CargoBasedStorage.CargoBasedStorageStorageEndDate, new { @id = "CargoBasedStorageStorageEndDate", @name = "CargoBasedStorageStorageEndDate" })
+
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>End Date :</label>
+                            <label class="form-control-lable"><span id="CargoBasedStoragetxtEndDate"></span></label>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoBasedStorage.CargoBasedStorageNoOfStoragePeriod)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoBasedStorage.CargoBasedStorageNoOfStoragePeriod, String.Empty, new { @id = "spn_CargoBasedStorageNoOfStoragePeriod", @class = "help-inline text-red" })
+                            @Html.DropDownListFor(model => Model.CargoBasedStorage.CargoBasedStorageNoOfStoragePeriod, Model.CargoBasedStorage.CargoBasedStorageSelectNoOfStoragePeriod, new { @class = "form-control", @id = "CargoBasedStorageNoOfStoragePeriod", @name = "CargoBasedStorageNoOfStoragePeriod", @onchange = "CargoBasedStoragecalculateTermEndDate()" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoBasedStorage.CargoBasedStorageStoragePeriod)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoBasedStorage.CargoBasedStorageStoragePeriod, String.Empty, new { @id = "spn_CargoBasedStorageStoragePeriod", @class = "help-inline text-red" })
+                            @Html.DropDownListFor(model => Model.CargoBasedStorage.CargoBasedStorageStoragePeriod, Model.CargoBasedStorage.CargoBasedStorageselectStoragePeriod, new { @class = "form-control", @id = "CargoBasedStorageStoragePeriod", @name = "CargoBasedStorageStoragePeriod", @onchange = "CargoBasedStoragecalculateTermEndDate()" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoBasedStorage.CargoBasedStorageArea)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoBasedStorage.CargoBasedStorageArea, String.Empty, new { @id = "spn_CargoBasedStorageArea", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoBasedStorage.CargoBasedStorageArea, new { @id = "CargoBasedStorageArea", @name = "CargoBasedStorageArea", @class = "form-control", @placeholder = "Enter Area", @maxlength = "11", @onblur = "CalculateCargoBasedStorageAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'CargoBasedStorageArea')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoBasedStorage.CargoBasedStorageQTY)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoBasedStorage.CargoBasedStorageQTY, String.Empty, new { @id = "spn_CargoBasedStorageQTY", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoBasedStorage.CargoBasedStorageQTY, new { @id = "CargoBasedStorageQTY", @name = "CargoBasedStorageQTY", @class = "form-control", @placeholder = "Enter QTY", @maxlength = "11", @onblur = "CalculateCargoBasedStorageAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'CargoBasedStorageQTY')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoBasedStorage.CargoBasedStorageWeight)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoBasedStorage.CargoBasedStorageWeight, String.Empty, new { @id = "spn_CargoBasedStorageWeight", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoBasedStorage.CargoBasedStorageWeight, new { @id = "CargoBasedStorageWeight", @name = "CargoBasedStorageWeight", @class = "form-control", @placeholder = "Enter Weight", @maxlength = "11", @onblur = "CalculateCargoBasedStorageAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'CargoBasedStorageWeight')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoBasedStorage.CargoBasedStorageRate)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoBasedStorage.CargoBasedStorageRate, String.Empty, new { @id = "spn_CargoBasedStorageRate", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoBasedStorage.CargoBasedStorageRate, new { @id = "CargoBasedStorageRate", @name = "CargoBasedStorageRate", @class = "form-control", @placeholder = "Enter Rate", @maxlength = "11", @onblur = "CalculateCargoBasedStorageAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'CargoBasedStorageRate')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoBasedStorage.CargoBasedStorageTotal)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoBasedStorage.CargoBasedStorageTotal, String.Empty, new { @id = "spn_CargoBasedStorageTotal", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoBasedStorage.CargoBasedStorageTotal, new { @id = "CargoBasedStorageTotal", @name = "CargoBasedStorageTotal", @class = "form-control", @placeholder = "Enter Total", @readonly = "true" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <input type="hidden" id="CargoBasedStorageDiscountamtBase" />
+                            @Html.LabelFor(Model => Model.CargoBasedStorage.CargoBasedStorageDiscountamt) @Html.ValidationMessageFor(Model => Model.CargoBasedStorage.CargoBasedStorageDiscountamt, String.Empty, new { @id = "spn_CargoBasedStorageDiscountamt", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoBasedStorage.CargoBasedStorageDiscountamt, new { @id = "CargoBasedStorageDiscountamt", @name = "CargoBasedStorageDiscountamt", @class = "form-control", @placeholder = "Enter Discount Amt", @onblur = "CalculateCargoBasedStorageAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'CargoBasedStorageDiscountamt')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoBasedStorage.CargoBasedStorageGSTPer) @Html.ValidationMessageFor(Model => Model.CargoBasedStorage.CargoBasedStorageGSTPer, String.Empty, new { @id = "spn_CargoBasedStorageGSTPer", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoBasedStorage.CargoBasedStorageGSTPer, new { @id = "CargoBasedStorageGSTPer", @name = "CargoBasedStorageGSTPer", @class = "form-control", @placeholder = "Enter GST(%)", @onblur = "CalculateCargoBasedStorageAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'CargoBasedStorageGSTPer')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoBasedStorage.CargoBasedStorageNetamount)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoBasedStorage.CargoBasedStorageNetamount, String.Empty, new { @id = "spn_CargoBasedStorageNetamount", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoBasedStorage.CargoBasedStorageNetamount, new { @id = "CargoBasedStorageNetamount", @name = "CargoBasedStorageNetamount", @class = "form-control", @placeholder = "Enter Net Amount", @readonly = "true" })
+                        </div>
+                    </div>
+                    <div class="col-md-2 pull-right">
+                        <div class="form-group pull-right">
+                            <br />
+                            <button type="button" onclick="return AddtrnPreProformaCargoBasedStorage()" id="btnCargoBasedStorageGW" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-primary" id="tmpbtnCargoBasedStorageGW" style="display:none;">Saving...</button>
+                            <a onclick="CleartrnPreProformaCargoBasedStorage()" class="btn btn-danger">Clear</a>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="overflow: scroll;">
+                        <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Cargo Type </th>
+                                    <th>Bill Commodity </th>
+                                    <th>Sub-Commodity </th>
+                                    <th>Tarrif Head </th>
+                                    <th>UOM </th>
+                                    <th>From Date </th>
+                                    <th>Pattern </th>
+                                    <th>Pattern-Time </th>
+                                    <th>End Date </th>
+                                    <th>Area </th>
+                                    <th>Qty </th>
+                                    <th>Weight </th>
+                                    <th>Rate </th>
+                                    <th>Total </th>
+                                    <th>Discount amt </th>
+                                    <th>GST(%) </th>
+                                    <th>Net amount </th>
+                                    <th class="freezeLastColumn">Action </th>
+                                </tr>
+                            </thead>
+                            <tbody id="CargoBaseStorageDetails"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (Model != null && Model.LSTHandlingTypes[4].IsChecked)
+    {
+        <div class="row"  onclick="SetfuncationModelValue('ReserveAreaStorage')" >
+            <div class="box">
+                <div class="box-header with-border" data-widget="collapse">
+                    <h4><b>@Model.LSTHandlingTypes[4].Text </b></h4>
+                </div>
+                <div class="box-body">
+                    @Html.HiddenFor(Model => Model.ReserveAreaStorage.trnPreProformaReserveAreaStorageID, new { @id = "trnPreProformaReserveAreaStorageID", @name = "trnPreProformaReserveAreaStorageID" })
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageCargoType)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageCargoTypeID, String.Empty, new { @id = "spn_ReserveAreaStorageCargoTypeID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageCargoType, new { @id = "ReserveAreaStorageCargoType", @name = "ReserveAreaStorageCargoType", @class = "form-control", @placeholder = "Enter Cargo Type" })
+                            @Html.HiddenFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageCargoTypeID, new { @id = "ReserveAreaStorageCargoTypeID", @name = "ReserveAreaStorageCargoTypeID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageBillCommodity)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageBillCommodityID, String.Empty, new { @id = "spn_ReserveAreaStorageBillCommodityID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageBillCommodity, new { @id = "ReserveAreaStorageBillCommodity", @name = "ReserveAreaStorageBillCommodity", @class = "form-control", @placeholder = "Enter Bill Commodity" })
+                            @Html.HiddenFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageBillCommodityID, new { @id = "ReserveAreaStorageBillCommodityID", @name = "ReserveAreaStorageBillCommodityID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageSubcommodity)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageSubcommodityID, String.Empty, new { @id = "spn_ReserveAreaStorageSubcommodityID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageSubcommodity, new { @id = "ReserveAreaStorageSubcommodity", @name = "ReserveAreaStorageSubcommodity", @class = "form-control", @placeholder = "Enter Sub commodity" })
+                            @Html.HiddenFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageSubcommodityID, new { @id = "ReserveAreaStorageSubcommodityID", @name = "ReserveAreaStorageSubcommodityID" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageTarrifHead)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageTarrifHeadID, String.Empty, new { @id = "spn_ReserveAreaStorageTarrifHeadID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageTarrifHead, new { @id = "ReserveAreaStorageTarrifHead", @name = "ReserveAreaStorageTarrifHead", @class = "form-control", @placeholder = "Enter TarrifHead" })
+                            @Html.HiddenFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageTarrifHeadID, new { @id = "ReserveAreaStorageTarrifHeadID", @name = "ReserveAreaStorageTarrifHeadID" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageUOM)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageUOMID, String.Empty, new { @id = "spn_ReserveAreaStorageUOMID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageUOM, new { @id = "ReserveAreaStorageUOM", @name = "ReserveAreaStorageUOM", @class = "form-control", @placeholder = "Enter UOM" })
+                            @Html.HiddenFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageUOMID, new { @id = "ReserveAreaStorageUOMID", @name = "ReserveAreaStorageUOMID" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageArea)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageArea, String.Empty, new { @id = "spn_ReserveAreaStorageArea", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageArea, new { @id = "ReserveAreaStorageArea", @name = "ReserveAreaStorageArea", @class = "form-control", @placeholder = "Enter Area", @maxlength = "11", @onblur = "CalculateReserveAreaStorageAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'ReserveAreaStorageArea')" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageStorageStartDate)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageStorageStartDate, String.Empty, new { @id = "spn_ReserveAreaStorageStorageStartDate", @class = "help-inline text-red" })
+
+                            @Html.TextBoxFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageStorageStartDate, new { @id = "ReserveAreaStorageStorageStartDate", @name = "ReserveAreaStorageStorageStartDate", @class = "form-control DatePicker", @placeholder = "Enter Storage From Date", @onblur = "ReserveAreaStoragecalculateTermEndDate()"})
+
+                            @Html.HiddenFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageStorageEndDate, new { @id = "ReserveAreaStorageStorageEndDate", @name = "ReserveAreaStorageStorageEndDate" })
+
+                            @*<label>End Date :<span id="ReserveAreaStoragetxtEndDate"></span></label>*@
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>End Date :</label>
+                            <label class="form-control-lable"><span id="ReserveAreaStoragetxtEndDate"></span></label>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageNoOfStoragePeriod)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageNoOfStoragePeriod, String.Empty, new { @id = "spn_ReserveAreaStorageNoOfStoragePeriod", @class = "help-inline text-red" })
+                            @Html.DropDownListFor(model => Model.ReserveAreaStorage.ReserveAreaStorageNoOfStoragePeriod, Model.ReserveAreaStorage.ReserveAreaStorageSelectNoOfStoragePeriod, new { @class = "form-control", @id = "ReserveAreaStorageNoOfStoragePeriod", @name = "ReserveAreaStorageNoOfStoragePeriod", @onchange = "ReserveAreaStoragecalculateTermEndDate()" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageStoragePeriod)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageStoragePeriod, String.Empty, new { @id = "spn_ReserveAreaStorageStoragePeriod", @class = "help-inline text-red" })
+                            @Html.DropDownListFor(model => Model.ReserveAreaStorage.ReserveAreaStorageStoragePeriod, Model.ReserveAreaStorage.ReserveAreaStorageselectStoragePeriod, new { @class = "form-control", @id = "ReserveAreaStorageStoragePeriod", @name = "ReserveAreaStorageStoragePeriod", @onchange = "ReserveAreaStoragecalculateTermEndDate()" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageRate)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageRate, String.Empty, new { @id = "spn_ReserveAreaStorageRate", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageRate, new { @id = "ReserveAreaStorageRate", @name = "ReserveAreaStorageRate", @class = "form-control", @placeholder = "Enter Rate", @maxlength = "11", @onblur = "CalculateReserveAreaStorageAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'ReserveAreaStorageRate')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageTotal)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageTotal, String.Empty, new { @id = "spn_ReserveAreaStorageTotal", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageTotal, new { @id = "ReserveAreaStorageTotal", @name = "ReserveAreaStorageTotal", @class = "form-control", @placeholder = "Enter Total", @readonly = "true" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <input type="hidden" id="ReserveAreaStorageDiscountamtBase" />
+                            @Html.LabelFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageDiscountamt) @Html.ValidationMessageFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageDiscountamt, String.Empty, new { @id = "spn_ReserveAreaStorageDiscountamt", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageDiscountamt, new { @id = "ReserveAreaStorageDiscountamt", @name = "ReserveAreaStorageDiscountamt", @class = "form-control", @placeholder = "Enter Discount Amt", @onblur = "CalculateReserveAreaStorageAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'ReserveAreaStorageDiscountamt')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageGSTPer) @Html.ValidationMessageFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageGSTPer, String.Empty, new { @id = "spn_ReserveAreaStorageGSTPer", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageGSTPer, new { @id = "ReserveAreaStorageGSTPer", @name = "ReserveAreaStorageGSTPer", @class = "form-control", @placeholder = "Enter GST(%)", @onblur = "CalculateReserveAreaStorageAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'ReserveAreaStorageGSTPer')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageNetamount)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageNetamount, String.Empty, new { @id = "spn_ReserveAreaStorageNetamount", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ReserveAreaStorage.ReserveAreaStorageNetamount, new { @id = "ReserveAreaStorageNetamount", @name = "ReserveAreaStorageNetamount", @class = "form-control", @placeholder = "Enter Net Amount", @readonly = "true" })
+                        </div>
+                    </div>
+                    <div class="col-md-2 pull-right">
+                        <div class="form-group pull-right">
+                            <br />
+                            <button type="button" onclick="return AddtrnPreProformaReserveAreaStorage()" id="btnReserveAreaStorageGW" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-primary" id="tmpbtnReserveAreaStorageGW" style="display:none;">Saving...</button>
+                            <a onclick="CleartrnPreProformaReserveAreaStorage()" class="btn btn-danger">Clear</a>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="overflow: scroll;">
+                        <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Cargo Type </th>
+                                    <th>Bill Commodity </th>
+                                    <th>Sub-Commodity </th>
+                                    <th>Tarrif Head </th>
+                                    <th>UOM </th>
+                                    <th>From Date </th>
+                                    <th>Pattern </th>
+                                    <th>Pattern-Time </th>
+                                    <th>End Date </th>
+                                    <th>Area </th>
+                                    <th>Rate </th>
+                                    <th>Total </th>
+                                    <th>Discount amt </th>
+                                    <th>GST(%) </th>
+                                    <th>Net amount </th>
+                                    <th class="freezeLastColumn">Action </th>
+                                </tr>
+                            </thead>
+                            <tbody id="ReserveAreaStorageDetails"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (Model != null && Model.LSTHandlingTypes[5].IsChecked)
+    {
+        <div class="row"  onclick="SetfuncationModelValue('ContainerSlabwiseStorage')">
+            <div class="box">
+                <div class="box-header with-border" data-widget="collapse">
+                    <h4><b>@Model.LSTHandlingTypes[5].Text </b></h4>
+                </div>
+                <div class="box-body">
+                    @Html.HiddenFor(Model => Model.ContainerSlabwiseStorage.trnPreProformaContainerSlabwiseStorageID, new { @id = "trnPreProformaContainerSlabwiseStorageID", @name = "trnPreProformaContainerSlabwiseStorageID" })
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageContSizeName)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageContSizeID, String.Empty, new { @id = "spn_ContainerSlabwiseStorageContSizeID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageContSizeName, new { @id = "ContainerSlabwiseStorageContSizeName", @name = "ContainerSlabwiseStorageContSizeName", @class = "form-control", @placeholder = "Enter Cont Size" })
+                            @Html.HiddenFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageContSizeID, new { @id = "ContainerSlabwiseStorageContSizeID", @name = "ContainerSlabwiseStorageContSizeID" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageNoofContainers)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageNoofContainers, String.Empty, new { @id = "spn_ContainerSlabwiseStorageNoofContainers", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageNoofContainers, new { @id = "ContainerSlabwiseStorageNoofContainers", @name = "ContainerSlabwiseStorageNoofContainers", @class = "form-control", @placeholder = "Enter No of Containers", @maxlength = "11", @onblur = "GetGeneralTriffDetails();CalculateContainerSlabwiseStorageAMT();", @onkeypress = "return isNumberWithTwoDecimal(event,'ContainerSlabwiseStorageNoofContainers')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageCargoType)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageCargoTypeID, String.Empty, new { @id = "spn_ContainerSlabwiseStorageCargoTypeID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageCargoType, new { @id = "ContainerSlabwiseStorageCargoType", @name = "ContainerSlabwiseStorageCargoType", @class = "form-control", @placeholder = "Enter Cargo Type" })
+                            @Html.HiddenFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageCargoTypeID, new { @id = "ContainerSlabwiseStorageCargoTypeID", @name = "ContainerSlabwiseStorageCargoTypeID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageBillCommodity)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageBillCommodityID, String.Empty, new { @id = "spn_ContainerSlabwiseStorageBillCommodityID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageBillCommodity, new { @id = "ContainerSlabwiseStorageBillCommodity", @name = "ContainerSlabwiseStorageBillCommodity", @class = "form-control", @placeholder = "Enter Bill Commodity" })
+                            @Html.HiddenFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageBillCommodityID, new { @id = "ContainerSlabwiseStorageBillCommodityID", @name = "ContainerSlabwiseStorageBillCommodityID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageSubcommodity)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageSubcommodityID, String.Empty, new { @id = "spn_ContainerSlabwiseStorageSubcommodityID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageSubcommodity, new { @id = "ContainerSlabwiseStorageSubcommodity", @name = "ContainerSlabwiseStorageSubcommodity", @class = "form-control", @placeholder = "Enter Sub commodity" })
+                            @Html.HiddenFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageSubcommodityID, new { @id = "ContainerSlabwiseStorageSubcommodityID", @name = "ContainerSlabwiseStorageSubcommodityID" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageTarrifHead)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageTarrifHeadID, String.Empty, new { @id = "spn_ContainerSlabwiseStorageTarrifHeadID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageTarrifHead, new { @id = "ContainerSlabwiseStorageTarrifHead", @name = "ContainerSlabwiseStorageTarrifHead", @class = "form-control", @placeholder = "Enter TarrifHead" })
+                            @Html.HiddenFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageTarrifHeadID, new { @id = "ContainerSlabwiseStorageTarrifHeadID", @name = "ContainerSlabwiseStorageTarrifHeadID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageStorageStartDate)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageStorageStartDate, String.Empty, new { @id = "spn_ContainerSlabwiseStorageStorageStartDate", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageStorageStartDate, new { @id = "ContainerSlabwiseStorageStorageStartDate", @name = "ContainerSlabwiseStorageStorageStartDate", @onblur = "getdatediff();GetGeneralTriffDetails();", @class = "form-control DatePicker", @placeholder = "Enter Storage From Date"})
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageStorageEndDate)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageStorageStartDate, String.Empty, new { @id = "spn_ContainerSlabwiseStorageStorageEndDate", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageStorageEndDate, new { @id = "ContainerSlabwiseStorageStorageEndDate", @name = "ContainerSlabwiseStorageStorageEndDate", @onblur = "getdatediff();GetGeneralTriffDetails();", @class = "form-control DatePicker", @placeholder = "Enter Storage End Date"})
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label>Day Diff.</label>
+                            <label class="form-control-lable"><span id="ReserveAreaStoragetxtDiffDay"></span></label>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <input type="hidden" id="ContainerSlabwiseStorageTotalBase" name="ContainerSlabwiseStorageTotalBase" />
+                            @Html.LabelFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageTotal)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageTotal, String.Empty, new { @id = "spn_ContainerSlabwiseStorageTotal", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageTotal, new { @id = "ContainerSlabwiseStorageTotal", @name = "ContainerSlabwiseStorageTotal", @class = "form-control", @placeholder = "Enter Total", @onblur = "CalculateContainerSlabwiseStorageAMT()" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <input type="hidden" id="ContainerSlabwiseStorageDiscountamtBase" />
+                            @Html.LabelFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageDiscountamt) @Html.ValidationMessageFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageDiscountamt, String.Empty, new { @id = "spn_ContainerSlabwiseStorageDiscountamt", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageDiscountamt, new { @id = "ContainerSlabwiseStorageDiscountamt", @name = "ContainerSlabwiseStorageDiscountamt", @class = "form-control", @placeholder = "Enter Discount Amt", @onblur = "CalculateContainerSlabwiseStorageAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'ContainerSlabwiseStorageDiscountamt')" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageGSTPer) @Html.ValidationMessageFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageGSTPer, String.Empty, new { @id = "spn_ContainerSlabwiseStorageGSTPer", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageGSTPer, new { @id = "ContainerSlabwiseStorageGSTPer", @name = "ContainerSlabwiseStorageGSTPer", @class = "form-control", @placeholder = "Enter GST(%)", @onblur = "CalculateContainerSlabwiseStorageAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'ContainerSlabwiseStorageGSTPer')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageNetamount)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageNetamount, String.Empty, new { @id = "spn_ContainerSlabwiseStorageNetamount", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageNetamount, new { @id = "ContainerSlabwiseStorageNetamount", @name = "ContainerSlabwiseStorageNetamount", @class = "form-control", @placeholder = "Enter Net Amount", @readonly = "true" })
+                        </div>
+                    </div>
+                    <div class="col-md-2 pull-right">
+                        <div class="form-group pull-right">
+                            <br />
+                            <button type="button" onclick="return AddtrnPreProformaContainerSlabwiseStorage()" id="btnContainerSlabwiseStorageGW" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-primary" id="tmpbtnContainerSlabwiseStorageGW" style="display:none;">Saving...</button>
+                            <a onclick="CleartrnPreProformaContainerSlabwiseStorage()" class="btn btn-danger">Clear</a>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="overflow-x:scroll">
+                        <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Cont Size</th>
+                                    <th>No of Containers</th>
+                                    <th>Cargo Type </th>
+                                    <th>Bill Commodity </th>
+                                    <th>Sub Commodity </th>
+                                    <th>Tarrif Head </th>
+                                    <th>From Date </th>
+                                    <th>End Date </th>
+                                    <th>Total </th>
+                                    <th>Discount amt </th>
+                                    <th>GST(%) </th>
+                                    <th>Net amount </th>
+                                    <th class="freezeLastColumn">Action </th>
+                                </tr>
+                            </thead>
+                            <tbody id="ContainerSlabwiseStorageDetails"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (Model != null && Model.LSTHandlingTypes[6].IsChecked)
+    {
+        <div class="row"  onclick="SetfuncationModelValue('CargoSlabwiseStorage')">
+            <div class="box">
+                <div class="box-header with-border" data-widget="collapse">
+                    <h4><b>@Model.LSTHandlingTypes[6].Text </b></h4>
+                </div>
+                <div class="box-body">
+                    @Html.HiddenFor(Model => Model.CargoSlabwiseStorage.trnPreProformaCargoSlabwiseStorageID, new { @id = "trnPreProformaCargoSlabwiseStorageID", @name = "trnPreProformaCargoSlabwiseStorageID" })
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageCargoType)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageCargoTypeID, String.Empty, new { @id = "spn_CargoSlabwiseStorageCargoTypeID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageCargoType, new { @id = "CargoSlabwiseStorageCargoType", @name = "CargoSlabwiseStorageCargoType", @class = "form-control", @placeholder = "Enter Cargo Type" })
+                            @Html.HiddenFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageCargoTypeID, new { @id = "CargoSlabwiseStorageCargoTypeID", @name = "CargoSlabwiseStorageCargoTypeID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageBillCommodity)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageBillCommodityID, String.Empty, new { @id = "spn_CargoSlabwiseStorageBillCommodityID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageBillCommodity, new { @id = "CargoSlabwiseStorageBillCommodity", @name = "CargoSlabwiseStorageBillCommodity", @class = "form-control", @placeholder = "Enter Bill Commodity" })
+                            @Html.HiddenFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageBillCommodityID, new { @id = "CargoSlabwiseStorageBillCommodityID", @name = "CargoSlabwiseStorageBillCommodityID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageSubcommodity)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageSubcommodityID, String.Empty, new { @id = "spn_CargoSlabwiseStorageSubcommodityID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageSubcommodity, new { @id = "CargoSlabwiseStorageSubcommodity", @name = "CargoSlabwiseStorageSubcommodity", @class = "form-control", @placeholder = "Enter Sub commodity" })
+                            @Html.HiddenFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageSubcommodityID, new { @id = "CargoSlabwiseStorageSubcommodityID", @name = "CargoSlabwiseStorageSubcommodityID" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageTarrifHead)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageTarrifHeadID, String.Empty, new { @id = "spn_CargoSlabwiseStorageTarrifHeadID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageTarrifHead, new { @id = "CargoSlabwiseStorageTarrifHead", @name = "CargoSlabwiseStorageTarrifHead", @class = "form-control", @placeholder = "Enter TarrifHead" })
+                            @Html.HiddenFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageTarrifHeadID, new { @id = "CargoSlabwiseStorageTarrifHeadID", @name = "CargoSlabwiseStorageTarrifHeadID" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageUOM)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageUOMID, String.Empty, new { @id = "spn_CargoSlabwiseStorageUOMID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageUOM, new { @id = "CargoSlabwiseStorageUOM", @name = "CargoSlabwiseStorageUOM", @class = "form-control", @placeholder = "Enter UOM", @onblur = "GetGeneralTriffDetails()" })
+                            @Html.HiddenFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageUOMID, new { @id = "CargoSlabwiseStorageUOMID", @name = "CargoSlabwiseStorageUOMID" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageStorageStartDate)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageStorageStartDate, String.Empty, new { @id = "spn_CargoSlabwiseStorageStorageStartDate", @class = "help-inline text-red" })
+
+                            @Html.TextBoxFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageStorageStartDate, new { @id = "CargoSlabwiseStorageStorageStartDate", @name = "CargoSlabwiseStorageStorageStartDate", @class = "form-control DatePicker", @placeholder = "Enter Storage From Date", @onblur = "CargoSlabwiseStoragecalculateTermEndDate()"})
+
+                            @Html.HiddenFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageStorageEndDate, new { @id = "CargoSlabwiseStorageStorageEndDate", @name = "CargoSlabwiseStorageStorageEndDate" })
+
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>End Date :</label>
+                            <label class="form-control-lable"><span id="CargoSlabwiseStoragetxtEndDate"></span></label>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageNoOfStoragePeriod)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageNoOfStoragePeriod, String.Empty, new { @id = "spn_CargoSlabwiseStorageNoOfStoragePeriod", @class = "help-inline text-red" })
+                            @Html.DropDownListFor(model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageNoOfStoragePeriod, Model.CargoSlabwiseStorage.CargoSlabwiseStorageSelectNoOfStoragePeriod, new { @class = "form-control", @id = "CargoSlabwiseStorageNoOfStoragePeriod", @name = "CargoSlabwiseStorageNoOfStoragePeriod", @onchange = "CargoSlabwiseStoragecalculateTermEndDate();CalculateCargoSlabwiseStorageAMT();" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageStoragePeriod)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageStoragePeriod, String.Empty, new { @id = "spn_CargoSlabwiseStorageStoragePeriod", @class = "help-inline text-red" })
+                            @Html.DropDownListFor(model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageStoragePeriod, Model.CargoSlabwiseStorage.CargoSlabwiseStorageselectStoragePeriod, new { @class = "form-control", @id = "CargoSlabwiseStorageStoragePeriod", @name = "CargoSlabwiseStorageStoragePeriod", @onchange = "CargoSlabwiseStoragecalculateTermEndDate()" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageArea)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageArea, String.Empty, new { @id = "spn_CargoSlabwiseStorageArea", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageArea, new { @id = "CargoSlabwiseStorageArea", @name = "CargoSlabwiseStorageArea", @class = "form-control", @placeholder = "Enter Area", @maxlength = "11", @onblur = "CalculateCargoSlabwiseStorageAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'CargoSlabwiseStorageArea')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageQTY)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageQTY, String.Empty, new { @id = "spn_CargoSlabwiseStorageQTY", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageQTY, new { @id = "CargoSlabwiseStorageQTY", @name = "CargoSlabwiseStorageQTY", @class = "form-control", @placeholder = "Enter QTY", @maxlength = "11", @onblur = "CalculateCargoSlabwiseStorageAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'CargoSlabwiseStorageQTY')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageWeight)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageWeight, String.Empty, new { @id = "spn_CargoSlabwiseStorageWeight", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageWeight, new { @id = "CargoSlabwiseStorageWeight", @name = "CargoSlabwiseStorageWeight", @class = "form-control", @placeholder = "Enter Weight", @maxlength = "11", @onblur = "CalculateCargoSlabwiseStorageAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'CargoSlabwiseStorageWeight')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <input type="hidden" id="ContainerSlabwiseStorageTotalBase" />
+                            @Html.LabelFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageTotal)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageTotal, String.Empty, new { @id = "spn_CargoSlabwiseStorageTotal", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageTotal, new { @id = "CargoSlabwiseStorageTotal", @name = "CargoSlabwiseStorageTotal", @class = "form-control", @placeholder = "Enter Total", @onblur = "CalculateCargoSlabwiseStorageAMT()" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <input type="hidden" id="CargoSlabwiseStorageDiscountamtBase" />
+                            <input type="hidden" id="CargoSlabwiseStorageRateBase" />
+                            @Html.LabelFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageDiscountamt) @Html.ValidationMessageFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageDiscountamt, String.Empty, new { @id = "spn_CargoSlabwiseStorageDiscountamt", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageDiscountamt, new { @id = "CargoSlabwiseStorageDiscountamt", @name = "CargoSlabwiseStorageDiscountamt", @class = "form-control", @placeholder = "Enter Discount Amt", @onblur = "CalculateCargoSlabwiseStorageAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'CargoSlabwiseStorageDiscountamt')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageGSTPer) @Html.ValidationMessageFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageGSTPer, String.Empty, new { @id = "spn_CargoSlabwiseStorageGSTPer", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageGSTPer, new { @id = "CargoSlabwiseStorageGSTPer", @name = "CargoSlabwiseStorageGSTPer", @class = "form-control", @placeholder = "Enter GST(%)", @onblur = "CalculateCargoSlabwiseStorageAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'CargoSlabwiseStorageGSTPer')" })
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageNetamount)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageNetamount, String.Empty, new { @id = "spn_CargoSlabwiseStorageNetamount", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageNetamount, new { @id = "CargoSlabwiseStorageNetamount", @name = "CargoSlabwiseStorageNetamount", @class = "form-control", @placeholder = "Enter Net Amount", @readonly = "true" })
+                        </div>
+                    </div>
+                    <div class="col-md-2 pull-right">
+                        <div class="form-group pull-right">
+                            <br />
+                            <button type="button" onclick="return AddtrnPreProformaCargoSlabwiseStorage()" id="btnCargoSlabwiseStorageGW" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-primary" id="tmpbtnCargoSlabwiseStorageGW" style="display:none;">Saving...</button>
+                            <a onclick="CleartrnPreProformaCargoSlabwiseStorage()" class="btn btn-danger">Clear</a>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="overflow: scroll;">
+                        <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Cargo Type </th>
+                                    <th>Bill Commodity </th>
+                                    <th>Sub-Commodity </th>
+                                    <th>Tarrif Head </th>
+                                    <th>UOM </th>
+                                    <th>From Date </th>
+                                    <th>Pattern </th>
+                                    <th>Pattern-Time </th>
+                                    <th>End Date </th>
+                                    <th>Area </th>
+                                    <th>Qty </th>
+                                    <th>Weight </th>
+                                    <th>Total </th>
+                                    <th>Discount amt </th>
+                                    <th>GST(%) </th>
+                                    <th>Net amount </th>
+                                    <th class="freezeLastColumn">Action </th>
+                                </tr>
+                            </thead>
+                            <tbody id="CargoSlabwiseStorageDetails"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (Model != null && isEdit)
+    {
+        <div class="row">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4>
+                        <b>Consolidated Charges </b>
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-primary" onclick="openOtherterrif()">Add</button>
+                        </div>
+                    </h4>
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12" style="overflow-x:scroll">
+                        <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Tarrif Head </th>
+                                    <th>Taxable Amount </th>
+                                    <th>Discount Amt </th>
+                                    <th>Net Taxable Amount </th>
+                                    <th>GST(%) </th>
+                                    <th>Net amount </th>
+                                </tr>
+                            </thead>
+                            <tbody id="ConsolidatedChargesDetails"></tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2 pull-right">
+                        <div class="form-group pull-right">
+                            <br>
+                            <button type="button" onclick="return FinishedAllChanges('@Model.trnpreproformaID')" id="FinishedBtn" disabled="disabled" class="btn btn-primary">Finished</button>
+                            <a href="/trnpreproforma" class="btn btn-danger">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="modal fade in" id="AddOtherTarrifHead" style="display: none; padding-right: 17px;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Add Other Tarrif Head</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        @Html.HiddenFor(Model => Model.OtherTerrifDetails.trnPreProformaOtherTerrifDetailsID, new { @id = "trnPreProformaOtherTerrifDetailsID", @name = "trnPreProformaOtherTerrifDetailsID" })
+
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsTarrifHead)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsTarrifHeadID, String.Empty, new { @id = "spn_OtherTerrifDetailsTarrifHeadID", @class = "help-inline text-red" })
+                                
+                                @Html.TextBoxFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsTarrifHead, new { @id = "OtherTerrifDetailsTarrifHead", @name = "OtherTerrifDetailsTarrifHead", @class = "form-control", @placeholder = "Enter TarrifHead" })
+                                @Html.HiddenFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsTarrifHeadID, new { @id = "OtherTerrifDetailsTarrifHeadID", @name = "OtherTerrifDetailsTarrifHeadID" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsQTY)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsQTY, String.Empty, new { @id = "spn_OtherTerrifDetailsQTY", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsQTY, new { @id = "OtherTerrifDetailsQTY", @name = "OtherTerrifDetailsQTY", @class = "form-control", @placeholder = "Enter QTY", @maxlength = "11", @onblur = "CalculateOtherTerrifDetailsAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'OtherTerrifDetailsQTY')" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsRate)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsRate, String.Empty, new { @id = "spn_OtherTerrifDetailsRate", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsRate, new { @id = "OtherTerrifDetailsRate", @name = "OtherTerrifDetailsRateRate", @class = "form-control", @placeholder = "Enter Rate", @maxlength = "11", @onblur = "CalculateOtherTerrifDetailsAMT()", @onkeypress = "return isNumberWithTwoDecimal(event,'OtherTerrifDetailsRate')" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <input type="hidden" id="OtherTerrifDetailsDiscountamtBase" />
+                                <input type="hidden" id="OtherTerrifDetailsRateBase" />
+                                @Html.LabelFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsDiscountamt) @Html.ValidationMessageFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsDiscountamt, String.Empty, new { @id = "spn_OtherTerrifDetailsOtherTerrifDetailsDiscountamt", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsDiscountamt, new { @id = "OtherTerrifDetailsDiscountamt", @name = "OtherTerrifDetailsDiscountamt", @class = "form-control", @placeholder = "Enter Discount Amt", @onblur = "CalculateOtherTerrifDetailsAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'OtherTerrifDetailsDiscountamt')" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsGSTPer) @Html.ValidationMessageFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsGSTPer, String.Empty, new { @id = "spn_OtherTerrifDetailsGSTPer", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsGSTPer, new { @id = "OtherTerrifDetailsGSTPer", @name = "OtherTerrifDetailsGSTPer", @class = "form-control", @placeholder = "Enter GST(%)", @onblur = "CalculateOtherTerrifDetailsAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'OtherTerrifDetailsGSTPer')" })
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsTotal) @Html.ValidationMessageFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsTotal, String.Empty, new { @id = "spn_OtherTerrifDetailsTotal", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.OtherTerrifDetails.OtherTerrifDetailsTotal, new { @id = "OtherTerrifDetailsTotal", @name = "OtherTerrifDetailsTotal", @class = "form-control", @placeholder = "Enter Total", @onblur = "CalculateOtherTerrifDetailsAMT()", @readonly = "true" })
+                            </div>
+                        </div>
+                        <div class="col-md-2 pull-right">
+                            <div class="form-group pull-right">
+                                <br />
+                                <button type="button" onclick="return AddtrnPreProformaOtherTerrifDetails()" id="btnOtherTerrifDetailsGW" class="btn btn-primary">Add</button>
+                                <button type="button" class="btn btn-primary" id="tmpbtnOtherTerrifDetailsGW" style="display:none;">Saving...</button>
+                                <a onclick="CleartrnPreProformaOtherTerrifDetails()" class="btn btn-danger">Clear</a>
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="overflow-x: scroll;">
+                            <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Tarrif Head </th>
+                                        <th>Qty </th>
+                                        <th>Rate </th>
+                                        <th>Discount </th>
+                                        <th>GST (%) </th>
+                                        <th>Total </th>
+                                        <th class="freezeLastColumn">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="OtherTerrifDetailsDetails"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</section>
+}
+<script>
+    var doaction = '@Model.doaction';
+    var ImporterCode = '@CFS.Com.ClsCommon.GetSettingValue("IMPTR", "1")';
+    var ExporterCode = '@CFS.Com.ClsCommon.GetSettingValue("EXPTR", "2")';
+    var DomesticCode = '@CFS.Com.ClsCommon.GetSettingValue("DMESC", "3")';
+    var KGSCode = '@CFS.Com.ClsCommon.GetSettingValue("UOMKG", "1")';
+    var PERUNITCode = '@CFS.Com.ClsCommon.GetSettingValue("UOMPU", "2")';
+    var SQRFEETCode = '@CFS.Com.ClsCommon.GetSettingValue("UOMSF", "3")';
+    var SQRMTRCode = '@CFS.Com.ClsCommon.GetSettingValue("UOMSM", "4")';
+    EnabledDisaleComodity('ContainerHandlingDeliveryMode', 'ContainerHandlingBillCommodity');
+    EnabledDisaleComodity('ContainerBasedStorageDeliveryMode','ContainerBasedStorageBillCommodity');
+    function EnabledDisaleComodity(DeliveryMode, BillCommodity)
+    {
+
+        if ($("#" + DeliveryMode).val() != undefined)
+        {
+            if ($("#" + DeliveryMode).val().toUpperCase() == "LOADED") {
+                $("#" + BillCommodity).val("");
+                $("#" + BillCommodity).attr("readonly", true);
+                $("#" + BillCommodity).css("background", "#eee");
+
+            }
+            else {
+                $("#" + BillCommodity).attr("readonly", false);
+                $("#" + BillCommodity).css("background", "#FFF");
+            }
+        }
+    }
+</script>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnpreproforma.js")"></script>

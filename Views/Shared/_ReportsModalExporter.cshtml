@@ -1,0 +1,15 @@
+﻿@{
+    CFS.Models.ReportsModal ReportsModal = new CFS.Models.ReportsModal();
+    if (ViewBag.ReportsModal != null)
+    {
+        ReportsModal = ViewBag.ReportsModal;
+    }
+}
+<div class="col-md-2">
+    <div class="form-group">
+        @Html.LabelFor(Model => ReportsModal.Exporter, new { @id = "lblExporter", @for = "Exporter" }) 
+        @Html.TextBoxFor(Model => ReportsModal.Exporter, new { @id = "Exporter", @name = "Exporter", @class = "form-control clsReadOnly", @placeholder = "Enter Exporter" })
+        @Html.HiddenFor(Model => ReportsModal.ExporterID, new { @id = "ExporterID", @name = "ExporterID" })
+    </div>
+</div>
+        

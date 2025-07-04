@@ -1,0 +1,404 @@
+﻿@model CFS.Models.trnExportDocumentDeclaration
+@using System.Globalization;
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Export Document Declaration";
+        if (!ViewBag.gblBlnEdit && !ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add new Export Document Declaration";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            @using (Html.BeginForm("Action", "trnExportDocumentDeclaration", FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+            {
+                <div class="box">
+                    <div class="box-body">
+                        @if (Model != null && Model.doaction == "edit" && Model.IsFinished)
+                        {
+                            <div class="pull-left">
+                                <div style="display: inline-flex">
+                                    <h4>
+                                        <b>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">Document Ref. NO:@Model.DocRefPrefix@Model.DocRefNo </span>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">Document Ref. Datetime : @Convert.ToDateTime(Model.CreatedDate).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat, CultureInfo.InvariantCulture) </span>
+                                            <span class="badge bg-light-blue" style="font-size:15px;">Document Ref. User : @Model.CreatedUser</span>
+                                        </b>
+                                    </h4>
+                                </div>
+                            </div>
+                        }
+                        <div class="pull-right">
+                            <div style="display: inline-flex">
+                                <a href="@Url.Action("Index","trnExportDocumentDeclaration", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+                        <input type="hidden" id="DocumentGWTab" name="DocumentGWTab" value="@Model.ExportDocumentGWTab" />
+                        <input type="hidden" id="IsChangeStep" name="IsChangeStep" value="0" />
+                        <input type="hidden" id="trnExportDocumentDeclarationID" name="trnExportDocumentDeclarationID" value="@Model.trnExportDocumentDeclarationID" />
+                        @Html.HiddenFor(Model => Model.IsFinished, new { @id = "IsFinished", @name = "IsFinished" })
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.CHAName, new { @for = "CHAName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CHARepresentativeID, String.Empty, new { @id = "spn_CHAID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.CHAName, new { @id = "CHAName", @name = "CHAName", @class = "form-control", @placeholder = "Enter CHA/Customer" })
+                                @Html.HiddenFor(Model => Model.CHAID, new { @id = "CHAID", @name = "CHAID" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.ForwarderName, new { @for = "ForwarderName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ForwarderID, String.Empty, new { @id = "spn_ForwarderID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.ForwarderName, new { @id = "ForwarderName", @name = "ForwarderName", @class = "form-control", @placeholder = "Enter Forwarder" })
+                                @Html.HiddenFor(Model => Model.ForwarderID, new { @id = "ForwarderID", @name = "ForwarderID" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.ConsolerName, new { @for = "ConsolerName" })  @Html.ValidationMessageFor(Model => Model.ConsolerID, String.Empty, new { @id = "spn_ConsolerID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.ConsolerName, new { @id = "ConsolerName", @name = "ConsolerName", @class = "form-control", @placeholder = "Enter Consoler" })
+                                @Html.HiddenFor(Model => Model.ConsolerID, new { @id = "ConsolerID", @name = "ConsolerID" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.CHARepresentativeName, new { @for = "CHARepresentativeName" })
+                                @Html.TextBoxFor(Model => Model.CHARepresentativeName, new { @id = "CHARepresentativeName", @name = "CHARepresentativeName", @class = "form-control", @placeholder = "Enter CHA Representative Name" })
+                                @Html.HiddenFor(Model => Model.CHARepresentativeID, new { @id = "CHARepresentativeID", @name = "CHARepresentativeID" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.ContactNumber)
+                                @Html.TextBoxFor(Model => Model.ContactNumber, new { @id = "ContactNumber", @name = "ContactNumber", @class = "form-control", @placeholder = "Enter CHA Representative Contact", @maxlength = "10", @onkeypress = "return isonlynumber(event)" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" }) @Html.ValidationMessageFor(Model => Model.Remarks, String.Empty, new { @id = "spn_Remarks", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control", @placeholder = "Enter Remarks" })
+                            </div>
+                        </div>
+                        <div class="col-md-3 pull-right">
+                            <br />
+                            <div class="form-group">
+                                @if (Model.doaction != "edit")
+                                {
+                                    <a href="@Url.Action("Index","trnExportDocumentDeclaration")" class="btn btn-danger pull-right">Cancel</a>
+                                    <button type="submit" style="margin-right: 5px;" class="btn btn-primary pull-right" id="SaveExportDocument" onclick="return ExportDocumentValidation()">Continue Entry</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                if (Model != null && Model.doaction.ToLower() == "edit")
+                {
+                    <div class="box">
+                        <div class="box-header with-border" data-widget="collapse">
+                            <h4><b>Lot Details</b></h4>
+                        </div>
+                        <div class="box-body">
+                            <div id="dvdLotDetails">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.BOENo, new { @id = "lblBOENo", @for = "BOENo" })  @Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.BOENo, String.Empty, new { @id = "spn_BOENo", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.BOENo, new { @id = "BOENo", @name = "BOENo", @class = "form-control" })
+                                        @Html.HiddenFor(Model => Model.trnexportDocumentDeclarationLotDetails.trnExportDocumentLotDetailsID, new { @id = "trnExportDocumentLotDetailsID", @name = "trnExportDocumentLotDetailsID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.BOEDate, new { @id = "lblBOEDate", @for = "BOEDate" })  @Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.BOEDate, String.Empty, new { @id = "spn_BOEDate", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.BOEDate, new { @id = "BOEDate", @name = "BOEDate", @class = "form-control DatePickerCustom"})
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.BLNo, new { @id = "lblBLNo", @for = "BLNo" })  @Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.BLNo, String.Empty, new { @id = "spn_BLNo", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.BLNo, new { @id = "BLNo", @name = "BLNo", @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.BLDate, new { @id = "lblBLDate", @for = "BLDate" })  @Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.BLDate, String.Empty, new { @id = "spn_BLDate", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.BLDate, new { @id = "BLDate", @name = "BLDate", @class = "form-control DatePickerCustom"})
+                                    </div>
+                                </div>                                
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.NatureOfCargo, new { @id = "lblNatureOfCargo", @for = "NatureOfCargo" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.NatureOfCargoID, String.Empty, new { @id = "spn_NatureOfCargoID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.NatureOfCargo, new { @id = "NatureOfCargo", @name = "NatureOfCargo", @class = "form-control" })
+                                        @Html.HiddenFor(Model => Model.trnexportDocumentDeclarationLotDetails.NatureOfCargoID, new { @id = "NatureOfCargoID", @name = "NatureOfCargoID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.BULKSTATUS, new { @for = "BULKSTATUS" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.BULKSTATUS, String.Empty, new { @id = "spn_BULKSTATUS", @class = "help-inline text-red" })
+                                        @Html.DropDownListFor(Model => Model.trnexportDocumentDeclarationLotDetails.BULKSTATUS, Model.trnexportDocumentDeclarationLotDetails.DDLBULKSTATUS, new { @id = "BULKSTATUS", @name = "BULKSTATUS", @class = "form-control", @placeholder = "Enter BULK/NB STATUS" })
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.DocBalPackage, new { @id = "lblDocBalPackage", @for = "DocBalPackage" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.DocBalPackage, new { @id = "DocBalPackage", @name = "DocBalPackage", @class = "form-control", @Readonly=true})                                       
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.DocBalPieces, new { @id = "lblDocBalPieces", @for = "DocBalPieces" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.DocBalPieces, new { @id = "DocBalPieces", @name = "DocBalPieces", @class = "form-control", @Readonly = true })                                        
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.DocBalWeight, new { @id = "lblDocBalWeight", @for = "DocBalWeight" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.DocBalWeight, new { @id = "DocBalWeight", @name = "DocBalWeight", @class = "form-control", @Readonly = true })                                        
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.DocDecPackage, new { @id = "lblDocDecPackage", @for = "DocDecPackage" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.DocDecPackage, String.Empty, new { @id = "spn_DocDecPackage", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.DocDecPackage, new { @id = "DocDecPackage", @name = "DocDecPackage", @class = "form-control", @onkeypress = "return isonlynumber(event)" })
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.DocDecPieces, new { @id = "lblDocDecPieces", @for = "DocDecPieces" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.DocDecPieces, String.Empty, new { @id = "spn_DocDecPieces", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.DocDecPieces, new { @id = "DocDecPieces", @name = "DocDecPieces", @class = "form-control",   @onkeypress = "return isonlynumber(event)" })
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.DocDecWeight, new { @id = "lblDocDecWeight", @for = "DocDecWeight" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.DocDecWeight, String.Empty, new { @id = "spn_DocDecWeight", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.DocDecWeight, new { @id = "DocDecWeight", @name = "DocDecWeight", @class = "form-control", @onkeypress = "return isonlynumber(event)" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.ToLocation, new { @for = "ToLocation" })@Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.ToLocationID, String.Empty, new { @id = "spn_ToLocationID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.ToLocation, new { @id = "ToLocation", @name = "ToLocation", @class = "form-control", @placeholder = "Select To Location" })
+                                        @Html.HiddenFor(Model => Model.trnexportDocumentDeclarationLotDetails.ToLocationID, new { @id = "ToLocationID", @name = "ToLocationID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.Exporter, new { @id = "lblExporter", @for = "Exporter" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.ExporterID, String.Empty, new { @id = "spn_ExporterID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.Exporter, new { @id = "Exporter", @name = "Exporter", @class = "form-control", @placeholder = "Enter EXPORTER/IMPORTER" })
+                                        @Html.HiddenFor(Model => Model.trnexportDocumentDeclarationLotDetails.ExporterID, new { @id = "ExporterID", @name = "ExporterID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.ExporterAddress, new { @id = "lblExporterAddress", @for = "ExporterAddress" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.ExporterAddress, new { @id = "ExporterAddress", @name = "ExporterAddress", @class = "form-control", @Readonly=true})
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.Consignee, new { @id = "lblConsignee", @for = "Consignee" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.Consignee, new { @id = "Consignee", @name = "Consignee", @class = "form-control", @placeholder = "Enter Consignee" })
+                                        @Html.HiddenFor(Model => Model.trnexportDocumentDeclarationLotDetails.ConsigneeID, new { @id = "ConsigneeID", @name = "ConsigneeID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.ConsigneeAddress, new { @id = "lblConsigneeAddress", @for = "ConsigneeAddress" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.ConsigneeAddress, new { @id = "ConsigneeAddress", @name = "ConsigneeAddress", @class = "form-control" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.FOB, new { @id = "lblFOB", @for = "FOB" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.FOB, String.Empty, new { @id = "spn_FOB", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.FOB, new { @id = "FOB", @name = "FOB", @class = "form-control", @placeholder = "Enter FOB" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.MARKSANDNOS, new { @for = "MARKSANDNOS" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.MARKSANDNOS, new { @id = "MARKSANDNOS", @name = "MARKSANDNOS", @class = "form-control", @placeholder = "Enter MARKS AND NOS " })
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.Class, new { @id = "lblClass", @for = "Class" }) @Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.Class, String.Empty, new { @id = "spn_Class", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.Class, new { @id = "Class", @name = "Class", @class = "form-control", @placeholder = "Enter Class", @onkeypress = "return isonlynumber(event);" })
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.UN, new { @for = "UN" })@Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.UN, String.Empty, new { @id = "spn_UN", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.UN, new { @id = "UN", @name = "UN", @class = "form-control", @placeholder = "Enter UN", @onkeypress = "return isonlynumber(event);" })
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.TEMP, new { @for = "TEMP" }) @Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.TEMP, String.Empty, new { @id = "spn_TEMP", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.TEMP, new { @id = "TEMP", @name = "TEMP", @class = "form-control", @placeholder = "Enter TEMP ", @onkeypress = "return NumberWithTwoDecimalWithNegative(event,'TEMP')" })
+                                    </div>
+                                </div>                                
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.BillCommodity, new { @for = "BillCommodity" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.BillCommodityID, String.Empty, new { @id = "spn_BillCommodityID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.BillCommodity, new { @id = "BillCommodity", @name = "BillCommodity", @class = "form-control",@placeholder="Select BillCommodity" })
+                                        @Html.HiddenFor(Model => Model.trnexportDocumentDeclarationLotDetails.BillCommodityID, new { @id = "BillCommodityID", @name = "BillCommodityID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.GroupCommodity, new { @for = "GroupCommodity" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.GroupCommodityID, String.Empty, new { @id = "spn_GroupCommodityID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.GroupCommodity, new { @id = "GroupCommodity", @name = "GroupCommodity", @class = "form-control",@placeholder="Select GroupCommodity" })
+                                        @Html.HiddenFor(Model => Model.trnexportDocumentDeclarationLotDetails.GroupCommodityID, new { @id = "GroupCommodityID",@name= "GroupCommodityID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.CargoDesc, new { @for = "CargoDesc" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.CargoDesc, String.Empty, new { @id = "spn_CargoDesc", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.CargoDesc, new { @id = "CargoDesc", @name = "CargoDesc", @class = "form-control"})
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.SubCommodity, new { @for = "SubCommodity" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.SubCommodityID, String.Empty, new { @id = "spn_SubCommodityID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.SubCommodity, new { @id = "SubCommodity", @name = "SubCommodity", @class = "form-control",@placeholder="Select SubCommodity" })
+                                        @Html.HiddenFor(Model => Model.trnexportDocumentDeclarationLotDetails.SubCommodityID, new { @id = "SubCommodityID",@name= "SubCommodityID" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.PackageType, new { @for = "PackageType" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.trnexportDocumentDeclarationLotDetails.PackageTypeID, String.Empty, new { @id = "spn_PackageTypeID", @class = "help-inline text-red" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.PackageType, new { @id = "PackageType", @name = "PackageType", @class = "form-control",@placeholder="Select PackageType" })
+                                        @Html.HiddenFor(Model => Model.trnexportDocumentDeclarationLotDetails.PackageTypeID, new { @id = "PackageTypeID" ,@name= "PackageTypeID"})
+                                    </div>
+                                </div> 
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(Model => Model.trnexportDocumentDeclarationLotDetails.ICEGATERefNo, new { @for= "ICEGATERefNo" })
+                                        @Html.TextBoxFor(Model => Model.trnexportDocumentDeclarationLotDetails.ICEGATERefNo, new { @id= "ICEGATERefNo",@name= "ICEGATERefNo",@class="form-control" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2 pull-right">
+
+                                    <div class="form-group pull-right">
+                                        <br />
+                                        <a onclick="ClearExportDocumentdetails()" class="btn btn-danger pull-right">Clear</a>
+                                        <button id="btnLotDetails" type="button" style="margin-right:5px;" onclick="return ExportDocumentLotDetailValidation();" class="btn btn-primary pull-right">Add</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-12" style="overflow:scroll">
+                                <hr />
+                                <div class="pull-right">
+                                    <div style="display: inline-flex">
+                                        <div class="input-group input-group-sm">
+                                            <input id="txtlotdetail" name="txtlotdetail" type="text" class="form-control" onkeyup="DataTableSeachEngine('txtlotdetail','lotdetail','btnlotdetail')" placeholder="Search for Common" value="">
+                                            <span class="input-group-btn">
+                                                <button type="button" id="btnlotdetail" onclick="DataTableSeachEngine('txtlotdetail','lotdetail','btnlotdetail','yes')" class="btn btn-primary btn-flat">Search</button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table id="lotdetail" style="white-space: nowrap;" class="table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>SB No</th>
+                                            <th>SB Date</th>
+                                            <th>Inv No</th>
+                                            <th>Inv Date</th>                                            
+                                            <th>Cargo Type</th>
+                                            <th>Bulk/NonBulk Status</th>
+                                            <th>Document Balance Packages</th>
+                                            <th>Document Balance Pieces</th>
+                                            <th>Document Balance Weight</th>
+                                            <th>Document declared packages</th>
+                                            <th>Document declared pieces</th>
+                                            <th>Document declared weight</th>
+                                            <th>Exporter</th>
+                                            <th>Exporter Address</th>
+                                            <th>Consignee</th>
+                                            <th>Consignee Address</th>
+                                            <th>To Location</th>
+                                            <th>FOB</th>
+                                            <th>Marks and Nos</th>
+                                            <th>HAZ Class No</th>
+                                            <th>UN No</th>
+                                            <th>Temp</th>                                           
+                                            <th>Bill Commodity</th>
+                                            <th>Group Commodity</th>
+                                            <th>Cargo Desc.</th>
+                                            <th>Sub Commodity</th>
+                                            <th>Package Type</th>
+                                            <th>ICEGATE Ref. No</th>                                            
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblLotDetails"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+                if (Model.doaction == "edit")
+                {
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <button type="submit" onclick="return FinalFinished();" class="btn btn-primary">Save</button>
+                            <a href="@Url.Action("Index", "trnExportDocumentDeclaration", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
+                        </div>
+                    </div>
+                }
+
+            }
+        </div>
+    </div>
+</section>
+<script>
+    var Doaction = '@Model.doaction';
+    var VCNDeatails = '@Model.HtmlVCNDeatails';
+    var IsSearch = '@Model.IsSearch.ToString().ToLower()';
+    var CHAName = '@Model.CHAName';
+    var CHAID = '@Model.CHAID';
+    var ImporterCode = '@CFS.Com.ClsCommon.GetSettingValue("IMPTR", "1")';
+    var ExporterCode = '@CFS.Com.ClsCommon.GetSettingValue("EXPTR", "2")';
+    var DomesticCode = '@CFS.Com.ClsCommon.GetSettingValue("DMESC", "3")';
+    var GeneralCode = '@CFS.Com.ClsCommon.GetSettingValue("GENLC", "1")';
+    var HAZCode = '@CFS.Com.ClsCommon.GetSettingValue("HAZCT", "2")';
+    var ODCCode = '@CFS.Com.ClsCommon.GetSettingValue("ODCCT", "3")';
+    var ReeferCode = '@CFS.Com.ClsCommon.GetSettingValue("REFER", "4")';
+    var trnExportDocumentDeclarationID = '@Model.trnExportDocumentDeclarationID';
+    function HideIfView() {
+    }
+    function FinalFinished() {
+        $("#IsFinished").val(true);
+        return ExportDocumentValidation();
+    }
+window.onload = () => {
+    const myInput = document.getElementById('ContactNumber');
+ myInput.onpaste = e => e.preventDefault();
+}
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnExportDocumentDeclaration.js")"></script>

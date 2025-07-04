@@ -1,0 +1,128 @@
+﻿@model CFS.Models.MstrWarehouseLocation
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Warehouse Location";
+        if (!ViewBag.gblBlnEdit && !ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New  Warehouse Location";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (Model.doaction == "edit")
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex"> 
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrWarehouseLocation","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a href="@Url.Action("Index","MstrWarehouseLocation", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+                    @using (Html.BeginForm("Action", "MstrWarehouseLocation", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.MstrWarehouseLocationID)
+                        @Html.HiddenFor(Model => Model.doaction) 
+                        @Html.HiddenFor(Model => Model.page) 
+                        @Html.HiddenFor(Model => Model.filter) 
+                        @Html.HiddenFor(Model => Model.IsFinished) 
+                         <div class="form-group">
+                             <div class="col-md-12">
+                                 <div class="col-md-2">
+                                     @Html.LabelFor(Model => Model.LocationName, new { @for = "LocationName" })<span class="text-red">*</span>
+                                     @Html.TextBoxFor(Model => Model.LocationName, new { @id = "LocationName", @name = "LocationName", @class = "form-control", @placeholder = "Enter Location Name",  @onblur="CheckLocationName(this.value)"})
+                                 </div>
+                                 <div class="col-md-2">
+                                     @Html.LabelFor(Model => Model.RowPrefix, new { @for = "RowPrefix" })<span class="text-red">*</span>
+                                     @Html.TextBoxFor(Model => Model.RowPrefix, new { @id = "RowPrefix", @name = "RowPrefix", @class = "form-control readonlyField", @placeholder = "Enter Row Prefix", @maxlength = "3", @onblur = "CheckRowPrefix(this.value)" })
+                                 </div>
+                                 <div class="col-md-1">
+                                     @Html.LabelFor(Model => Model.FromRow, new { @for = "FromRow" })<span class="text-red">*</span>
+                                     @Html.TextBoxFor(Model => Model.FromRow, new { @id = "FromRow", @name = "FromRow", @class = "form-control readonlyField", @placeholder = "Enter From Row", @maxlength = "3", @onkeypress = "return  isonlynumber(event)" })
+                                 </div>
+                                 <div class="col-md-1">
+                                     @Html.LabelFor(Model => Model.ToRow, new { @for = "ToRow" })<span class="text-red">*</span>
+                                     @Html.TextBoxFor(Model => Model.ToRow, new { @id = "ToRow", @name = "ToRow", @class = "form-control readonlyField", @placeholder = "Enter To Row", @maxlength = "3", @onkeypress = "return  isonlynumber(event)" })
+                                 </div>
+                                 <div class="col-md-2">
+                                     @Html.LabelFor(Model => Model.ColumnPrefix, new { @for = "ColumnPrefix" })<span class="text-red">*</span>
+                                     @Html.TextBoxFor(Model => Model.ColumnPrefix, new { @id = "ColumnPrefix", @name = "ColumnPrefix", @class = "form-control readonlyField", @placeholder = "Enter Column Prefix", @maxlength = "3", @onblur = "CheckColumnPrefix(this.value)" })
+                                 </div>
+                                 <div class="col-md-1">
+                                     @Html.LabelFor(Model => Model.FromColumn, new { @for = "FromColumn" })<span class="text-red">*</span>
+                                     @Html.TextBoxFor(Model => Model.FromColumn, new { @id = "FromColumn", @name = "FromColumn", @class = "form-control readonlyField", @placeholder = "Enter From Column", @maxlength = "3", @onkeypress = "return  isonlynumber(event)" })
+                                 </div>
+                                 <div class="col-md-1">
+                                     @Html.LabelFor(Model => Model.ToColumn, new { @for = "ToColumn" })<span class="text-red">*</span>
+                                     @Html.TextBoxFor(Model => Model.ToColumn, new { @id = "ToColumn", @name = "ToColumn", @class = "form-control readonlyField", @placeholder = "Enter To Column", @maxlength = "3", @onkeypress = "return  isonlynumber(event)" })
+                                 </div>
+                                 <div class="col-md-2">
+                                     @Html.LabelFor(Model => Model.sizeIn, new { @for = "sizeIn" })<span class="text-red">*</span>
+                                     @Html.DropDownListFor(Model => Model.sizeIn, Model.sizeInList, new { @id = "sizeIn", @name = "sizeIn", @class = "form-control" })
+                                     @Html.HiddenFor(Model => Model.tab, new { @id = "tab", @name = "tab" })
+                                 </div>
+                                 @if (Model.doaction != "edit")
+                                 {
+                                     <div class="col-md-6 pull-right">
+                                         <div class="form-group">
+                                             <br />
+                                             <a href="@Url.Action("index", "MstrWarehouseLocation", new {pg = Request.Params["pg"], search = Request.Params["search"] })" style="margin-right: 5px;" class="btn btn-danger pull-right">Cancel</a>
+                                             <button type="submit" style="margin-right: 5px;" class="btn btn-primary pull-right" id="CreateLocation" onclick="return validateModel(1)"> Create Locations </button>
+                                         </div>
+                                     </div>
+                                 }
+                                 else
+                                 {
+                                    
+                                     <div class="col-md-12 pull-right">
+                                        <hr />
+                                          <div class="box-body">
+                                              <div id="locationDetails" style="overflow:auto"></div>
+                                          </div>
+                                     </div>
+                                     <div class="col-md-12 pull-right">
+                                         <div class="form-group">
+                                             <br />
+                                             <a href="@Url.Action("index", "MstrWarehouseLocation", new {pg = Request.Params["pg"], search = Request.Params["search"] })" style="margin-right: 5px;" class="btn btn-danger pull-right">Cancel</a>
+                                             <button type="submit" style="margin-right: 5px;" class="btn btn-primary pull-right" id="CreateLocation" onclick="return validateModel(2)"> Save</button>
+                                         </div>
+                                     </div>
+                                 }
+
+                             </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+        </div>
+    </div>
+</section>
+<script>
+    var doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrWarehouseLocation.js")"></script>

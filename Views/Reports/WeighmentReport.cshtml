@@ -1,0 +1,21 @@
+﻿@{
+    ViewBag.Title = "Weighment Report";
+}
+@using (Html.BeginForm("WeighmentReport", "Reports", FormMethod.Post))
+{
+    <div class="">
+        <div class="box">
+            <div class="box-body">
+                <input type="hidden" id="msg" name="msg" value="@ViewBag.Msg">
+                @Html.Partial("_ReportsModalDate")
+                @Html.Partial("_ReportModalAgent")
+                @Html.Partial("_ReportModalLine")
+                @Html.Partial("_ReportsModalCHA")
+                @Html.Partial("_ReportsModalExporter")
+                @Html.Partial("_ReportsModalForwarder")
+                @Html.Partial("_ReportsModalSearchClearButton")
+            </div>
+        </div>
+    </div>
+}
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/ReportsModal.js")"></script>

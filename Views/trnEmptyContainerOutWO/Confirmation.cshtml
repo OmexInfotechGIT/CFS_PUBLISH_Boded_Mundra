@@ -1,0 +1,270 @@
+﻿@model CFS.Models.trnEmptyContainerOutWO
+@using System.Globalization;
+@{
+    ViewBag.Title = "";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    if (!ViewBag.gblBlnUnapprove && !ViewBag.gblBlnApprove)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+@using (Html.BeginForm("Action", "trnEmptyContainerOutWO", FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+{
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;"> Empty Container Out WO No : @Model.trnEmptyContainerOutWONo</span>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                <span class="badge bg-light-blue" style="font-size:15px;"> Empty Container Out WO Date : @Model.trnEmptyContainerOutWODate</span>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                <span class="badge bg-light-blue" style="font-size:15px;"> Created By : @Model.Username</span> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                            </div>
+                        </div>
+                        <div style="display: inline-flex">
+                            @if (ViewBag.gblBlnEdit && !Model.IsApproved)
+                            {
+                                <a class="btn btn-primary btn-sm" href="@Url.Action("Action", "trnEmptyContainerOutWO", new { id = Model.trnEmptyContainerOutWOID, doaction = "edit", @IsSearch = true })"><i title="Click to Edit" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a> @CFS.Com.ClsCommon.AddhtmlSpace(3)
+                            }
+                            <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModalConfirmation">
+                                @if (!Model.IsApproved)
+                                {
+                                    <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                }
+                                else
+                                {
+                                    <i title="Click to UnApprove" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-down"></i>
+                                }
+
+                            </a>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                            <a href="@Url.Action("index", "trnEmptyContainerOutWO")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                        <br />
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.SpaceCertificateNo, new { @for = "SpaceCertificateNo" })<span class="text-red">*</span>
+
+                                @Html.TextBoxFor(Model => Model.SpaceCertificateNo, new { @id = "SpaceCertificateNo", @name = "SpaceCertificateNo", @class = "form-control", @placeholder = "Enter Noc No", @readonly = "true" })
+
+                                @Html.HiddenFor(Model => Model.SpaceCertificateGWID, new { @id = "SpaceCertificateGWID", @name = "SpaceCertificateGWID" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.ContainerStatus, new { @for = "ContainerStatus" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerStatus, String.Empty, new { @id = "spn_ContainerStatus", @class = "help-inline text-red" })
+
+                                @Html.DropDownListFor(Model => Model.ContainerStatus, Model.DDLContainerStatus, new { @id = "ContainerStatus", @name = "ContainerStatus", @class = "form-control", @disabled = "true" })
+                                @Html.HiddenFor(Model => Model.ContainerStatus, new { @id = "ContainerStatus", @name = "ContainerStatus", @class = "form-control" })
+
+                            </div>
+                        </div>
+
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.IsSearch)
+                        @Html.HiddenFor(Model => Model.trnEmptyContainerOutWOID, new { @id = "trnEmptyContainerOutWOID", @name = "trnEmptyContainerOutWOID" })
+                        <input type="hidden" id="SpaceCertificateGWID" name="SpaceCertificateGWID" value="@Model.SpaceCertificateGWID" />
+                        <input type="hidden" id="SpaceCertificateNo" name="SpaceCertificateNo" value="@Model.SpaceCertificateNo" />
+                        @if (Model.IsSearch)
+                        {
+
+                            <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.AgentName, new { @for = "AgentName" }) : <span>@Model.AgentName</span>
+
+                            </div>
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.LineName, new { @for = "LineName" }) : <span>@Model.AgentName</span>
+
+                            </div>
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.BillingParty, new { @for = "BillingParty" }) : <span>@Model.BillingParty</span>
+
+                            </div>
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.CHACustomer, new { @for = "CHACustomer" }) : <span>@Model.CHACustomer</span>
+
+                            </div>
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.Forwarder, new { @for = "Forwarder" }) : <span>@Model.Forwarder</span>
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.Exporter, new { @for = "Exporter" }) : <span>@Model.Exporter</span>
+
+                            </div>
+                            <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.ToLocation, new { @for = "ToLocation" }) : <span>@Model.ToLocation</span>
+
+                            </div>
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.FRBundlingStatus, new { @for = "FRBundlingStatus" }) : <span>@Model.FRBundlingStatus</span>
+
+                            </div>
+                            if (Model.FRBundlingStatus == "Yes")
+                            {
+
+                                <div class="col-md-4">
+
+                                    @Html.LabelFor(Model => Model.Bundle20, new { @for = "Bundle20" }) : <span>@Model.Bundle20</span>
+
+                                </div>
+                                <div class="col-md-4">
+
+                                    @Html.LabelFor(Model => Model.Bundle4045, new { @for = "Bundle4045" }) : <span>@Model.Bundle4045</span>
+
+                                </div>
+                            }
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.LiftOnBy, new { @for = "LiftOnBy" }) : <span>@Model.LiftOnBy</span>
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.LiftOffBy, new { @for = "LiftOffBy" }) : <span>@Model.LiftOffBy</span>
+
+                            </div>
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.TransportationBy, new { @for = "TransportationBy" }) : <span>@Model.TransportationBy</span>
+
+                            </div>
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.TransporterName, new { @for = "TransporterName" }) : <span>@Model.TransporterName</span>
+
+                            </div>
+                            <div class="col-md-4">
+
+                                @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" }) : <span>@Model.Remarks</span>
+
+                            </div>
+                            <div class="col-md-12">
+
+                                @Html.LabelFor(Model => Model.IsEmptyGateOutprocess, new { @for = "IsEmptyGateOutprocess" }) : <span>@(Convert.ToBoolean(Model.IsEmptyGateOutprocess) ? "Yes" : "No")</span>
+
+                            </div>
+                        }
+                    </div>
+                </div>
+                @if (Model != null && Model.MyDatatable != null && Model.MyDatatable.Rows.Count > 0)
+                {
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h4>
+                                <b>Container Details</b>
+                            </h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="col-md-12 table-responsive">
+                                <table width="100%" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>Cont No</th>
+                                            <th>ISO Code</th>
+                                            <th>Size</th>
+                                            <th>Type</th>
+                                            <th>Gate In Date</th>
+                                            @*<th>Gate Out Date</th>*@
+                                            <th>Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            Model.trnDocumentGWContainerID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.trncontainerDestuffingGWID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.trnContainerGateInGWDetailsID = new int[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.ContainerNUmber = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.ISOCode = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.ISOCodeSize = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.ISOCodeType = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.GateInDate = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.GateOutDate = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.CancelRemarks = new string[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+                                            Model.IsCancel = new bool[(Model.MyDatatable.Rows.Count + (10 - (Model.MyDatatable.Rows.Count % 10)))];
+
+                                        }
+                                        @for (int Q = 0; Q < Model.MyDatatable.Rows.Count; Q++)
+                                        {
+                                            Model.trnDocumentGWContainerID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["trnDocumentGWContainerID"]);
+                                            Model.trncontainerDestuffingGWID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["trncontainerDestuffingGWID"]);
+                                            Model.trnContainerGateInGWDetailsID[Q] = Convert.ToInt32(Model.MyDatatable.Rows[Q]["trnContainerGateInGWDetailsID"]);
+                                            Model.ContainerNUmber[Q] = Convert.ToString(Model.MyDatatable.Rows[Q]["ContainerNUmber"]);
+                                            Model.ISOCode[Q] = Convert.ToString(Model.MyDatatable.Rows[Q]["ISOCode"]);
+                                            Model.ISOCodeSize[Q] = Convert.ToString(Model.MyDatatable.Rows[Q]["ISOCodeSize"]);
+                                            Model.ISOCodeType[Q] = Convert.ToString(Model.MyDatatable.Rows[Q]["ISOCodeType"]);
+                                            Model.GateInDate[Q] = Convert.ToString(Model.MyDatatable.Rows[Q]["GateInDate"]);
+                                            Model.GateOutDate[Q] = Convert.ToString(Model.MyDatatable.Rows[Q]["GateOutDate"]);
+
+
+                                            string ischeck = "";
+                                            int trnEmptyContainerOutWODetailsID = 0;
+                                            System.Data.DataTable dt = Model.GetEmptyContainerOutWODetails(Model.trnDocumentGWContainerID[Q], Model.trnEmptyContainerOutWOID, Model.trncontainerDestuffingGWID[Q], Model.trnContainerGateInGWDetailsID[Q]);
+                                            if (dt != null && dt.Rows.Count > 0)
+                                            {
+                                                Model.CancelRemarks[Q] = Convert.ToString(dt.Rows[0]["CancelRemarks"]);
+                                                Model.IsCancel[Q] = Convert.ToBoolean(dt.Rows[0]["ISCanceled"]);
+                                                if (!Model.IsCancel[Q])
+                                                {
+                                                    ischeck = "checked = 'checked'";
+                                                }
+                                            }
+                                            <tr style="display:none;">
+                                                <td>
+                                                    @Html.HiddenFor(Model => Model.trnDocumentGWContainerID[Q])
+                                                    @Html.HiddenFor(Model => Model.trncontainerDestuffingGWID[Q])
+                                                    @Html.HiddenFor(Model => Model.trnContainerGateInGWDetailsID[Q])
+                                                    @Html.HiddenFor(Model => Model.ContainerNUmber[Q])
+                                                    @Html.HiddenFor(Model => Model.ISOCode[Q])
+                                                    @Html.HiddenFor(Model => Model.ISOCodeSize[Q])
+                                                    @Html.HiddenFor(Model => Model.ISOCodeType[Q])
+                                                    @Html.HiddenFor(Model => Model.GateInDate[Q])
+                                                    @Html.HiddenFor(Model => Model.GateOutDate[Q])
+                                                    @Html.HiddenFor(Model => Model.IsCancel[Q])
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="checkbox" id="chkcontainer_@Model.trnDocumentGWContainerID" @ischeck value="@Q" disabled name="chkcontainer"></td>
+                                                <td>@Model.MyDatatable.Rows[Q]["ContainerNumber"]</td>
+                                                <td>@Model.MyDatatable.Rows[Q]["ISOCode"]</td>
+                                                <td>@Model.MyDatatable.Rows[Q]["ISOCodeSize"]</td>
+                                                <td>@Model.MyDatatable.Rows[Q]["ISOCodeType"]</td>
+                                                <td>@(Convert.ToDateTime(Model.MyDatatable.Rows[Q]["GateInDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture))</td>
+                                                <td>@Model.CancelRemarks[Q]</td>
+                                            </tr>
+                                        }
+                                        <input type="hidden" id="hdnrowcount" name="hdnrowcount" value="@Model.MyDatatable.Rows.Count" />
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}

@@ -1,0 +1,460 @@
+﻿@model CFS.Models.emptyInvoice
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+
+    ViewBag.Title = "View Empty Container Invoice";
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+</style>
+@using (Html.BeginForm("Action", "emptyInvoice", FormMethod.Post, new { @id = "frmpost", @name = "frmpost" }))
+{
+    <section class="content">
+        <div class="">
+            <div class="box">
+                <div class="box-body">
+                    @if (Model != null && Model.doaction == "view")
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <h4>
+                                    <b>
+                                        <span class="badge bg-light-blue" style="font-size:15px;"> Empty Container Invoice No:@Model.EmptyInvoiceNo</span>
+                                        <span class="badge bg-light-blue" style="font-size:15px;">Datetime :@Model.CreatedDate</span>
+                                        <span class="badge bg-light-blue" style="font-size:15px;">User :@Model.User</span>
+                                    </b>
+                                </h4>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <a href="@Url.Action("Index","emptyInvoice")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-top:10px;"></div>
+                    <div class="col-md-12">
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.ContNo)
+                            @Html.TextBoxFor(Model => Model.ContNo, new { @id = "ContNo", @name = "ContNo", @class = "form-control", @readonly = true })
+                            @Html.HiddenFor(Model => Model.ContID)
+                        </div>
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.WONO)
+                            @Html.TextBoxFor(Model => Model.WONO, new { @id = "WONO", @name = "WONO", @class = "form-control", @readonly = true })
+                            @Html.HiddenFor(Model => Model.WOID)
+                        </div>
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.WODate)
+                            @Html.TextBoxFor(Model => Model.WODate, new { @id = "WODate", @name = "WODate", @class = "form-control", @readonly = true })
+                        </div>
+                    </div>                    
+                    @{
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.IsSearch)
+                        @Html.HiddenFor(Model => Model.EmptyInvoiceID, new { @id = "EmptyInvoiceID", @name = "EmptyInvoiceID" })
+                        @Html.HiddenFor(Model => Model.IsFinished, new { @id = "IsFinished", @name = "IsFinished" })
+                        @Html.HiddenFor(Model => Model.EmptyInvoiceNo, new { @id = "EmptyInvoiceNo", @name = "EmptyInvoiceNo" })
+                        @Html.HiddenFor(Model => Model.EmptyInvoicePrefix, new { @id = "EmptyInvoicePrefix", @name = "EmptyInvoicePrefix" })
+                        @Html.HiddenFor(Model =>Model.ContainerStatus)
+                    }
+                    
+                </div>
+            </div>
+        </div>
+        @if (Model.IsSearch)
+        {
+                                     
+            if (Model.IsNOC)
+            {
+                <div class="">
+                    <div class="box">
+                        <div class="box-header with-border" data-widget="collapse">
+                            <h4><b></b></h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="col-md-12">
+                                <div class="col-md-3">
+                                    <label> NOC NO :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.NOCNO</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label> From Invoice Date :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.FromInvoiceDate</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label> To Invoice Date :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.ToInvoiceDate</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label> Importer Name :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.Importer</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label> CHA Name :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.CHA</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label> Forwarder :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.Forwarder</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label> Consoler :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.Consoler</span>
+                                </div>
+                                <div class="col-md-2">
+                                    <label> State :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.State</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label> Billing Party GSTIN :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.BillingPartyGSTIN</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label> GST Customer Type :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.GSTCustomerType</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label> FR Bundling Status :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.FRBundlingStatus</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label> Bundle 20 :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.Bundle20</span>
+                                </div>
+                            </div>
+                            <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                            <div class="col-md-12" style="margin-top:5px;">
+                                <div class="col-md-3">
+                                    <label> Billing Party :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.BillingParty</span>
+                                </div>
+                                <div class="col-md-9">
+                                    <label> Billing Party Address :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.BillingPartyAddress</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label> Payment Mode :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.PaymentMode</span>
+                                </div>
+                                <div class="col-md-9">
+                                    <label> Remarks :</label> <span>@CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.Remarks</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h4>
+                                <b>Consolidated Charges </b>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                <div style="display: inline-flex">
+                                    <span class="badge bg-aqua" style="font-size:15px;"> 20 : @Model.noof20count</span>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                    <span class="badge bg-aqua" style="font-size:15px;"> 40 : @Model.noof40count</span>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                    <span class="badge bg-aqua" style="font-size:15px;"> 45 : @Model.noof45count</span>@CFS.Com.ClsCommon.AddhtmlSpace(3)
+                                </div>
+                            </h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="col-md-12" style="overflow:scroll">
+                                <table id="example3" style="white-space: nowrap;" class="table-bordered table-hover">
+                                    <thead>
+                                        <tr>                                            
+                                            <th>Agent</th>
+                                            <th>Line</th>
+                                            <th>WO NO</th>
+                                            <th>WO DATE</th>
+                                            <th>Cont No </th>
+                                            <th>Size </th>
+                                            <th>Type </th>
+                                            <th>Arrival Date </th>
+                                            <th>From Date</th>
+                                            <th>To Date</th>
+                                            <th>Cargo Type </th>
+                                            <th>Billiable Head</th>
+                                            <th>Qty </th>
+                                            <th>Rate </th>
+                                            <th>Discount </th>
+                                            <th>Taxable Amount</th>
+                                            <th>GST% </th>
+                                            <th>GST Amount </th>
+                                            <th>Total Amount </th>                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ decimal TotalAmount = 0;}
+                                        @for (int i = 0; i < Model.dtConsolidateChargeDetails.Rows.Count; i++)
+                                        {
+                                            TotalAmount = TotalAmount + Convert.ToDecimal(Model.dtConsolidateChargeDetails.Rows[i]["TotalAmount"]);
+                                        <tr>
+                                            <td>@Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["AgentName"])</td>
+                                            <td>@Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["LineName"])</td>
+                                            <td>@Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["WONO"])</td>
+                                            @if (!String.IsNullOrEmpty(Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["WODate"])))
+                                            {
+                                                <td>@Convert.ToDateTime(Model.dtConsolidateChargeDetails.Rows[i]["WODate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat)</td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+                                            <td>@Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["ContainerNumber"])</td>
+                                            <td>@Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["ISOCodeSize"])</td>
+                                            <td>@Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["ISOCodeType"])</td>
+                                            @if (!String.IsNullOrEmpty(Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["ArrivalDate"])))
+                                            {
+                                                <td>@Convert.ToDateTime(Model.dtConsolidateChargeDetails.Rows[i]["ArrivalDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateTimeFormat)</td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+                                            @if (!String.IsNullOrEmpty(Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["FromDate"])))
+                                            {
+                                                <td>@Convert.ToDateTime(Model.dtConsolidateChargeDetails.Rows[i]["FromDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat)</td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+                                            @if (!String.IsNullOrEmpty(Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["ToDate"])))
+                                            {
+                                                <td>@Convert.ToDateTime(Model.dtConsolidateChargeDetails.Rows[i]["ToDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat)</td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+                                            <td>@Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["CargoType"])</td>
+                                            <td>@Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["MSTRTariffHeadName"])</td>
+                                            <td>@Convert.ToString(Model.dtConsolidateChargeDetails.Rows[i]["Qty"])</td>
+                                            <td>@Convert.ToDecimal(Model.dtConsolidateChargeDetails.Rows[i]["Rate"]).ToString("0.00")</td>
+                                            <td>@Convert.ToDecimal(Model.dtConsolidateChargeDetails.Rows[i]["Discount"]).ToString("0.00")</td>
+                                            <td>@Convert.ToDecimal(Model.dtConsolidateChargeDetails.Rows[i]["TaxableAmount"]).ToString("0.00")</td>
+                                            <td>@Convert.ToDecimal(Model.dtConsolidateChargeDetails.Rows[i]["GST"]).ToString("0.00")</td>
+                                            <td>@Convert.ToDecimal(Model.dtConsolidateChargeDetails.Rows[i]["GSTAmount"]).ToString("0.00")</td>
+                                            <td>@Convert.ToDecimal(Model.dtConsolidateChargeDetails.Rows[i]["TotalAmount"]).ToString("0.00")</td>
+                                        </tr>
+                                        }
+                                        <tr>
+                                            <td colspan="18" style="text-align:right;font-weight:bold;">Total Amount:</td>
+                                            <td colspan="2">@TotalAmount.ToString("0.00")</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h4>
+                                <b> Discount Details </b>
+                                <div class="pull-right ActionID">
+                                    <button type="button" class="btn btn-primary" onclick="openOtherTariff()">Add</button>
+                                </div>
+                            </h4>
+                        </div>
+                        <div class="box-body ">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Billable Head</th>
+                                                <th>Taxable Amount</th>
+                                                <th>Discount Amount</th>
+                                                <th>Net Taxable Amount</th>
+                                                <th>GST(%)</th>
+                                                @*<th>IGST Amount</th>
+                                                    <th>CGST Amount</th>
+                                                    <th>SGST Amount</th>*@
+                                                <th>Total GST</th>
+                                                <th>Net amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ConsolidatedChargesDetails">
+                                            @{ decimal Amount = 0;
+                                                decimal NetAmount = 0;
+                                                decimal TotalInvoiceAmount = 0;
+                                                decimal DiscountAmount = 0;
+                                                decimal TaxableAmount = 0, NetTaxableAmount = 0, GSTAmount = 0;
+                                            }
+                                            @if (Model.dtDiscountDetails != null && Model.dtDiscountDetails.Rows.Count > 0)
+                                            {
+
+                                                for (int L = 0; L < Model.dtDiscountDetails.Rows.Count; L++)
+                                                {
+                                                    TaxableAmount += Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["TaxableAmount"]);
+                                                    NetTaxableAmount += Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["NetTaxableAmount"]);
+                                                    GSTAmount += Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["GSTAmount"]);
+                                                    DiscountAmount += Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["Discount"]);
+                                                    TotalInvoiceAmount += Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["TotalAmount"]);
+                                                    string IGST = "";
+                                                    string CGST = "";
+                                                    string SGST = "";
+                                                    if (Convert.ToInt32(Model.dtDiscountDetails.Rows[L]["StateID"]) == Model.CompanyStateID)
+                                                    {
+                                                        CGST = ((Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["GSTAmount"]) / 2).ToString("0.00"));
+                                                        SGST = ((Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["GSTAmount"]) / 2).ToString("0.00"));
+                                                    }
+                                                    else
+                                                    {
+                                                        IGST = ((Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["GSTAmount"])).ToString("0.00"));
+                                                    }
+                                                    <tr>
+                                                        <td>@Model.dtDiscountDetails.Rows[L]["TariffHead"]</td>
+
+                                                        <td>@(Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["TaxableAmount"]).ToString("0.00"))</td>
+                                                        <td>@(Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["Discount"]).ToString("0.00"))</td>
+                                                        <td>@(Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["NetTaxableAmount"]).ToString("0.00"))</td>
+                                                        <td>@(Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["GST"]).ToString("0.00"))</td>
+                                                        @*<td>@IGST</td>
+                                                            <td>@CGST</td>
+                                                            <td>@SGST</td>*@
+                                                        <td>@(Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["GSTAmount"]).ToString("0.00"))</td>
+                                                        <td>@(Convert.ToDecimal(Model.dtDiscountDetails.Rows[L]["TotalAmount"]).ToString("0.00"))</td>
+                                                    </tr>
+                                                }
+
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            @if (Model.PaymentMode == "Cash")
+                            {
+
+                                <div class="box-header with-border">
+                                    <h4>
+                                        <b> Receipt Details </b>
+                                    </h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12" style="overflow:scroll">
+                                        <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Mode Of Payment</th>
+                                                    <th>Amount</th>
+                                                    <th>Cheque/DD/NEFT NO</th>
+                                                    <th>Cheque/DD/NEFT Date</th>
+                                                    <th>Bank Details</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>@Model.PaymentModeOfReceipt</td>
+                                                    <td>@Model.AmountOfReceipt</td>
+                                                    <td>@Model.ChequeDDNeftNoOfReceipt</td>
+                                                    <td>@Model.ChequeDDNeftDateOfReceipt</td>
+                                                    <td>@Model.BankDetailsOfReceipt</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            }
+                            <div class="box-body row">
+                                <div class="table-responsive">
+                                    <table id="example4" class="table-bordered table-hover " style="float:right ;margin-left:2%">
+                                        <tbody>
+                                            <tr class="text-right">
+                                                <td><b> Taxable Amount :</b></td>
+                                                <td>@(Convert.ToDecimal(TaxableAmount).ToString("0.00")) </td>
+                                            </tr>
+                                            <tr class="text-right">
+                                                <td><b> Discount Amount :</b></td>
+                                                <td>@(Convert.ToDecimal(DiscountAmount).ToString("0.00")) </td>
+                                            </tr>
+                                            <tr class="text-right">
+                                                <td><b>Net Taxable Amount :</b></td>
+                                                <td>@(Convert.ToDecimal(NetTaxableAmount).ToString("0.00")) </td>
+                                            </tr>
+                                            <tr class="text-right">
+                                                <td><b> GST Amount :</b></td>
+                                                <td>@(Convert.ToDecimal(GSTAmount).ToString("0.00")) </td>
+                                            </tr>
+                                            <tr class="text-right">
+                                                <td><b> Total Amount :</b></td>
+                                                <td>@(Convert.ToDecimal(TotalInvoiceAmount).ToString("0.00")) </td>
+                                            </tr>
+                                            <tr class="text-right">
+                                                <td><b> Round Amount :</b></td>
+                                                <td>@((Math.Round(Convert.ToDecimal(TotalInvoiceAmount)) - Convert.ToDecimal(TotalInvoiceAmount)).ToString("0.00")) </td>
+                                            </tr>
+                                            <tr class="text-right">
+                                                <td><b> Net Amount :</b></td>
+                                                <td>@(Math.Round(Convert.ToDecimal(TotalInvoiceAmount)).ToString("0.00")) </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            }
+            <div class="modal fade in" id="AddOtherTariffHead" style="display: none; padding-right: 17px;">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            <h4 class="modal-title">Add Other Tarrif Head</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12" style="overflow-x: scroll;">
+                                    <table id="example2" style="white-space: nowrap" class="table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Tarrif Head </th>
+                                                <th>Qty </th>
+                                                <th>Rate </th>
+                                                <th>Total</th>
+                                                <th>Discount </th>
+                                                <th>Discount Amount </th>
+                                                <th>Taxable Amount </th>
+                                                <th>GST (%) </th>
+                                                <th>GST Amount </th>
+                                                <th>Net Amount </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="OtherTariffDetailsDetails"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+        }
+    </section>
+}
+<script>
+    var IsSearch = '@Model.IsSearch.ToString().ToLower()';
+
+    function changestepValue(tabNo) {
+        $("#DocumentTab").val(tabNo);
+        if (tabNo != "1") {
+            if (tabNo == "5") {
+                $("#IsChangeStep").val(2);
+            }
+        }
+        //$("frmpost").submit();
+    }
+    function FinalFinished() {
+        $("#IsFinished").val(true);
+        return GatePassValidation();
+    }
+</script>
+
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/emptyInvoice.js")"></script>

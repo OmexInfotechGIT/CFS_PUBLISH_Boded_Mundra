@@ -1,0 +1,183 @@
+﻿@model CFS.Models.trncargorepacking
+@{
+    ViewBag.Title = "View Cargo Repacking";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    //bool IsEdit = true;
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+    System.Text.StringBuilder StrAutocomplete = new System.Text.StringBuilder();
+}
+
+<style>
+    .ui-autocomplete {
+        z-index: 10000;
+    }
+</style>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (Model != null && Model.doaction == "edit")
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                               <span class="badge bg-light-blue" style="font-size:15px;">Repacking Ref No : @CFS.Com.ClsCommon.AddhtmlSpace(3)@Model.trncargorepackingGWPrefix@Model.trncargorepackingGWNo</span>
+                                <span class="badge bg-light-blue" style="font-size:15px;">Repacking Ref Date : @CFS.Com.ClsCommon.AddhtmlSpace(3)@Model.RepackingDateTime</span>
+                                <span class="badge bg-light-blue" style="font-size:15px;">User : @CFS.Com.ClsCommon.AddhtmlSpace(3)@Model.UserName</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <a href="@Url.Action("Index",CFS.Com.ClsCommon.Controller(), new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-body">
+
+                    @if (Model.trncargorepackingGWID > 0)
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.IsSearch)
+                        @Html.HiddenFor(Model => Model.trncargorepackingGWPrefix)
+                        @Html.HiddenFor(Model => Model.trncargorepackingGWNo)
+
+
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.SbInvoiceNo, new { @for = "txtTransporter" }) : <span>@Model.SbInvoiceNo</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.DocumentDate, new { @for = "txtVehicleType" }) : <span>@Model.DocumentDate</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.LotNo, new { @for = "LicNo" }) : <span>@Model.LotNo</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.AreaUom, new { @for = "DriverName" }) : <span>@Model.AreaUom</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.totalNocBook, new { @for = "MobileNo" }) : <span>@Model.totalNocBook</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.totalNocReleased, new { @for = "Address" }) : <span>@Model.totalNocReleased</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.NocBalance, new { @for = "Remarks" }) :  <span id="Remarks">@Model.NocBalance</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.NocDefference, new { @for = "Remarks" }) :  <span id="Remarks">@Model.NocDefference</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.FinalNocBalance, new { @for = "Remarks" }) :  <span id="Remarks">@Model.FinalNocBalance</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.packingType, new { @for = "Remarks" }) :  <span id="Remarks">@Model.packingType</span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(Model => Model.WhLocation, new { @for = "Remarks" }) :  <span id="Remarks">@Model.WhLocation</span>
+                        </div>
+                        <div class="col-md-12" style="border-bottom:1px solid #cdcdcd;margin-bottom: 5px;"></div>
+                        if (Model.MySubDatatable != null && Model.MySubDatatable.Rows.Count > 0)
+                        {
+                            <div class="col-md-12" style="overflow:scroll">
+                                <table id="example2" style="white-space: nowrap;" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Cargo Name</th>
+                                            <th>NOC No</th>
+                                            <th>NOC Date</th>
+                                            <th>Cont No/Truck No</th>
+                                            <th>Destuff Date</th>
+                                            <th>WH Location</th>
+                                            <th>Packing Type</th>
+                                            <th>Total Declared Packages</th>
+                                            <th>Total Declared Pieces</th>
+                                            <th>Total Declared Weight</th>
+                                            <th>Total Received Packages</th>
+                                            <th>Total Received Pieces</th>
+                                            <th>Total Received Weight</th>
+                                            <th>Total Outward Packages</th>
+                                            <th>Total Outward Pieces</th>
+                                            <th>Total Outward Weight</th>
+                                            <th>Total SB CLP Packages</th>
+                                            <th>Total SB CLP Pieces</th>
+                                            <th>Total SB CLP Weight</th>
+                                            <th>Balance Packages</th>
+                                            <th>Balance Pieces</th>
+                                            <th>Balance Weight</th>
+                                            <th>Enter repacking packages</th>
+                                            <th>Enter Repacking pieces</th>
+                                            <th>Repacking weight</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.MySubDatatable != null && Model.MySubDatatable.Rows.Count > 0)
+                                        {
+                                            for (int i = 0; i < Model.MySubDatatable.Rows.Count; i++)
+                                            {
+                                                <tr>
+                                                    <td><span id="CargoName_@Model.MySubDatatable.Rows[i]["Cargo Name"]">@Model.MySubDatatable.Rows[i]["Cargo Name"]</span></td>
+                                                    <td><span id="NocNo_@Model.MySubDatatable.Rows[i]["Noc No"]">@Model.MySubDatatable.Rows[i]["Noc No"]</span></td>
+                                                    <td><span id="NocDate_@Model.MySubDatatable.Rows[i]["Noc Date"]">@Model.MySubDatatable.Rows[i]["Noc Date"]</span></td>
+                                                    <td><span id="TruckNo_@Model.MySubDatatable.Rows[i]["TruckNo"]">@Model.MySubDatatable.Rows[i]["TruckNo"]</span></td>
+                                                    <td><span id="DestuffDate_@Model.MySubDatatable.Rows[i]["Destuff Date"]">@Model.MySubDatatable.Rows[i]["Destuff Date"]</span></td>
+                                                    <td><span id="WHLocation_@Model.MySubDatatable.Rows[i]["WHLocation"]">@Model.MySubDatatable.Rows[i]["WHLocation"]</span></td>
+                                                    <td><span id="PackagingType_@Model.MySubDatatable.Rows[i]["PackagingType"]">@Model.MySubDatatable.Rows[i]["PackagingType"]</span></td>
+                                                    <td><span id="TotalDeclaredPackages_@Model.MySubDatatable.Rows[i]["Total Declared Packages"]">@Model.MySubDatatable.Rows[i]["Total Declared Packages"]</span></td>
+                                                    <td><span id="TotalDeclaredPieces_@Model.MySubDatatable.Rows[i]["Total Declared Pieces"]">@Model.MySubDatatable.Rows[i]["Total Declared Pieces"]</span></td>
+                                                    <td><span id="TotalDeclaredWeight_@Model.MySubDatatable.Rows[i]["Total Declared Weight"]">@Model.MySubDatatable.Rows[i]["Total Declared Weight"]</span></td>
+                                                    <td><span id="TotalReceivedPackages_@Model.MySubDatatable.Rows[i]["Total Received Packages"]">@Model.MySubDatatable.Rows[i]["Total Received Packages"]</span></td>
+                                                    <td><span id="TotalReceivedPieces_@Model.MySubDatatable.Rows[i]["Total Received Pieces"]">@Model.MySubDatatable.Rows[i]["Total Received Pieces"]</span></td>
+                                                    <td><span id="TotalReceivedWeight_@Model.MySubDatatable.Rows[i]["Total Received Weight"]">@Model.MySubDatatable.Rows[i]["Total Received Weight"]</span></td>
+                                                    <td><span id="TotalOutwardPackages_@Model.MySubDatatable.Rows[i]["Total Outward Packages"]">@Model.MySubDatatable.Rows[i]["Total Outward Packages"]</span></td>
+                                                    <td><span id="TotalOutwardPieces_@Model.MySubDatatable.Rows[i]["Total Outward Pieces"]">@Model.MySubDatatable.Rows[i]["Total Outward Pieces"]</span></td>
+                                                    <td><span id="TotalOutwardWeight_@Model.MySubDatatable.Rows[i]["Total Outward Weight"]">@Model.MySubDatatable.Rows[i]["Total Outward Weight"]</span></td>
+                                                    <td><span id="TotalSBCLPPackages_@Model.MySubDatatable.Rows[i]["Total SB CLP Packages"]">@Model.MySubDatatable.Rows[i]["Total SB CLP Packages"]</span></td>
+                                                    <td><span id="TotalSBCLPPieces_@Model.MySubDatatable.Rows[i]["Total SB CLP Pieces"]">@Model.MySubDatatable.Rows[i]["Total SB CLP Pieces"]</span></td>
+                                                    <td><span id="TotalSBCLPWeight_@Model.MySubDatatable.Rows[i]["Total SB CLP Weight"]">@Model.MySubDatatable.Rows[i]["Total SB CLP Weight"]</span></td>
+                                                    <td><span id="BalancePackages_@Model.MySubDatatable.Rows[i]["Balance Packages"]">@Model.MySubDatatable.Rows[i]["Balance Packages"]</span></td>
+                                                    <td><span id="BalancePieces_@Model.MySubDatatable.Rows[i]["Balance Pieces"]">@Model.MySubDatatable.Rows[i]["Balance Pieces"]</span></td>
+                                                    <td><span id="BalanceWeight_@Model.MySubDatatable.Rows[i]["Balance Weight"]">@Model.MySubDatatable.Rows[i]["Balance Weight"]</span></td>
+                                                    <td>
+                                                        <span id="RepackingPackgesTxt">
+                                                            @Html.TextBoxFor(Model => Model.RepackingPackage, new { @id = "RepackingPackage", @name = "NocDefference", @class = "form-control", @readonly = "readonly" })
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span id="RepackingPiecesTxt">
+                                                            @Html.TextBoxFor(Model => Model.RepackingPiece, new { @id = "RepackingPieces", @name = "NocDefference", @class = "form-control", @readonly = "readonly" })
+                                                        </span>
+                                                    </td>
+                                                    <td><span id="RepackingWeight"></span></td>
+                                                </tr>
+                                                <input type="hidden" id="totalRepackingWeight" value="@Model.MySubDatatable.Rows[i]["Total Declared Packages"],@Model.MySubDatatable.Rows[i]["Total Declared Weight"]" />
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<script>
+    var doaction = '@Model.doaction';
+    var IsView = false;
+</script>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trncargorepacking.js")"></script>
+

@@ -1,0 +1,27 @@
+﻿@{
+    CFS.Models.ReportsModal ReportsModal = new CFS.Models.ReportsModal();
+    if (ViewBag.ReportsModal != null)
+    {
+        ReportsModal = ViewBag.ReportsModal;
+    }
+    ViewBag.Title = "Bill Of Supply Register";
+}
+@using (Html.BeginForm("BillOfSupplyRegister", "Reports", FormMethod.Post))
+{
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-body">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        @Html.LabelFor(Model => ReportsModal.BillofSupply, new { @for = "BillofSupply" })
+                        @Html.DropDownListFor(Model => ReportsModal.BillofSupply, ReportsModal.DDLBillofSupply, "SELECT", new { @id = "BillofSupply", @name = "BillofSupply", @class = "form-control" })
+                    </div>
+                </div>
+                @Html.Partial("_ReportsModalDate")
+                @Html.Partial("_ReportsModalSearchClearButton")
+            </div>
+        </div>
+    </div>
+}
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/ReportsModal.js")"></script>
+

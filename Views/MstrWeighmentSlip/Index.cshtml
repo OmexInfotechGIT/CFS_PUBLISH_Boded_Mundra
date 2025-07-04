@@ -1,0 +1,86 @@
+﻿@model CFS.Models.MstrWeighmentSlip
+@{
+    ViewBag.Title = "Weighment Slip List";
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (!ViewBag.gblBlnView)
+    {
+        Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    }
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="pull-right">
+                        <div style="display: inline-flex">
+                            <div class="input-group input-group-sm">
+                                <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat">Go!</button>
+                                </span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div>
+                                @if (ViewBag.gblBlnAdd)
+                                {
+                                    <a href="@Url.Action("Action", "MstrWeighmentSlip", new { doaction = "add" } )" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Weighment Slip"><i class="fa fa-plus"></i></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body">
+
+                    <table id="example2" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <a class="text-black" href="/MstrWeighmentSlip?pg=1&amp;SortColumn=bankcode&amp;SortOrder=asc"><i title="Click to sorting" class="fa fa-sort-amount-asc"></i> Bank Code</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="/MstrWeighmentSlip?pg=1&amp;SortColumn=bankname&amp;SortOrder=asc"><i title="Click to sorting" class="fa fa-sort-amount-asc"></i> Bank Name</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="/MstrWeighmentSlip?pg=1&amp;SortColumn=address&amp;SortOrder=asc"><i title="Click to sorting" class="fa fa-sort-amount-asc"></i> Address</a>
+                                </th>
+                                <th>
+                                    <a class="text-black" href="/MstrWeighmentSlip?pg=1&amp;SortColumn=isactive&amp;SortOrder=asc"><i title="Click to sorting" class="fa fa-sort-amount-asc"></i> Status</a>
+                                </th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10024</td>
+                                <td>TEST</td>
+                                <td>AS</td>
+                                <td>
+
+                                    <a><i onclick="ValidateUpdateStatus('mstrbank','false','10024')" title="click to InActive" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="glyphicon glyphicon-ok-circle"></i></a>
+                                </td>
+                                <td>
+                                    <a href="/MstrWeighmentSlip/Action/10024?pg=1&amp;doaction=edit"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
+                                    <a href="/MstrWeighmentSlip/view/10024"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
+                                    <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('MstrWeighmentSlip','10024')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
+                                    <a href="/MstrWeighmentSlip/delete/10024" onclick="return confirm('Are you sure want to delete this record?');"><i title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
+                                </td>
+                            </tr>
+                            
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    var doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrWeighmentSlip.js")"></script>
+
