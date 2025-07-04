@@ -221,6 +221,7 @@
                                     <thead>
 
                                         <tr>
+                                            <th>Container No</th>
                                             <th>Cargo Name</th>
                                             <th>Book Pkgs</th>
                                             <th>Book Pics</th>
@@ -354,10 +355,10 @@
                                             <td style="display:none;">@Html.TextBoxFor(Model => Model.trnDocumentBoiItemsID[Q], new { @id = "trnDocumentBoiItemsID" + Q })</td>
                                             <td style="display:none;">@Html.TextBoxFor(Model => Model.trnTruckDestuffingDetailsID[Q], new { @id = "trnTruckDestuffingDetailsID" + Q })</td>
                                             <td style="display:none;">@Html.HiddenFor(Model => Model.hdnIsGroupArea[Q], new { @id = "hdnIsGroupArea" + Q })</td>
-                                            <td style="display:none;">@Html.TextBoxFor(Model => Model.trnContainerID[Q], new { @id = "trnContainerID" + Q })</td>
+                                            <td style="display:none;">@Html.HiddenFor(Model => Model.trnContainerID[Q], new { @id = "trnContainerID" + Q })</td>
 
-                                            <td>@Html.HiddenFor(Model => Model.CargoName[Q], new { @id = "CargoName" + Q, @placeholder = "CargoName", @readonly = "true", @style = "background:#eee;width: 130px;" }) @Model.CargoName[Q]</td>
                                             <td>@Html.HiddenFor(Model => Model.ContainerNumber[Q], new { @id = "ContainerNumber" + Q, @placeholder = "ContainerNumber", @readonly = "true", @style = "background:#eee;width: 130px;" }) @Model.ContainerNumber[Q]</td>
+                                            <td>@Html.HiddenFor(Model => Model.CargoName[Q], new { @id = "CargoName" + Q, @placeholder = "CargoName", @readonly = "true", @style = "background:#eee;width: 130px;" }) @Model.CargoName[Q]</td>
                                             <td>@Html.HiddenFor(Model => Model.BookNoOfPackage[Q], new { @id = "BookNoOfPackage" + Q, @style = "width: 50px;background:#eee", @readonly = "true" }) @(Convert.ToDecimal(Model.BookNoOfPackage[Q]).ToString("0"))</td>
                                             <td>@Html.HiddenFor(Model => Model.BookNoOfPieces[Q], new { @id = "BookNoOfPieces" + Q, @placeholder = "BookNoOfPieces", @style = "width: 50px;background:#eee", @readonly = "true" }) @(Convert.ToDecimal(Model.BookNoOfPieces[Q]).ToString("0"))</td>
                                             <td>@Html.HiddenFor(Model => Model.BookWeight[Q], new { @id = "BookWeight" + Q, @placeholder = "BookWeight", @style = "width: 50px;background:#eee", @readonly = "true" }) @Model.BookWeight[Q]</td>
@@ -449,10 +450,11 @@
                                         @Html.HiddenFor(Model => Model.hdnGridCount, new { @id = "hdnGridCount", @name = "hdnGridCount" })
 
                                         <tr>
-                                            <td colspan="18"><hr /></td>
+                                            <td colspan="19"><hr /></td>
                                         </tr>
                                         <tr>
                                             <td> <b>Total : </b> </td>
+                                            <td></td>
                                             <td>@(Convert.ToDecimal(Model.BookNoOfPackage.Sum()).ToString("0"))</td>
                                             <td>@(Convert.ToDecimal(Model.BookNoOfPieces.Sum()).ToString("0"))</td>
                                             <td>@(Convert.ToDecimal(Model.BookWeight.Sum()))</td>

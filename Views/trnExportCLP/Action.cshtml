@@ -175,7 +175,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        @Html.LabelFor(Model => Model.VCNNo)
+                                        @Html.LabelFor(Model => Model.VCNNo) @Html.ValidationMessageFor(Model => Model.VCNNo, String.Empty, new { @id = "spn_VCNID", @class = "help-inline text-red" })
                                         @if (Model.IsFinished)
                                         {
                                             @Html.TextBoxFor(Model => Model.VCNNo, new { @id = "VCNNo", @name = "VCNNo", @class = "form-control", @placeholder = "SELECT Cont No",@readonly=true })
@@ -210,7 +210,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         @Html.LabelFor(Model => Model.AgentSealNo)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.AgentSealNo, String.Empty, new { @id = "spn_AgentSealNo", @class = "help-inline text-red" })
-                                        @if (Model.IsFinished)
+                                        @if (Model.IsLoadedOut)
                                         {
                                             @Html.TextBoxFor(Model => Model.AgentSealNo, new { @id = "AgentSealNo", @name = "AgentSealNo", @class = "form-control", @placeholder = "SELECT Agent Seal No",@readonly=true })
                                         }
@@ -224,7 +224,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         @Html.LabelFor(Model => Model.CustomsSealNo)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.CustomsSealNo, String.Empty, new { @id = "spn_CustomsSealNo", @class = "help-inline text-red" })
-                                        @if (Model.IsFinished)
+                                        @if (Model.IsLoadedOut)
                                         {
                                             @Html.TextBoxFor(Model => Model.CustomsSealNo, new { @id = "CustomsSealNo", @name = "CustomsSealNo", @class = "form-control", @placeholder = "SELECT Customs Seal No" ,@readonly=true})
                                         }
@@ -499,17 +499,17 @@
                                             {
                                                 <td></td>
                                             }
-                                            
+
                                             <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["INVNo"])</td>
-                                                @if (!string.IsNullOrEmpty(Model.dtSBDetails.Rows[i]["InvDate"].ToString()))
-                                                {
-                                                    <td>@CFS.Com.ClsCommon.ConvertDateNullToBlank(Convert.ToDateTime(Model.dtSBDetails.Rows[i]["InvDate"]))</td>
-                                                }
-                                                else
-                                                {
-                                                    <td></td>
-                                                }
-                                            
+                                            @if (!string.IsNullOrEmpty(Model.dtSBDetails.Rows[i]["InvDate"].ToString()))
+                                            {
+                                                <td>@CFS.Com.ClsCommon.ConvertDateNullToBlank(Convert.ToDateTime(Model.dtSBDetails.Rows[i]["InvDate"]))</td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+
                                             <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["BULKSTATUS"])</td>
                                             <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["CHAName"])</td>
                                             <td>@Convert.ToString(Model.dtSBDetails.Rows[i]["ForwarderName"])</td>
@@ -535,9 +535,10 @@
                                             <td>@CLPPkgs.ToString("0.00")</td>
                                             <td>@CLPPcs.ToString("0.00")</td>
                                             <td>@CLPWt.ToString("0.00")</td>
-
-                                            <td>
-                                                <a style=" cursor: pointer;" href="@Url.Action("Index","trnExportCLPBOEItems"
+                                            @if (Model.IsMovementDone)
+                                            {
+                                                <td>
+                                                    <a style=" cursor: pointer;pointer-events:none;" href="@Url.Action("Index","trnExportCLPBOEItems"
                                                                                                         , new {  @trnExportCLPID=Model.trnExportCLPID
                                                                                                                     ,@trnDocumentLotDetailsID = Model.dtSBDetails.Rows[i]["trnDocumentLotDetailsID"]
                                                                                                                     ,@BOENo = Model.dtSBDetails.Rows[i]["SBNo"]
@@ -557,8 +558,35 @@
                                                                                                                     ,@IsBulk=Model.dtSBDetails.Rows[i]["BULKSTATUS"]
                                                                                                                     ,@trnExBondDocumentEntryDetailsID=Model.dtSBDetails.Rows[i]["trnExBondDocumentEntryDetailsID"]
                                                                                                                     ,@IsView=false,@IsFinished=Model.IsFinished})" target="_blank" class="btn btn-primary"><i class="fa fa-plus"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
-                                                <a><i data-toggle="modal" data-target="#ReExportDetails" onclick="GetReExportDetails(@Model.dtSBDetails.Rows[i]["trnExportDocumentDeclarationLotDetailsID"])" title="ReExport Details"  class="fa fa-arrows-alt fa-spin" style="font-size: x-large; cursor: pointer; vertical-align: middle;color:#3c8dbc"></i></a>
-                                            </td>
+                                                    <a><i data-toggle="modal" data-target="#ReExportDetails" onclick="GetReExportDetails(@Model.dtSBDetails.Rows[i]["trnExportDocumentDeclarationLotDetailsID"])" title="ReExport Details" class="fa fa-arrows-alt fa-spin" style="font-size: x-large; cursor: pointer; vertical-align: middle;color:#3c8dbc"></i></a>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    <a style=" cursor: pointer;" href="@Url.Action("Index","trnExportCLPBOEItems"
+                                                                                                        , new {  @trnExportCLPID=Model.trnExportCLPID
+                                                                                                                    ,@trnDocumentLotDetailsID = Model.dtSBDetails.Rows[i]["trnDocumentLotDetailsID"]
+                                                                                                                    ,@BOENo = Model.dtSBDetails.Rows[i]["SBNo"]
+                                                                                                                    ,@trnExportDocumentDeclarationLotDetailsID = Model.dtSBDetails.Rows[i]["trnExportDocumentDeclarationLotDetailsID"]
+                                                                                                                    ,@trnExportDocumentDeclarationID = Convert.ToString(Model.dtSBDetails.Rows[i]["trnExportDocumentDeclarationID"])
+                                                                                                                    ,@WHLocation =""
+                                                                                                                    ,@WHLocationID = "0"
+                                                                                                                    ,@WHPackages=Model.dtSBDetails.Rows[i]["NOOFPKGS"]
+                                                                                                                    ,@WHPieces=Model.dtSBDetails.Rows[i]["NOOFPCS"]
+                                                                                                                    ,@WHWeight=Model.dtSBDetails.Rows[i]["NOOFWT"]
+                                                                                                                    ,@trnDocumentID=Model.dtSBDetails.Rows[i]["trnDocumentID"]
+                                                                                                                    ,@ContNo=Model.ContNo
+                                                                                                                    ,@contSize=Model.Size
+                                                                                                                    ,@contType=Model.Type
+                                                                                                                    ,@cargoType=Model.CargoType
+                                                                                                                    ,@trnexportstufingwoSBDetailsID =  Model.dtSBDetails.Rows[i]["trnexportstufingwoSBDetailsID"]
+                                                                                                                    ,@IsBulk=Model.dtSBDetails.Rows[i]["BULKSTATUS"]
+                                                                                                                    ,@trnExBondDocumentEntryDetailsID=Model.dtSBDetails.Rows[i]["trnExBondDocumentEntryDetailsID"]
+                                                                                                                    ,@IsView=false,@IsFinished=Model.IsFinished})" target="_blank" class="btn btn-primary"><i class="fa fa-plus"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <a><i data-toggle="modal" data-target="#ReExportDetails" onclick="GetReExportDetails(@Model.dtSBDetails.Rows[i]["trnExportDocumentDeclarationLotDetailsID"])" title="ReExport Details" class="fa fa-arrows-alt fa-spin" style="font-size: x-large; cursor: pointer; vertical-align: middle;color:#3c8dbc"></i></a>
+                                                </td>
+                                            }
 
                                         </tr>
                                             }

@@ -157,11 +157,11 @@
                         </div>
                         <div class="col-md-3 pull-right clsBasicDetails">
                             <br />
-                            <div class="form-group">
+                            <div class="form-group pull-right">
                                 @if (Model.doaction != "edit")
                                 {
-                                    <a href="@Url.Action("Index","trnEmptyContainerGateIn", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger pull-right">Cancel</a>
-                                    <button type="submit" style="margin-right: 5px;" class="btn btn-primary pull-right" id="Save" onclick="return EmptyContainerGateInGWValidation(1)">Continue</button>
+                                    <button type="submit" style="margin-right: 5px;" class="btn btn-primary" id="Save" onclick="return EmptyContainerGateInGWValidation(1)">Continue</button>
+                                    <a href="@Url.Action("Index","trnEmptyContainerGateIn", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger">Cancel</a>
                                 }
 
                             </div>
