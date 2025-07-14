@@ -76,56 +76,62 @@
                         @Html.HiddenFor(Model => Model.IsSearch)
                         @Html.HiddenFor(Model => Model.CreditNoteID)
                         @Html.HiddenFor(Model => Model.Balance)
-                        <div class="col-md-12" style="margin-top:20px;">
-                            <div class="col-md-3">
-                                @Html.LabelFor(Model => Model.NOCDATE) : <span>@Model.NOCDATE</span>
-                            </div>
-                            <div class="col-md-3">
-                                @Html.LabelFor(Model => Model.IMPORTERNAME) : <span>@Model.IMPORTERNAME</span>
-                            </div>
-                            <div class="col-md-3">
-                                @Html.LabelFor(Model => Model.CHA) : <span>@Model.CHA</span>
-                            </div>
-                            <div class="col-md-3">
-                                @Html.LabelFor(Model => Model.Forwarder) : <span>@Model.Forwarder</span>
-                            </div>
-                            <div class="col-md-3">
-                                @Html.LabelFor(Model => Model.ConsolerName) : <span>@Model.ConsolerName</span>
-                            </div>
-                            <div class="col-md-3">
-                                @Html.LabelFor(Model => Model.StorageStartDate) : <span>@Model.StorageStartDate</span>
-                            </div>
-                            <div class="col-md-3">
-                                @Html.LabelFor(Model => Model.NoOfStoragePeriod) : <span>@Model.NoOfStoragePeriod</span>
-                            </div>
-                            <div class="col-md-3">
-                                @Html.LabelFor(Model => Model.StoragePeriod) : <span>@Model.StoragePeriod</span>
-                            </div>
-                            <div class="col-md-3">
-                                @Html.LabelFor(model => model.InvoiceValidUptoDate) : <span>@Model.InvoiceValidUptoDate</span>
-                            </div>
-                            <div class="col-md-3">
-                                @Html.LabelFor(Model => Model.BillToCustomerName) : <span>@Model.BillToCustomerName</span>
-                            </div>
-                            <div class="col-md-6">
-                                @Html.LabelFor(Model => Model.BillToCustomerAddress) : <span>@Model.BillToCustomerAddress</span>
-                            </div>
-                            <div class="col-md-3">
-                                @Html.LabelFor(Model => Model.BillToCustomerGSTNo) : <span>@Model.BillToCustomerGSTNo</span>
-                            </div>
-                            <div class="col-md-3">
-                                @Html.LabelFor(Model => Model.GSTTypeName) : <span>@Model.GSTTypeName</span>
-                            </div>
-                            <div class="col-md-3">
-                                @Html.LabelFor(Model => Model.StateName) : <span>@Model.StateName</span>
-                            </div>
-                            <div class="col-md-3">
-                                @Html.LabelFor(Model => Model.PaymentTypeName) : <span>@Model.PaymentTypeName</span>
-                            </div>
-                            <div class="col-md-3">
-                                @Html.LabelFor(Model => Model.Remarks) : <span>@Model.Remarks</span>
-                            </div>
-                        </div>
+                <div class="col-md-12" style="margin-top:20px;">
+                    <div class="col-md-3">
+                        @Html.LabelFor(Model => Model.NOCDATE) : <span>@Model.NOCDATE</span>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(Model => Model.IMPORTERNAME) : <span>@Model.IMPORTERNAME</span>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(Model => Model.CHA) : <span>@Model.CHA</span>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(Model => Model.Forwarder) : <span>@Model.Forwarder</span>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(Model => Model.ConsolerName) : <span>@Model.ConsolerName</span>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(Model => Model.StorageStartDate) : <span>@Model.StorageStartDate</span>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(Model => Model.NoOfStoragePeriod) : <span>@Model.NoOfStoragePeriod</span>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(Model => Model.StoragePeriod) : <span>@Model.StoragePeriod</span>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.InvoiceValidUptoDate) : <span>@Model.InvoiceValidUptoDate</span>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(Model => Model.BillToCustomerName) : <span>@Model.BillToCustomerName</span>
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(Model => Model.BillToCustomerAddress) : <span>@Model.BillToCustomerAddress</span>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(Model => Model.BillToCustomerGSTNo) : <span>@Model.BillToCustomerGSTNo</span>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(Model => Model.GSTTypeName) : <span>@Model.GSTTypeName</span>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(Model => Model.StateName) : <span>@Model.StateName</span>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(Model => Model.PaymentTypeName) : <span>@Model.PaymentTypeName</span>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(Model => Model.TallyHeadName) : <span>@Model.TallyHeadName</span>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(Model => Model.Remarks) : <span>@Model.Remarks</span>
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(Model => Model.CreditRemarks) : <span>@Model.CreditRemarks</span>
+                    </div>
+                </div>
                     }
 
                 </div>

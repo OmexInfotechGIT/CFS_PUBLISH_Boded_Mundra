@@ -144,7 +144,16 @@
                                 @Html.LabelFor(Model => Model.PaymentTypeName) : <span>@Model.PaymentTypeName</span>
                             </div>
                             <div class="col-md-3">
+                                @Html.LabelFor(Model => Model.TallyHeadName) : <span>@Model.TallyHeadName</span>
+                            </div>
+                            <div class="col-md-3">
                                 @Html.LabelFor(Model => Model.Remarks) : <span>@Model.Remarks</span>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="col-md-6 form-group">
+                                @Html.LabelFor(Model => Model.CreditRemarks, new { @for = "CreditRemarks" })
+                                @Html.TextBoxFor(Model => Model.CreditRemarks, new { @id = "CreditRemarks", @name = "CreditRemarks", @class = "form-control" })
                             </div>
                         </div>
                     }

@@ -208,6 +208,7 @@
                                 <thead>
                                     <tr>
                                         <th>Sr.</th>
+                                        <th>BOE No</th>
                                         <th>NOC No</th>
                                         <th>Date</th>
                                         <th>Type</th>
@@ -221,6 +222,7 @@
                                             int Srno = i + 1;
                                             <tr>
                                                 <td>@Srno</td>
+                                                <td>@Model.dtDuesCollection.Rows[i]["BOE No"]</td>
                                                 <td>@Model.dtDuesCollection.Rows[i]["NOCNo"]</td>
                                                 <td>@Convert.ToDateTime(Model.dtDuesCollection.Rows[i]["NOCDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat)</td>
                                                 <td>@Model.dtDuesCollection.Rows[i]["Type"]</td>
@@ -364,6 +366,7 @@
                             <thead>
                                 <tr>
                                     <th>Sr.</th>
+                                    <th>BOE No</th>
                                     <th>NOC No</th>
                                     <th>Date</th>
                                     <th>Type</th>
@@ -378,6 +381,7 @@
                                         SrNo = i + 1;
                                         <tr>
                                             <td>@SrNo</td>
+                                            <td>@Model.dtDuesCollection.Rows[i]["BOE No"]</td>
                                             <td>@Model.dtDuesCollection.Rows[i]["NOCNo"]</td>
                                             <td>@Convert.ToDateTime(Model.dtDuesCollection.Rows[i]["NOCDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat)</td>
                                             <td>@Model.dtDuesCollection.Rows[i]["Type"]</td>

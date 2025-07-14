@@ -73,6 +73,7 @@
             }
         }
     });
+    //GetLicence();
 });
 
 function GetTruckNo() {
@@ -80,13 +81,13 @@ function GetTruckNo() {
     Autocompletebox("TRUCKNO", "TRUCKID", "trnContainerGateIn", "GetTRUCKNO/" + $("#TransporterID").val(), "GetLicence");
 }
 function GetLicence() {    
-    Autocompletebox("LicenceNo", "LicenceNo", "trnContainerGateIn", "GETLicenseNo/" + $("#TransporterID").val(), "GetDetailsByLicenceNO");
+    Autocompletebox("LicenceNo", "LicenceNoID", "trnContainerGateIn", "GETLicenseNo/" + $("#TransporterID").val(), "GetDetailsByLicenceNO");
 }
 
 function TruckNumberChange() {
 
     $("#LicenceNo").val('');
-    Autocompletebox("LicenceNo", "LicenceNo", "trnContainerGateIn", "GETLicenseNo/" + $("#TransporterID").val(), "GetDetailsByLicenceNO");
+    Autocompletebox("LicenceNo", "LicenceNoID", "trnContainerGateIn", "GETLicenseNo/" + $("#TransporterID").val(), "GetDetailsByLicenceNO");
 }
 
 function TransporterChange() {

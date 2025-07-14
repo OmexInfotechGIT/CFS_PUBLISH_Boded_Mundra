@@ -129,31 +129,55 @@
     </div>
 
     @using (Html.BeginForm("mobileLogin", "CustomerMaster", FormMethod.Post))
-     {
-    <div class="modal fade in" id="MobileAccess" style="display: none; padding-right: 17px;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" id="close" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h4 class="modal-title">Mobile Access</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="box">
-                                <div class="box-body">
-                                    <div class="col-md-6">
-                                        <div class="box-body">
-                                            <div class="form-group">
-                                                <label class="UsernameTxt">Username<span class="text-red">*</span></label>
-                                                <input type="text" id="txtUsername" name="txtUsername" class="form-control UsernameTxt" style="width:400px;" />
-                                                <span class="text-red" id="txtUsernamemessage" style="display:none;">Username is Required</span><br />
-                                                <label class="PasswordTxt">Password<span class="text-red">*</span></label>
-                                                <input type="text" id="txtPassword" name="txtPassword" class="form-control PasswordTxt" style="width:400px;" />
-                                                <span class="text-red" id="txtPasswordMessage" style="display:none;">Password is Required</span>
-                                                <input type="hidden" id="hdnMstrCustomerID" name="hdnMstrCustomerID" />
+    {
+        <div class="modal fade in" id="MobileAccess" style="display: none; padding-right: 17px;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" id="close" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title">Mobile Access</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="box">
+                                    <div class="box-body">
+                                        <div class="col-md-6">
+                                            <div class="box-body">
+                                                <div class="form-group">
+                                                    <label class="UsernameTxt">Username<span class="text-red">*</span></label>
+                                                    <input type="text" id="txtUsername" name="txtUsername" class="form-control UsernameTxt" style="width:400px;" />
+                                                    <span class="text-red" id="txtUsernamemessage" style="display:none;">Username is Required</span><br />
+                                                    <div id="OrgPassword">
+                                                        <label class="PasswordTxt">Password<span class="text-red">*</span></label>
+                                                        <input type="text" id="txtPassword" name="txtPassword" class="form-control" style="width:400px;" />
+                                                        <span class="text-red" id="txtPasswordMessage" style="display:none;">Password is Required</span>
+                                                    </div>
+                                                    <input type="hidden" id="hdnMstrCustomerID" name="hdnMstrCustomerID" />
+                                                    <input type="hidden" id="isFirstTimeLogin" name="isFirstTimeLogin" value="0">
+                                                    <div id="dvChangePassword" style="display: none;">
+                                                        <br />
+                                                        <div class="form-group">
+                                                            <input type="checkbox" id="IsChangePassword" name="IsChangePassword" onclick="checkBoxIsCheckd">
+                                                            &nbsp;
+                                                            <label for="IsChangePassword">Change Password</label>
+                                                        </div>
+                                                    </div>
+                                                    <div id="changePassword" style="display: none;">
+
+                                                        <div class="form-group">
+                                                            <label class="NewPassword">New Password</label><span class="text-red">*</span>
+                                                            <input type="password" id="txtNewPassword" name="txtNewPassword" class="form-control" style="width:400px;" placeholder="Enter New Password">
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label class="ConfirmPassword">Confirm Password</label><span class="text-red">*</span>
+                                                            <input type="password" id="txtConfirmPassword" name="txtConfirmPassword" class="form-control" style="width:400px;" placeholder="Enter Confirm Password">
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -161,17 +185,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="MobileAccessInsert()" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" onclick="MobileAccessInsert()" class="btn btn-primary">Submit</button>
-                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
-                </div>
+                <!-- /.modal-content -->
             </div>
-            <!-- /.modal-content -->
+            <!-- /.modal-dialog -->
         </div>
-        <!-- /.modal-dialog -->
-    </div>
-     }  
+    }
 
 </section>
 <script>

@@ -2,7 +2,7 @@
 
     Autocompletebox("SBInvoiceNo", "trnExportStufingWOSBDetailsID", "ExportInvoice", "GetSBInvoiceNo", "GetSBInvoiceDate");    
     Autocompletebox("BillToParty", "BillToPartyID", "ExportInvoice", "GetBillToParty/?ExpoterID=" + $("#ExpoterID").val() + "&ConsolerID=" + $("#ConsolerID").val() + "&CHAID=" + $("#CHAID").val() + "&ForwarderID=" + $("#ForwarderID").val(), "autocompleteaddress");
-
+    Autocompletebox("TallyHeadName", "TallyHeadID", "ExportInvoice", "GetTallyHead");
 });
 
 function SearchwithSBOrInvoiceNo() {

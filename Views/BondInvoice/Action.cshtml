@@ -294,18 +294,38 @@
                         @Html.LabelFor(Model => Model.ManualSSRNo, new { @for = "ManualSSRNo" })
                         @Html.TextBoxFor(Model => Model.ManualSSRNo, new { @id = "ManualSSRNo", @name = "ManualSSRNo", @class = "form-control", @readonly = true })
                     </div>
+                    @if (!IsEdit)
+                    {
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.TallyHeadName, new { @for = "TallyHeadName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TallyHeadID, String.Empty, new { @id = "spn_TallyHeadID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.TallyHeadName, new { @id = "TallyHeadName", @name = "TallyHeadName", @class = "form-control", @placeholder = "Please select Tally Head" })
+                                @Html.HiddenFor(Model => Model.TallyHeadID)
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.TallyHeadName, new { @for = "TallyHeadName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TallyHeadID, String.Empty, new { @id = "spn_TallyHeadID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.TallyHeadName, new { @id = "TallyHeadName", @name = "TallyHeadName", @class = "form-control", @placeholder = "Please select Tally Head", @readonly = true })
+                                @Html.HiddenFor(Model => Model.TallyHeadID)
+                            </div>
+                        </div>
+                    }
                     <div class="col-md-4 form-group">
                         @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" })
                         @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control" })
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group" style="padding-top:28px;">
                             @Html.CheckBoxFor(Model => Model.IsOmitDVinInsCal, new { @id = "IsOmitDVinInsCal", @name = "IsOmitDVinInsCal", @class = "form-control" })
                             @Html.LabelFor(Model => Model.IsOmitDVinInsCal, new { @for = "IsOmitDVinInsCal" })
                             @Html.HiddenFor(Model => Model.hdnIsOmitDVinInsCal, new { id = "hdnIsOmitDVinInsCal" })
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group" style="padding-top:28px;">
                             @Html.CheckBoxFor(Model => Model.IsOmitAVinInsCal, new { @id = "IsOmitAVinInsCal", @name = "IsOmitAVinInsCal", @class = "form-control" })
                             @Html.LabelFor(Model => Model.IsOmitAVinInsCal, new { @for = "IsOmitAVinInsCal" })

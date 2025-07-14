@@ -1,0 +1,106 @@
+.content-header{
+    display:none;
+}
+.chart-container-table {
+    /*display: flex;*/
+    justify-content: space-around;
+    padding: 20px;
+    height: 330px;
+    width: 100%;
+    color: black;
+}
+
+.chart-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px;
+    height: 230px;
+    width: 100%;
+}
+
+/*.pull-right {
+    display: flex;
+    justify-content: flex-end;*/ /* Aligns items to the right */
+    /*align-items: center;*/ /* Vertically centers items */
+/*}
+h5 {
+    margin: 0 10px;*/ /* Adjusts spacing between items */
+/*}
+.AllHeaderSpace {
+    margin-left: 10px !important;
+}
+.info-box{
+    min-height:95px !important;
+}
+.viewMoer{
+    font-size:15px !important;
+    margin-right:10px !important;
+}
+
+
+
+
+.ticket-container {
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px;
+    height: 300px;
+    width: 100%;
+}
+
+canvas {
+    display: block;
+}
+
+.legend-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    color: #000000;
+    text-align: left;
+    
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin-right: 8px;
+    border-radius: 3px;
+}
+
+    .legend-color.active {
+        background: #0fb200;
+    }
+
+    .legend-color.idle {
+        background: #ff3e26;
+    }
+
+    .legend-color.AreaInUse {
+        background: #295a7d;
+    }
+
+    .legend-color.breakdown {
+        background: #00181e;
+    }
+
+    .legend-color.Dutyvalue {
+        background: #00cdff;
+    }
+.DashBoardHeader {
+    padding-left:20px !important;
+}
+td{
+padding:5px !important;
+}
+th{
+    padding:1px !important;
+}*/

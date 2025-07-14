@@ -150,7 +150,7 @@ $(document).ready(function () {
 
     //Start: used for Auto convert letter small to capital
     $('input').keyup(function () {
-        if (this.id != "ContainerHandlingTarrifHead" && this.id != "txtUserName" && this.id != "txtPassword" && this.id != "Confromcaptcha" && this.id != "txtConfirmPassword" && this.id != "MenuName" && this.id != "Controller" && this.id != "Action" && this.id != "MenuLogoText" && this.id != "txtIPaddress" && this.id != "StrValue" && this.id != "ModuleName" && this.id != "StrKey" && this.id != "Description" && this.id != "ParentID" && this.id != "LevelID" && this.id != "SortOrder" && !this.id.includes('Tariff') && !window.location.href.includes("Company")) {
+        if (this.id != "ContainerHandlingTarrifHead" && this.id != "txtUserName" && this.id != "txtPassword" && this.id != "txtNewPassword" && this.id != "Confromcaptcha" && this.id != "txtConfirmPassword" && this.id != "MenuName" && this.id != "Controller" && this.id != "Action" && this.id != "MenuLogoText" && this.id != "txtIPaddress" && this.id != "StrValue" && this.id != "ModuleName" && this.id != "StrKey" && this.id != "Description" && this.id != "ParentID" && this.id != "LevelID" && this.id != "SortOrder" && !this.id.includes('Tariff') && !window.location.href.includes("Company")) {
             var ctl = document.getElementById(this.id);
             var startPos = ctl.selectionStart;
             var endPos = ctl.selectionEnd;
@@ -164,7 +164,7 @@ $(document).ready(function () {
     });
     $('input').blur(function () {
 
-        if (this.id != "ContainerHandlingTarrifHead" && this.id != "txtUserName" && this.id != "txtPassword" && this.id != "Confromcaptcha" && this.id != "txtConfirmPassword" && this.id != "MenuName" && this.id != "Controller" && this.id != "Action" && this.id != "MenuLogoText" && this.id != "txtIPaddress" && this.id != "StrValue" && this.id != "ModuleName" && this.id != "StrKey" && this.id != "Description" && this.id != "ParentID" && this.id != "LevelID" && this.id != "SortOrder" && !this.id.includes('Tariff') && !window.location.href.includes("Company")) {
+        if (this.id != "ContainerHandlingTarrifHead" && this.id != "txtUserName" && this.id != "txtPassword" && this.id != "txtNewPassword" && this.id != "Confromcaptcha" && this.id != "txtConfirmPassword" && this.id != "MenuName" && this.id != "Controller" && this.id != "Action" && this.id != "MenuLogoText" && this.id != "txtIPaddress" && this.id != "StrValue" && this.id != "ModuleName" && this.id != "StrKey" && this.id != "Description" && this.id != "ParentID" && this.id != "LevelID" && this.id != "SortOrder" && !this.id.includes('Tariff') && !window.location.href.includes("Company")) {
             this.value = this.value.toLocaleUpperCase();
         }
     });

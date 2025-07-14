@@ -193,6 +193,26 @@
                                 @Html.DropDownListFor(model => model.PaymentMode, Model.SelectPaymentMode, new { @class = "form-control", @id = "PaymentMode", @name = "PaymentMode" })
                             </div>
                         </div>
+                        @if (!IsEdit)
+                        {
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.TallyHeadName, new { @for = "TallyHeadName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TallyHeadID, String.Empty, new { @id = "spn_TallyHeadID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.TallyHeadName, new { @id = "TallyHeadName", @name = "TallyHeadName", @class = "form-control", @placeholder = "Please select Tally Head" })
+                                @Html.HiddenFor(Model => Model.TallyHeadID)
+                            </div>
+                        </div>
+                        }
+                        else
+                        {
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.TallyHeadName, new { @for = "TallyHeadName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TallyHeadID, String.Empty, new { @id = "spn_TallyHeadID", @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.TallyHeadName, new { @id = "TallyHeadName", @name = "TallyHeadName", @class = "form-control", @placeholder = "Please select Tally Head", @readonly = true })
+                                @Html.HiddenFor(Model => Model.TallyHeadID)
+                            </div>
+                        </div>
+                        }
                         <div class="col-md-4">
                             <div class="form-group">
                                 @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" })

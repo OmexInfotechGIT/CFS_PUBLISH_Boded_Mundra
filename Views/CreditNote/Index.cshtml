@@ -90,7 +90,7 @@
                                             }
                                             @if (ViewBag.gblBlnApprove)
                                             {
-                                                <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", "CreditNote", new { id = Model.MyDatatable.Rows[i]["CreditNoteID"],  format = "pdf" ,@IsSearch = true ,InvoiceType=Model.MyDatatable.Rows[i]["InvType"],InvoiceNumberID =Model.MyDatatable.Rows[i]["InvoiceNumberID"]})"><i title="Click to Gate Pass Print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                                <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", "CreditNote", new { id = Model.MyDatatable.Rows[i]["CreditNoteID"],  format = "pdf" ,@IsSearch = true ,InvoiceType=Model.MyDatatable.Rows[i]["InvType"],InvoiceNumberID =Model.MyDatatable.Rows[i]["InvoiceNumberID"],IsApproved=(Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]))})"><i title="Click to Gate Pass Print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
                                             }
                                             @*@if (Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]))
                                                 {

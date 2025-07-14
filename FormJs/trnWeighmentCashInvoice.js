@@ -96,7 +96,8 @@
              
             Autocompletebox("SearchTruckNo", "SearchTruckID", "trnWeighmentCashInvoice", "GetTruckNo/?TransactionType=" + TransactionType + "&Mode=" + Mode + "&CarriarType=" + CarriarType);
         });
-    
+
+        Autocompletebox("ContNo2", "ContID2", "trnWeighmentCashInvoice", "GetContainer/?TransactionType=" + TransactionType + "&Mode=" + Mode + "&ID=" + $("#trnDocumentID").val() + "&ContNo1ID=" + $("#SearchTruckID").val(), "dvContNo2AutoComplete");
         
     
         Autocompletebox("SearchTruckNo", "SearchTruckID", "trnWeighmentCashInvoice", "GetTruckNo/?TransactionType=" + TransactionType + "&Mode=" + Mode + "&CarriarType=" + CarriarType);

@@ -1374,9 +1374,10 @@
                                                 @Html.TextBoxFor(Model => Model.ModelWEIGHT, new { @id = "ModelWEIGHT", @name = "ModelWEIGHT", @class = "form-control", @placeholder = "Enter WEIGHT (KGS)", @maxlength = "10", @onkeypress = "return isNumberWithTwoDecimal(event,'ModelWEIGHT')" })
                                             </div>
                                         </div>
-                                        <div class="col-md-1">
+                                        <div class="col-md-2">
                                             <br />
                                             <button type="button" class="btn btn-info pull-right" onclick="AddBoiItem()" id="savebtn">Add</button>
+                                            <button type="button" class="btn btn-info pull-right" style="display:none;" id="tmpSaveBtn">Saving...</button>
                                         </div>
                                         <div class="col-md-1">
                                             <br />

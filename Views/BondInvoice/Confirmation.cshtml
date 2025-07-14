@@ -170,6 +170,11 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
+                                @Html.LabelFor(Model => Model.TallyHeadName, new { @for = "TallyHeadName" }) : <span>@Model.TallyHeadName</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" }) : <span>@Model.Remarks</span>
                             </div>
                         </div>

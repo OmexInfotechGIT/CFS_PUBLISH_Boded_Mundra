@@ -150,6 +150,22 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.TaxExemptedCode, new { @for = "TaxExemptedCode" })
+                            @Html.TextBoxFor(Model => Model.TaxExemptedCode, new { @id = "TaxExemptedCode", @name = "TaxExemptedCode", @class = "form-control", @placeholder = "Enter TaxExempted Code" })
+                        </div>
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.RegularTallyCode, new { @for = "RegularTallyCode" })
+                            @Html.TextBoxFor(Model => Model.RegularTallyCode, new { @id = "RegularTallyCode", @name = "RegularTallyCode", @class = "form-control", @placeholder = "Enter TaxExempted Code" })
+                        </div>
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.SezWithTaxCode, new { @for = "SezWithTaxCode" })
+                            @Html.TextBoxFor(Model => Model.SezWithTaxCode, new { @id = "SezWithTaxCode", @name = "SezWithTaxCode", @class = "form-control", @placeholder = "Enter Sez With Tax Code" })
+                        </div>
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.SezWithOutTaxCode, new { @for = "SezWithOutTaxCode" })
+                            @Html.TextBoxFor(Model => Model.SezWithOutTaxCode, new { @id = "SezWithOutTaxCode", @name = "SezWithOutTaxCode", @class = "form-control", @placeholder = "Enter Sez WithOut Tax Code" })
+                        </div>
                         <div class="col-md-12">
                             <div class="box-footer">
                                 <button type="submit" class="btn btn-primary">Submit</button>

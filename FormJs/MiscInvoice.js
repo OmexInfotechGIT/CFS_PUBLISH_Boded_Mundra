@@ -55,7 +55,7 @@
     Autocompletebox("CargoSlabwiseStorageTariffHead", "CargoSlabwiseStorageTariffHeadID", "MiscInvoice", "GetTariffHead", "GetGeneralTriffDetails");
     Autocompletebox("CargoSlabwiseStorageUOM", "CargoSlabwiseStorageUOMID", "MiscInvoice", "GetUOM", "CalculateCargoSlabwiseStorageAMT");
 
-    
+    Autocompletebox("TallyHeadName", "TallyHeadID", "MiscInvoice", "GetTallyHead");
 
     FillMiscInvoiceContainerHandlingGrid();
     FillMiscInvoiceCargoHandlingGrid();

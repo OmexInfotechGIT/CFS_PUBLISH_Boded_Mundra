@@ -1,0 +1,104 @@
+﻿@model CFS.Models.MstrTallyHead
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    if (Model.doaction == "edit")
+    {
+        ViewBag.Title = "Update Tally Customer";
+        if (!ViewBag.gblBlnEdit)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Tally Customer";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+}
+
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    @if (Model.doaction == "edit")
+                    {
+                        <div class="pull-left">
+                            <div style="display: inline-flex">
+                                <span class="badge bg-light-blue" style="font-size:15px;">Tally Customer Code @CFS.Com.ClsCommon.AddhtmlSpace(3): @CFS.Com.ClsCommon.AddhtmlSpace(3) @Model.TallyCustomerCode</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="pull-right" id="divBack">
+                        <div style="display: inline-flex">
+                            @*<a href="@CFS.Com.ClsCommon.GetUrlReferrer("MstrTallyHead","Index")" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>*@
+                            <a id="btnBack" href="@Url.Action("Index","MstrTallyHead", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="box-body" id="divHeader">
+                    @using (Html.BeginForm("Action", "MstrTallyHead", FormMethod.Post))
+                    {
+                        @Html.HiddenFor(Model => Model.pagger.Search)
+                        @Html.HiddenFor(Model => Model.MstrTallyHeadID)
+                        @Html.HiddenFor(Model => Model.doaction)
+                        @Html.HiddenFor(Model => Model.page)
+                        @Html.HiddenFor(Model => Model.filter)
+                        @Html.HiddenFor(Model => Model.TallyCustomerCode)
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.TallyHeadName, new { @for = "TallyHeadName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TallyHeadName, String.Empty, new { @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.TallyHeadName, new { @id = "TallyHeadName", @name = "TallyHeadName", @class = "form-control", @placeholder = "Enter TallyHead Name", @onblur = "CheckTallyCustomerIsUse()" })
+                                @Html.HiddenFor(Model => Model.MstrTallyHeadID)
+                            </div>
+                        </div>
+                        <div class="col-md-2"  style="display:none">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.RegularTallyRefNo, new { @for = "RegularTallyRefNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.RegularTallyRefNo, String.Empty, new { @class = "help-inline text-red" })
+                                @Html.TextBoxFor(Model => Model.RegularTallyRefNo, new { @id = "RegularTallyRefNo", @name = "RegularTallyRefNo", @class = "form-control", @placeholder = "Enter Regular Tally RefNo" })
+                            </div>
+                        </div>
+                        <div class="col-md-2 form-group"  style="display:none">
+                            @Html.LabelFor(Model => Model.MstrTariffHeadName, new { @for = "MstrTariffHeadName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.MstrTariffHeadID, String.Empty, new { @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.MstrTariffHeadName, new { @id = "MstrTariffHeadName", @name = "MstrTariffHeadName", @class = "form-control", @placeholder = "Please Select TariffHead" })
+                            @Html.HiddenFor(Model => Model.MstrTariffHeadID)
+                        </div>
+                        <div class="col-md-2" style="display:none">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.SezWithTaxTallyRefNo, new { @for = "SezWithTaxTallyRefNo" })
+                                @Html.TextBoxFor(Model => Model.SezWithTaxTallyRefNo, new { @id = "SezWithTaxTallyRefNo", @name = "SezWithTaxTallyRefNo", @class = "form-control", @placeholder = "Enter Sez With TaxTally RefNo" })
+                            </div>
+                        </div>
+                        <div class="col-md-2"  style="display:none">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.SezWithOutTaxTallyRefNo, new { @for = "SezWithOutTaxTallyRefNo" })
+                                @Html.TextBoxFor(Model => Model.SezWithOutTaxTallyRefNo, new { @id = "SezWithOutTaxTallyRefNo", @name = "SezWithOutTaxTallyRefNo", @class = "form-control", @placeholder = "Enter Sez WithOut TaxTally RefNo" })
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="box-footer pull-right">
+                                <button type="submit" class="btn btn-primary" id="btnSave">Submit</button>                                
+                                <a href="@Url.Action("Index", "MstrTallyHead", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger" id="btnClear">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    doaction = '@Model.doaction';
+</script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/MstrTallyHead.js")"></script>
+

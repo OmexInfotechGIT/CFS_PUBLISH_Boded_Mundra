@@ -6,7 +6,7 @@
     //Autocompletebox("WONO", "WOID", "emptyInvoice", "GetWONo/?InvoiceMode=" + InvoiceMode + "&InvoiceType=" + InvoiceType + "&ContainerStatus=" + ContainerStatus + "&ContID=" + ContID, "GetContNo");
     GetContNoDetails();
     //GetContNo();
-   
+    Autocompletebox("TallyHeadName", "TallyHeadID", "emptyInvoice", "GetTallyHead");
 });
 function autocompleteaddress() {
 

@@ -1,6 +1,6 @@
-﻿
+﻿@model CFS.Models.IRNDashboard
 @{
-    ViewBag.Title = "Accounting Dashboard";
+    ViewBag.Title = "IRN Dashboard";
     ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
 
     ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
@@ -16,463 +16,421 @@
 <link href="~/Content/theme/bower_components/jvectormap/jquery-jvectormap.css" rel="stylesheet" />
 
 <link href="~/Content/theme/dist/css/skins/_all-skins.min.css" rel="stylesheet" />
+
+<link rel="stylesheet" href="@CFS.Com.ClsCommon.GetCacheVersion("Content/css/IRNDashboard.css")" />
 <!-- Main content -->
 <section class="content">
-
     <!-- Info boxes -->
-    <div class="row">
-        <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box">
-                <span class="info-box-icon bg-red"><i class="fa fa-battery-4"></i></span>
-
-                <div class="info-box-content">
-                    <span class="info-box-text">Due Amount</span>
-                    <span class="info-box-number">₹ 7800<small></small></span>
-                </div>
-                <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-        </div>
-        <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box">
-                <span class="info-box-icon bg-aqua"><i class="fa fa-battery-2"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">Unbilled Amount</span>
-                    <span class="info-box-number">₹ 90,00000.00<small></small></span>
-                </div>
-                <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
-        <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box">
-                <span class="info-box-icon bg-green"><i class="fa fa-battery-3"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">Billed Amount</span>
-                    <span class="info-box-number">₹ 99,00000.00<small></small></span>
-                </div>
-                <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
-        <!-- fix for small devices only -->
-        <div class="clearfix visible-sm-block"></div>
-
-
-        <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box">
-                <span class="info-box-icon bg-yellow"><i class="fa fa-battery-full"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">Receipt Amount</span>
-                    <span class="info-box-number">₹ 9,00000.00<small></small></span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
+    <div class="row fontsize">
+        <div class="col-md-4">
             <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Cash Flow Statement</h3>
-
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                            <i class="fa fa-minus"></i>
-                        </button>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-                                <i class="fa fa-wrench"></i>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">Separated link</a></li>
-                            </ul>
-                        </div>
-                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                    </div>
+                <div class="box-header">
+                    <a style="color: #444" href="@Url.Action("Index","BondInvoice")" target="_blank"><h3 class="box-title box-title-font">Bond Invoice</h3></a>                        
                 </div>
                 <!-- /.box-header -->
-                <div class="box-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <p class="text-center">
-                                <strong>1 Jan, 2022 - 30 July, 2023</strong>
-                            </p>
+                <div class="box-body no-padding chart-container-table" style="overflow:auto;">
+                    <table class="table table-condensed" style="white-space: nowrap;">
+                        <thead>
+                            <tr>
+                                <th>SrNo.</th>
+                                <th>Bond Invoice No</th>
+                                <th>Bond Invoice Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.dtBondInvoiceDetails != null && Model.dtBondInvoiceDetails.Rows.Count > 0)
+                            {
+                                for (int i = 0; i < Model.dtBondInvoiceDetails.Rows.Count; i++)
+                                {
+                                    int Srno = i + 1;
+                                    <tr>
+                                        <td>@Srno</td>
+                                        <td>@Model.dtBondInvoiceDetails.Rows[i]["InvoiceNo"]</td>
+                                        <td>@Model.dtBondInvoiceDetails.Rows[i]["InvoiceDate"]</td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(Model.dtBondInvoiceDetails.Rows[i]["ErrorMsg"].ToString()))
+                                            {
+                                                <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal" onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtBondInvoiceDetails.Rows[i]["ErrorMsg"])))'>
+                                                    <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
+                                                </a>
+                                            }
+                                            @if (Model.IsFinanceOrAdmin)
+                                            {
+                                                if (Model.dtBondInvoiceDetails.Rows[i]["SEZStatus"].ToString().ToLower() == "registered")
+                                                {
+                                                    <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true', 'approve', '@Model.dtBondInvoiceDetails.Rows[i]["BondInvoiceID"]', '@Model.dtBondInvoiceDetails.Rows[i]["InvoiceNo"]', 'bond', '@Model.dtBondInvoiceDetails.Rows[i]["trnDocumentID"]')">
+                                                        <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtBondInvoiceDetails.Rows[i]["BondInvoiceID"]','@Model.dtBondInvoiceDetails.Rows[i]["InvoiceNo"]','bond' ,'@Model.dtBondInvoiceDetails.Rows[i]["trnDocumentID"]' )">
+                                                        <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                    </a>
+                                                }
+                                            }
 
-                            <div class="chart">
-                                <!-- Sales Chart Canvas -->
-                                <canvas id="salesChart" style="height: 180px;"></canvas>
-                            </div>
-                            <!-- /.chart-responsive -->
-                        </div>
-                        <!-- /.col -->
-                        <!-- /.col -->
-                    </div>
-                    <!-- /.row -->
-                </div>
-                <!-- ./box-body -->
-                <div class="box-footer">
-                    <div class="row">
-                        <div class="col-sm-3 col-xs-6">
-                            <div class="description-block border-right">
-                                <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 17%</span>
-                                <h5 class="description-header">₹ 35,210.43</h5>
-                                <span class="description-text">TOTAL REVENUE</span>
-                            </div>
-                            <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-sm-3 col-xs-6">
-                            <div class="description-block border-right">
-                                <span class="description-percentage text-yellow"><i class="fa fa-caret-left"></i> 0%</span>
-                                <h5 class="description-header">₹ 10,390.90</h5>
-                                <span class="description-text">TOTAL COST</span>
-                            </div>
-                            <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-sm-3 col-xs-6">
-                            <div class="description-block border-right">
-                                <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>
-                                <h5 class="description-header">₹ 24,813.53</h5>
-                                <span class="description-text">TOTAL PROFIT</span>
-                            </div>
-                            <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-sm-3 col-xs-6">
-                            <div class="description-block">
-                                <span class="description-percentage text-red"><i class="fa fa-caret-down"></i> 18%</span>
-                                <h5 class="description-header">₹ 12,0000.00</h5>
-                                <span class="description-text">GOAL COMPLETIONS</span>
-                            </div>
-                            <!-- /.description-block -->
-                        </div>
-                    </div>
-                    <!-- /.row -->
-                </div>
-                <!-- /.box-footer -->
-            </div>
-            <!-- /.box -->
-        </div>
-        <div class="col-md-6">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Company Expenses</h3>
-
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                            <i class="fa fa-minus"></i>
-                        </button>
-                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                    </div>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="chart-responsive">
-                                <canvas id="pieChart" height="150"></canvas>
-                            </div>
-                            <!-- ./chart-responsive -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-md-4">
-                            <ul class="chart-legend clearfix">
-                                <li><i class="fa fa-circle-o text-red"></i> Duties and Taxes</li>
-                                <li><i class="fa fa-circle-o text-green"></i> Deposit Account	</li>
-                                <li><i class="fa fa-circle-o text-yellow"></i> Traveling </li>
-                                <li><i class="fa fa-circle-o text-aqua"></i> Rent/Lease	</li>
-                                <li><i class="fa fa-circle-o text-light-blue"></i> Bank Charges	</li>
-                                <li><i class="fa fa-circle-o text-gray"></i> Fixed Asset	</li>
-                            </ul>
-                        </div>
-                        <!-- /.col -->
-                    </div>
-                    <!-- /.row -->
+                                        </td>
+                                    </tr>
+                                    if (i == 9)
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <tr><td>No recored Found</td></tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
                 <!-- /.box-body -->
-                <div class="box-footer no-padding">
-                    <ul class="nav nav-pills nav-stacked">
-                        <li>
-                            <a href="#">
-                                United States of America
-                                <span class="pull-right text-red"><i class="fa fa-angle-down"></i> 12%</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">India <span class="pull-right text-green"><i class="fa fa-angle-up"></i> 4%</span></a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                China
-                                <span class="pull-right text-yellow"><i class="fa fa-angle-left"></i> 0%</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                USA
-                                <span class="pull-right text-yellow"><i class="fa fa-angle-left"></i> 0%</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <!-- /.footer -->
             </div>
         </div>
-    </div>
-
-    <div class="row">
-
-        <div class="col-md-5">
-            <!-- MAP & BOX PANE -->
-
+        <div class="col-md-4">
             <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Latest Invoice</h3>
-
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                            <i class="fa fa-minus"></i>
-                        </button>
-                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                    </div>
+                <div class="box-header">
+                    <a style="color: #444" href="@Url.Action("Index","ExportInvoice")" target="_blank"><h3 class="box-title box-title-font">Export Invoice</h3></a>                        
                 </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <div class="table-responsive">
-                        <table class="table no-margin">
-                            <thead>
-                                <tr>
-                                    <th>Invoice No</th>
-                                    <th>Party Name</th>
-                                    <th>Status</th>
-                                    <th>Amount </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                                    <td>Call of Duty IV</td>
-                                    <td><span class="label label-success">Paied</span></td>
-                                    <td>
-                                        <div class="sparkbar" data-color="#00a65a" data-height="20">
-                                            ₹ 213,213,123.00
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                                    <td>Samsung Smart TV</td>
-                                    <td><span class="label label-warning">Pending</span></td>
-                                    <td>
-                                        <div class="sparkbar" data-color="#f39c12" data-height="20">
-                                            ₹ 23,213,123.00
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                                    <td>iPhone 6 Plus</td>
-                                    <td><span class="label label-danger">Due</span></td>
-                                    <td>
-                                        <div class="sparkbar" data-color="#f56954" data-height="20">
-                                            ₹ 123,121,232,131.00
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                                    <td>Samsung Smart TV</td>
-                                    <td><span class="label label-info">Partialy</span></td>
-                                    <td>
-                                        <div class="sparkbar" data-color="#00c0ef" data-height="20">
-                                            ₹ 23,423,234,234.00
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                                    <td>Samsung Smart TV</td>
-                                    <td><span class="label label-warning">Pending</span></td>
-                                    <td>
-                                        <div class="sparkbar" data-color="#f39c12" data-height="20">
-                                            ₹ 234,234,234.00
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                                    <td>iPhone 6 Plus</td>
-                                    <td><span class="label label-danger">Due March-2022</span></td>
-                                    <td>
-                                        <div class="sparkbar" data-color="#f56954" data-height="20">
-                                            ₹ 3,423,423.00
-                                        </div>
-                                    </td>
-                                </tr>
-
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- /.table-responsive -->
+                <div class="box-body no-padding chart-container-table" style="overflow:auto;">
+                    <table class="table table-condensed" style="white-space:nowrap;">
+                        <thead>
+                            <tr>
+                                <th>SrNo.</th>
+                                <th>Export Invioce No</th>
+                                <th>Export Invoice Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.dtExportInvoiceDetails != null && Model.dtExportInvoiceDetails.Rows.Count > 0)
+                            {
+                                int Srno = 0;
+                                for (int i = 0; i < Model.dtExportInvoiceDetails.Rows.Count; i++)
+                                {
+                                    Srno = i + 1;
+                                    <tr>
+                                        <td>@Srno</td>
+                                        <td>@Model.dtExportInvoiceDetails.Rows[i]["InvoiceNo"]</td>
+                                        <td>@Model.dtExportInvoiceDetails.Rows[i]["InvoiceDate"]</td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(Model.dtExportInvoiceDetails.Rows[i]["ErrorMsg"].ToString()))
+                                            {
+                                                <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal" onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtExportInvoiceDetails.Rows[i]["ErrorMsg"])))'>
+                                                    <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
+                                                </a>
+                                            }
+                                            @if (Model.IsFinanceOrAdmin)
+                                            {
+                                                if (@Model.dtExportInvoiceDetails.Rows[i]["SEZStatus"].ToString().ToLower() == "registered")
+                                                {
+                                                    <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true', 'approve', '@Model.dtExportInvoiceDetails.Rows[i]["ExportInvoiceID"]', '@Model.dtExportInvoiceDetails.Rows[i]["InvoiceNo"]', 'export', '@Model.dtExportInvoiceDetails.Rows[i]["trnExportStufingWOID"]')">
+                                                        <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtExportInvoiceDetails.Rows[i]["ExportInvoiceID"]','@Model.dtExportInvoiceDetails.Rows[i]["InvoiceNo"]','export' ,'@Model.dtExportInvoiceDetails.Rows[i]["trnExportStufingWOID"]' )">
+                                                        <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                    </a>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                    if (i == 9)
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <tr><td>No recored Found</td></tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
-                <!-- /.box-body -->
-                <div class="box-footer clearfix">
-                    <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left">Generate New Invoice</a>
-                    <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right">View All Invoice</a>
-                </div>
-                <!-- /.box-footer -->
             </div>
-
         </div>
 
         <div class="col-md-4">
             <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Last 4 Advance Payment Receipt from Party</h3>
+                <div class="box-header">
+                    <a style="color: #444" href="@Url.Action("Index","emptyInvoice")" target="_blank"><h3 class="box-title box-title-font">Empty Invoice</h3></a>                        
+                </div>
+                <div class="box-body no-padding chart-container-table" style="overflow:auto;">
+                    <table class="table table-condensed" style="white-space: nowrap;">
+                        <thead>
+                            <tr>
+                                <th>SrNo.</th>
+                                <th>Empty Invocie No</th>
+                                <th>Empty Invoice Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.dtEmptyInvoiceDetails != null && Model.dtEmptyInvoiceDetails.Rows.Count > 0)
+                            {
+                                int SrNo = 0;
+                                for (int i = 0; i < Model.dtEmptyInvoiceDetails.Rows.Count; i++)
+                                {
+                                    SrNo = i + 1;
+                                    <tr>
+                                        <td>@SrNo</td>
+                                        <td>@Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceNo"]</td>
+                                        <td>@Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceDate"]</td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(Model.dtEmptyInvoiceDetails.Rows[i]["ErrorMsg"].ToString()))
+                                            {
+                                                <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal" onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtEmptyInvoiceDetails.Rows[i]["ErrorMsg"])))'>
+                                                    <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
+                                                </a>
+                                            }
+                                            @if (Model.IsFinanceOrAdmin)
+                                            {
+                                                if (Model.dtEmptyInvoiceDetails.Rows[i]["GSTCustomerType"].ToString().ToLower() == "registered")
+                                                {
+                                                <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true', 'approve', '@Model.dtEmptyInvoiceDetails.Rows[i]["EmptyInvoiceID"]', '@Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceNo"]', 'empty', '')">
+                                                    <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                </a>
+                                                }
+                                                else
+                                                {
+                                                <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtEmptyInvoiceDetails.Rows[i]["EmptyInvoiceID"]','@Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceNo"]','empty' ,'' )">
+                                                    <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                </a>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
 
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                            <i class="fa fa-minus"></i>
-                        </button>
-                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                    </div>
+                                    if (i == 9)
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <tr><td>No recored Found</td></tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <ul class="products-list product-list-in-box">
-                        <li class="item">
-                            <div class="product-img">
-                                <img src="~/Content/theme/dist/img/default-50x50.gif" alt="Product Image">
-                            </div>
-                            <div class="product-info">
-                                <a href="javascript:void(0)" class="product-title">
-                                    Manishbhai
-                                    <span class="label label-warning pull-right">₹ 1800.00</span>
-                                </a>
-                                <span class="product-description">
-                                    Advance Payment.
-                                </span>
-                            </div>
-                        </li>
-                        <!-- /.item -->
-                        <li class="item">
-                            <div class="product-img">
-                                <img src="~/Content/theme/dist/img/default-50x50.gif" alt="Product Image">
-                            </div>
-                            <div class="product-info">
-                                <a href="javascript:void(0)" class="product-title">
-                                    Hero Bicycle
-                                    <span class="label label-info pull-right">₹ 700</span>
-                                </a>
-                                <span class="product-description">
-                                    Advance Payment
-                                </span>
-                            </div>
-                        </li>
-                        <!-- /.item -->
-                        <li class="item">
-                            <div class="product-img">
-                                <img src="~/Content/theme/dist/img/default-50x50.gif" alt="Product Image">
-                            </div>
-                            <div class="product-info">
-                                <a href="javascript:void(0)" class="product-title">
-                                    Xbox One <span class="label label-danger pull-right">$350</span>
-                                </a>
-                                <span class="product-description">
-                                    Xbox One Console Bundle with Halo Master Chief Collection.
-                                </span>
-                            </div>
-                        </li>
-                        <!-- /.item -->
-                        <li class="item">
-                            <div class="product-img">
-                                <img src="~/Content/theme/dist/img/default-50x50.gif" alt="Product Image">
-                            </div>
-                            <div class="product-info">
-                                <a href="javascript:void(0)" class="product-title">
-                                    PlayStation 4
-                                    <span class="label label-success pull-right">$399</span>
-                                </a>
-                                <span class="product-description">
-                                    PlayStation 4 500GB Console (PS4)
-                                </span>
-                            </div>
-                        </li>
-                        <!-- /.item -->
-                    </ul>
-                </div>
-                <!-- /.box-body -->
-                <div class="box-footer text-center">
-                    <a href="javascript:void(0)" class="uppercase">View All Party</a>
-                </div>
-                <!-- /.box-footer -->
             </div>
         </div>
-        <div class="col-md-3">
-            <!-- Info Boxes Style 2 -->
-            <div class="info-box bg-yellow">
-                <span class="info-box-icon"><i class="ion ion-ios-pricetag-outline"></i></span>
-
-                <div class="info-box-content">
-                    <span class="info-box-text">Direct Expenses	</span>
-                    <span class="info-box-number">5,200</span>
-
-                    <div class="progress">
-                        <div class="progress-bar" style="width: 50%"></div>
-                    </div>
-                    <span class="progress-description">
-                        50% Increase in 30 Days
-                    </span>
+        <div class="col-md-4">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <a style="color: #444" href="@Url.Action("Index","MiscInvoice")" target="_blank"><h3 class="box-title box-title-font">Misc Invoice</h3></a>                       
                 </div>
-                <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-            <div class="info-box bg-green">
-                <span class="info-box-icon"><i class="ion ion-ios-heart-outline"></i></span>
-
-                <div class="info-box-content">
-                    <span class="info-box-text">Indirect Expenses	</span>
-                    <span class="info-box-number">92,050</span>
-
-                    <div class="progress">
-                        <div class="progress-bar" style="width: 20%"></div>
-                    </div>
-                    <span class="progress-description">
-                        20% Increase in 30 Days
-                    </span>
+                <div class="box-body no-padding chart-container-table" style="overflow:auto;">
+                    <table class="table table-condensed" style="white-space: nowrap;">
+                        <thead>
+                            <tr>
+                                <th>SrNo.</th>
+                                <th>Misc. Invoice No</th>
+                                <th>Misc. Invoice Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.dtMiscInvoiceDetails != null && Model.dtMiscInvoiceDetails.Rows.Count > 0)
+                            {
+                                int SrNo = 0;
+                                for (int i = 0; i < Model.dtMiscInvoiceDetails.Rows.Count; i++)
+                                {
+                                    SrNo = i + 1;
+                                    <tr>
+                                        <td>@SrNo</td>
+                                        <td>@Model.dtMiscInvoiceDetails.Rows[i]["InvoiceNo"]</td>
+                                        <td>@Model.dtMiscInvoiceDetails.Rows[i]["InvoiceDate"]</td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(Model.dtMiscInvoiceDetails.Rows[i]["ErrorMsg"].ToString()))
+                                            {
+                                                <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal"  onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtMiscInvoiceDetails.Rows[i]["ErrorMsg"])))'>
+                                                    <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
+                                                </a>
+                                            }
+                                            @if (Model.IsFinanceOrAdmin)
+                                            {
+                                                if (Model.dtMiscInvoiceDetails.Rows[i]["GSTCustomerType"].ToString().ToLower() == "registered")
+                                                {
+                                                <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true','approve','@Model.dtMiscInvoiceDetails.Rows[i]["MiscInvoiceID"]','@Model.dtMiscInvoiceDetails.Rows[i]["InvoiceNo"]','misc' ,'@Model.dtMiscInvoiceDetails.Rows[i]["trnDocumentLotDetailsID"]')">
+                                                    <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                </a>
+                                                }
+                                                else
+                                                {
+                                                <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtMiscInvoiceDetails.Rows[i]["MiscInvoiceID"]','@Model.dtMiscInvoiceDetails.Rows[i]["InvoiceNo"]','misc' ,'@Model.dtMiscInvoiceDetails.Rows[i]["trnDocumentLotDetailsID"]' )">
+                                                    <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                </a>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                    if (i == 9)
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <tr><td> No recored Found</td></tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
-                <!-- /.info-box-content -->
             </div>
-
         </div>
 
+        <div class="col-md-4">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <a style="color: #444" href="@Url.Action("Index","CreditNote")" target="_blank"><h3 class="box-title box-title-font">Credit Note</h3></a>
+                </div>
+                <div class="box-body no-padding chart-container-table" style="overflow:auto;">
+                    <table class="table table-condensed" style="white-space: nowrap;">
+                        <thead>
+                            <tr>
+                                <th>SrNo.</th>
+                                <th>CreditNote No</th>
+                                <th>CreditNote Date</th>
+                                <th>Invoice Type</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.dtCreditNoteDetails != null && Model.dtCreditNoteDetails.Rows.Count > 0)
+                            {
+                                int SrNo = 0;
+                                for (int i = 0; i < Model.dtCreditNoteDetails.Rows.Count; i++)
+                                {
+                                    SrNo = i + 1;
+                                    <tr>
+                                        <td>@SrNo</td>
+                                        <td>@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]</td>
+                                        <td>@Model.dtCreditNoteDetails.Rows[i]["CreditNoteDate"]</td>
+                                        <td>@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]</td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(Model.dtCreditNoteDetails.Rows[i]["ErrorMsg"].ToString()))
+                                            {
+                                                <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal"  onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtCreditNoteDetails.Rows[i]["ErrorMsg"])))'>
+                                                    <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
+                                                </a>
+                                            }
+                                            @if (Model.IsFinanceOrAdmin)
+                                            {
+                                                if (Model.dtCreditNoteDetails.Rows[i]["GSTTypeName"].ToString().ToUpper() == "REGISTERED")
+                                                {
+                                                <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true','approve','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteID"]','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]','creditnote' ,'@Model.dtCreditNoteDetails.Rows[i]["InvoiceNumberID"]','@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]')">
+                                                    <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                </a>
+                                                }
+                                                else
+                                                {
+                                                <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteID"]','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]','creditnote' ,'@Model.dtCreditNoteDetails.Rows[i]["InvoiceNumberID"]','@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]')">
+                                                    <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                </a>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                    if (i == 9)
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <tr><td>No recored Found.</td></tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
 
+    <div class="modal fade in" id="ErrorMsgModal" style="display:none;padding-right:17px;">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                    <h4><i class="fa fa-exclamation-circle" style="color:red;"></i> Validation Errors</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row" id="output" style="padding:15px;overflow:scroll;max-height:400px;white-space:nowrap;">                      
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
+  
+    <div class="modal fade in" id="myModalConfirmationWithEinvoicedashboard" data-backdrop="static" style="display: none; padding-right: 17px;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>*@
+                    <a class="close" aria-label="Close" href="@Url.Action("Index","trnDashboard")"><span aria-hidden="true">×</span></a>
+                    <h4 class="modal-title">Confirmation</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
 
+                        <div class="box-body">
+                            <div class="col-md-11">
+                                <div class="box-body">
+                                    <div class="col-sm-12" id="IRNAlert" style="display:none;">
+                                        <label style="color:red"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> eInvoice has been generated for this invoice,if unapproved ,eInvoice will be cancelled and invoice will be deleted!</label>
+                                    </div>
+                                    <div class="col-sm-12" id="IRNTaxAlert" style="display:none;">
+                                        <label style="color:red"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> When you approved this invoice, the system will generate eInvoice automatically.!</label>
+                                        <br />
+                                        <br />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Remarks<span class="text-red"> *</span></label>
+                                        <input type="text" id="txtRemarks1" name="txtRemarks1" class="form-control" />
+                                        <input type="hidden" id="TableName1" name="TableName1" />
+                                        <input type="hidden" id="TableID1" name="TableID1" />
+                                        <input type="hidden" id="InvoiceId" name="InvoiceId" />
+                                        <input type="hidden" id="InvoiceNo" name="InvoiceNo" />
+                                        <input type="hidden" id="InvoiceType" name="InvoiceType" />
+                                        <input type="hidden" id="action" name="action" />
+                                        <input type="hidden" id="IsIRN" name="IsIRN" />
+                                        <input type="hidden" id="hdnIRNSpaceCertificateGWID" name="hdnIRNSpaceCertificateGWID" />
+                                        <input type="hidden" id="hdnIRNReferenceInvoiceId" name="hdnIRNReferenceInvoiceId" />
+                                        <input type="hidden" id="hdnIRNReferenceInvoiceType" name="hdnIRNReferenceInvoiceType" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnModelAddConfirmationInvoice" onclick="return validateremarksForIRN();" class="btn btn-primary">Submit</button>
+                    @*<button type="button" class="btn btn-default pull-right" data-dismiss="modal" id="btnModelClearConfirmationInvoice">Close</button>*@
+                    <a class="btn btn-default pull-right" id="btnModelClearConfirmationInvoice" href="@Url.Action("Index","trnDashboard")">Close</a>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
 </section>
- 
-<script src="~/Content/theme/bower_components/fastclick/lib/fastclick.js"></script>
- 
-<script src="~/Content/theme/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
- 
-<script src="~/Content/theme/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-<script src="~/Content/theme/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
- 
-<script src="~/Content/theme/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
- 
-<script src="~/Content/theme/bower_components/Chart.js/Chart.js"></script>
- 
-<script src="~/Content/theme/dist/js/pages/dashboard2.js"></script>
- 
-<script src="~/Content/theme/dist/js/demo.js"></script>
+
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/IRNDashBoard.js")"></script>

@@ -87,7 +87,7 @@
                     @Html.HiddenFor(Model => Model.trnExportDocumentDeclarationLotDetailsID)
                     @Html.HiddenFor(Model => Model.trnExportStufingWOID)
                     @Html.HiddenFor(Model => Model.FinalTotal)
-                    <div class="col-lg-12" style="margin-top:10px;">
+            <div class="col-lg-12" style="margin-top:10px;">
 
                         <div class="col-md-3 form-group">
                             @Html.LabelFor(Model => Model.CHA, new { @for = "CHA" })
@@ -165,27 +165,47 @@
                                 @Html.HiddenFor(Model => Model.hdnPaymentMode, new { @id = "hdnPaymentMode" })
                             </div>
 
-                        }
-                        <div class="col-md-2 form-group">
-                            @Html.LabelFor(Model => Model.ManualSSRNo, new { @for = "ManualSSRNo" })
-                            @Html.TextBoxFor(Model => Model.ManualSSRNo, new { @id = "ManualSSRNo", @name = "ManualSSRNo", @class = "form-control", @readonly = true })
+                }
+                <div class="col-md-2 form-group">
+                    @Html.LabelFor(Model => Model.ManualSSRNo, new { @for = "ManualSSRNo" })
+                    @Html.TextBoxFor(Model => Model.ManualSSRNo, new { @id = "ManualSSRNo", @name = "ManualSSRNo", @class = "form-control", @readonly = true })
+                </div>
+                @if (!IsEdit)
+                {
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.TallyHeadName, new { @for = "TallyHeadName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TallyHeadID, String.Empty, new { @id = "spn_TallyHeadID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.TallyHeadName, new { @id = "TallyHeadName", @name = "TallyHeadName", @class = "form-control", @placeholder = "Please select Tally Head" })
+                            @Html.HiddenFor(Model => Model.TallyHeadID)
                         </div>
-                        <div class="col-md-4 form-group">
-                            @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" })
-                            @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control" })
-                        </div>
-
-                        @if (!IsEdit)
-                        {
-                            <div class="col-md-12">
-                                <div class="pull-right">
-                                    <br />
-                                    <button type="submit" class="btn btn-primary" onclick="return Validation();">Continue</button>
-                                    <a href="@Url.Action("index", "ExportInvoice")" class="btn btn-danger">Clear</a>
-                                </div>
-                            </div>
-                        }
                     </div>
+                }
+                else
+                {
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor(Model => Model.TallyHeadName, new { @for = "TallyHeadName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.TallyHeadID, String.Empty, new { @id = "spn_TallyHeadID", @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.TallyHeadName, new { @id = "TallyHeadName", @name = "TallyHeadName", @class = "form-control", @placeholder = "Please select Tally Head", @readonly = true })
+                            @Html.HiddenFor(Model => Model.TallyHeadID)
+                        </div>
+                    </div>
+                }
+                <div class="col-md-4 form-group">
+                    @Html.LabelFor(Model => Model.Remarks, new { @for = "Remarks" })
+                    @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control" })
+                </div>
+
+                @if (!IsEdit)
+                {
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <br />
+                            <button type="submit" class="btn btn-primary" onclick="return Validation();">Continue</button>
+                            <a href="@Url.Action("index", "ExportInvoice")" class="btn btn-danger">Clear</a>
+                        </div>
+                    </div>
+                }
+            </div>
                 }
             </div>
         </div>

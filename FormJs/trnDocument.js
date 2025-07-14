@@ -1335,6 +1335,10 @@ function ClearUploadBOE() {
 }
 function AddBoiItem() {
     changestepValue(4);
+
+    $("#savebtn").hide();
+    $("#tmpSaveBtn").show();
+
     $.ajax({
         url: GetRootPath + "trnDocument/validateModel",
         type: "Post",
@@ -1353,6 +1357,10 @@ function AddBoiItem() {
                 if (Errormsg != "") {
                     TosterAlert("error", Errormsg, "Required!");
                 }
+
+                $("#savebtn").show();
+                $("#tmpSaveBtn").hide();
+
                 return false;
             }
             else {
@@ -1372,6 +1380,9 @@ function AddBoiItem() {
                         $("#ModelNOOFPIECES").val('');
                         $("#ModelWEIGHT").val('');
                         TosterAlert(msgType, msg, msgTitle);
+
+                        $("#savebtn").show();
+                        $("#tmpSaveBtn").hide();
                     }
                 });
             }

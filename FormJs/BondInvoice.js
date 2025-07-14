@@ -2,6 +2,7 @@
     //Autocompletebox("ContNo", "ContID", "emptyInvoice", "GetContNo/?InvoiceMode=" + InvoiceMode + "&InvoiceType=" + InvoiceType + "&ContainerStatus=" + ContainerStatus + "&WOID=" + WOID, "GetContNoDetails");
     Autocompletebox("SearchNo", "trnDocumentLotDetailsID", "BondInvoice", "GetInBOENo", "GetInBOEDate");    
     Autocompletebox("BillToParty", "BillToPartyID", "BondInvoice", "GetBillTo/?ImporterID=" + $("#ImporterID").val() + "&ConsolerID=" + $("#ConsolerID").val() + "&CHAID=" + $("#CHAID").val() + "&ForwarderID=" + $("#ForwarderID").val(), "autocompleteaddress");
+    Autocompletebox("TallyHeadName", "TallyHeadID", "BondInvoice", "GetTallyHead");
     var Count = $("#DiscountDataTableCount").val();
     for (var i = 0; i < Count; i++) {
         $("#DiscountAmount_" + [i]).val(0);
@@ -100,17 +101,17 @@ function autocompleteaddress() {
         
         Autocompletebox("BillToAddress", "BillToAddressID", "BondInvoice", "GetBillToAddress/?BillToPartyID=" + BillToCustomerID, "GetAddressDetails");        
     }
-    var TariffNo = $("#TariffNo").val();
-    if (TariffNo == "" || TariffNo == null || TariffNo == undefined) {        
-       var IsPartyTariff = GetTarrifHeadByCustomerID();
-        if (!IsPartyTariff) {
-            if (confirm('You are going through party wise tariff, Please add party wise tariff and  continue.')) {
-                isvalid = true;
-            } else {
-                isvalid = false;
-            }
-        }
-    }
+    //var TariffNo = $("#TariffNo").val();
+    //if (TariffNo == "" || TariffNo == null || TariffNo == undefined) {        
+    //   var IsPartyTariff = GetTarrifHeadByCustomerID();
+    //    if (!IsPartyTariff) {
+    //        if (confirm('You are going through party wise tariff, Please add party wise tariff and  continue.')) {
+    //            isvalid = true;
+    //        } else {
+    //            isvalid = false;
+    //        }
+    //    }
+    //}
     
 }
 function GetTarrifHeadByCustomerID() {

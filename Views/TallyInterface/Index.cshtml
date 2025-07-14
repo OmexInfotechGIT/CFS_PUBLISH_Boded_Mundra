@@ -1,0 +1,67 @@
+﻿@model CFS.Models.TallyInterface
+@{
+    ViewBag.Title = "Tally Interface";
+    //ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    //ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    //ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    //ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    //if (!ViewBag.gblBlnView)
+    //{
+    //    Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+    //}
+}
+
+<section class="content">
+    @using (Html.BeginForm("Index", "TallyInterface", FormMethod.Post))
+    {
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    @*<div class="box-header" id="divSearch">
+                            <div class="pull-right">
+                                <div style="display: inline-flex">
+                                    <div class="input-group input-group-sm">
+                                        <input id="txtSearch" Name="txtSearch" type="text" class="form-control" value="@Model.pagger.Search">
+                                        <span class="input-group-btn">
+                                            <button type="button" onclick="SearchData()" class="btn btn-primary btn-flat" id="btnSearch">Go!</button>
+                                        </span>
+                                    </div>
+                                    <div>&nbsp;</div>
+                                    <div>
+                                        @if (ViewBag.gblBlnAdd)
+                                        {
+                                            <a id="btnAdd" href="@Url.Action("Action", "MstrDriver", new { pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "add" })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Add New Driver"><i class="fa fa-plus"></i></a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                        </div>*@
+                    <div class="box-body">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @Html.LabelFor(Model => Model.InvoiceName)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.InvoiceName, String.Empty, new { @class = "help-inline text-red" })
+                                @Html.DropDownListFor(Model => Model.InvoiceName, Model.DDLInvoiceType, "SELECT", new { @id = "InvoiceName", @name = "InvoiceName", @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.FromDate, new { @for = "FromDate" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.FromDate, String.Empty, new { @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.FromDate, new { @id = "FromDate", @name = "FromDate", @class = "form-control DateTimePicker" })
+                        </div>
+                        <div class="col-md-2 form-group">
+                            @Html.LabelFor(Model => Model.ToDate, new { @for = "ToDate" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ToDate, String.Empty, new { @class = "help-inline text-red" })
+                            @Html.TextBoxFor(Model => Model.ToDate, new { @id = "ToDate", @name = "ToDate", @class = "form-control DateTimePicker" })
+                        </div>
+                        <div class="col-md-2">
+                            <br />
+                            <button type="submit" id="btnsave" onclick="return Validate();" class="btn btn-primary">Download XML</button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+    </section>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/TallyInterface.js")"></script>

@@ -103,7 +103,7 @@
                                                 }
                                                 <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('MstrBank','@Model.MyDatatable.Rows[i]["EmptyInvoiceID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
 
-                                                <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", "emptyInvoice", new { id = Model.MyDatatable.Rows[i]["EmptyInvoiceID"], format = "pdf" ,@IsSearch = true , @NOCID=Convert.ToInt32(Model.MyDatatable.Rows[i]["NOCID"]), ContStatus=Model.MyDatatable.Rows[i]["ContainerStatus"]  })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                                <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", "emptyInvoice", new { id = Model.MyDatatable.Rows[i]["EmptyInvoiceID"], format = "pdf" ,@IsSearch = true , @NOCID=Convert.ToInt32(Model.MyDatatable.Rows[i]["NOCID"]), ContStatus=Model.MyDatatable.Rows[i]["ContainerStatus"] ,IsApproved=(Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"])) })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
 
                                                 @if (ViewBag.gblBlnDelete && !(Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"])))
                                                 {

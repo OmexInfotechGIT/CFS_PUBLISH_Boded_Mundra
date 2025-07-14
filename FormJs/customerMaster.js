@@ -1,15 +1,16 @@
-﻿    $(document).ready(function () {
+﻿$(document).ready(function () {
     Autocompletebox("txtcustomername", "CustomerCode", "CustomerMaster", "getCustomerName");
 
     Autocompletebox("txtstate", "StateId", "CustomerMaster", "getStateNames");
     Autocompletebox("SecondryStateName", "MainStateId", "CustomerMaster", "getStateNames");
 
-        if (doaction.toLowerCase() == "edit" || doaction.toLowerCase() == "add") {
-            DisplayInactiveReason('IsActive', 'dvInActiveReason');
-        }
+    if (doaction.toLowerCase() == "edit" || doaction.toLowerCase() == "add") {
+        DisplayInactiveReason('IsActive', 'dvInActiveReason');
+    }
 
     GSTCustomerTypeChanged();
     GSTTypeChanged();
+    checkBoxIsCheckd();
 });
 
 $("#txtSearch").keyup(function (event) {
@@ -166,15 +167,45 @@ function MobileAccess(MstrCustomerID) {
             dataType: "text",
             async: false,
             success: function (data) {
+                username = $("#txtUsername").val(data);
+                if (data != "") {
+                    debugger
+                    $("#dvChangePassword").show();
+                    $("#OrgPassword").hide();
+                    $("#isFirstTimeLogin").val(1);
+                    $("#txtNewPassword").val("");
+                    $("#txtConfirmPassword").val("");
+                    $("#txtNewPassword").removeClass("redborder");
+                    $("#txtConfirmPassword").removeClass("redborder");
 
-                var datas = data.split(',')
+                    if (document.getElementById("IsChangePassword").checked) {
+                        $("#changePassword").show();
+                    }
 
-                username = $("#txtUsername").val(datas[0]);
-                password = $("#txtPassword").val(datas[1]);
-
+                } else {
+                    $("#dvChangePassword").hide();
+                    $("#OrgPassword").show();
+                    $("#changePassword").hide();
+                }
             }
         });
     }
+}
+
+function checkBoxIsCheckd() {
+
+    $('#IsChangePassword').on('ifChecked', function (event) {
+        if ($("#isFirstTimeLogin").val() == "1") {
+            $("#changePassword").show();
+        }
+    });
+
+    $('#IsChangePassword').on('ifUnchecked', function (event) {
+        if ($("#isFirstTimeLogin").val() == "1") {
+            $("#changePassword").hide();
+        }
+    });
+
 }
 
 function MobileAccessInsert() {
@@ -198,12 +229,41 @@ function MobileAccessInsert() {
         $("#txtUsername").removeClass("redborder")
     }
 
-    if ($.trim(password) == '' || password == undefined) {
-        isvalid = false
-        MErrormsg += "Please Enter Password";
-        $("#txtPassword").addClass("redborder")
-    } else {
-        $("#txtPassword").removeClass("redborder")
+    if ($("#isFirstTimeLogin").val() == "0") {
+        debugger
+        if ($.trim(password) == '' || password == undefined) {
+            isvalid = false
+            MErrormsg += "Please Enter Password <br />";
+            $("#txtPassword").addClass("redborder")
+        } else {
+            $("#txtPassword").removeClass("redborder")
+        }
+    }
+
+    debugger;
+
+    if (document.getElementById("IsChangePassword").checked) {
+
+        let NewPassword = $("#txtNewPassword").val();
+        let ConfirmPassword = $("#txtConfirmPassword").val();
+
+        if ($.trim(NewPassword) == '' || NewPassword == undefined) {
+            isvalid = false
+            MErrormsg += "Please Enter Password <br />";
+            $("#txtNewPassword").addClass("redborder")
+        } else {
+            $("#txtNewPassword").removeClass("redborder");
+        }
+
+        if (NewPassword != ConfirmPassword) {
+            isvalid = false
+            MErrormsg += "Confirm Password and New Password do not match.<br />";
+            $("#txtConfirmPassword").addClass("redborder");
+        } else {
+            $("#txtConfirmPassword").removeClass("redborder");
+            $("#txtPassword").val($("#txtNewPassword").val());
+        }
+
     }
 
     if (isvalid) {

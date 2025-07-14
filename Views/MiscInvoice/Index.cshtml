@@ -118,7 +118,7 @@
                                             }
                                             @if (Convert.ToInt32(Model.MyDatatable.Rows[i]["IsFinished"]) == 1)
                                             {
-                                                <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", "MiscInvoice", new { id = Model.MyDatatable.Rows[i]["MiscInvoiceID"], format = "pdf" })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                                <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", "MiscInvoice", new { id = Model.MyDatatable.Rows[i]["MiscInvoiceID"], format = "pdf" ,IsApproved=(Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsApproved"]))})"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
                                             }
                                         </td>
                                     </tr>
