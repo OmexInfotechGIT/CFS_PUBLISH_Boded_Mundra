@@ -5,11 +5,19 @@
     /*display: flex;*/
     justify-content: space-around;
     padding: 20px;
-    height: 330px;
+    height: 650px;
     width: 100%;
     color: black;
 }
 
+.chart-container-table-AllInvoice {
+    /*display: flex;*/
+    justify-content: space-around;
+    padding: 20px;
+    height: 330px;
+    width: 100%;
+    color: black;
+}
 .chart-container {
     display: flex;
     justify-content: space-around;

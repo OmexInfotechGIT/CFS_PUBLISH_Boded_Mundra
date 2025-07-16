@@ -21,340 +21,738 @@
 <!-- Main content -->
 <section class="content">
     <!-- Info boxes -->
+    <div class="row">
+        <div class="col-md-2">
+            @Html.LabelFor(Model => Model.InvoiceType, new { @for = "InvoiceType" }) <span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.InvoiceType, String.Empty, new { @id = "spn_InvoiceType", @class = "help-inline text-red" })
+            @Html.DropDownListFor(Model => Model.InvoiceType, Model.DDLInvoiceType, "SELECT", new { @id = "InvoiceType", @name = "InvoiceType", @class = "form-control" })
+        </div>
+        <div class="col-md-2 form-group">
+            @Html.LabelFor(Model => Model.FromDate, new { @for = "FromDate" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.FromDate, String.Empty, new { @id = "spn_FromDate", @class = "help-inline text-red" })
+            @Html.TextBoxFor(Model => Model.FromDate, new { @id = "FromDate", @name = "FromDate", @class = "form-control DatePicker" })
+        </div>
+        <div class="col-md-2 form-group">
+            @Html.LabelFor(Model => Model.ToDate, new { @for = "ToDate" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ToDate, String.Empty, new { @id = "spn_ToDate", @class = "help-inline text-red" })
+            @Html.TextBoxFor(Model => Model.ToDate, new { @id = "ToDate", @name = "ToDate", @class = "form-control DatePicker" })
+        </div>
+        <div class="col-md-2 form-group">
+            <br />
+            <button type="button" id="btnSearch" class="btn btn-primary" onclick="SearchIRNData()">Serach</button>
+            <a href="@Url.Action("Index","trnDashboard")" class="btn btn-danger">Clear</a>
+        </div>
+        <div class="col-md-4">
+            <br />
+            <span style="color:red;font-weight:bold">To ensure fast and accurate results, the date filter only supports a range of up to 1 month. Please choose a date range within 30 days.</span>
+        </div>
+    </div>
     <div class="row fontsize">
-        <div class="col-md-4">
-            <div class="box box-primary">
-                <div class="box-header">
-                    <a style="color: #444" href="@Url.Action("Index","BondInvoice")" target="_blank"><h3 class="box-title box-title-font">Bond Invoice</h3></a>                        
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body no-padding chart-container-table" style="overflow:auto;">
-                    <table class="table table-condensed" style="white-space: nowrap;">
-                        <thead>
-                            <tr>
-                                <th>SrNo.</th>
-                                <th>Bond Invoice No</th>
-                                <th>Bond Invoice Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.dtBondInvoiceDetails != null && Model.dtBondInvoiceDetails.Rows.Count > 0)
-                            {
-                                for (int i = 0; i < Model.dtBondInvoiceDetails.Rows.Count; i++)
+        @if (Model.InvoiceType == "all")
+        {
+            <div class="col-md-4" id="AllbondInvoice">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <a style="color: #444" href="@Url.Action("Index","BondInvoice")" target="_blank"><h3 class="box-title box-title-font">Bond Invoice</h3></a>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body no-padding chart-container-table-AllInvoice" style="overflow:auto;">
+                        <table class="table table-condensed" style="white-space: nowrap;">
+                            <thead>
+                                <tr>
+                                    <th>SrNo.</th>
+                                    <th>Bond Invoice No</th>
+                                    <th>Bond Invoice Date</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.dtBondInvoiceDetails != null && Model.dtBondInvoiceDetails.Rows.Count > 0)
                                 {
-                                    int Srno = i + 1;
-                                    <tr>
-                                        <td>@Srno</td>
-                                        <td>@Model.dtBondInvoiceDetails.Rows[i]["InvoiceNo"]</td>
-                                        <td>@Model.dtBondInvoiceDetails.Rows[i]["InvoiceDate"]</td>
-                                        <td>
-                                            @if (!string.IsNullOrEmpty(Model.dtBondInvoiceDetails.Rows[i]["ErrorMsg"].ToString()))
-                                            {
-                                                <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal" onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtBondInvoiceDetails.Rows[i]["ErrorMsg"])))'>
-                                                    <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
-                                                </a>
-                                            }
-                                            @if (Model.IsFinanceOrAdmin)
-                                            {
-                                                if (Model.dtBondInvoiceDetails.Rows[i]["SEZStatus"].ToString().ToLower() == "registered")
+                                    for (int i = 0; i < Model.dtBondInvoiceDetails.Rows.Count; i++)
+                                    {
+                                        int Srno = i + 1;
+                                        <tr>
+                                            <td>@Srno</td>
+                                            <td>@Model.dtBondInvoiceDetails.Rows[i]["InvoiceNo"]</td>
+                                            <td>@Model.dtBondInvoiceDetails.Rows[i]["InvoiceDate"]</td>
+                                            <td>@Model.dtBondInvoiceDetails.Rows[i]["BillToParty"]</td>
+                                            <td>@Model.dtBondInvoiceDetails.Rows[i]["Amount"]</td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(Model.dtBondInvoiceDetails.Rows[i]["ErrorMsg"].ToString()))
                                                 {
-                                                    <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true', 'approve', '@Model.dtBondInvoiceDetails.Rows[i]["BondInvoiceID"]', '@Model.dtBondInvoiceDetails.Rows[i]["InvoiceNo"]', 'bond', '@Model.dtBondInvoiceDetails.Rows[i]["trnDocumentID"]')">
-                                                        <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                    <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal" onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtBondInvoiceDetails.Rows[i]["ErrorMsg"])))'>
+                                                        <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
                                                     </a>
                                                 }
-                                                else
+                                                @if (Model.IsFinanceOrAdmin)
                                                 {
-                                                    <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtBondInvoiceDetails.Rows[i]["BondInvoiceID"]','@Model.dtBondInvoiceDetails.Rows[i]["InvoiceNo"]','bond' ,'@Model.dtBondInvoiceDetails.Rows[i]["trnDocumentID"]' )">
-                                                        <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                    if (Model.dtBondInvoiceDetails.Rows[i]["SEZStatus"].ToString().ToLower() == "registered")
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true', 'approve', '@Model.dtBondInvoiceDetails.Rows[i]["BondInvoiceID"]', '@Model.dtBondInvoiceDetails.Rows[i]["InvoiceNo"]', 'bond', '@Model.dtBondInvoiceDetails.Rows[i]["trnDocumentID"]')">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtBondInvoiceDetails.Rows[i]["BondInvoiceID"]','@Model.dtBondInvoiceDetails.Rows[i]["InvoiceNo"]','bond' ,'@Model.dtBondInvoiceDetails.Rows[i]["trnDocumentID"]' )">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                }
+
+                                            </td>
+                                        </tr>
+                                        if (i == 9)
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td>No matching records found</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </div>
+            <div class="col-md-4" id="AllExportInvoice">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <a style="color: #444" href="@Url.Action("Index","ExportInvoice")" target="_blank"><h3 class="box-title box-title-font">Export Invoice</h3></a>
+                    </div>
+                    <div class="box-body no-padding chart-container-table-AllInvoice" style="overflow:auto;">
+                        <table class="table table-condensed" style="white-space:nowrap;">
+                            <thead>
+                                <tr>
+                                    <th>SrNo.</th>
+                                    <th>Export Invioce No</th>
+                                    <th>Export Invoice Date</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.dtExportInvoiceDetails != null && Model.dtExportInvoiceDetails.Rows.Count > 0)
+                                {
+                                    int Srno = 0;
+                                    for (int i = 0; i < Model.dtExportInvoiceDetails.Rows.Count; i++)
+                                    {
+                                        Srno = i + 1;
+                                        <tr>
+                                            <td>@Srno</td>
+                                            <td>@Model.dtExportInvoiceDetails.Rows[i]["InvoiceNo"]</td>
+                                            <td>@Model.dtExportInvoiceDetails.Rows[i]["InvoiceDate"]</td>
+                                            <td>@Model.dtExportInvoiceDetails.Rows[i]["BillToParty"]</td>
+                                            <td>@Model.dtExportInvoiceDetails.Rows[i]["Amount"]</td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(Model.dtExportInvoiceDetails.Rows[i]["ErrorMsg"].ToString()))
+                                                {
+                                                    <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal" onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtExportInvoiceDetails.Rows[i]["ErrorMsg"])))'>
+                                                        <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
                                                     </a>
                                                 }
-                                            }
-
-                                        </td>
-                                    </tr>
-                                    if (i == 9)
-                                    {
-                                        break;
+                                                @if (Model.IsFinanceOrAdmin)
+                                                {
+                                                    if (@Model.dtExportInvoiceDetails.Rows[i]["SEZStatus"].ToString().ToLower() == "registered")
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true', 'approve', '@Model.dtExportInvoiceDetails.Rows[i]["ExportInvoiceID"]', '@Model.dtExportInvoiceDetails.Rows[i]["InvoiceNo"]', 'export', '@Model.dtExportInvoiceDetails.Rows[i]["trnExportStufingWOID"]')">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtExportInvoiceDetails.Rows[i]["ExportInvoiceID"]','@Model.dtExportInvoiceDetails.Rows[i]["InvoiceNo"]','export' ,'@Model.dtExportInvoiceDetails.Rows[i]["trnExportStufingWOID"]' )">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                        if (i == 9)
+                                        {
+                                            break;
+                                        }
                                     }
                                 }
-                            }
-                            else
-                            {
-                                <tr><td>No recored Found</td></tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-                <!-- /.box-body -->
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="box box-primary">
-                <div class="box-header">
-                    <a style="color: #444" href="@Url.Action("Index","ExportInvoice")" target="_blank"><h3 class="box-title box-title-font">Export Invoice</h3></a>                        
-                </div>
-                <div class="box-body no-padding chart-container-table" style="overflow:auto;">
-                    <table class="table table-condensed" style="white-space:nowrap;">
-                        <thead>
-                            <tr>
-                                <th>SrNo.</th>
-                                <th>Export Invioce No</th>
-                                <th>Export Invoice Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.dtExportInvoiceDetails != null && Model.dtExportInvoiceDetails.Rows.Count > 0)
-                            {
-                                int Srno = 0;
-                                for (int i = 0; i < Model.dtExportInvoiceDetails.Rows.Count; i++)
+                                else
                                 {
-                                    Srno = i + 1;
-                                    <tr>
-                                        <td>@Srno</td>
-                                        <td>@Model.dtExportInvoiceDetails.Rows[i]["InvoiceNo"]</td>
-                                        <td>@Model.dtExportInvoiceDetails.Rows[i]["InvoiceDate"]</td>
-                                        <td>
-                                            @if (!string.IsNullOrEmpty(Model.dtExportInvoiceDetails.Rows[i]["ErrorMsg"].ToString()))
-                                            {
-                                                <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal" onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtExportInvoiceDetails.Rows[i]["ErrorMsg"])))'>
-                                                    <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
-                                                </a>
-                                            }
-                                            @if (Model.IsFinanceOrAdmin)
-                                            {
-                                                if (@Model.dtExportInvoiceDetails.Rows[i]["SEZStatus"].ToString().ToLower() == "registered")
+                                    <tr><td>No matching records found</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" id="AllEmptyInvoice">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <a style="color: #444" href="@Url.Action("Index","emptyInvoice")" target="_blank"><h3 class="box-title box-title-font">Empty Invoice</h3></a>
+                    </div>
+                    <div class="box-body no-padding chart-container-table-AllInvoice" style="overflow:auto;">
+                        <table class="table table-condensed" style="white-space: nowrap;">
+                            <thead>
+                                <tr>
+                                    <th>SrNo.</th>
+                                    <th>Empty Invocie No</th>
+                                    <th>Empty Invoice Date</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.dtEmptyInvoiceDetails != null && Model.dtEmptyInvoiceDetails.Rows.Count > 0)
+                                {
+                                    int SrNo = 0;
+                                    for (int i = 0; i < Model.dtEmptyInvoiceDetails.Rows.Count; i++)
+                                    {
+                                        SrNo = i + 1;
+                                        <tr>
+                                            <td>@SrNo</td>
+                                            <td>@Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceNo"]</td>
+                                            <td>@Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceDate"]</td>
+                                            <td>@Model.dtEmptyInvoiceDetails.Rows[i]["BillToParty"]</td>
+                                            <td>@Model.dtEmptyInvoiceDetails.Rows[i]["Amount"]</td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(Model.dtEmptyInvoiceDetails.Rows[i]["ErrorMsg"].ToString()))
                                                 {
-                                                    <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true', 'approve', '@Model.dtExportInvoiceDetails.Rows[i]["ExportInvoiceID"]', '@Model.dtExportInvoiceDetails.Rows[i]["InvoiceNo"]', 'export', '@Model.dtExportInvoiceDetails.Rows[i]["trnExportStufingWOID"]')">
-                                                        <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                    <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal" onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtEmptyInvoiceDetails.Rows[i]["ErrorMsg"])))'>
+                                                        <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
                                                     </a>
                                                 }
-                                                else
+                                                @if (Model.IsFinanceOrAdmin)
                                                 {
-                                                    <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtExportInvoiceDetails.Rows[i]["ExportInvoiceID"]','@Model.dtExportInvoiceDetails.Rows[i]["InvoiceNo"]','export' ,'@Model.dtExportInvoiceDetails.Rows[i]["trnExportStufingWOID"]' )">
-                                                        <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                    if (Model.dtEmptyInvoiceDetails.Rows[i]["GSTCustomerType"].ToString().ToLower() == "registered")
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true', 'approve', '@Model.dtEmptyInvoiceDetails.Rows[i]["EmptyInvoiceID"]', '@Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceNo"]', 'empty', '')">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtEmptyInvoiceDetails.Rows[i]["EmptyInvoiceID"]','@Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceNo"]','empty' ,'' )">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+
+                                        if (i == 9)
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td>No matching records found</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" id="AllMiscInvoice">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <a style="color: #444" href="@Url.Action("Index","MiscInvoice")" target="_blank"><h3 class="box-title box-title-font">Misc Invoice</h3></a>
+                    </div>
+                    <div class="box-body no-padding chart-container-table-AllInvoice" style="overflow:auto;">
+                        <table class="table table-condensed" style="white-space: nowrap;">
+                            <thead>
+                                <tr>
+                                    <th>SrNo.</th>
+                                    <th>Misc. Invoice No</th>
+                                    <th>Misc. Invoice Date</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.dtMiscInvoiceDetails != null && Model.dtMiscInvoiceDetails.Rows.Count > 0)
+                                {
+                                    int SrNo = 0;
+                                    for (int i = 0; i < Model.dtMiscInvoiceDetails.Rows.Count; i++)
+                                    {
+                                        SrNo = i + 1;
+                                        <tr>
+                                            <td>@SrNo</td>
+                                            <td>@Model.dtMiscInvoiceDetails.Rows[i]["InvoiceNo"]</td>
+                                            <td>@Model.dtMiscInvoiceDetails.Rows[i]["InvoiceDate"]</td>
+                                            <td>@Model.dtMiscInvoiceDetails.Rows[i]["BillToParty"]</td>
+                                            <td>@Model.dtMiscInvoiceDetails.Rows[i]["Amount"]</td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(Model.dtMiscInvoiceDetails.Rows[i]["ErrorMsg"].ToString()))
+                                                {
+                                                    <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal" onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtMiscInvoiceDetails.Rows[i]["ErrorMsg"])))'>
+                                                        <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
                                                     </a>
                                                 }
-                                            }
-                                        </td>
-                                    </tr>
-                                    if (i == 9)
-                                    {
-                                        break;
+                                                @if (Model.IsFinanceOrAdmin)
+                                                {
+                                                    if (Model.dtMiscInvoiceDetails.Rows[i]["GSTCustomerType"].ToString().ToLower() == "registered")
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true','approve','@Model.dtMiscInvoiceDetails.Rows[i]["MiscInvoiceID"]','@Model.dtMiscInvoiceDetails.Rows[i]["InvoiceNo"]','misc' ,'@Model.dtMiscInvoiceDetails.Rows[i]["trnDocumentLotDetailsID"]')">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtMiscInvoiceDetails.Rows[i]["MiscInvoiceID"]','@Model.dtMiscInvoiceDetails.Rows[i]["InvoiceNo"]','misc' ,'@Model.dtMiscInvoiceDetails.Rows[i]["trnDocumentLotDetailsID"]' )">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                        if (i == 9)
+                                        {
+                                            break;
+                                        }
                                     }
                                 }
-                            }
-                            else
-                            {
-                                <tr><td>No recored Found</td></tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="box box-primary">
-                <div class="box-header">
-                    <a style="color: #444" href="@Url.Action("Index","emptyInvoice")" target="_blank"><h3 class="box-title box-title-font">Empty Invoice</h3></a>                        
-                </div>
-                <div class="box-body no-padding chart-container-table" style="overflow:auto;">
-                    <table class="table table-condensed" style="white-space: nowrap;">
-                        <thead>
-                            <tr>
-                                <th>SrNo.</th>
-                                <th>Empty Invocie No</th>
-                                <th>Empty Invoice Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.dtEmptyInvoiceDetails != null && Model.dtEmptyInvoiceDetails.Rows.Count > 0)
-                            {
-                                int SrNo = 0;
-                                for (int i = 0; i < Model.dtEmptyInvoiceDetails.Rows.Count; i++)
+                                else
                                 {
-                                    SrNo = i + 1;
-                                    <tr>
-                                        <td>@SrNo</td>
-                                        <td>@Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceNo"]</td>
-                                        <td>@Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceDate"]</td>
-                                        <td>
-                                            @if (!string.IsNullOrEmpty(Model.dtEmptyInvoiceDetails.Rows[i]["ErrorMsg"].ToString()))
-                                            {
-                                                <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal" onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtEmptyInvoiceDetails.Rows[i]["ErrorMsg"])))'>
-                                                    <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
-                                                </a>
-                                            }
-                                            @if (Model.IsFinanceOrAdmin)
-                                            {
-                                                if (Model.dtEmptyInvoiceDetails.Rows[i]["GSTCustomerType"].ToString().ToLower() == "registered")
-                                                {
-                                                <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true', 'approve', '@Model.dtEmptyInvoiceDetails.Rows[i]["EmptyInvoiceID"]', '@Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceNo"]', 'empty', '')">
-                                                    <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
-                                                </a>
-                                                }
-                                                else
-                                                {
-                                                <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtEmptyInvoiceDetails.Rows[i]["EmptyInvoiceID"]','@Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceNo"]','empty' ,'' )">
-                                                    <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
-                                                </a>
-                                                }
-                                            }
-                                        </td>
-                                    </tr>
-
-                                    if (i == 9)
-                                    {
-                                        break;
-                                    }
+                                    <tr><td> No matching records found</td></tr>
                                 }
-                            }
-                            else
-                            {
-                                <tr><td>No recored Found</td></tr>
-                            }
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="box box-primary">
-                <div class="box-header">
-                    <a style="color: #444" href="@Url.Action("Index","MiscInvoice")" target="_blank"><h3 class="box-title box-title-font">Misc Invoice</h3></a>                       
-                </div>
-                <div class="box-body no-padding chart-container-table" style="overflow:auto;">
-                    <table class="table table-condensed" style="white-space: nowrap;">
-                        <thead>
-                            <tr>
-                                <th>SrNo.</th>
-                                <th>Misc. Invoice No</th>
-                                <th>Misc. Invoice Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.dtMiscInvoiceDetails != null && Model.dtMiscInvoiceDetails.Rows.Count > 0)
-                            {
-                                int SrNo = 0;
-                                for (int i = 0; i < Model.dtMiscInvoiceDetails.Rows.Count; i++)
+            <div class="col-md-4" id="AllCreditNote">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <a style="color: #444" href="@Url.Action("Index","CreditNote")" target="_blank"><h3 class="box-title box-title-font">Credit Note</h3></a>
+                    </div>
+                    <div class="box-body no-padding chart-container-table-AllInvoice" style="overflow:auto;">
+                        <table class="table table-condensed" style="white-space: nowrap;">
+                            <thead>
+                                <tr>
+                                    <th>SrNo.</th>
+                                    <th>CreditNote No</th>
+                                    <th>CreditNote Date</th>
+                                    <th>Invoice Type</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.dtCreditNoteDetails != null && Model.dtCreditNoteDetails.Rows.Count > 0)
                                 {
-                                    SrNo = i + 1;
-                                    <tr>
-                                        <td>@SrNo</td>
-                                        <td>@Model.dtMiscInvoiceDetails.Rows[i]["InvoiceNo"]</td>
-                                        <td>@Model.dtMiscInvoiceDetails.Rows[i]["InvoiceDate"]</td>
-                                        <td>
-                                            @if (!string.IsNullOrEmpty(Model.dtMiscInvoiceDetails.Rows[i]["ErrorMsg"].ToString()))
-                                            {
-                                                <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal"  onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtMiscInvoiceDetails.Rows[i]["ErrorMsg"])))'>
-                                                    <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
-                                                </a>
-                                            }
-                                            @if (Model.IsFinanceOrAdmin)
-                                            {
-                                                if (Model.dtMiscInvoiceDetails.Rows[i]["GSTCustomerType"].ToString().ToLower() == "registered")
-                                                {
-                                                <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true','approve','@Model.dtMiscInvoiceDetails.Rows[i]["MiscInvoiceID"]','@Model.dtMiscInvoiceDetails.Rows[i]["InvoiceNo"]','misc' ,'@Model.dtMiscInvoiceDetails.Rows[i]["trnDocumentLotDetailsID"]')">
-                                                    <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
-                                                </a>
-                                                }
-                                                else
-                                                {
-                                                <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtMiscInvoiceDetails.Rows[i]["MiscInvoiceID"]','@Model.dtMiscInvoiceDetails.Rows[i]["InvoiceNo"]','misc' ,'@Model.dtMiscInvoiceDetails.Rows[i]["trnDocumentLotDetailsID"]' )">
-                                                    <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
-                                                </a>
-                                                }
-                                            }
-                                        </td>
-                                    </tr>
-                                    if (i == 9)
+                                    int SrNo = 0;
+                                    for (int i = 0; i < Model.dtCreditNoteDetails.Rows.Count; i++)
                                     {
-                                        break;
+                                        SrNo = i + 1;
+                                        <tr>
+                                            <td>@SrNo</td>
+                                            <td>@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]</td>
+                                            <td>@Model.dtCreditNoteDetails.Rows[i]["CreditNoteDate"]</td>
+                                            <td>@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]</td>
+                                            <td>@Model.dtCreditNoteDetails.Rows[i]["BillToParty"]</td>
+                                            <td>@Model.dtCreditNoteDetails.Rows[i]["Amount"]</td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(Model.dtCreditNoteDetails.Rows[i]["ErrorMsg"].ToString()))
+                                                {
+                                                    <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal" onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtCreditNoteDetails.Rows[i]["ErrorMsg"])))'>
+                                                        <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
+                                                    </a>
+                                                }
+                                                @if (Model.IsFinanceOrAdmin)
+                                                {
+                                                    if (Model.dtCreditNoteDetails.Rows[i]["GSTTypeName"].ToString().ToUpper() == "REGISTERED")
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true','approve','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteID"]','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]','creditnote' ,'@Model.dtCreditNoteDetails.Rows[i]["InvoiceNumberID"]','@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]')">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteID"]','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]','creditnote' ,'@Model.dtCreditNoteDetails.Rows[i]["InvoiceNumberID"]','@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]')">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                        if (i == 9)
+                                        {
+                                            break;
+                                        }
                                     }
                                 }
-                            }
-                            else
-                            {
-                                <tr><td> No recored Found</td></tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="box box-primary">
-                <div class="box-header">
-                    <a style="color: #444" href="@Url.Action("Index","CreditNote")" target="_blank"><h3 class="box-title box-title-font">Credit Note</h3></a>
-                </div>
-                <div class="box-body no-padding chart-container-table" style="overflow:auto;">
-                    <table class="table table-condensed" style="white-space: nowrap;">
-                        <thead>
-                            <tr>
-                                <th>SrNo.</th>
-                                <th>CreditNote No</th>
-                                <th>CreditNote Date</th>
-                                <th>Invoice Type</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.dtCreditNoteDetails != null && Model.dtCreditNoteDetails.Rows.Count > 0)
-                            {
-                                int SrNo = 0;
-                                for (int i = 0; i < Model.dtCreditNoteDetails.Rows.Count; i++)
+                                else
                                 {
-                                    SrNo = i + 1;
-                                    <tr>
-                                        <td>@SrNo</td>
-                                        <td>@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]</td>
-                                        <td>@Model.dtCreditNoteDetails.Rows[i]["CreditNoteDate"]</td>
-                                        <td>@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]</td>
-                                        <td>
-                                            @if (!string.IsNullOrEmpty(Model.dtCreditNoteDetails.Rows[i]["ErrorMsg"].ToString()))
-                                            {
-                                                <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal"  onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtCreditNoteDetails.Rows[i]["ErrorMsg"])))'>
-                                                    <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
-                                                </a>
-                                            }
-                                            @if (Model.IsFinanceOrAdmin)
-                                            {
-                                                if (Model.dtCreditNoteDetails.Rows[i]["GSTTypeName"].ToString().ToUpper() == "REGISTERED")
-                                                {
-                                                <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true','approve','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteID"]','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]','creditnote' ,'@Model.dtCreditNoteDetails.Rows[i]["InvoiceNumberID"]','@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]')">
-                                                    <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
-                                                </a>
-                                                }
-                                                else
-                                                {
-                                                <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteID"]','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]','creditnote' ,'@Model.dtCreditNoteDetails.Rows[i]["InvoiceNumberID"]','@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]')">
-                                                    <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
-                                                </a>
-                                                }
-                                            }
-                                        </td>
-                                    </tr>
-                                    if (i == 9)
-                                    {
-                                        break;
-                                    }
+                                    <tr><td>No matching records found.</td></tr>
                                 }
-                            }
-                            else
-                            {
-                                <tr><td>No recored Found.</td></tr>
-                            }
 
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="col-md-12" id="bondInvoice">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <a style="color: #444" href="@Url.Action("Index","BondInvoice")" target="_blank"><h3 class="box-title box-title-font">Bond Invoice</h3></a>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body no-padding chart-container-table" style="overflow:auto;">
+                        <table class="table table-condensed" style="white-space: nowrap;">
+                            <thead>
+                                <tr>
+                                    <th>SrNo.</th>
+                                    <th>Bond Invoice No</th>
+                                    <th>Bond Invoice Date</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.dtBondInvoiceDetails != null && Model.dtBondInvoiceDetails.Rows.Count > 0)
+                                {
+                                    for (int i = 0; i < Model.dtBondInvoiceDetails.Rows.Count; i++)
+                                    {
+                                        int Srno = i + 1;
+                                        <tr>
+                                            <td>@Srno</td>
+                                            <td>@Model.dtBondInvoiceDetails.Rows[i]["InvoiceNo"]</td>
+                                            <td>@Model.dtBondInvoiceDetails.Rows[i]["InvoiceDate"]</td>
+                                            <td>@Model.dtBondInvoiceDetails.Rows[i]["BillToParty"]</td>
+                                            <td>@Model.dtBondInvoiceDetails.Rows[i]["Amount"]</td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(Model.dtBondInvoiceDetails.Rows[i]["ErrorMsg"].ToString()))
+                                                {
+                                                    <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal" onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtBondInvoiceDetails.Rows[i]["ErrorMsg"])))'>
+                                                        <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
+                                                    </a>
+                                                }
+                                                @if (Model.IsFinanceOrAdmin)
+                                                {
+                                                    if (Model.dtBondInvoiceDetails.Rows[i]["SEZStatus"].ToString().ToLower() == "registered")
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true', 'approve', '@Model.dtBondInvoiceDetails.Rows[i]["BondInvoiceID"]', '@Model.dtBondInvoiceDetails.Rows[i]["InvoiceNo"]', 'bond', '@Model.dtBondInvoiceDetails.Rows[i]["trnDocumentID"]')">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtBondInvoiceDetails.Rows[i]["BondInvoiceID"]','@Model.dtBondInvoiceDetails.Rows[i]["InvoiceNo"]','bond' ,'@Model.dtBondInvoiceDetails.Rows[i]["trnDocumentID"]' )">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                }
+
+                                            </td>
+                                        </tr>
+                                        //if (i == 9)
+                                        //{
+                                        //    break;
+                                        //}
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td>No matching records found</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </div>
+            <div class="col-md-12" id="ExportInvoice">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <a style="color: #444" href="@Url.Action("Index","ExportInvoice")" target="_blank"><h3 class="box-title box-title-font">Export Invoice</h3></a>
+                    </div>
+                    <div class="box-body no-padding chart-container-table" style="overflow:auto;">
+                        <table class="table table-condensed" style="white-space:nowrap;">
+                            <thead>
+                                <tr>
+                                    <th>SrNo.</th>
+                                    <th>Export Invioce No</th>
+                                    <th>Export Invoice Date</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.dtExportInvoiceDetails != null && Model.dtExportInvoiceDetails.Rows.Count > 0)
+                                {
+                                    int Srno = 0;
+                                    for (int i = 0; i < Model.dtExportInvoiceDetails.Rows.Count; i++)
+                                    {
+                                        Srno = i + 1;
+                                        <tr>
+                                            <td>@Srno</td>
+                                            <td>@Model.dtExportInvoiceDetails.Rows[i]["InvoiceNo"]</td>
+                                            <td>@Model.dtExportInvoiceDetails.Rows[i]["InvoiceDate"]</td>
+                                            <td>@Model.dtExportInvoiceDetails.Rows[i]["BillToParty"]</td>
+                                            <td>@Model.dtExportInvoiceDetails.Rows[i]["Amount"]</td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(Model.dtExportInvoiceDetails.Rows[i]["ErrorMsg"].ToString()))
+                                                {
+                                                    <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal" onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtExportInvoiceDetails.Rows[i]["ErrorMsg"])))'>
+                                                        <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
+                                                    </a>
+                                                }
+                                                @if (Model.IsFinanceOrAdmin)
+                                                {
+                                                    if (@Model.dtExportInvoiceDetails.Rows[i]["SEZStatus"].ToString().ToLower() == "registered")
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true', 'approve', '@Model.dtExportInvoiceDetails.Rows[i]["ExportInvoiceID"]', '@Model.dtExportInvoiceDetails.Rows[i]["InvoiceNo"]', 'export', '@Model.dtExportInvoiceDetails.Rows[i]["trnExportStufingWOID"]')">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtExportInvoiceDetails.Rows[i]["ExportInvoiceID"]','@Model.dtExportInvoiceDetails.Rows[i]["InvoiceNo"]','export' ,'@Model.dtExportInvoiceDetails.Rows[i]["trnExportStufingWOID"]' )">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                        //if (i == 9)
+                                        //{
+                                        //    break;
+                                        //}
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td>No matching records found</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12" id="EmptyInvoice">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <a style="color: #444" href="@Url.Action("Index","emptyInvoice")" target="_blank"><h3 class="box-title box-title-font">Empty Invoice</h3></a>
+                    </div>
+                    <div class="box-body no-padding chart-container-table" style="overflow:auto;">
+                        <table class="table table-condensed" style="white-space: nowrap;">
+                            <thead>
+                                <tr>
+                                    <th>SrNo.</th>
+                                    <th>Empty Invocie No</th>
+                                    <th>Empty Invoice Date</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.dtEmptyInvoiceDetails != null && Model.dtEmptyInvoiceDetails.Rows.Count > 0)
+                                {
+                                    int SrNo = 0;
+                                    for (int i = 0; i < Model.dtEmptyInvoiceDetails.Rows.Count; i++)
+                                    {
+                                        SrNo = i + 1;
+                                        <tr>
+                                            <td>@SrNo</td>
+                                            <td>@Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceNo"]</td>
+                                            <td>@Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceDate"]</td>
+                                            <td>@Model.dtEmptyInvoiceDetails.Rows[i]["BillToParty"]</td>
+                                            <td>@Model.dtEmptyInvoiceDetails.Rows[i]["Amount"]</td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(Model.dtEmptyInvoiceDetails.Rows[i]["ErrorMsg"].ToString()))
+                                                {
+                                                    <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal" onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtEmptyInvoiceDetails.Rows[i]["ErrorMsg"])))'>
+                                                        <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
+                                                    </a>
+                                                }
+                                                @if (Model.IsFinanceOrAdmin)
+                                                {
+                                                    if (Model.dtEmptyInvoiceDetails.Rows[i]["GSTCustomerType"].ToString().ToLower() == "registered")
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true', 'approve', '@Model.dtEmptyInvoiceDetails.Rows[i]["EmptyInvoiceID"]', '@Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceNo"]', 'empty', '')">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtEmptyInvoiceDetails.Rows[i]["EmptyInvoiceID"]','@Model.dtEmptyInvoiceDetails.Rows[i]["InvoiceNo"]','empty' ,'' )">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+
+                                        //if (i == 9)
+                                        //{
+                                        //    break;
+                                        //}
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td>No matching records found</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12" id="MiscInvoice">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <a style="color: #444" href="@Url.Action("Index","MiscInvoice")" target="_blank"><h3 class="box-title box-title-font">Misc Invoice</h3></a>
+                    </div>
+                    <div class="box-body no-padding chart-container-table" style="overflow:auto;">
+                        <table class="table table-condensed" style="white-space: nowrap;">
+                            <thead>
+                                <tr>
+                                    <th>SrNo.</th>
+                                    <th>Misc. Invoice No</th>
+                                    <th>Misc. Invoice Date</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.dtMiscInvoiceDetails != null && Model.dtMiscInvoiceDetails.Rows.Count > 0)
+                                {
+                                    int SrNo = 0;
+                                    for (int i = 0; i < Model.dtMiscInvoiceDetails.Rows.Count; i++)
+                                    {
+                                        SrNo = i + 1;
+                                        <tr>
+                                            <td>@SrNo</td>
+                                            <td>@Model.dtMiscInvoiceDetails.Rows[i]["InvoiceNo"]</td>
+                                            <td>@Model.dtMiscInvoiceDetails.Rows[i]["InvoiceDate"]</td>
+                                            <td>@Model.dtMiscInvoiceDetails.Rows[i]["BillToParty"]</td>
+                                            <td>@Model.dtMiscInvoiceDetails.Rows[i]["Amount"]</td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(Model.dtMiscInvoiceDetails.Rows[i]["ErrorMsg"].ToString()))
+                                                {
+                                                    <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal" onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtMiscInvoiceDetails.Rows[i]["ErrorMsg"])))'>
+                                                        <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
+                                                    </a>
+                                                }
+                                                @if (Model.IsFinanceOrAdmin)
+                                                {
+                                                    if (Model.dtMiscInvoiceDetails.Rows[i]["GSTCustomerType"].ToString().ToLower() == "registered")
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true','approve','@Model.dtMiscInvoiceDetails.Rows[i]["MiscInvoiceID"]','@Model.dtMiscInvoiceDetails.Rows[i]["InvoiceNo"]','misc' ,'@Model.dtMiscInvoiceDetails.Rows[i]["trnDocumentLotDetailsID"]')">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtMiscInvoiceDetails.Rows[i]["MiscInvoiceID"]','@Model.dtMiscInvoiceDetails.Rows[i]["InvoiceNo"]','misc' ,'@Model.dtMiscInvoiceDetails.Rows[i]["trnDocumentLotDetailsID"]' )">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                        //if (i == 9)
+                                        //{
+                                        //    break;
+                                        //}
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td> No matching records found</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12" id="CreditNote">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <a style="color: #444" href="@Url.Action("Index","CreditNote")" target="_blank"><h3 class="box-title box-title-font">Credit Note</h3></a>
+                    </div>
+                    <div class="box-body no-padding chart-container-table" style="overflow:auto;">
+                        <table class="table table-condensed" style="white-space: nowrap;">
+                            <thead>
+                                <tr>
+                                    <th>SrNo.</th>
+                                    <th>CreditNote No</th>
+                                    <th>CreditNote Date</th>
+                                    <th>Invoice Type</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.dtCreditNoteDetails != null && Model.dtCreditNoteDetails.Rows.Count > 0)
+                                {
+                                    int SrNo = 0;
+                                    for (int i = 0; i < Model.dtCreditNoteDetails.Rows.Count; i++)
+                                    {
+                                        SrNo = i + 1;
+                                        <tr>
+                                            <td>@SrNo</td>
+                                            <td>@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]</td>
+                                            <td>@Model.dtCreditNoteDetails.Rows[i]["CreditNoteDate"]</td>
+                                            <td>@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]</td>
+                                            <td>@Model.dtCreditNoteDetails.Rows[i]["BillToParty"]</td>
+                                            <td>@Model.dtCreditNoteDetails.Rows[i]["Amount"]</td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(Model.dtCreditNoteDetails.Rows[i]["ErrorMsg"].ToString()))
+                                                {
+                                                    <a style="color:red;" data-toggle="modal" data-target="#ErrorMsgModal" onclick='DisplayError(@Html.Raw(Json.Encode(@Model.dtCreditNoteDetails.Rows[i]["ErrorMsg"])))'>
+                                                        <i title="Click to Error" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-warning"></i>
+                                                    </a>
+                                                }
+                                                @if (Model.IsFinanceOrAdmin)
+                                                {
+                                                    if (Model.dtCreditNoteDetails.Rows[i]["GSTTypeName"].ToString().ToUpper() == "REGISTERED")
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true','approve','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteID"]','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]','creditnote' ,'@Model.dtCreditNoteDetails.Rows[i]["InvoiceNumberID"]','@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]')">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteID"]','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]','creditnote' ,'@Model.dtCreditNoteDetails.Rows[i]["InvoiceNumberID"]','@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]')">
+                                                            <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
+                                                        </a>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                        //if (i == 9)
+                                        //{
+                                        //    break;
+                                        //}
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td>No matching records found.</td></tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 
     <div class="modal fade in" id="ErrorMsgModal" style="display:none;padding-right:17px;">
@@ -409,7 +807,7 @@
                                         <input type="hidden" id="TableID1" name="TableID1" />
                                         <input type="hidden" id="InvoiceId" name="InvoiceId" />
                                         <input type="hidden" id="InvoiceNo" name="InvoiceNo" />
-                                        <input type="hidden" id="InvoiceType" name="InvoiceType" />
+                                        <input type="hidden" id="ApproveInvoiceType" name="InvoiceType" />
                                         <input type="hidden" id="action" name="action" />
                                         <input type="hidden" id="IsIRN" name="IsIRN" />
                                         <input type="hidden" id="hdnIRNSpaceCertificateGWID" name="hdnIRNSpaceCertificateGWID" />
@@ -423,8 +821,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="btnModelAddConfirmationInvoice" onclick="return validateremarksForIRN();" class="btn btn-primary">Submit</button>
-                    @*<button type="button" class="btn btn-default pull-right" data-dismiss="modal" id="btnModelClearConfirmationInvoice">Close</button>*@
-                    <a class="btn btn-default pull-right" id="btnModelClearConfirmationInvoice" href="@Url.Action("Index","trnDashboard")">Close</a>
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal" id="btnModelClearConfirmationInvoice" onclick="ClosePopup()">Close</button>
+                    
                 </div>
             </div>
             <!-- /.modal-content -->

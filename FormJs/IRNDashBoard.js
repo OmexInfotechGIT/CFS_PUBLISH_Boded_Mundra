@@ -1,8 +1,66 @@
-function validateremarksForIRN() {
-    debugger;
+$(document).ready(function () {
+    var InvoiceType = $("#InvoiceType").val();
+    if (InvoiceType != "" && InvoiceType != undefined && InvoiceType != "SELECT") {
+        if (InvoiceType.toLowerCase() == "bond") {
+            $("#bondInvoice").show();
+            $("#ExportInvoice").hide();
+            $("#EmptyInvoice").hide();
+            $("#MiscInvoice").hide();
+            $("#CreditNote").hide();
+        }
+        else if (InvoiceType.toLowerCase() == "export") {
+            $("#bondInvoice").hide();
+            $("#ExportInvoice").show();
+            $("#EmptyInvoice").hide();
+            $("#MiscInvoice").hide();
+            $("#CreditNote").hide();
+        }
+        else if (InvoiceType.toLowerCase() == "empty") {
+            $("#bondInvoice").hide();
+            $("#ExportInvoice").hide();
+            $("#EmptyInvoice").show();
+            $("#MiscInvoice").hide();
+            $("#CreditNote").hide();
+        }
+        else if (InvoiceType.toLowerCase() == "misc") {
+            $("#bondInvoice").hide();
+            $("#ExportInvoice").hide();
+            $("#EmptyInvoice").hide();
+            $("#MiscInvoice").show();
+            $("#CreditNote").hide();
+        }
+        else if (InvoiceType.toLowerCase() == "cnbond" || InvoiceType.toLowerCase() == "cnempty" || InvoiceType.toLowerCase() == "cnmisc") {
+            $("#bondInvoice").hide();
+            $("#ExportInvoice").hide();
+            $("#EmptyInvoice").hide();
+            $("#MiscInvoice").hide();
+            $("#CreditNote").show();
+        }
+        else {
+            $("#bondInvoice").hide();
+            $("#ExportInvoice").hide();
+            $("#EmptyInvoice").hide();
+            $("#MiscInvoice").hide();
+            $("#CreditNote").hide();
+        }       
+    }
+    else {
+        $("#bondInvoice").hide();
+        $("#ExportInvoice").hide();
+        $("#EmptyInvoice").hide();
+        $("#MiscInvoice").hide();
+        $("#CreditNote").hide();
+    }
+
+});
+
+function validateremarksForIRN() {    
     var InvoiceId = $("#InvoiceId").val();
     var InvoiceNo = $("#InvoiceNo").val();
     var InvoiceType = $("#InvoiceType").val();
+    var ApproveInvoiceType = $("#ApproveInvoiceType").val();
+    var FromDate = $("#FromDate").val();
+    var ToDate = $("#ToDate").val();
     var action = $("#action").val();
     var IsIRN = $("#IsIRN").val();
     var trnSpaceCertificateGWID = $("#hdnIRNSpaceCertificateGWID").val();
@@ -16,9 +74,8 @@ function validateremarksForIRN() {
     }
     if (IsValid) {
         if (action == "approve" && IsIRN == "true") {
-            $.when(GenerateEInvoice(InvoiceId, InvoiceNo, InvoiceType)).done(function () {
-                var msg = IRNMsg.split("|")[0];
-                debugger;
+            $.when(GenerateEInvoice(InvoiceId, InvoiceNo, ApproveInvoiceType)).done(function () {
+                var msg = IRNMsg.split("|")[0];                
                 if (msg == "SUCCESS") {
                     if (InvoiceType == "bond") {
                         $.ajax({
@@ -26,7 +83,9 @@ function validateremarksForIRN() {
                             type: "GET",
                             dataType: "text",
                             async: false,
-                            success: function (data) { location.href = GetRootPath + "trnDashboard"; }
+                            success: function (data) {                                
+                                window.location = GetRootPath + "trnDashboard/Index/?FromDate=" + FromDate + "&ToDate=" + ToDate + "&InvoiceType=" + InvoiceType;
+                            }
                         });
                     }
                     else if (InvoiceType == "export") {
@@ -35,7 +94,9 @@ function validateremarksForIRN() {
                             type: "GET",
                             dataType: "text",
                             async: false,
-                            success: function (data) { location.href = GetRootPath + "trnDashboard"; }
+                            success: function (data) {
+                                window.location = GetRootPath + "trnDashboard/Index/?FromDate=" + FromDate + "&ToDate=" + ToDate + "&InvoiceType=" + InvoiceType;
+                            }
                         });
                     }
                     else if (InvoiceType == "empty") {
@@ -44,7 +105,9 @@ function validateremarksForIRN() {
                             type: "GET",
                             dataType: "text",
                             async: false,
-                            success: function (data) { location.href = GetRootPath + "trnDashboard"; }
+                            success: function (data) {
+                                window.location = GetRootPath + "trnDashboard/Index/?FromDate=" + FromDate + "&ToDate=" + ToDate + "&InvoiceType=" + InvoiceType;
+                            }
                         });
                     }
                     else if (InvoiceType == "misc") {
@@ -53,7 +116,9 @@ function validateremarksForIRN() {
                             type: "GET",
                             dataType: "text",
                             async: false,
-                            success: function (data) { location.href = GetRootPath + "trnDashboard"; }
+                            success: function (data) {
+                                window.location = GetRootPath + "trnDashboard/Index/?FromDate=" + FromDate + "&ToDate=" + ToDate + "&InvoiceType=" + InvoiceType;
+                            }
                         });
                     }
                     else if (InvoiceType == "creditnote") {
@@ -62,7 +127,9 @@ function validateremarksForIRN() {
                             type: "GET",
                             dataType: "text",
                             async: false,
-                            success: function (data) { location.href = GetRootPath + "trnDashboard"; }
+                            success: function (data) {
+                                window.location = GetRootPath + "trnDashboard/Index/?FromDate=" + FromDate + "&ToDate=" + ToDate + "&InvoiceType=" + InvoiceType;
+                            }
                         });
                     }
                     var btn = document.querySelector('#InvoiceApproveBtn');
@@ -72,67 +139,7 @@ function validateremarksForIRN() {
                     TosterAlert("error", "Error while Generating eInvoice : <br />" + IRNMsg.split('|')[1], "Error!");                    
                 }
             });
-        }
-        else {
-            if (InvoiceType == "bond") {
-                $.ajax({
-                    url: GetRootPath + "BondInvoice/UpdateStatus/" + InvoiceId + "?Remarks=" + txtRemarks,
-                    type: "GET",
-                    dataType: "text",
-                    async: false,
-                    success: function (data) {
-                        location.href = GetRootPath + "trnDashboard";
-                    }
-                });
-            }
-            else if (InvoiceType == "export") {
-                $.ajax({
-                    url: GetRootPath + "ExportInvoice/UpdateStatus/" + InvoiceId + "?Remarks=" + txtRemarks,
-                    type: "GET",
-                    dataType: "text",
-                    async: false,
-                    success: function (data) {
-                        location.href = GetRootPath + "trnDashboard";
-                    }
-                });
-            }
-            else if (InvoiceType == "empty") {
-                $.ajax({
-                    url: GetRootPath + "emptyInvoice/UpdateStatus/" + InvoiceId + "?Remarks=" + txtRemarks,
-                    type: "GET",
-                    dataType: "text",
-                    async: false,
-                    success: function (data) {
-                        location.href = GetRootPath + "trnDashboard";
-                    }
-                });
-            }
-            else if (InvoiceType == "misc") {
-                $.ajax({
-                    url: GetRootPath + "MiscInvoice/UpdateStatus/" + InvoiceId + "?Remarks=" + txtRemarks,
-                    type: "GET",
-                    dataType: "text",
-                    async: false,
-                    success: function (data) {
-                        location.href = GetRootPath + "trnDashboard";
-                    }
-                });
-            }
-            else if (InvoiceType == "creditnote") {
-                $.ajax({
-                    url: GetRootPath + "CreditNote/UpdateStatus/" + InvoiceId + "?Remarks=" + txtRemarks,
-                    type: "GET",
-                    dataType: "text",
-                    async: false,
-                    success: function (data) {
-                        location.href = GetRootPath + "trnDashboard";
-                    }
-                });
-            }
-
-            var btn = document.querySelector('#InvoiceApproveBtn');
-            btn.setAttribute('disabled', true);
-        }
+        }        
     }    
 }
 function GenerateEInvoice(InvoiceId, InvoiceNo, InvoiceType) {
@@ -141,8 +148,7 @@ function GenerateEInvoice(InvoiceId, InvoiceNo, InvoiceType) {
         type: "GET",
         dataType: "text",
         async: false,
-        success: function (data) {
-            debugger;
+        success: function (data) {           
             if (data != "") {
                 IRNMsg = data;
                 //if (data.split('|')[0] == "SUCCESS") {
@@ -157,8 +163,7 @@ function GenerateEInvoice(InvoiceId, InvoiceNo, InvoiceType) {
         }
     });
 }
-function ApproveInvoice(IsIRN, action, InvoiceId, InvoiceNo, InvoiceType, trnSpaceCertificateGWID) {
-    debugger;
+function ApproveInvoice(IsIRN, action, InvoiceId, InvoiceNo, InvoiceType, trnSpaceCertificateGWID) {    
     $("#txtRemarks1").val("");
     if (IsIRN == "true") {
         if (action == "approve") {
@@ -176,7 +181,7 @@ function ApproveInvoice(IsIRN, action, InvoiceId, InvoiceNo, InvoiceType, trnSpa
     }
     $("#InvoiceId").val(InvoiceId);
     $("#InvoiceNo").val(InvoiceNo);
-    $("#InvoiceType").val(InvoiceType);
+    $("#ApproveInvoiceType").val(InvoiceType);
     $("#action").val(action);
     $("#IsIRN").val(IsIRN);
     $("#hdnIRNSpaceCertificateGWID").val(trnSpaceCertificateGWID);
@@ -194,4 +199,74 @@ function DisplayError(ErrorMsg) {
 
     // Display in the div
     document.getElementById('output').innerHTML = outputHtml;
+}
+function ClosePopup() {    
+    var FromDate = $("#FromDate").val();
+    var ToDate = $("#ToDate").val();
+    var InvoiceType = $("#InvoiceType").val();
+    window.location = GetRootPath + "trnDashboard/Index/?FromDate=" + encodeURIComponent(FromDate) + "&ToDate=" + encodeURIComponent(ToDate) + "&InvoiceType=" + InvoiceType;
+}
+function SearchIRNData() {    
+    var FromDate = $("#FromDate").val();
+    var ToDate = $("#ToDate").val();
+    var InvoiceType = $("#InvoiceType").val();
+    var isvalid = true;
+    var Errormsg = "";
+    if (FromDate == "" || FromDate == undefined || FromDate == null) {
+        isvalid = false;
+        Errormsg += "Please Select From Date <br />";
+        $("#FromDate").addClass("redborder");
+    }
+    else {
+        $("#FromDate").removeClass("redborder");
+    }
+    if (ToDate == "" || ToDate == undefined || ToDate == null) {
+        isvalid = false;
+        Errormsg += "Please Select To Date <br />";
+        $("#ToDate").addClass("redborder");
+    }
+    else {
+        $("#ToDate").removeClass("redborder");
+    }
+    if ((InvoiceType.toLowerCase() == "select" || InvoiceType == "" || InvoiceType == undefined)) {
+
+        isvalid = false;
+        Errormsg += "Please Select Invoice Type <br />";
+        $("#InvoiceType").addClass("redborder");
+    }
+    else {
+        $("#InvoiceType").removeClass("redborder");
+    }
+    if (isvalid) {        
+        $.ajax({
+            url: GetRootPath + "trnDashboard/validateModel/?FromDate=" + FromDate + "&ToDate=" + ToDate,
+            type: "Post",
+            data: $("form").serialize(),
+            dataType: "text",
+            async: false,
+            success: function (data) {                
+                $(".redborder").removeClass("redborder");
+                if (data != "") {
+                    isvalid = false;
+                    var Errormsg = data.split("|")[0];
+                    var ErrorFields = data.split("|")[1].split(",");
+                    if (ErrorFields != null && ErrorFields.length > 0) {
+                        for (var Q = 0; Q < ErrorFields.length; Q++) {
+                            $("#spn_" + ErrorFields[Q]).text('');
+                            $("#spn_" + ErrorFields[Q]).next().addClass("redborder");
+                        }
+                    }
+                    if (Errormsg != "") {
+                        TosterAlert("error", Errormsg, "Required!");
+                    }
+                }
+                else{
+                    window.location = GetRootPath + "trnDashboard/Index/?FromDate=" + encodeURIComponent(FromDate) + "&ToDate=" + encodeURIComponent(ToDate) + "&InvoiceType=" + InvoiceType;
+                }
+            }
+        });        
+    }
+    else {
+        TosterAlert("error", Errormsg, "Required!");
+    }        
 }
