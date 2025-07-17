@@ -369,13 +369,13 @@
                                                 {
                                                     if (Model.dtCreditNoteDetails.Rows[i]["GSTTypeName"].ToString().ToUpper() == "REGISTERED")
                                                     {
-                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true','approve','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteID"]','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]','creditnote' ,'@Model.dtCreditNoteDetails.Rows[i]["InvoiceNumberID"]','@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]')">
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoiceCreditNote('true','approve','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteID"]','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]','creditnote' ,'@Model.dtCreditNoteDetails.Rows[i]["InvoiceNumberID"]','@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]')">
                                                             <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
                                                         </a>
                                                     }
                                                     else
                                                     {
-                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteID"]','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]','creditnote' ,'@Model.dtCreditNoteDetails.Rows[i]["InvoiceNumberID"]','@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]')">
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoiceCreditNote('false','approve','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteID"]','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]','creditnote' ,'@Model.dtCreditNoteDetails.Rows[i]["InvoiceNumberID"]','@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]')">
                                                             <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
                                                         </a>
                                                     }
@@ -723,13 +723,13 @@
                                                 {
                                                     if (Model.dtCreditNoteDetails.Rows[i]["GSTTypeName"].ToString().ToUpper() == "REGISTERED")
                                                     {
-                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('true','approve','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteID"]','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]','creditnote' ,'@Model.dtCreditNoteDetails.Rows[i]["InvoiceNumberID"]','@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]')">
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoiceCreditNote('true','approve','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteID"]','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]','creditnote' ,'@Model.dtCreditNoteDetails.Rows[i]["InvoiceNumberID"]','@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]')">
                                                             <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
                                                         </a>
                                                     }
                                                     else
                                                     {
-                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoice('false','approve','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteID"]','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]','creditnote' ,'@Model.dtCreditNoteDetails.Rows[i]["InvoiceNumberID"]','@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]')">
+                                                        <a data-toggle="modal" data-target="#myModalConfirmationWithEinvoicedashboard" onclick="return ApproveInvoiceCreditNote('false','approve','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteID"]','@Model.dtCreditNoteDetails.Rows[i]["CreditNoteNo"]','creditnote' ,'@Model.dtCreditNoteDetails.Rows[i]["InvoiceNumberID"]','@Model.dtCreditNoteDetails.Rows[i]["InvoiceType"]')">
                                                             <i title="Click to Approve" style=" font-size: large; cursor: pointer; vertical-align: middle;" class="fa fa-thumbs-o-up"></i>
                                                         </a>
                                                     }
@@ -782,7 +782,7 @@
                     @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>*@
-                    <a class="close" aria-label="Close" href="@Url.Action("Index","trnDashboard")"><span aria-hidden="true">×</span></a>
+                    <a class="close" aria-label="Close" onclick="ClosePopup()"><span aria-hidden="true">×</span></a>
                     <h4 class="modal-title">Confirmation</h4>
                 </div>
                 <div class="modal-body">

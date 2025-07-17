@@ -29,7 +29,7 @@ $(document).ready(function () {
             $("#MiscInvoice").show();
             $("#CreditNote").hide();
         }
-        else if (InvoiceType.toLowerCase() == "cnbond" || InvoiceType.toLowerCase() == "cnempty" || InvoiceType.toLowerCase() == "cnmisc") {
+        else if (InvoiceType.toLowerCase() == "cnbond" || InvoiceType.toLowerCase() == "cnempty" || InvoiceType.toLowerCase() == "cnmisc" || InvoiceType.toLowerCase() =="cnexport") {
             $("#bondInvoice").hide();
             $("#ExportInvoice").hide();
             $("#EmptyInvoice").hide();
@@ -121,7 +121,8 @@ function validateremarksForIRN() {
                             }
                         });
                     }
-                    else if (InvoiceType == "creditnote") {
+                    else if (InvoiceType.toLowerCase() == "cnbond" || InvoiceType.toLowerCase() == "cnempty" || InvoiceType.toLowerCase() == "cnmisc" || InvoiceType.toLowerCase() =="cnexport") {
+                        debugger;
                         $.ajax({
                             url: GetRootPath + "CreditNote/UpdateStatus/" + InvoiceId + "?Remarks=" + txtRemarks,
                             type: "GET",
@@ -132,8 +133,8 @@ function validateremarksForIRN() {
                             }
                         });
                     }
-                    var btn = document.querySelector('#InvoiceApproveBtn');
-                    btn.setAttribute('disabled', true);
+                    //var btn = document.querySelector('#InvoiceApproveBtn');
+                    //btn.setAttribute('disabled', true);
                 }
                 else {
                     TosterAlert("error", "Error while Generating eInvoice : <br />" + IRNMsg.split('|')[1], "Error!");                    
@@ -186,7 +187,29 @@ function ApproveInvoice(IsIRN, action, InvoiceId, InvoiceNo, InvoiceType, trnSpa
     $("#IsIRN").val(IsIRN);
     $("#hdnIRNSpaceCertificateGWID").val(trnSpaceCertificateGWID);
 }
-
+function ApproveInvoiceCreditNote(IsIRN, action, InvoiceId, InvoiceNo, InvoiceType, refInvoiceId, refInvoiceType) {
+    if (IsIRN == "true") {
+        if (action == "approve") {
+            $("#IRNTaxAlert").show();
+            $("#IRNAlert").hide();
+        }
+        else if (action == "unapprove") {
+            $("#IRNTaxAlert").hide();
+            $("#IRNAlert").show();
+        }
+    }
+    else {
+        $("#IRNTaxAlert").hide();
+        $("#IRNAlert").hide();
+    }
+    $("#InvoiceId").val(InvoiceId);
+    $("#InvoiceNo").val(InvoiceNo);
+    $("#ApproveInvoiceType").val(InvoiceType);
+    $("#action").val(action);
+    $("#IsIRN").val(IsIRN);
+    $("#hdnIRNReferenceInvoiceType").val(refInvoiceType);
+    $("#hdnIRNReferenceInvoiceId").val(refInvoiceId);
+}
 function DisplayError(ErrorMsg) {
     /*TosterAlert("error", ErrorMsg, "Error!");*/
     const input = ErrorMsg;
