@@ -1,5 +1,4 @@
 ﻿@model CFS.Models.ExcessCargoRemoval
-    @using System.Globalization;
 @{
     ViewBag.Title = "View Excess Cargo Removal";
     ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
@@ -35,14 +34,16 @@
                             </div>
                         </div>
                     }
-                    <div class="pull-right">
+                    <div class="pull-right" id="divBack">
                         <div style="display: inline-flex">
-                            <a href="@Url.Action("Index",CFS.Com.ClsCommon.Controller(), new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                            <a id="btnBack" href="@Url.Action("Index",CFS.Com.ClsCommon.Controller(), new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
                         </div>
                     </div>
                 </div>
                 <div class="box-body">
-
+                    @Html.HiddenFor(Model => Model.IsFinished)
+                    @Html.HiddenFor(Model => Model.LoginUser)
+                    @Html.HiddenFor(Model => Model.LoginUserID)
                     @if (Model.ExcessCargoRemovalID > 0)
                     {
                         @Html.HiddenFor(Model => Model.pagger.Search)
@@ -56,15 +57,10 @@
                             <div class="box-body">
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        @Html.LabelFor(Model => Model.SpaceCertificateNo)<span class="text-red">*</span>
-                                        @Html.TextBoxFor(Model => Model.SpaceCertificateNo, new { @id = "SpaceCertificateNo", @name = "SpaceCertificateNo", @class = "form-control", @placeholder = "SELECT SpaceCertificateNo", @readonly = "true" })
-                                        @Html.HiddenFor(Model => Model.trnSpaceCertificateGWID, new { @id = "trnSpaceCertificateGWID", @name = "trnSpaceCertificateGWID" })
+                                        @Html.LabelFor(Model => Model.trnDocumentNo)<span class="text-red">*</span>
+                                        @Html.TextBoxFor(Model => Model.trnDocumentNo, new { @id = "trnDocumentNo", @name = "trnDocumentNo", @class = "form-control", @placeholder = "SELECT trnDocumentNo", @readonly = "true" })
+                                        @Html.HiddenFor(Model => Model.trnDocumentID, new { @id = "trnDocumentID", @name = "trnDocumentID" })
                                     </div>
-                                </div>
-                                <div class="col-md-2">
-                                    @Html.LabelFor(Model => Model.BatchNo, new { @for = "BatchNo" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.BatchID, String.Empty, new { @id = "spn_BatchID", @class = "help-inline text-red" })
-                                    @Html.TextBoxFor(Model => Model.BatchNo, new { @id = "BatchNo", @name = "BatchNo", @class = "form-control", @placeholder = "Enter Batch", @readonly = "true" })
-                                    @Html.HiddenFor(Model => Model.BatchID, new { @id = "BatchID", @name = "BatchID" })
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
@@ -90,43 +86,48 @@
 
                             </div>
                         </div>
+                        if (Model.IsFinished)
+                        {
+                            <div class="col-md-12" id="IsApprovdone">
+                                <div class="box-body">
 
-                        <div class="col-md-12">
-                            <div class="box-body">
-
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        @Html.LabelFor(Model => Model.CheckedBy)
-                                        @Html.CheckBoxFor(Model => Model.CheckedByCheck, new { @id = "CheckedByCheck", @class = "form-control", @disabled = "disabled" })
-                                        @Html.TextBoxFor(Model => Model.CheckedBy, new { @id = "CheckedBy", @name = "CheckedBy", @class = "form-control", @placeholder = "Select/Enter Checked By", @readonly = "true" })
-                                        @Html.HiddenFor(Model => Model.CheckedById, new { @id = "CheckedById", @name = "CheckedById" })
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.CheckedBy)
+                                            @Html.CheckBoxFor(Model => Model.CheckedByCheck, new { @id = "CheckedByCheck", @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(Model => Model.CheckedBy, new { @id = "CheckedBy", @name = "CheckedBy", @class = "form-control", @placeholder = "Select/Enter Checked By", @readonly = "true" })
+                                            @Html.HiddenFor(Model => Model.CheckedById, new { @id = "CheckedById", @name = "CheckedById" })
+                                            @Html.HiddenFor(Model => Model.hdnCheckedByCheck, new { @id = "hdnCheckedByCheck", @name = "hdnCheckedByCheck" })
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        @Html.LabelFor(Model => Model.CheckedByRemarks)
-                                        @Html.TextBoxFor(Model => Model.CheckedByRemarks, new { @id = "CheckedByRemarks", @name = "CheckedByRemarks", @class = "form-control", @placeholder = "Enter Remarks", @readonly = "true" })
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.CheckedByRemarks)
+                                            @Html.TextBoxFor(Model => Model.CheckedByRemarks, new { @id = "CheckedByRemarks", @name = "CheckedByRemarks", @class = "form-control", @placeholder = "Enter Remarks", @readonly = "true" })
+                                        </div>
                                     </div>
-                                </div>
+                                    <div id="IsCheckedone">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                @Html.LabelFor(Model => Model.AcknowledgedBy)
+                                                @Html.CheckBoxFor(Model => Model.AcknowledgedByCheck, new { @id = "AcknowledgedByCheck", @class = "form-control", @disabled = "disabled" })
+                                                @Html.TextBoxFor(Model => Model.AcknowledgedBy, new { @id = "AcknowledgedBy", @name = "AcknowledgedBy", @class = "form-control", @placeholder = "Select/Enter Acknowledged By", @readonly = "true" })
+                                                @Html.HiddenFor(Model => Model.AcknowledgedById, new { @id = "AcknowledgedById", @name = "AcknowledgedById" })
+                                            </div>
+                                        </div>
 
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        @Html.LabelFor(Model => Model.AcknowledgedBy)
-                                        @Html.CheckBoxFor(Model => Model.AcknowledgedByCheck, new { @id = "AcknowledgedByCheck", @class = "form-control", @disabled = "disabled" })
-                                        @Html.TextBoxFor(Model => Model.AcknowledgedBy, new { @id = "AcknowledgedBy", @name = "AcknowledgedBy", @class = "form-control", @placeholder = "Select/Enter Acknowledged By", @readonly = "true" })
-                                        @Html.HiddenFor(Model => Model.AcknowledgedById, new { @id = "AcknowledgedById", @name = "AcknowledgedById" })
-                                    </div>
-                                </div>
-
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        @Html.LabelFor(Model => Model.AcknowledgedRemarks)
-                                        @Html.TextBoxFor(Model => Model.AcknowledgedRemarks, new { @id = "AcknowledgedRemarks", @name = "AcknowledgedRemarks", @class = "form-control", @placeholder = "Enter Remarks", @readonly = "true" })
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                @Html.LabelFor(Model => Model.AcknowledgedRemarks)
+                                                @Html.TextBoxFor(Model => Model.AcknowledgedRemarks, new { @id = "AcknowledgedRemarks", @name = "AcknowledgedRemarks", @class = "form-control", @placeholder = "Enter Remarks", @readonly = "true" })
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        }
+
 
                         <div class="col-md-12">
                             <div class="box-body">
@@ -152,7 +153,7 @@
             </div>
         </div>
     </div>
-    @if (Model.doaction == "view" && CFS.Com.ClsCommon.NocDatatable.Rows.Count > 0)
+    @if (Model.doaction == "view" && CFS.Com.ClsCommon.DocDatatable.Rows.Count > 0)
     {
         <div class="row">
 
@@ -167,11 +168,8 @@
                         <table id="NOC-detail" style="width:100%; white-space:nowrap;" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>LOT NO</th>
-                                    <th>Shiiping Bill No./BOE No.</th>
-                                    <th>Shiping Bill Date/BOE Date</th>
-                                    <th>Invoice No.</th>
-                                    <th>Invoice Date</th>
+                                    <th>BOE No.</th>
+                                    <th>BOE Date</th>
                                     <th>CHA/BROKER</th>
                                     <th>IMPORTER/PARTY</th>
                                     <th>BULK/NB STATUS</th>
@@ -189,63 +187,53 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @for (int i = 0; i < CFS.Com.ClsCommon.NocDatatable.Rows.Count; i++)
+                                @for (int i = 0; i < CFS.Com.ClsCommon.DocDatatable.Rows.Count; i++)
                                 {
-                                    Model.hdnBALPKGS = new decimal[(CFS.Com.ClsCommon.NocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.NocDatatable.Rows.Count % 10)))];
-                                    Model.hdnBALPIECES = new decimal[(CFS.Com.ClsCommon.NocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.NocDatatable.Rows.Count % 10)))];
-                                    Model.hdnBALWEIGHT = new decimal[(CFS.Com.ClsCommon.NocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.NocDatatable.Rows.Count % 10)))];
-                                    Model.RemovalPKGS = new decimal[(CFS.Com.ClsCommon.NocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.NocDatatable.Rows.Count % 10)))];
-                                    Model.RemovalPIECES = new decimal[(CFS.Com.ClsCommon.NocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.NocDatatable.Rows.Count % 10)))];
-                                    Model.RemovalWEIGHT = new decimal[(CFS.Com.ClsCommon.NocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.NocDatatable.Rows.Count % 10)))];
-                                    Model.hdntrnDocumentGWLotDetailsID = new decimal[(CFS.Com.ClsCommon.NocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.NocDatatable.Rows.Count % 10)))];
-                                    Model.ExcessCargoRemovalDetailsID = new int[(CFS.Com.ClsCommon.NocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.NocDatatable.Rows.Count % 10)))];
+                                    Model.hdnBALPKGS = new decimal[(CFS.Com.ClsCommon.DocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.DocDatatable.Rows.Count % 10)))];
+                                    Model.hdnBALPIECES = new decimal[(CFS.Com.ClsCommon.DocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.DocDatatable.Rows.Count % 10)))];
+                                    Model.hdnBALWEIGHT = new decimal[(CFS.Com.ClsCommon.DocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.DocDatatable.Rows.Count % 10)))];
+                                    Model.RemovalPKGS = new string[(CFS.Com.ClsCommon.DocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.DocDatatable.Rows.Count % 10)))];
+                                    Model.RemovalPIECES = new string[(CFS.Com.ClsCommon.DocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.DocDatatable.Rows.Count % 10)))];
+                                    Model.RemovalWEIGHT = new string[(CFS.Com.ClsCommon.DocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.DocDatatable.Rows.Count % 10)))];
+                                    Model.hdntrnDocumentLotDetailsID = new decimal[(CFS.Com.ClsCommon.DocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.DocDatatable.Rows.Count % 10)))];
+                                    Model.ExcessCargoRemovalDetailsID = new int[(CFS.Com.ClsCommon.DocDatatable.Rows.Count + (10 - (CFS.Com.ClsCommon.DocDatatable.Rows.Count % 10)))];
 
-                                    Model.hdnBALPKGS[i] = Convert.ToDecimal(CFS.Com.ClsCommon.NocDatatable.Rows[i]["BALPKG"]);
-                                    Model.hdnBALPIECES[i] = Convert.ToDecimal(CFS.Com.ClsCommon.NocDatatable.Rows[i]["BALPCS"]);
-                                    Model.hdnBALWEIGHT[i] = Convert.ToDecimal(CFS.Com.ClsCommon.NocDatatable.Rows[i]["BALWGT"]);
-                                    Model.hdntrnDocumentGWLotDetailsID[i] = Convert.ToInt32(CFS.Com.ClsCommon.NocDatatable.Rows[i]["trnDocumentGWLotDetailsID"]);
-                                    Model.ExcessCargoRemovalDetailsID[i] = Convert.ToInt32(CFS.Com.ClsCommon.NocDatatable.Rows[i]["ExcessCargoRemovalDetailsID"]);
-                                    Model.RemovalPKGS[i] = Convert.ToDecimal(CFS.Com.ClsCommon.NocDatatable.Rows[i]["RemovalPKGS"]);
-                                    Model.RemovalPIECES[i] = Convert.ToDecimal(CFS.Com.ClsCommon.NocDatatable.Rows[i]["RemovalPIECES"]);
-                                    Model.RemovalWEIGHT[i] = Convert.ToDecimal(CFS.Com.ClsCommon.NocDatatable.Rows[i]["RemovalWEIGHT"]);
+                                    Model.hdnBALPKGS[i] = Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["BALPKG"]);
+                                    Model.hdnBALPIECES[i] = Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["BALPCS"]);
+                                    Model.hdnBALWEIGHT[i] = Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["BALWGT"]);
+                                    Model.hdntrnDocumentLotDetailsID[i] = Convert.ToInt32(CFS.Com.ClsCommon.DocDatatable.Rows[i]["trnDocumentLotDetailsID"]);
+                                    Model.ExcessCargoRemovalDetailsID[i] = Convert.ToInt32(CFS.Com.ClsCommon.DocDatatable.Rows[i]["ExcessCargoRemovalDetailsID"]);
+                                    Model.RemovalPKGS[i] = Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["RemovalPKGS"]).ToString("0.00");
+                                    Model.RemovalPIECES[i] = Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["RemovalPIECES"]).ToString("0.00");
+                                    Model.RemovalWEIGHT[i] = Convert.ToDecimal(CFS.Com.ClsCommon.DocDatatable.Rows[i]["RemovalWEIGHT"]).ToString("0.00");
 
                                     <tr>
-                                        <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["LotNo"]</td>
-                                        <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["ShiipingBillNo"]</td>
-                                        @if (CFS.Com.ClsCommon.NocDatatable.Rows[i]["ShipingBillDate"] != null && CFS.Com.ClsCommon.NocDatatable.Rows[i]["ShipingBillDate"].ToString() != "")
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["BOENo"]</td>
+                                        @if (CFS.Com.ClsCommon.DocDatatable.Rows[i]["BOEDate"] != null && CFS.Com.ClsCommon.DocDatatable.Rows[i]["BOEDate"].ToString() != "")
                                         {
-                                            <td>@(Convert.ToDateTime(CFS.Com.ClsCommon.NocDatatable.Rows[i]["ShipingBillDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat))</td>
+                                            <td>@(Convert.ToDateTime(CFS.Com.ClsCommon.DocDatatable.Rows[i]["BOEDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat))</td>
                                         }
                                         else
                                         {
                                             <td></td>
                                         }
-                                        <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["InvoiceNumber"]</td>
-                                        @if (CFS.Com.ClsCommon.NocDatatable.Rows[i]["InvoiceDate"] != null && CFS.Com.ClsCommon.NocDatatable.Rows[i]["InvoiceDate"].ToString() != "")
-                                        {
-                                            <td>@(Convert.ToDateTime(CFS.Com.ClsCommon.NocDatatable.Rows[i]["InvoiceDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat))</td>
-                                        }
-                                        else
-                                        {
-                                            <td></td>
-                                        }
-                                        <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["CHAName"]</td>
-                                        <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["ImporterName"]</td>
-                                        <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["BULKSTATUS"]</td>
-                                        <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["CARGODESC"]</td>
-                                        <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["PACKAGETYPE"]</td>
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["CHAName"]</td>
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["ImporterName"]</td>
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["BULKSTATUS"]</td>
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["CARGODESC"]</td>
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["PACKAGETYPE"]</td>
                                         <td style="display:none;">@Html.HiddenFor(Model => Model.hdnBALPKGS[i], new { @id = "hdnBALPKGS_" + i, @style = "width: 50px;background:#eee", @readonly = "true" }) </td>
                                         <td style="display:none;">@Html.HiddenFor(Model => Model.hdnBALPIECES[i], new { @id = "hdnBALPIECES_" + i, @style = "width: 50px;background:#eee", @readonly = "true" }) </td>
                                         <td style="display:none;">@Html.HiddenFor(Model => Model.hdnBALWEIGHT[i], new { @id = "hdnBALWEIGHT_" + i, @style = "width: 50px;background:#eee", @readonly = "true" }) </td>
-                                        <td style="display:none;">@Html.HiddenFor(Model => Model.hdntrnDocumentGWLotDetailsID[i], new { @id = "hdntrnDocumentGWLotDetailsID_" + i, @style = "width: 50px;background:#eee", @readonly = "true" }) </td>
+                                        <td style="display:none;">@Html.HiddenFor(Model => Model.hdntrnDocumentLotDetailsID[i], new { @id = "hdntrnDocumentLotDetailsID_" + i, @style = "width: 50px;background:#eee", @readonly = "true" }) </td>
                                         <td style="display:none;">@Html.HiddenFor(Model => Model.ExcessCargoRemovalDetailsID[i], new { @id = "ExcessCargoRemovalDetailsID_" + i, @style = "width: 50px;background:#eee", @readonly = "true" }) </td>
-                                        <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["BALPKG"]</td>
-                                        <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["BALPCS"]</td>
-                                        <td>@CFS.Com.ClsCommon.NocDatatable.Rows[i]["BALWGT"]</td>
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["BALPKG"]</td>
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["BALPCS"]</td>
+                                        <td>@CFS.Com.ClsCommon.DocDatatable.Rows[i]["BALWGT"]</td>
 
-                                        <td align="right">@Html.TextBoxFor(Model => Model.RemovalPKGS[i], new { @id = "RemovalPKGS_" + i, @placeholder = "RemovalPKGS", @style = "width: 50px;", @onkeypress = "return isNumberWithTwoDecimal(event,'RemovalPKGS" + i + "')", @onblur = "checkitems('RemovalPKGS','" + i + "')", @disabled = "disabled" })</td>
-                                        <td align="right">@Html.TextBoxFor(Model => Model.RemovalPIECES[i], new { @id = "RemovalPIECES_" + i, @placeholder = "RemovalPIECES", @style = "width: 50px;", @onkeypress = "return isNumberWithTwoDecimal(event,'RemovalPIECES" + i + "')", @onblur = "checkitems('RemovalPIECES','" + i + "')", @disabled = "disabled" })</td>
-                                        <td align="right">@Html.TextBoxFor(Model => Model.RemovalWEIGHT[i], new { @id = "RemovalWEIGHT_" + i, @placeholder = "RemovalWEIGHT", @style = "width: 50px;", @onkeypress = "return isNumberWithTwoDecimal(event,'RemovalWEIGHT" + i + "')", @onblur = "checkitems('RemovalWEIGHT','" + i + "')", @disabled = "disabled" })</td>
+                                        <td align="right">@Html.TextBoxFor(Model => Model.RemovalPKGS[i], new { @id = "RemovalPKGS_" + i, @style = "width: 50px;", @onkeypress = "return isNumberWithTwoDecimal(event,'RemovalPKGS" + i + "')", @onblur = "checkitems('RemovalPKGS','" + i + "')", @disabled = "disabled" })</td>
+                                        <td align="right">@Html.TextBoxFor(Model => Model.RemovalPIECES[i], new { @id = "RemovalPIECES_" + i, @style = "width: 50px;", @onkeypress = "return isNumberWithTwoDecimal(event,'RemovalPIECES" + i + "')", @onblur = "checkitems('RemovalPIECES','" + i + "')", @disabled = "disabled" })</td>
+                                        <td align="right">@Html.TextBoxFor(Model => Model.RemovalWEIGHT[i], new { @id = "RemovalWEIGHT_" + i, @style = "width: 50px;", @onkeypress = "return isNumberWithTwoDecimal(event,'RemovalWEIGHT" + i + "')", @onblur = "checkitems('RemovalWEIGHT','" + i + "')", @disabled = "disabled" })</td>
 
                                     </tr>
                                 }
@@ -264,6 +252,5 @@
     var doaction = '@Model.doaction';
     var IsView = false;
 </script>
-
-<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trncargorepacking.js")"></script>
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/ExcessCargoRemoval.js")"></script>
 

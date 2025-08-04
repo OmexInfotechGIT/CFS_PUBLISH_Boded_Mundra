@@ -117,6 +117,10 @@
                                                 <a><i data-toggle="modal" data-target="#DeleteWorkOrder" onclick="DeleteReason('trnWorkOrderOut','@Model.MyDatatable.Rows[i]["trnWorkOrderOutID"]')" title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
                                             }
                                             <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", "trnWorkOrderOut", new { id = Model.MyDatatable.Rows[i]["trnWorkOrderOutID"], format = "pdf" })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                            @if ((Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsAdmin"])) && !Convert.ToBoolean(Model.MyDatatable.Rows[i]["IsTruckIn"]))
+                                            {
+                                                <a><i data-toggle="modal" data-target="#CancelWorkOrder" onclick="CancelReason('@Model.MyDatatable.Rows[i]["trnWorkOrderOutID"]')" title="Click to Cancel" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-times-circle"></i></a>
+                                            }
                                         </td>
                                     </tr>
                                 }
@@ -159,6 +163,36 @@
                 <!-- /.modal-dialog -->
             </div>
 
+            <div class="modal fade in" id="CancelWorkOrder" style="display: none; padding-right: 17px;">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            <h4 class="modal-title">Cancel Work Order</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row" style="padding:15px;">
+                                <div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            @Html.LabelFor(Model => Model.CancelReason, new { @for = "CancelReason" })  @Html.ValidationMessageFor(Model => Model.CancelReason, String.Empty, new { @id = "spn_CancelReason", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(Model => Model.CancelReason, new { @id = "CancelReason", @name = "CancelReason", @class = "form-control", @placeholder = "Enter Cancel Reason" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Clear</button>
+                            <button type="button" class="btn btn-danger pull-right margin-r-5" onclick="CancelWorkOrder();" id="Cancel">Cancel</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
 
         </div>
     </div>

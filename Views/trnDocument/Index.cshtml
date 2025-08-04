@@ -100,7 +100,7 @@
                                                 Icon = "glyphicon glyphicon-step-forward";
                                             }
                                         }
-                                        <a><i onclick="ChangeStatus('@Status.Trim()','@Model.MyDatatable.Rows[i]["trnDocumentID"]','@Model.MyDatatable.Rows[i]["StatusRemarks"]','@Model.MyDatatable.Rows[i]["HoldAgency"]','@Model.MyDatatable.Rows[i]["HoldAgencyID"]')" title="Click to Change status" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="@Icon"></i></a>
+                                        <a><i onclick="ChangeStatus('@Status.Trim()','@Model.MyDatatable.Rows[i]["trnDocumentID"]','@Model.MyDatatable.Rows[i]["StatusRemarks"]','@Model.MyDatatable.Rows[i]["HoldAgency"]','@Model.MyDatatable.Rows[i]["HoldAgencyID"]', '@Model.MyDatatable.Rows[i]["IsBilldone"]','@Model.MyDatatable.Rows[i]["TruckContainerArrival"]')" title="Click to Change status" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="@Icon"></i></a>
                                         @((Model.MyDatatable.Rows[i]["Status"].ToString() == "P") ? "Pending" : (Model.MyDatatable.Rows[i]["Status"].ToString() == "D") ? "Completed" : (Model.MyDatatable.Rows[i]["Status"].ToString() == "H") ? "Hold" : (Model.MyDatatable.Rows[i]["Status"].ToString() == "R") ? "Release" : "Cancelled")
 
                                     </td>
@@ -164,6 +164,8 @@
                                                     <input type="hidden" id="txtHoldAgencyID" name="txtHoldAgencyID" style="width:400px;" />
                                                     <span class="text-red" id="txtHoldAgencymessage" style="display:none;">Hold Agency is Required</span><br />
                                                     <input type="hidden" id="txttrnDocumentID" name="txttrnDocumentID" />
+                                                    <input type="hidden" id="txtIsBilldone" name="txtIsBilldone" />
+                                                    <input type="hidden" id="txtTruckContainerArrival" name="txtTruckContainerArrival" />
                                                     <label class="ReasonHideshow">Reason <span class="text-red">*</span></label>
                                                     <input type="text" id="txtreason" name="txtreason" class="form-control ReasonHideshow" style="width:400px;" />
                                                     <span class="text-red" id="txtErrormessage" style="display:none;">Reason is Required</span>

@@ -224,7 +224,7 @@
                                                 <td>@Srno</td>
                                                 <td>@Model.dtDuesCollection.Rows[i]["BOE No"]</td>
                                                 <td>@Model.dtDuesCollection.Rows[i]["NOCNo"]</td>
-                                                <td>@Convert.ToDateTime(Model.dtDuesCollection.Rows[i]["NOCDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat)</td>
+                                                <td>@(string.IsNullOrEmpty(Convert.ToString(Model.dtDuesCollection.Rows[i]["NOCDate"])) ? "" : Convert.ToDateTime(Model.dtDuesCollection.Rows[i]["NOCDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat))</td>
                                                 <td>@Model.dtDuesCollection.Rows[i]["Type"]</td>
                                             </tr>
                                             if (i == 5)
@@ -383,7 +383,7 @@
                                             <td>@SrNo</td>
                                             <td>@Model.dtDuesCollection.Rows[i]["BOE No"]</td>
                                             <td>@Model.dtDuesCollection.Rows[i]["NOCNo"]</td>
-                                            <td>@Convert.ToDateTime(Model.dtDuesCollection.Rows[i]["NOCDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat)</td>
+                                            <td>@(string.IsNullOrEmpty(Convert.ToString(Model.dtDuesCollection.Rows[i]["NOCDate"])) ? "" : Convert.ToDateTime(Model.dtDuesCollection.Rows[i]["NOCDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat))</td>
                                             <td>@Model.dtDuesCollection.Rows[i]["Type"]</td>
                                         </tr>
                                     }

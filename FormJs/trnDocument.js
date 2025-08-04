@@ -952,7 +952,26 @@ function EditLotdetails(ID, IsLotInvoiceCreated) {
         $("#SpaceCerificateIssuedTo").css("pointer-events", "");
         $("#SpaceCerificateIssuedTo").css("background-color", "");
     }
-    
+
+    if (parseInt($(`#IsBalAndNOCLive_${ID}`).text()) == 1) {
+
+        $("#EnhanceAV").prop("readonly", false);
+        $("#EnhancedDV").prop("readonly", false);
+
+        $("#ENHANCEDAVOrDV").prop("disabled", false);
+
+        $("#ENHANCEDAVOrDV").css("pointer-events", "");
+        $("#ENHANCEDAVOrDV").css("background-color", "#fff");
+
+        var ENHANCEDAVOrDV = $("#ENHANCEDAVOrDV").val();
+        if (ENHANCEDAVOrDV == "No") {
+            $("#EnhanceAV").val("0");
+            $("#EnhancedDV").val("0");
+            $("#EnhanceAV").prop("readonly", true);
+            $("#EnhancedDV").prop("readonly", true);
+        }
+    }
+
 
 }
 function ClearLotDetails() {
@@ -1104,7 +1123,7 @@ function ClearLotDetails() {
 }
 
 
-function ChangeStatus(status, MstrDocumentID, StatusRemarks, HoldAgency, HoldAgencyID) {
+function ChangeStatus(status, MstrDocumentID, StatusRemarks, HoldAgency, HoldAgencyID, IsBilldone, TruckContainerArrival) {
     $("#hdnactualStatus").val(status);
     if (status == "D") {
         $("#ddlStatus option[value='C']").remove();
@@ -1122,6 +1141,8 @@ function ChangeStatus(status, MstrDocumentID, StatusRemarks, HoldAgency, HoldAge
         $("#ChangeStatus").modal("show");
         $("#ddlStatus").val(status);
         $("#txttrnDocumentID").val(MstrDocumentID);
+        $("#txtIsBilldone").val(IsBilldone);
+        $("#txtTruckContainerArrival").val(TruckContainerArrival);
         ReasonHideshow(status);
         $("#txtreason").val(StatusRemarks);
         $("#txtHoldAgency").val(HoldAgency);
@@ -1150,6 +1171,11 @@ function ReasonHideshow(status) {
         $("#txtErrormessage").hide();
         $("#txtHoldAgencymessage").hide();
     }
+
+    if ($("#txtIsBilldone").val() == "0" || $("#txtTruckContainerArrival").val() != "0") {
+        $('#ddlStatus option[value="C"]').remove();
+    }
+
 }
 
 function validateReason() {

@@ -491,3 +491,51 @@ function CheckTruckInUsed() {
         }
     });
 }
+function CancelReason(ID) {
+    if (ID != "" && ID != null && ID != undefined) {
+        $("#CancelReason").val('');
+        $("#trnWorkOrderOutID").val(ID);
+    }
+}
+function CancelWorkOrder() {
+    debugger;
+    var CancelReason = $("#CancelReason").val();
+    var isvalid = true;
+    $.ajax({
+        url: GetRootPath + "trnWorkOrderOut/validateCancelModel/?CancelReason=" + CancelReason,
+        type: "Post",
+        dataType: "text",
+        async: false,
+        success: function (data) {
+            $(".redborder").removeClass("redborder");
+            if (data != "") {
+                isvalid = false;
+                var Errormsg = data.split("|")[0];
+                var ErrorFields = data.split("|")[1].split(",");
+
+                if (ErrorFields != null && ErrorFields.length > 0) {
+                    for (var Q = 0; Q < ErrorFields.length; Q++) {
+                        $("#spn_" + ErrorFields[Q]).text('');
+                        $("#spn_" + ErrorFields[Q]).next().addClass("redborder");
+                    }
+                }
+                if (Errormsg != "") {
+                    TosterAlert("error", Errormsg, "Required!");
+                }
+            }
+            else {
+                var ID = $("#trnWorkOrderOutID").val();
+                $.ajax({
+                    url: GetRootPath + "trnWorkOrderOut/Cancel/" + ID + "?Reason=" + CancelReason + "",
+                    type: "GET",
+                    dataType: "text",
+                    async: false,
+                    success: function (data) {
+                        $('#CancelWorkOrder').modal('hide');
+                        location.reload();
+                    }
+                });
+            }
+        }
+    });
+}

@@ -813,6 +813,7 @@
                                         @if (Model.MySubDatatable != null && Model.MySubDatatable.Rows.Count > 0)
                                         {
                                             decimal TotalPKGS = 0, TotalPieces = 0, TotalWeight = 0, TotalAssesableValue = 0, TotalDutyValue = 0, TotalEnhAssesableValue = 0, TotalEnhDutyValue = 0;
+                                            int IsBalAndNOCLive = 0;
                                             for (int i = 0; i < Model.MySubDatatable.Rows.Count; i++)
                                             {
                                                 if (!string.IsNullOrEmpty(Convert.ToString(Model.MySubDatatable.Rows[i]["NOOFPKGS"])))
@@ -892,9 +893,14 @@
                                                 {
                                                     GateInDate = Convert.ToDateTime(Model.MySubDatatable.Rows[i]["GateInDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat, CultureInfo.InvariantCulture);
                                                 }
+                                                if (!string.IsNullOrEmpty(Model.MySubDatatable.Rows[i]["IsBalAndNOCLive"].ToString())) {
+                                                    IsBalAndNOCLive = Convert.ToInt32(Model.MySubDatatable.Rows[i]["IsBalAndNOCLive"]);
+                                                }
+
                                                 Model.SumOfAssessedValue = TotalAssesableValue + TotalEnhAssesableValue;
                                                 Model.TotalDutyvalue = TotalDutyValue + TotalEnhDutyValue;
                                         <tr>
+                                            <td style="display:none"><span id="IsBalAndNOCLive_@Model.MySubDatatable.Rows[i]["trnDocumentLotDetailsID"]">@Model.MySubDatatable.Rows[i]["IsBalAndNOCLive"]</span></td>
                                             <td style="display:none"><span id="IsExBondDone_@Model.MySubDatatable.Rows[i]["trnDocumentLotDetailsID"]">@Model.MySubDatatable.Rows[i]["IsExBondDone"]</span></td>
                                             <td style="display:none"><span id="trnDocumentLotDetailsID_@Model.MySubDatatable.Rows[i]["trnDocumentLotDetailsID"]">@Model.MySubDatatable.Rows[i]["trnDocumentLotDetailsID"]</span></td>
                                             <td style="display:none"><span id="IMPORTERID_@Model.MySubDatatable.Rows[i]["trnDocumentLotDetailsID"]">@Model.MySubDatatable.Rows[i]["IMPORTERID"]</span></td>
@@ -975,7 +981,7 @@
                                             <td style="display:none"><span id="IsTruckWoD_@Model.MySubDatatable.Rows[i]["trnDocumentLotDetailsID"]">@Convert.ToBoolean(Model.MySubDatatable.Rows[i]["IsTruckWoDone"])</span></td>
                                             <td class="freezeLastColumnwithWhite">
                                                 @if (Convert.ToInt32(Model.MySubDatatable.Rows[i]["IsBondInvoice"]) == 0 || Convert.ToInt32(Model.MySubDatatable.Rows[i]["CPValidUptoIsExpired"]) == 1
-                                                    || Convert.ToDecimal(Model.MySubDatatable.Rows[i]["BalWt"]) > 1) //Convert.ToInt32(Model.MySubDatatable.Rows[i]["IsInUsed"]) == 0 || Convert.ToInt32(Model.MySubDatatable.Rows[i]["IsAllWorkOrderDone"]) == 0 || Convert.ToInt32(Model.MySubDatatable.Rows[i]["IsTruckWoDone"]) != 0
+                                                    || Convert.ToDecimal(Model.MySubDatatable.Rows[i]["BalWt"]) > 1 || IsBalAndNOCLive == 1) //Convert.ToInt32(Model.MySubDatatable.Rows[i]["IsInUsed"]) == 0 || Convert.ToInt32(Model.MySubDatatable.Rows[i]["IsAllWorkOrderDone"]) == 0 || Convert.ToInt32(Model.MySubDatatable.Rows[i]["IsTruckWoDone"]) != 0
                                                 {
                                                     <a onclick="EditLotdetails('@Model.MySubDatatable.Rows[i]["trnDocumentLotDetailsID"]','@Convert.ToInt32(Model.MySubDatatable.Rows[i]["IsLotInvoiceCreated"])')"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
                                                 }

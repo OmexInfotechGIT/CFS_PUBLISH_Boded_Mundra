@@ -1,0 +1,2009 @@
+﻿--Name : DHRUVI
+--Date : 02/01/24
+IF NOT EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE Table_name = 'trnContainerDestuffing_History' and Column_name = 'trnContainerDestuffWorkOrderDetailsID')
+BEGIN
+	ALTER table [CFS_BONDED_WAREHOUSE_History].[dbo].trnContainerDestuffing_History ADD trnContainerDestuffWorkOrderDetailsID INT NULL
+END
+-------------------------------------
+IF NOT EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE Table_name = 'trnContainerDestuffing' and Column_name = 'trnContainerDestuffWorkOrderDetailsID')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnContainerDestuffing ADD trnContainerDestuffWorkOrderDetailsID INT NULL
+END
+
+------------------------------------------------------------------------
+use [CFS_BONDED_WAREHOUSE]
+GO
+IF EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].sys.triggers WHERE [name] = 'TGR_trnContainerDestuffingGW' AND [type] = 'TR')
+BEGIN
+	  DROP TRIGGER [dbo].[TGR_trnContainerDestuffingGW]
+END
+
+IF EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].sys.triggers WHERE [name] = 'TGR_trnContainerDestuffingItems' AND [type] = 'TR')
+BEGIN		
+	  DROP TRIGGER  [dbo].[TGR_trnContainerDestuffingItems] on database 
+END
+GO
+------------------
+IF NOT EXISTS (select * from [Admin].[GeneralSettings] where [StrKey] = 'EXBND' and flagdeleted = 0)
+BEGIN
+		INSERT INTO [Admin].[GeneralSettings]
+		([StrKey],[StrValue],[ModuleName],[Description],[Createdby],[CreatedDate])
+		VALUES
+		('EXBND','EXDOE/##FINANCIALYEAR##/','Prefix','EX-BOND DOCUMENT ENTRY','1',[dbo].[GetCurrentDatetime]())
+END
+GO
+-----------
+IF NOT EXISTS (select * from [Admin].[GeneralSettings] where [StrKey] = 'EXBRF' and flagdeleted = 0)
+BEGIN
+		INSERT INTO [Admin].[GeneralSettings]
+		([StrKey],[StrValue],[ModuleName],[Description],[Createdby],[CreatedDate])
+		VALUES
+		('EXBRF','EXBRF-','Prefix','EX-BOND Reference No','1',[dbo].[GetCurrentDatetime]())
+END
+GO
+--------------
+update  admin.pagemenu set controller= 'trnEmptyContainerOutWO' where controller= 'trnEmptyContainerOutWOGW'
+GO
+--------
+IF (EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND  TABLE_NAME = 'trnEmptyContainerOutWOGW'))
+BEGIN
+	drop table trnEmptyContainerOutWOGW
+END
+GO
+------
+IF (EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND  TABLE_NAME = 'trnEmptyContainerOutWOGWDetails'))
+BEGIN
+	drop table trnEmptyContainerOutWOGWDetails
+END
+GO
+------------------
+--Name :DHRUVI
+--Date :: 05/01/2024
+IF NOT EXISTS (select * from [Admin].[GeneralSettings] where [StrKey] = 'CDWO' and flagdeleted = 0)
+BEGIN
+		INSERT INTO [Admin].[GeneralSettings]
+		([StrKey],[StrValue],[ModuleName],[Description],[Createdby],[CreatedDate])
+		VALUES
+		('CDWO','CDWO/##FINANCIALYEAR##/','Prefix','Container Destuffing WorkOrder','1',[dbo].[GetCurrentDatetime]())
+END
+GO
+-------------------------------------
+
+
+IF NOT EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE Table_name = 'trnWorkOrderOutLotDetails' and Column_name = 'TransactionType')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnWorkOrderOutLotDetails ADD TransactionType varchar(255) NULL
+END
+
+IF NOT EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE Table_name = 'trnWorkOrderOutLotDetails_History' and Column_name = 'TransactionType')
+BEGIN
+	ALTER table [CFS_BONDED_WAREHOUSE_History].[dbo].trnWorkOrderOutLotDetails_History ADD TransactionType varchar(255) NULL
+END
+
+
+IF NOT EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE Table_name = 'trnWorkOrderOutLotDetails' and Column_name = 'trnExBondDocumentEntryDetailsID')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnWorkOrderOutLotDetails ADD trnExBondDocumentEntryDetailsID int NULL
+END
+
+IF NOT EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE Table_name = 'trnWorkOrderOutLotDetails_History' and Column_name = 'trnExBondDocumentEntryDetailsID')
+BEGIN
+	ALTER table [CFS_BONDED_WAREHOUSE_History].[dbo].trnWorkOrderOutLotDetails_History ADD trnExBondDocumentEntryDetailsID int NULL
+END
+-------
+--nisha:08-01-2024
+ ---------------------------
+ update admin.PageMenu set controller= 'trnEmptyTruckGateIn' where controller= 'trnEmptyTruckGateIn'
+GO
+----------
+IF EXISTS (select * from INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME like '%trnexportstufingwoGWContainerDetailsID%')
+BEGIN
+	 EXEC sp_rename 'dbo.trnexportmovementWOContainerDetails.trnexportstufingwoGWContainerDetailsID', 'trnexportstufingwoContainerDetailsID', 'COLUMN';
+END
+GO
+----------------------
+
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnEmptyTruckGateIn' AND ParentID=157)
+BEGIN
+UPDATE [Admin].[PageMenu] SET Controller='trnEmptyTruckGateInep'  WHERE ParentID=157 and Controller = 'trnEmptyTruckGateIn'
+END
+GO
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnEmptyTruckGateIn' AND ParentID	=152)
+BEGIN
+UPDATE [Admin].[PageMenu] SET Controller='trnEmptyTruckGateInlco' WHERE ParentID=152 and Controller = 'trnEmptyTruckGateIn'
+END
+GO
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnEmptyTruckGateIn' AND ParentID=148)
+BEGIN
+UPDATE [Admin].[PageMenu] SET Controller='trnEmptyTruckGateInco'  WHERE ParentID=148 and Controller = 'trnEmptyTruckGateIn'
+END
+GO
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnEmptyTruckGateIn' AND ParentID=147)
+BEGIN
+UPDATE [Admin].[PageMenu] SET Controller='trnEmptyTruckGateIneco' WHERE ParentID=147 and Controller = 'trnEmptyTruckGateIn'
+END
+GO
+---------------
+ update admin.PageMenu set controller= 'trnWeighmentCashInvoice' where controller= 'trnEmptyTruckGateIn'
+GO
+---
+
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnWeighmentCashInvoice' AND ParentID=141)
+BEGIN
+UPDATE [Admin].[PageMenu] SET Controller='trnWeighmentCashInvoiceCI'  WHERE ParentID=141 and Controller = 'trnWeighmentCashInvoice'
+END
+GO
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnWeighmentCashInvoice' AND ParentID=142)
+BEGIN
+UPDATE [Admin].[PageMenu] SET Controller='trnWeighmentCashInvoiceLCI' WHERE ParentID=142 and Controller = 'trnWeighmentCashInvoice'
+END
+GO
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnWeighmentCashInvoice' AND ParentID=148)
+BEGIN
+UPDATE [Admin].[PageMenu] SET Controller='trnWeighmentCashInvoiceCO'  WHERE ParentID=148 and Controller = 'trnWeighmentCashInvoice'
+END
+GO
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnWeighmentCashInvoice' AND ParentID=152)
+BEGIN
+UPDATE [Admin].[PageMenu] SET Controller='trnWeighmentCashInvoiceLCO' WHERE ParentID=152 and Controller = 'trnWeighmentCashInvoice' 
+END
+GO
+-------------------
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnWeighmentSlip' AND ParentID=141)
+BEGIN
+UPDATE [Admin].[PageMenu] SET Controller='trnWeighmentSlipCI'  WHERE ParentID=141 and Controller = 'trnWeighmentSlip'
+END
+GO
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnWeighmentSlip' AND ParentID=142)
+BEGIN
+UPDATE [Admin].[PageMenu] SET Controller='trnWeighmentSlipLCI' WHERE ParentID=142 and Controller = 'trnWeighmentSlip'
+END
+GO
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnWeighmentSlip' AND ParentID=148)
+BEGIN
+UPDATE [Admin].[PageMenu] SET Controller='trnWeighmentSlipCO'  WHERE ParentID=148 and Controller = 'trnWeighmentSlip'
+END
+GO
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnWeighmentSlip' AND ParentID=152)
+BEGIN
+UPDATE [Admin].[PageMenu] SET Controller='trnWeighmentSlipLCO' WHERE ParentID=152 and Controller = 'trnWeighmentSlip' 
+END
+GO
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnWeighmentSlip' AND ParentID=157)
+BEGIN
+UPDATE [Admin].[PageMenu] SET Controller='trnWeighmentSlipEP' WHERE ParentID=157 and Controller = 'trnWeighmentSlip' 
+END
+GO
+-----------------
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnEmptyTruckOutWO' AND PageMenuID=141)
+BEGIN
+UPDATE [Admin].PageMenu  SET Controller='trnEmptyTruckOutWOCI' WHERE PageMenuID=141 and Controller = 'trnEmptyTruckOutWO'
+END
+GO
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnEmptyTruckOutWO' AND PageMenuID=142)
+BEGIN
+UPDATE [Admin].PageMenu  SET Controller='trnEmptyTruckOutWOLCI' WHERE PageMenuID=142 and Controller = 'trnEmptyTruckOutWO'
+END
+GO
+---------------------------
+IF EXISTS (select * from INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME like '%trnexportstufingwoGWContainerDetailsID%')
+BEGIN
+	 EXEC sp_rename 'dbo.trnexportmovementWOContainerDetails_history.trnexportstufingwoGWContainerDetailsID', 'trnexportstufingwoContainerDetailsID', 'COLUMN';
+END
+GO
+-------------------
+IF NOT EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE Table_name = 'trnCargoTruckOutwardCumGatepassDetails' and Column_name = 'trnExBondDocumentEntryDetailsID')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[DBO].[trnCargoTruckOutwardCumGatepassDetails] ADD trnExBondDocumentEntryDetailsID int NULL
+END
+GO
+-------------------
+IF NOT EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE Table_name = 'trnCargoTruckOutwardCumGatepassDetails_History' and Column_name = 'trnExBondDocumentEntryDetailsID')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[DBO].[trnCargoTruckOutwardCumGatepassDetails_history] ADD trnExBondDocumentEntryDetailsID int NULL
+END
+GO
+-------------------
+IF NOT EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE Table_name = 'trnExportCLPBOEItems' and Column_name = 'trnExBondDocumentEntryDetailsID')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[DBO].[trnExportCLPBOEItems] ADD trnExBondDocumentEntryDetailsID int NULL
+END
+GO
+-------------------
+IF NOT EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE Table_name = 'trnExportCLPBOEItems_History' and Column_name = 'trnExBondDocumentEntryDetailsID')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[DBO].[trnExportCLPBOEItems_history] ADD trnExBondDocumentEntryDetailsID int NULL
+END
+GO
+IF NOT EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE Table_name = 'trnCargoTruckOutwardCumGatepassDetails_History' and Column_name = 'trnDestuffingID')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[DBO].[trnCargoTruckOutwardCumGatepassDetails_History] ADD trnDestuffingID int NULL
+END
+GO
+-------------------
+IF NOT EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE Table_name = 'trnCargoTruckOutwardCumGatepassDetails_History' and Column_name = 'Type')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[DBO].[trnCargoTruckOutwardCumGatepassDetails_History] ADD Type varchar(1) NULL
+END
+GO
+-------------------
+IF EXISTS (select * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME like '%trnEmptyTruckGateInEmptyID%' and TABLE_NAME = 'trnEmptyContainerOutGatePassDetails')
+BEGIN
+USE [CFS_BONDED_WAREHOUSE]
+	 EXEC sp_rename 'dbo.trnEmptyContainerOutGatePassDetails.trnEmptyTruckGateInEmptyID', 'trnEmptyContainerOutWODetailsID', 'COLUMN';
+	 USE [CFS_BONDED_WAREHOUSE]
+END
+GO
+-------------------
+IF EXISTS (select * from [CFS_BONDED_WAREHOUSE_History].INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME like '%trnEmptyTruckGateInEmptyID%' and TABLE_NAME = 'trnEmptyContainerOutGatePassDetails_History')
+BEGIN
+	USE [CFS_BONDED_WAREHOUSE_History]
+	 EXEC sp_rename 'dbo.trnEmptyContainerOutGatePassDetails_History.trnEmptyTruckGateInEmptyID', 'trnEmptyContainerOutWODetailsID', 'COLUMN';
+	 USE [CFS_BONDED_WAREHOUSE]
+END
+GO
+--------------
+update  admin.pagemenu set controller= 'trnLoadedContainerOutWO' where controller= 'trnLoadedContainerOutWOGW'
+GO
+---------------------
+IF EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE_History].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnLoadedContainerOutWOGW_History')
+BEGIN
+	USE [CFS_BONDED_WAREHOUSE_History]
+	DROP TABLE 	[CFS_BONDED_WAREHOUSE_History].[dbo].[trnLoadedContainerOutWOGW_History]
+	USE [CFS_BONDED_WAREHOUSE]
+END
+GO
+---------------------
+IF EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE_History].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnLoadedContainerOutWOGWDetails_History')
+BEGIN
+	USE [CFS_BONDED_WAREHOUSE_History]
+	DROP TABLE 	[dbo].[trnLoadedContainerOutWOGWDetails_History]
+	USE [CFS_BONDED_WAREHOUSE]
+END
+GO
+--------------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnLoadedContainerOutWODetails' and COLUMN_NAME = 'trnExBondDocumentEntryDetailsID')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE].[DBO].[trnLoadedContainerOutWODetails] ADD [trnExBondDocumentEntryDetailsID] int NULL
+END
+GO
+--------------------
+UPDATE Admin.GeneralSettings set StrValue = 'NOC/##FINANCIALYEAR##/' where StrKey = 'TRNDO'
+GO
+-----------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trndocument' and COLUMN_NAME = 'ExpectedDateWH')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE].[DBO].[trndocument] ADD ExpectedDateWH DATETIME NULL
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trndocument' and COLUMN_NAME = 'ExpectedReqPeriodInWH')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE].[DBO].[trndocument] ADD ExpectedReqPeriodInWH INT NULL
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trndocument' and COLUMN_NAME = 'AdditionalArea')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE].[DBO].[trndocument] ADD AdditionalArea decimal(18,2) NULL
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trndocument' and COLUMN_NAME = 'AreaRequired')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE].[DBO].[trndocument] ADD AreaRequired decimal(18,2) NULL
+END
+GO
+--------------
+IF EXISTS (select * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME like '%TotalSpace%' and TABLE_NAME = 'trndocument')
+BEGIN
+	 EXEC sp_rename 'dbo.trndocument.TotalSpace', 'TotalArea', 'COLUMN';
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trndocument' and COLUMN_NAME = 'PortLoading')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE].[DBO].[trndocument] ADD PortLoading varchar(max) NULL
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trndocument' and COLUMN_NAME = 'Consolidator')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE].[DBO].[trndocument] ADD Consolidator varchar(max) NULL
+END
+GO
+-----------------------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trndocument' and COLUMN_NAME = 'ConsolidatorID')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE].[DBO].[trndocument] ADD ConsolidatorID INT null
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trndocument' and COLUMN_NAME = 'Consolidator')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE].[DBO].[trndocument] ADD CHAPerson varchar(max) NULL
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trndocument' and COLUMN_NAME = 'CHACellNo')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE].[DBO].[trndocument] ADD CHACellNo varchar(max) NULL
+END
+GO
+--------------
+-----------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE_History].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocument_history' and COLUMN_NAME = 'ExpectedDateWH')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE_History].[DBO].[trnDocument_history] ADD ExpectedDateWH DATETIME NULL
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE_History].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocument_history' and COLUMN_NAME = 'ExpectedReqPeriodInWH')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE_History].[DBO].[trnDocument_history] ADD ExpectedReqPeriodInWH INT NULL
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE_History].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocument_history' and COLUMN_NAME = 'AdditionalArea')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE_History].[DBO].[trnDocument_history] ADD AdditionalArea decimal(18,2) NULL
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE_History].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocument_history' and COLUMN_NAME = 'AreaRequired')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE_History].[DBO].[trnDocument_history] ADD AreaRequired decimal(18,2) NULL
+END
+GO
+--------------
+IF EXISTS (select * from [CFS_BONDED_WAREHOUSE_History].INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME like '%TotalSpace%' and TABLE_NAME = 'trnDocument_history')
+BEGIN
+	 USE [CFS_BONDED_WAREHOUSE_History]
+	 EXEC sp_rename 'dbo.trnDocument_history.TotalSpace', 'TotalArea', 'COLUMN';
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE_History].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocument_history' and COLUMN_NAME = 'PortLoading')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE_History].[DBO].[trnDocument_history] ADD PortLoading varchar(max) NULL
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE_History].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocument_history' and COLUMN_NAME = 'Consolidator')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE_History].[DBO].[trnDocument_history] ADD Consolidator varchar(max) NULL
+END
+GO
+-----------------------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE_History].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocument_history' and COLUMN_NAME = 'ConsolidatorID')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE_History].[DBO].[trnDocument_history] ADD ConsolidatorID INT null
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE_History].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocument_history' and COLUMN_NAME = 'Consolidator')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE_History].[DBO].[trnDocument_history] ADD CHAPerson varchar(max) NULL
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE_History].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocument_history' and COLUMN_NAME = 'CHACellNo')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE_History].[DBO].[trnDocument_history] ADD CHACellNo varchar(max) NULL
+END
+GO
+--------------
+USE CFS_BONDED_WAREHOUSE
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocumentLotDetails' and COLUMN_NAME = 'NOCDateandTime')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE].[DBO].[trnDocumentLotDetails] ADD NOCDateandTime datetime NULL
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocumentLotDetails' and COLUMN_NAME = 'NOCValidFrom')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE].[DBO].[trnDocumentLotDetails] ADD NOCValidFrom DateTime NULL
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocumentLotDetails' and COLUMN_NAME = 'NOCValidTo')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE].[DBO].[trnDocumentLotDetails] ADD NOCValidTo Datetime NULL
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocumentLotDetails' and COLUMN_NAME = 'LicenceNo')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE].[DBO].[trnDocumentLotDetails] ADD LicenceNo varchar(max) NULL
+END
+GO
+-------------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE_History].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocumentLotDetails_History' and COLUMN_NAME = 'NOCDateandTime')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE_History].[DBO].[trnDocumentLotDetails_History] ADD NOCDateandTime datetime NULL
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE_History].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocumentLotDetails_History' and COLUMN_NAME = 'NOCValidFrom')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE_History].[DBO].[trnDocumentLotDetails_History] ADD NOCValidFrom DateTime NULL
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE_History].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocumentLotDetails_History' and COLUMN_NAME = 'NOCValidTo')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE_History].[DBO].[trnDocumentLotDetails_History] ADD NOCValidTo Datetime NULL
+END
+GO
+--------------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE_History].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocumentLotDetails_History' and COLUMN_NAME = 'LicenceNo')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE_History].[DBO].[trnDocumentLotDetails_History] ADD LicenceNo varchar(max) NULL
+END
+GO
+--------------
+USE CFS_BONDED_WAREHOUSE
+GO
+--------
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocument' and COLUMN_NAME = 'CHAPerson')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE].[DBO].[trnDocument] ADD CHAPerson  VARCHAR(MAX) NULL
+END
+GO
+IF NOT EXISTS(SELECT * from [CFS_BONDED_WAREHOUSE_History].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME ='trnDocument_history' and COLUMN_NAME = 'CHAPerson')
+BEGIN
+	ALTER TABLE	[CFS_BONDED_WAREHOUSE_History].[DBO].[trnDocument_history] ADD CHAPerson VARCHAR(MAX) NULL
+END
+GO
+
+------------------------------------------------------
+----------------------------------------------------
+--Name : DHRUVI
+--Date: 09/01/2024
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnExportDocumentDeclarationGW' AND PageMenuID=158)
+BEGIN
+UPDATE [CFS_BONDED_WAREHOUSE].[Admin].PageMenu  SET Controller='trnExportDocumentDeclaration' WHERE PageMenuID=158 and Controller = 'trnExportDocumentDeclarationGW'
+END
+GO
+
+-------------------------------------------------------------------------------------------------------------
+IF EXISTS (select * from INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='ShiipingBillNo' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails_history')
+BEGIN
+USE CFS_BONDED_WAREHOUSE_History
+	 EXEC sp_rename 'dbo.trnExportDocumentDeclarationLotDetails_history.ShiipingBillNo', 'BOENo', 'COLUMN';
+END
+GO
+----------------------------
+IF EXISTS (select * from CFS_BONDED_WAREHOUSE_History.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='ShipingBillDate' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails_history')
+BEGIN
+USE CFS_BONDED_WAREHOUSE_History
+	 EXEC sp_rename 'dbo.trnExportDocumentDeclarationLotDetails_history.ShipingBillDate', 'BOEDate', 'COLUMN';
+END
+GO
+-----------------------------
+IF EXISTS (select * from CFS_BONDED_WAREHOUSE_History.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='InvoiceNumber' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails_history')
+BEGIN
+USE CFS_BONDED_WAREHOUSE_History
+	 EXEC sp_rename 'dbo.trnExportDocumentDeclarationLotDetails_history.InvoiceNumber', 'BLNo', 'COLUMN';
+END
+GO
+-----------------
+IF EXISTS (select * from CFS_BONDED_WAREHOUSE_History.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='InvoiceDate' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails_history')
+BEGIN
+USE CFS_BONDED_WAREHOUSE_History
+	 EXEC sp_rename 'dbo.trnExportDocumentDeclarationLotDetails_history.InvoiceDate', 'BLDate', 'COLUMN';
+END
+GO
+-----------------------
+IF EXISTS (select * from CFS_BONDED_WAREHOUSE_History.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='SpaceCertificateID' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails_history')
+BEGIN
+USE CFS_BONDED_WAREHOUSE_History
+	 EXEC sp_rename 'dbo.trnExportDocumentDeclarationLotDetails_history.SpaceCertificateID', 'trnDocumentID', 'COLUMN';
+END
+GO
+------------------------
+IF EXISTS (select * from CFS_BONDED_WAREHOUSE_History.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='SpaceCertificateNO' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails_history')
+BEGIN
+USE CFS_BONDED_WAREHOUSE_History
+	 EXEC sp_rename 'dbo.trnExportDocumentDeclarationLotDetails_history.SpaceCertificateNO', 'trnDocumentNo', 'COLUMN';
+END
+GO
+---------------------
+
+IF EXISTS (select * from INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='ShiipingBillNo' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails')
+BEGIN
+USE CFS_BONDED_WAREHOUSE
+	 EXEC sp_rename 'dbo.trnExportDocumentDeclarationLotDetails.ShiipingBillNo', 'BOENo', 'COLUMN';
+END
+GO
+-------------------------------------
+IF EXISTS (select * from CFS_BONDED_WAREHOUSE.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='ShipingBillDate' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails')
+BEGIN
+USE CFS_BONDED_WAREHOUSE
+	 EXEC sp_rename 'dbo.trnExportDocumentDeclarationLotDetails.ShipingBillDate', 'BOEDate', 'COLUMN';
+END
+GO
+--------------------------------
+IF EXISTS (select * from CFS_BONDED_WAREHOUSE.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='InvoiceNumber' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails')
+BEGIN
+USE CFS_BONDED_WAREHOUSE
+	 EXEC sp_rename 'dbo.trnExportDocumentDeclarationLotDetails.InvoiceNumber', 'BLNo', 'COLUMN';
+END
+GO
+--------------------
+IF EXISTS (select * from CFS_BONDED_WAREHOUSE.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='InvoiceDate' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails')
+BEGIN
+USE CFS_BONDED_WAREHOUSE
+	 EXEC sp_rename 'dbo.trnExportDocumentDeclarationLotDetails.InvoiceDate', 'BLDate', 'COLUMN';
+END
+GO
+--------------------
+IF EXISTS (select * from CFS_BONDED_WAREHOUSE.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='SpaceCertificateID' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails')
+BEGIN
+USE CFS_BONDED_WAREHOUSE
+	 EXEC sp_rename 'dbo.trnExportDocumentDeclarationLotDetails.SpaceCertificateID', 'trnDocumentID', 'COLUMN';
+END
+GO
+----------------------
+IF EXISTS (select * from CFS_BONDED_WAREHOUSE.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='SpaceCertificateNO' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails')
+BEGIN
+USE CFS_BONDED_WAREHOUSE
+	 EXEC sp_rename 'dbo.trnExportDocumentDeclarationLotDetails.SpaceCertificateNO', 'trnDocumentNo', 'COLUMN';
+END
+GO
+
+-----------------------------------------
+IF  EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE Table_name = 'trnExportDocumentDeclarationLotDetails' and Column_name = 'BatchID')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnExportDocumentDeclarationLotDetails drop column BatchID 
+END
+---------
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE Table_name = 'trnExportDocumentDeclarationLotDetails' and Column_name = 'BatchNo')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnExportDocumentDeclarationLotDetails drop column BatchNo 
+END
+-------
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE Table_name = 'trnExportDocumentDeclarationLotDetails' and Column_name = 'DecPkgs')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnExportDocumentDeclarationLotDetails drop column DecPkgs 
+END
+----------
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE Table_name = 'trnExportDocumentDeclarationLotDetails' and Column_name = 'DecPcs')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnExportDocumentDeclarationLotDetails drop column DecPcs 
+END
+-----------
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE Table_name = 'trnExportDocumentDeclarationLotDetails' and Column_name = 'DecWeight')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnExportDocumentDeclarationLotDetails drop column DecWeight 
+END
+-------
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE Table_name = 'trnExportDocumentDeclarationLotDetails' and Column_name = 'LOTNO')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnExportDocumentDeclarationLotDetails drop column LOTNO 
+END
+
+------------------------------------
+IF  EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE Table_name = 'trnExportDocumentDeclarationLotDetails_History' and Column_name = 'BatchID')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnExportDocumentDeclarationLotDetails_History drop column BatchID 
+END
+---------
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE Table_name = 'trnExportDocumentDeclarationLotDetails_History' and Column_name = 'BatchNo')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnExportDocumentDeclarationLotDetails_History drop column BatchNo 
+END
+-------
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE Table_name = 'trnExportDocumentDeclarationLotDetails_History' and Column_name = 'DecPkgs')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnExportDocumentDeclarationLotDetails_History drop column DecPkgs 
+END
+----------
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE Table_name = 'trnExportDocumentDeclarationLotDetails_History' and Column_name = 'DecPcs')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnExportDocumentDeclarationLotDetails_History drop column DecPcs 
+END
+-----------
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE Table_name = 'trnExportDocumentDeclarationLotDetails_History' and Column_name = 'DecWeight')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnExportDocumentDeclarationLotDetails_History drop column DecWeight 
+END
+-------
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE Table_name = 'trnExportDocumentDeclarationLotDetails_History' and Column_name = 'LOTNO')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnExportDocumentDeclarationLotDetails_History drop column LOTNO 
+END
+---------------------------------
+IF NOT EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE Table_name = 'trnExportDocumentDeclarationItems' and Column_name = 'trnExBondDocumentEntryDetailsID')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnExportDocumentDeclarationItems ADD trnExBondDocumentEntryDetailsID INT NULL
+END
+-----------------------------------------------
+IF NOT EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE Table_name = 'trnExportDocumentDeclarationItems_History' and Column_name = 'trnExBondDocumentEntryDetailsID')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnExportDocumentDeclarationItems_History ADD trnExBondDocumentEntryDetailsID INT NULL
+END
+
+-------------------------------------------------
+IF NOT EXISTS (select * from CFS_BONDED_WAREHOUSE_History.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='DocumentEXBOENo' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails_history')
+BEGIN
+	 ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnExportDocumentDeclarationLotDetails_history ADD DocumentEXBOENo varchar(255) NULL	 
+END
+GO
+------------------------------------------------
+IF NOT EXISTS (select * from CFS_BONDED_WAREHOUSE.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='EXBOENo' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails')
+BEGIN
+	 ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnExportDocumentDeclarationLotDetails ADD EXBOENo varchar(255) NULL
+END
+GO
+---------------------------------------------------------
+IF NOT EXISTS (select * from CFS_BONDED_WAREHOUSE_History.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='EXBOENo' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails_history')
+BEGIN
+	 ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnExportDocumentDeclarationLotDetails_history ADD EXBOENo varchar(255) NULL
+END
+GO
+------------------------------
+IF EXISTS (select * from CFS_BONDED_WAREHOUSE.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='DocumentLotNO' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails')
+BEGIN
+USE CFS_BONDED_WAREHOUSE
+	 EXEC sp_rename 'dbo.trnExportDocumentDeclarationLotDetails.DocumentLotNO', 'DocumentEXBOENo', 'COLUMN';
+END
+GO
+
+--------------------------------
+IF NOT EXISTS (select * from CFS_BONDED_WAREHOUSE.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='TransactionType' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails')
+BEGIN
+	 ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnExportDocumentDeclarationLotDetails ADD TransactionType varchar(255) NULL
+END
+GO
+---------------------------------------------------------
+IF NOT EXISTS (select * from CFS_BONDED_WAREHOUSE_History.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='TransactionType' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails_history')
+BEGIN
+	 ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnExportDocumentDeclarationLotDetails_history ADD TransactionType varchar(255) NULL
+END
+GO
+-----------------------------------------------------------
+IF NOT EXISTS (select * from CFS_BONDED_WAREHOUSE.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='trnExBondDocumentEntryDetailsID' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails')
+BEGIN
+	 ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnExportDocumentDeclarationLotDetails ADD trnExBondDocumentEntryDetailsID INT NULL
+END
+GO
+----------------------------
+IF NOT EXISTS (select * from CFS_BONDED_WAREHOUSE_History.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='trnExBondDocumentEntryDetailsID' AND TABLE_NAME='trnExportDocumentDeclarationLotDetails_history')
+BEGIN
+	 ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnExportDocumentDeclarationLotDetails_history ADD trnExBondDocumentEntryDetailsID INT NULL
+END
+GO
+
+----------------------------------------------
+--DHRUVI
+--11/01/2023
+
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnEmptyContainerInWOGW' AND PageMenuID=135)
+BEGIN
+UPDATE [CFS_BONDED_WAREHOUSE].[Admin].PageMenu  SET Controller='trnEmptyContainerInWO' WHERE PageMenuID=135 and Controller = 'trnEmptyContainerInWOGW'
+END
+GO
+
+------------------------------------------------------------
+--Nisha
+IF NOT EXISTS (select * from CFS_BONDED_WAREHOUSE.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='DeleteReason' AND TABLE_NAME='trndocument')
+BEGIN
+	 ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trndocument ADD DeleteReason VARCHAR(255) NULL
+END
+GO
+----------------------------
+IF NOT EXISTS (select * from CFS_BONDED_WAREHOUSE_History.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='DeleteReason' AND TABLE_NAME='trndocument_history')
+BEGIN
+	 ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trndocument_history ADD DeleteReason VARCHAR(255) NULL
+END
+GO
+
+-------------------------------------------
+--DHRUVI
+--11/01/2023
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnEmptyContainerInWO' AND PageMenuID=82)
+BEGIN
+	UPDATE  Admin.PageMenu set FlagDeleted=1  where Controller='trnEmptyContainerInWO' and PageMenuID=82
+END
+GO
+---------------------------------------------
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnEmptyContainerGateInGW' AND PageMenuID=131)
+BEGIN
+	UPDATE  Admin.PageMenu SET Controller='trnEmptyContainerGateIn'  WHERE Controller='trnEmptyContainerGateInGW' and PageMenuID=131
+END
+GO
+-------
+---Nisha:12/01/2024
+
+IF NOT EXISTS (select * from CFS_BONDED_WAREHOUSE.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='DeleteReason' AND TABLE_NAME='trndocument')
+BEGIN
+	 ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trndocument ADD DeleteReason VARCHAR(255) NULL
+END
+GO
+----------------------------
+IF NOT EXISTS (select * from CFS_BONDED_WAREHOUSE_History.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='DeleteReason' AND TABLE_NAME='trndocument_history')
+BEGIN
+	 ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trndocument_history ADD DeleteReason VARCHAR(255) NULL
+END
+GO
+GO
+----------------------
+IF NOT EXISTS (select * from CFS_BONDED_WAREHOUSE.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='AreaRequired' AND TABLE_NAME='trnDocumentContainer')
+BEGIN
+	 ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnDocumentContainer ADD AreaRequired decimal(18,2) NULL
+END
+GO
+----------------------------
+IF NOT EXISTS (select * from CFS_BONDED_WAREHOUSE_History.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='AreaRequired' AND TABLE_NAME='trnDocumentContainer_history')
+BEGIN
+	 ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnDocumentContainer_history ADD  AreaRequired decimal(18,2) NULL
+END
+GO
+----------------------
+IF NOT EXISTS (select * from CFS_BONDED_WAREHOUSE.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='AdditionalArea' AND TABLE_NAME='trnDocumentContainer')
+BEGIN
+	 ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnDocumentContainer ADD AdditionalArea decimal(18,2) NULL
+END
+GO
+----------------------------
+IF NOT EXISTS (select * from CFS_BONDED_WAREHOUSE_History.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='AdditionalArea' AND TABLE_NAME='trnDocumentContainer_history')
+BEGIN
+	 ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnDocumentContainer_history ADD  AdditionalArea decimal(18,2) NULL
+END
+GO
+----------------------
+IF NOT EXISTS (select * from CFS_BONDED_WAREHOUSE.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='TotalArea' AND TABLE_NAME='trnDocumentContainer')
+BEGIN
+	 ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnDocumentContainer ADD TotalArea decimal(18,2) NULL
+END
+GO
+----------------------------
+IF NOT EXISTS (select * from CFS_BONDED_WAREHOUSE_History.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='TotalArea' AND TABLE_NAME='trnDocumentContainer_history')
+BEGIN
+	 ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnDocumentContainer_history ADD  TotalArea decimal(18,2) NULL
+END
+GO
+---------------------------------------------------------------
+--DHRUVI
+--12/01/2023
+
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnexportstufingwo' AND PageMenuID=159)
+BEGIN
+	UPDATE  Admin.PageMenu SET Controller='trnExportStufingWO'  WHERE Controller='trnexportstufingwo' and PageMenuID=159
+END
+GO
+-----------
+--nisha:16/01/2024
+-----------------
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnExBondDocumentEntry' AND ParentID=148)
+BEGIN
+UPDATE [Admin].PageMenu  SET Controller='trnExBondDocumentEntryCO' WHERE ParentID=148 and Controller = 'trnExBondDocumentEntry'
+END
+GO
+-----------------
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnExBondDocumentEntry' AND ParentID=152)
+BEGIN
+UPDATE [Admin].PageMenu  SET Controller='trnExBondDocumentEntryLCO' WHERE ParentID=152 and Controller = 'trnExBondDocumentEntry'
+END
+GO
+------------------------------------------------------
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnExBondDocumentEntry' AND ParentID=157)
+BEGIN
+UPDATE [Admin].PageMenu  SET Controller='trnExBondDocumentEntryEXP' WHERE ParentID=157 and Controller = 'trnExBondDocumentEntry'
+END
+GO
+------------------------------------------------------
+--DHRUVI
+--16/01/2024
+
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnexportclp' AND PageMenuID=160)
+BEGIN
+	UPDATE  Admin.PageMenu SET Controller='trnExportCLP'  WHERE Controller='trnexportclp' and PageMenuID=160
+END
+GO
+------------------------------
+IF EXISTS (select * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME like '%trnexportstufingwoContainerDetailsID%' and TABLE_NAME = 'trnExportCLP')
+BEGIN
+USE [CFS_BONDED_WAREHOUSE]
+	 EXEC sp_rename 'dbo.trnExportCLP.trnexportstufingwoContainerDetailsID', 'trnExportStufingWOContainerDetailsID', 'COLUMN';
+	 USE [CFS_BONDED_WAREHOUSE]
+END
+GO
+
+-----------------------------------------------------------------------
+--DHRUVI
+--18/01/2024
+
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnexportmovementWO' AND PageMenuID=161)
+BEGIN
+	UPDATE [CFS_BONDED_WAREHOUSE].admin.Pagemenu SET Controller='trnExportMovementWO' WHERE PageMenuID=161 AND Controller='trnexportmovementWO'
+END
+GO
+
+-----------------------------------
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns where Table_name = 'trnEmptyTruckGateIn' and Column_name = 'WeighmentRequired')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyTruckGateIn ADD WeighmentRequired BIT NOT NULL DEFAULT(0)
+END
+GO
+----
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns where Table_name = 'trnEmptyTruckGateIn' and Column_name = 'NonWeighmentReason')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyTruckGateIn ADD NonWeighmentReason VARCHAR(255) NULL
+END
+GO
+----
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns where Table_name = 'trnEmptyTruckGateIn_History' and Column_name = 'WeighmentRequired')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnEmptyTruckGateIn_History ADD WeighmentRequired BIT NOT NULL DEFAULT(0)
+END
+GO
+----
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns where Table_name = 'trnEmptyTruckGateIn_History' and Column_name = 'NonWeighmentReason')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnEmptyTruckGateIn_History ADD NonWeighmentReason VARCHAR(255) NULL
+END
+GO
+----
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns where Table_name = 'trnWeighmentSlip' and Column_name = 'TruckType')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE].[DBO].trnWeighmentSlip ADD TruckType VARCHAR(255)
+END
+GO
+----
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns where Table_name = 'trnWeighmentSlip_History' and Column_name = 'TruckType')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[DBO].trnWeighmentSlip_History ADD TruckType VARCHAR(255)
+END
+GO
+
+--------------------------------------------------------------------------------
+--DHRUVI
+--25/01/2024
+IF EXISTS (select * from [CFS_BONDED_WAREHOUSE].INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME like '%trnexportstufingwoGWContainerDetailsID%' and TABLE_NAME = 'trnReeferPluginOut')
+BEGIN
+USE [CFS_BONDED_WAREHOUSE]
+	 EXEC sp_rename 'dbo.trnReeferPluginOut.trnexportstufingwoGWContainerDetailsID', 'trnexportstufingwoContainerDetailsID', 'COLUMN';
+	 USE [CFS_BONDED_WAREHOUSE]
+END
+GO
+
+----------------------------------------
+
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnLoadedContainerOutGPGW' AND ParentID=157 AND PageMenuID=164)
+BEGIN
+UPDATE [Admin].[PageMenu] SET Controller='trnLoadedContainerOutGPEP' WHERE ParentID=157 and Controller = 'trnLoadedContainerOutGPGW'  AND PageMenuID=164
+END
+GO
+------------------------------------
+--Nisha
+--31/01/2024
+IF NOT EXISTS(select * from [Admin].[GeneralSettings] where [StrKey] = 'PRTTF' and flagdeleted = 0)
+BEGIN
+	INSERT INTO [Admin].[GeneralSettings]
+		([StrKey],[StrValue],[ModuleName],[Description],[Createdby],[CreatedDate])
+		VALUES
+		('PRTTF','PT','Prefix','Party Wise Tarrif No Prefix','1',[dbo].[GetCurrentDatetime]())
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns where Table_name = 'trnDocumentLotDetails' and Column_name = 'TariffHead')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE].[DBO].trnDocumentLotDetails ADD TariffHead VARCHAR(255)
+END
+GO
+----
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns where Table_name = 'trnDocumentLotDetails_History' and Column_name = 'TariffHead')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[DBO].trnDocumentLotDetails_History ADD TariffHead VARCHAR(255)
+END
+GO
+IF not Exists(SELECT  * from  [CFS_BONDED_WAREHOUSE_History].[dbo].[History_Column] where [TableName] = 'trnDocumentLotDetails_History' and [LabelName] = 'TariffHead' )
+Begin
+	INSERT INTO [CFS_BONDED_WAREHOUSE_History].[dbo].[History_Column]([ColumnName],[LabelName],[TableName],[Flagdeleted],[CreatedDate])
+	VALUES('##ALIAS##TariffHead', 'TariffHead','trnDocumentLotDetails_History', 0, GETDATE());
+END
+GO
+----
+--Nisha:08/02/2024
+----
+IF  EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns where Table_name = 'trncargogatein' and Column_name = 'PhysicalSeal')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE].[DBO].trncargogatein DROP COLUMN PhysicalSeal
+END
+GO
+----
+IF  EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns where Table_name = 'trncargogatein' and Column_name = 'DeclaredSeal')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE].[DBO].trncargogatein DROP COLUMN DeclaredSeal
+END
+GO
+----
+IF  EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns where Table_name = 'trncargogatein_History' and Column_name = 'PhysicalSeal')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[DBO].trncargogatein_History DROP COLUMN PhysicalSeal
+END
+GO
+----
+IF  EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns where Table_name = 'trncargogatein_History' and Column_name = 'DeclaredSeal')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE_history].[DBO].trncargogatein_History DROP COLUMN DeclaredSeal
+END
+GO
+----
+IF not EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns where Table_name = 'trnCargoGateInContainerDetails' and Column_name = 'PhysicalSeal')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE].[DBO].trnCargoGateInContainerDetails add  PhysicalSeal varchar(255)
+END
+GO
+----
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns where Table_name = 'trnCargoGateInContainerDetails' and Column_name = 'DeclaredSeal')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE].[DBO].trnCargoGateInContainerDetails ADD DeclaredSeal Varchar(255)
+END
+GO
+----
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns where Table_name = 'trnCargoGateInContainerDetails_History' and Column_name = 'PhysicalSeal')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[DBO].trnCargoGateInContainerDetails_History add PhysicalSeal Varchar(255)
+END
+GO
+----
+IF NOT  EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns where Table_name = 'trnCargoGateInContainerDetails_History' and Column_name = 'DeclaredSeal')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE_history].[DBO].trnCargoGateInContainerDetails_History add DeclaredSeal Varchar(255)
+END
+GO
+----
+IF not EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns where Table_name = 'trnEmptyTruckGateInDomestic' and Column_name = 'PhysicalSeal')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE].[DBO].trnEmptyTruckGateInDomestic add  PhysicalSeal varchar(255)
+END
+GO
+----
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns where Table_name = 'trnEmptyTruckGateInDomestic' and Column_name = 'DeclaredSeal')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE].[DBO].trnEmptyTruckGateInDomestic ADD DeclaredSeal Varchar(255)
+END
+GO
+----
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns where Table_name = 'trnEmptyTruckGateInDomestic_History' and Column_name = 'PhysicalSeal')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[DBO].trnEmptyTruckGateInDomestic_History add PhysicalSeal Varchar(255)
+END
+GO
+----
+IF NOT  EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns where Table_name = 'trnEmptyTruckGateInDomestic_History' and Column_name = 'DeclaredSeal')
+BEGIN		
+		ALTER TABLE [CFS_BONDED_WAREHOUSE_history].[DBO].trnEmptyTruckGateInDomestic_History add DeclaredSeal Varchar(255)
+END
+GO
+
+-- Nikul 14/02/2024
+
+IF EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[admin].pagemenu WHERE Controller = 'trnWeighmentSlipGW' AND ParentID=157)
+BEGIN
+UPDATE [Admin].[PageMenu] SET Controller='trnWeighmentSlipEP' WHERE ParentID=157 and Controller = 'trnWeighmentSlip' 
+END
+GO
+
+----------------------------------------------------------------------------------------------------------------------
+--Name : DHRUVI
+--Date : 27/03/2024
+
+IF NOT EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE Table_name = 'trnCargoTruckOutwardCumGatepass' and Column_name='SearchTruckNo')
+BEGIN
+ALTER TABLE trnCargoTruckOutwardCumGatepass ADD SearchTruckNo VARCHAR(255)
+END
+GO
+
+--NIKUL
+--30/03/2024
+
+If NOT Exists (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyContainerOutWO' AND COLUMN_NAME = 'TransporterCode')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyContainerOutWO ADD TransporterCode VARCHAR(255)
+END
+GO
+
+If NOT Exists (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyContainerOutWO' AND COLUMN_NAME = 'Consoler')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyContainerOutWO ADD Consoler VARCHAR(255)
+END
+GO
+
+If NOT Exists (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyContainerOutWO' AND COLUMN_NAME = 'ConsolerID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyContainerOutWO ADD ConsolerID int
+END
+GO
+
+If NOT Exists (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyContainerOutWO' AND COLUMN_NAME = 'BooklingNo')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyContainerOutWO ADD BooklingNo VARCHAR(255)
+END
+GO
+
+If NOT Exists (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyContainerOutWO' AND COLUMN_NAME = 'BookingDate')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyContainerOutWO ADD BookingDate datetime
+END
+GO
+
+If NOT Exists (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyContainerOutWO' AND COLUMN_NAME = 'BillTo')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyContainerOutWO ADD BillTo VARCHAR(255)
+END
+GO
+
+If NOT Exists (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyContainerOutWO' AND COLUMN_NAME = 'BillToID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyContainerOutWO ADD BillToID int
+END
+GO
+
+If NOT Exists (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyContainerOutWO' AND COLUMN_NAME = 'GateOutMode')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyContainerOutWO ADD GateOutMode VARCHAR(255)
+END
+GO
+
+If NOT Exists (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyContainerOutWO' AND COLUMN_NAME = 'CodecoCode')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyContainerOutWO ADD CodecoCode VARCHAR(255)
+END
+GO
+
+If NOT Exists (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyContainerOutWO' AND COLUMN_NAME = 'DoNo')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyContainerOutWO ADD DoNo VARCHAR(255)
+END
+GO
+
+If NOT Exists (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyContainerOutWO' AND COLUMN_NAME = 'DoValidity')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyContainerOutWO ADD DoValidity datetime
+END
+GO
+
+If NOT Exists (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyContainerOutWO' AND COLUMN_NAME = 'VCNNo')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyContainerOutWO ADD VCNNo VARCHAR(255)
+END
+GO
+
+If NOT Exists (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyContainerOutWO' AND COLUMN_NAME = 'VCNNoID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyContainerOutWO ADD VCNNoID int
+END
+GO
+
+If NOT Exists (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyContainerOutWO' AND COLUMN_NAME = 'VesselName')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyContainerOutWO ADD VesselName VARCHAR(255)
+END
+GO
+
+If NOT Exists (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyContainerOutWO' AND COLUMN_NAME = 'VoyNo')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyContainerOutWO ADD VoyNo VARCHAR(255)
+END
+GO
+
+If NOT Exists (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyContainerOutWO' AND COLUMN_NAME = 'CutOffDate')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyContainerOutWO ADD CutOffDate datetime
+END
+GO
+
+----------------------------------------------------------------------------
+update admin.pagemenu set controller='BWDefaultBillableHead' where controller='bwdefaultbilablehead' and PageMenuID=228
+
+
+
+UPDATE ADMIN.GENERALSETTINGS SET Description='Bond - H & T Charges for Loaded Delivery Tariff Head For Container' WHERE GeneralSettingsID=1057
+UPDATE ADMIN.GENERALSETTINGS SET Description='Bond - H & T charges for Destuff Delivery Tariff Head For Container' WHERE GeneralSettingsID=1058
+
+---------------------------------------------------------
+--DHRUVI
+--10/04/2024
+
+IF NOT EXISTS (select * from [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings] where [StrKey] = 'BFC' and flagdeleted = 0)
+BEGIN
+		INSERT INTO [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings]
+		([StrKey],[StrValue],[ModuleName],[Description],[Createdby],[CreatedDate],[Flagdeleted],[IsActive])
+		VALUES
+		('BFC','59','TariffHead','Bond - Fuel Charges','1',[dbo].[GetCurrentDatetime](),0,1)
+END
+GO
+
+--------------------
+IF NOT EXISTS (select * from [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings] where [StrKey] = 'BPEF' and flagdeleted = 0)
+BEGIN
+		INSERT INTO [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings]
+		([StrKey],[StrValue],[ModuleName],[Description],[Createdby],[CreatedDate],[Flagdeleted],[IsActive])
+		VALUES
+		('BPEF','60','TariffHead','Bond - Port Entry Fees','1',[dbo].[GetCurrentDatetime](),0,1)
+END
+GO
+
+-----------------------------------------------------------
+IF NOT EXISTS (select * from [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings] where [StrKey] = 'BWC' and flagdeleted = 0)
+BEGIN
+		INSERT INTO [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings]
+		([StrKey],[StrValue],[ModuleName],[Description],[Createdby],[CreatedDate],[Flagdeleted],[IsActive])
+		VALUES
+		('BWC','61','TariffHead','Bond - Weighment Charges','1',[dbo].[GetCurrentDatetime](),0,1)
+END
+GO
+
+
+-----------------------------------------------------------------------
+IF NOT EXISTS (select * from [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings] where [StrKey] = 'SIZ20' and flagdeleted = 0)
+BEGIN
+		INSERT INTO [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings]
+		([StrKey],[StrValue],[ModuleName],[Description],[Createdby],[CreatedDate],[Flagdeleted],[IsActive])
+		VALUES
+		('SIZ20','1','ContSize','CONT SIZE 20','1',[dbo].[GetCurrentDatetime](),0,1)
+END
+GO
+-------------------------------------
+IF NOT EXISTS (select * from [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings] where [StrKey] = 'SIZ40' and flagdeleted = 0)
+BEGIN
+		INSERT INTO [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings]
+		([StrKey],[StrValue],[ModuleName],[Description],[Createdby],[CreatedDate],[Flagdeleted],[IsActive])
+		VALUES
+		('SIZ40','2','ContSize','CONT SIZE 40','1',[dbo].[GetCurrentDatetime](),0,1)
+END
+GO
+---------------------------------
+IF NOT EXISTS (select * from [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings] where [StrKey] = 'SIZ45' and flagdeleted = 0)
+BEGIN
+		INSERT INTO [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings]
+		([StrKey],[StrValue],[ModuleName],[Description],[Createdby],[CreatedDate],[Flagdeleted],[IsActive])
+		VALUES
+		('SIZ45','2','ContSize','CONT SIZE 45','1',[dbo].[GetCurrentDatetime](),0,1)
+END
+GO
+------------------------------------------------
+IF NOT EXISTS (select * from [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings] where [StrKey] = 'TRMCS' and flagdeleted = 0)
+BEGIN
+		INSERT INTO [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings]
+		([StrKey],[StrValue],[ModuleName],[Description],[Createdby],[CreatedDate],[Flagdeleted],[IsActive])
+		VALUES
+		('TRMCS','58','TariffHead','Map Container Space','1',[dbo].[GetCurrentDatetime](),0,1)
+END
+GO
+----------------------------------------------------------------------------------
+IF NOT EXISTS (select * from [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings] where [StrKey] = 'TRNDO' and flagdeleted = 0)
+BEGIN
+		INSERT INTO [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings]
+		([StrKey],[StrValue],[ModuleName],[Description],[Createdby],[CreatedDate],[Flagdeleted],[IsActive])
+		VALUES
+		('TRNDO','NOC/##FINANCIALYEAR##/','Prefix','Document Entry','1',[dbo].[GetCurrentDatetime](),0,1)		
+END
+GO
+------------------------------------------------------------------------------------------------------------
+If NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceConsolidatorCharge' AND COLUMN_NAME = 'trnExportStufingWOContainerDetailsID')
+BEGIN
+ALTER TABLE BondInvoiceConsolidatorCharge ADD trnExportStufingWOContainerDetailsID INT NULL
+END
+GO
+
+--NIKUL
+--10/04/2024
+
+IF  EXISTS (select * from [CFS_Local].[Admin].[Pagemenu] where Controller = 'trnpreproforma' and MenuName='WH Proforma Invoice' and FlagDeleted = 0)
+BEGIN
+UPDATE [Admin].[PageMenu] SET Controller = 'trnpreproforma' where Controller='trnpreproformagw' and PageMenuID = 126
+END
+
+-------------------------------------------------------------------------------------------------------------------------------
+--DHRUVI
+--15/04/2024
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceConsolidatorCharge' AND COLUMN_NAME = 'trnEmptyContainerGateInDetailsID')
+BEGIN
+ALTER TABLE BondInvoiceConsolidatorCharge ADD trnEmptyContainerGateInDetailsID INT NULL
+END
+GO
+--------------------
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceConsolidatorCharge' AND COLUMN_NAME = 'trnEmptyContainerOutWODetailsID')
+BEGIN
+ALTER TABLE BondInvoiceConsolidatorCharge ADD trnEmptyContainerOutWODetailsID INT
+END
+GO
+
+--NIKUL
+--22/04/2024
+
+IF NOT EXISTS (select * from [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings] where [StrKey] = 'DF' and flagdeleted = 0)
+BEGIN
+		INSERT INTO [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings]
+		([StrKey],[StrValue],[ModuleName],[Description],[Createdby],[CreatedDate],[Flagdeleted],[IsActive])
+		VALUES
+		('DF','dd/MM/yyyy','DateFormat','DateFormat','1',[dbo].[GetCurrentDatetime](),0,1)
+END
+GO
+
+--NIKUL
+--26/04/2024
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead where MstrTariffHeadID = 26 AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead set TariffHeadName = 'Bond - Empty lift Seabird charges' where MstrTariffHeadID = 26 
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead where MstrTariffHeadID = 56 AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead set TariffHeadName = 'Bond - Empty Lift Seabird charges - Export' where MstrTariffHeadID = 56 
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead where MstrTariffHeadID = 53 AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead set TariffHeadName = 'Bond - Return Empty Lift Seabird Charges - Export' where MstrTariffHeadID = 53 
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead where MstrTariffHeadID = 27 AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead set TariffHeadName = 'Bond - Empty lift Customer charges' where MstrTariffHeadID = 27 
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead where MstrTariffHeadID = 53 AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead set TariffHeadName = 'Bond - Empty Lift Customer charges - Export' where MstrTariffHeadID = 55 
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead where MstrTariffHeadID = 53 AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead set TariffHeadName = 'Bond - Return Empty Lift Customer Charges - Export' where MstrTariffHeadID = 52 
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS where GeneralSettingsID = 44 and StrKey = 'LOFTH' AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS set [Description] = 'Tariff Head For Lift Customer By in Empty Container Out Work Order' where GeneralSettingsID = 44 and StrKey = 'LOFTH'
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS where GeneralSettingsID = 1106 and StrKey = 'EELOF' AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS set [Description] = 'WH - Empty Lift Customer charges - Export' where GeneralSettingsID = 1106 and StrKey = 'EELOF'
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS where GeneralSettingsID = 1108 and StrKey = 'RELOF' AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS set [Description] = 'WH - Return Empty Lift Customer Charges - Export' where GeneralSettingsID = 1108 and StrKey = 'RELOF'
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS where GeneralSettingsID = 43 and StrKey = 'LONTH' AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS set [Description] = 'Tariff Head For Lift Seabird By in Empty Container Out Work Order' where GeneralSettingsID = 43 and StrKey = 'LONTH'
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS where GeneralSettingsID = 1107 and StrKey = 'EELOC' AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS set [Description] = 'WH - Empty Lift Seabird charges - Export' where GeneralSettingsID = 1107 and StrKey = 'EELOC'
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS where GeneralSettingsID = 1109 and StrKey = 'RELON' AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS set [Description] = 'WH - Return Empty Lift Seabird Charges - Export' where GeneralSettingsID = 1109 and StrKey = 'RELON'
+END
+GO
+--------------------------------------------------
+--DHRUVI
+--22/04/2024
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceConsolidatorCharge' AND COLUMN_NAME = 'trnTruckDestuffingID')
+BEGIN
+ALTER TABLE BondInvoiceConsolidatorCharge ADD trnTruckDestuffingID INT NULL
+END
+GO
+---------------------
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceConsolidatorCharge' AND COLUMN_NAME = 'trnContainerDestuffingID')
+BEGIN
+ALTER TABLE BondInvoiceConsolidatorCharge ADD trnContainerDestuffingID INT NULL
+END
+GO
+
+-------------------------------
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings] WHERE [StrKey] = 'BAASC' AND flagdeleted = 0)
+BEGIN
+		INSERT INTO [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings]
+		([StrKey],[StrValue],[ModuleName],[Description],[Createdby],[CreatedDate],[Flagdeleted],[IsActive])
+		VALUES
+		('BAASC','62','TariffHead','Bond - Add. Storage Charges','1',[dbo].[GetCurrentDatetime](),0,1)
+END
+GO
+-----------------------------------------------------
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings] WHERE [StrKey] = 'BIC' AND flagdeleted = 0)
+BEGIN
+		INSERT INTO [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings]
+		([StrKey],[StrValue],[ModuleName],[Description],[Createdby],[CreatedDate],[Flagdeleted],[IsActive])
+		VALUES
+		('BIC','59','TariffHead','Bond - Insurance Charges','1',[dbo].[GetCurrentDatetime](),0,1)
+END
+GO
+-------------------------------
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnDocumentLotDetails' AND COLUMN_NAME = 'CalculatedAV')
+BEGIN
+		ALTER TABLE trnDocumentLotDetails ADD CalculatedAV DECIMAL (18,2)
+END
+GO
+--------------------------------
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnDocumentLotDetails' AND COLUMN_NAME = 'CalculatedAV')
+BEGIN
+ ALTER TABLE trnDocumentLotDetails ADD CalculatedDV DECIMAL (18,2)
+END
+GO
+---------------------------------
+IF NOT EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings] WHERE StrValue='19' AND  ModuleName='TariffHead' AND Flagdeleted = 0)
+BEGIN
+	UPDATE  [Admin].[GeneralSettings]  SET Description='Bond - Storage Charges' WHERE StrValue='19' AND ModuleName='TariffHead'
+END
+GO
+------------------------------------------
+IF NOT EXISTS(SELECT * FROM [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings] WHERE [StrKey] = 'BHSC' AND flagdeleted = 0)
+BEGIN
+	UPDATE Admin.GeneralSettings SET STRKEY='BHSC' WHERE ModuleName='TariffHead' AND STRVALUE='19'
+END 
+GO
+-------------------------------------------------------------------------------------------
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings] WHERE [StrKey] = 'BLCWO' AND flagdeleted = 0)
+BEGIN
+		INSERT INTO [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings]
+		([StrKey],[StrValue],[ModuleName],[Description],[Createdby],[CreatedDate],[Flagdeleted],[IsActive])
+		VALUES
+		('BLCWO','63','TariffHead','Bond - Weighment Charges (Out)','1',[dbo].[GetCurrentDatetime](),0,1)
+END
+GO
+
+-----------------------------------
+--DHRUVI
+--27/04/2024
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].BondInvoiceConsolidatorCharge ADD Packages DECIMAL(18,2)
+----------------------------------------------------------
+--DHRUVI
+--30/04/2024
+
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnContainerDestuffWorkOrderDetails ALTER COLUMN CargoType VARCHAR(255)
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnContainerDestuffWorkOrderDetails ALTER COLUMN ContainerLevel VARCHAR(255)
+
+----------------------------------------------------------------------------------------------------------------------
+UPDATE [CFS_BONDED_WAREHOUSE].ADMIN.PAGEMENU SET Controller='trnEmptyTruckGateInlco' WHERE Controller='trnEmptyTruckGateInGWlco' AND PageMenuID=156
+UPDATE [CFS_BONDED_WAREHOUSE].ADMIN.PAGEMENU SET Controller='trnWeighmentSlipLCO' WHERE Controller='trnWeighmentSlipGWLCO' AND PageMenuID=154
+UPDATE [CFS_BONDED_WAREHOUSE].ADMIN.PAGEMENU SET Controller='trnLoadedContainerOutGPLCO' WHERE Controller='trnLoadedContainerOutGPGW' AND PageMenuID=155
+
+------------------------------------------------------------------------------
+--DHRUVI
+--02/05/2024
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings] WHERE [StrKey] = 'BESC' and flagdeleted = 0)
+BEGIN
+		INSERT INTO [CFS_BONDED_WAREHOUSE].[Admin].[GeneralSettings]
+		([StrKey],[StrValue],[ModuleName],[Description],[Createdby],[CreatedDate],[Flagdeleted],[IsActive])
+		VALUES
+		('BESC','67','TariffHead','Bond - Empty Storage Charges','1',[dbo].[GetCurrentDatetime](),0,1)
+END
+GO
+----------------------------------------------------------------------
+--DHRUVI
+--06/05/2024
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].[dbo].[MstrTariffHead] WHERE [TariffHeadName] = 'Bond - Empty Storage Charges' and flagdeleted = 0)
+BEGIN
+INSERT [CFS_BONDED_WAREHOUSE].[dbo].[MstrTariffHead] (
+											[TariffHeadCode], [TariffHeadName],
+											[NatureofHead], [TariffActivity],
+											[TariffType], [SequenceCode], 
+											[LastSequenceCode], [IsActive],
+											[InActiveReason], [Flagdeleted], [Createdby],
+											[CreatedDate], [UpdatedBy], [UpdatedDate], 
+											[HSNSACCode], [MstrTaxGroupID], [UnitType], 
+											[Cycle]) 
+				VALUES (67, 'Bond - Empty Storage Charges', 'Receipt', 'Empty', 'Cargo Handling',
+				67, NULL, 1, '', 0, 10076, CAST('2023-05-16T15:33:00.000' AS DateTime)
+				, 10076, CAST('2024-04-06T12:03:00.000' AS DateTime), '996711', 0, 'Unit Based', 'Warehouse')
+END
+GO
+----------------------------------------------------------------------
+--DHRUVI
+--07/05/2024
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnCargoTruckOutwardCumGatepassContainerDetails' AND COLUMN_NAME = 'PhysicalSeal')
+BEGIN
+
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnCargoTruckOutwardCumGatepassContainerDetails ADD PhysicalSeal VARCHAR(255)
+END
+GO
+--------------
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnCargoTruckOutwardCumGatepassContainerDetails' AND COLUMN_NAME = 'DeclaredSeal')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnCargoTruckOutwardCumGatepassContainerDetails ADD DeclaredSeal VARCHAR(255)
+END
+GO
+
+---------------------------------------------------------------------------------------------
+--Nikul 
+--13-05-2024
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnCargoGateIn' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnCargoGateIn ADD YearID INT 
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE TABLE_NAME = 'trnCargoGateIn_History' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnCargoGateIn_History ADD YearID INT 
+END
+GO
+
+
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnWeighmentSlip' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnWeighmentSlip ADD YearID INT 
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE TABLE_NAME = 'trnWeighmentSlip_History' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnWeighmentSlip_History ADD YearID INT 
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnTruckDestuffing' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnTruckDestuffing ADD YearID INT 
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE TABLE_NAME = 'trnTruckDestuffing_History' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnTruckDestuffing_History ADD YearID INT 
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyTruckOutWO' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyTruckOutWO ADD YearID INT 
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyTruckOutWO_History' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnEmptyTruckOutWO_History ADD YearID INT 
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnExBondDocumentEntry' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnExBondDocumentEntry ADD YearID INT 
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE TABLE_NAME = 'trnExBondDocumentEntry_History' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnExBondDocumentEntry_History ADD YearID INT 
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyTruckGateIn' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnEmptyTruckGateIn ADD YearID INT 
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE TABLE_NAME = 'trnEmptyTruckGateIn_History' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnEmptyTruckGateIn_History ADD YearID INT 
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnCargoTruckOutwardCumGatepass' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnCargoTruckOutwardCumGatepass ADD YearID INT 
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE TABLE_NAME = 'trnCargoTruckOutwardCumGatepass_History' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnCargoTruckOutwardCumGatepass_History ADD YearID INT 
+END
+GO
+
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerGateIn' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnContainerGateIn ADD YearID INT 
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerGateIn_History' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnContainerGateIn_History ADD YearID INT 
+END
+GO
+
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerDestuffWorkOrder' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnContainerDestuffWorkOrder ADD YearID INT 
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerDestuffWorkOrder_History' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnContainerDestuffWorkOrder_History ADD YearID INT 
+END
+GO
+
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerDestuffing' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnContainerDestuffing ADD YearID INT 
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerDestuffing_History' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnContainerDestuffing_History ADD YearID INT 
+END
+GO
+
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnLoadedContainerOutGP' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnLoadedContainerOutGP ADD YearID INT 
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE TABLE_NAME = 'trnLoadedContainerOutGP_History' AND COLUMN_NAME = 'YearID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE_History].[dbo].trnLoadedContainerOutGP_History ADD YearID INT 
+END
+GO
+-------------------------------------------------
+--DHRUVI
+--10/05/2024
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerDestuffWorkOrder' AND COLUMN_NAME = 'trnDocumentID')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnContainerDestuffWorkOrder  ADD trnDocumentID INT NULL
+END
+GO
+---------------------------------
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerDestuffWorkOrder' AND COLUMN_NAME = 'trnDocumentNo')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnContainerDestuffWorkOrder ADD trnDocumentNo VARCHAR(255) NULL
+END
+GO
+--------------------------------
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerDestuffWorkOrder' AND COLUMN_NAME = 'trnDocumentContainerID')
+BEGIN
+		ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnContainerDestuffWorkOrderDetails ADD trnDocumentContainerID INT NULL
+END
+GO
+----------------------------------
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerDestuffWorkOrder' AND COLUMN_NAME = 'IsCancel')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnContainerDestuffWorkOrderDetails ADD IsCancel BIT DEFAULT(0)
+END
+
+--------------------------------------------------------------
+--Nikul
+--13-05-2024
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnDocumentLotDetails' AND COLUMN_NAME = 'SpaceCerificateIssuedTo')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnDocumentLotDetails ADD SpaceCerificateIssuedTo varchar(255)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnDocumentLotDetails' AND COLUMN_NAME = 'CustomDetails')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnDocumentLotDetails ADD CustomDetails varchar(255)
+END
+GO
+
+
+----- Nikul     14-05-2024
+---------------------------------------------------------------------
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead where MstrTariffHeadID = 26 AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead set TariffHeadName = 'Bond - Empty lift On charges' where MstrTariffHeadID = 26 
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead where MstrTariffHeadID = 56 AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead set TariffHeadName = 'Bond - Empty Lift On charges - Export' where MstrTariffHeadID = 56 
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead where MstrTariffHeadID = 53 AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead set TariffHeadName = 'Bond - Return Empty Lift On Charges - Export' where MstrTariffHeadID = 53 
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead where MstrTariffHeadID = 27 AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead set TariffHeadName = 'Bond - Empty lift Off charges' where MstrTariffHeadID = 27 
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead where MstrTariffHeadID = 53 AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead set TariffHeadName = 'Bond - Empty Lift Off charges - Export' where MstrTariffHeadID = 55 
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead where MstrTariffHeadID = 53 AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead set TariffHeadName = 'Bond - Return Empty Lift Off Charges - Export' where MstrTariffHeadID = 52 
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS where GeneralSettingsID = 44 and StrKey = 'LOFTH' AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS set [Description] = 'Tariff Head For Lift Off By in Empty Container Out Work Order' where GeneralSettingsID = 44 and StrKey = 'LOFTH'
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS where GeneralSettingsID = 1106 and StrKey = 'EELOF' AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS set [Description] = 'WH - Empty Lift Off charges - Export' where GeneralSettingsID = 1106 and StrKey = 'EELOF'
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS where GeneralSettingsID = 1108 and StrKey = 'RELOF' AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS set [Description] = 'WH - Return Empty Lift Off Charges - Export' where GeneralSettingsID = 1108 and StrKey = 'RELOF'
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS where GeneralSettingsID = 43 and StrKey = 'LONTH' AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS set [Description] = 'Tariff Head For Lift On By in Empty Container Out Work Order' where GeneralSettingsID = 43 and StrKey = 'LONTH'
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS where GeneralSettingsID = 1107 and StrKey = 'EELOC' AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS set [Description] = 'WH - Empty Lift On charges - Export' where GeneralSettingsID = 1107 and StrKey = 'EELOC'
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS where GeneralSettingsID = 1109 and StrKey = 'RELON' AND Flagdeleted = 0)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].ADMIN.GENERALSETTINGS set [Description] = 'WH - Return Empty Lift On Charges - Export' where GeneralSettingsID = 1109 and StrKey = 'RELON'
+END
+GO
+----------------------------------------------------------------------------------
+--DHRUVI
+--16/05/2024
+USE [CFS_BONDED_WAREHOUSE]
+GO
+EXEC SP_RENAME '[CFS_BONDED_WAREHOUSE].[dbo].trnCargoSSRLotDetails.ShippingBillNo', 'BOENo', 'COLUMN' 
+EXEC SP_RENAME '[CFS_BONDED_WAREHOUSE].[dbo].trnCargoSSRLotDetails.ShippingBillDate', 'BOEDate', 'COLUMN' 
+EXEC SP_RENAME '[CFS_BONDED_WAREHOUSE].[dbo].trnCargoSSRLotDetails.BillInvNumber', 'BLNo', 'COLUMN' 
+EXEC SP_RENAME '[CFS_BONDED_WAREHOUSE].[dbo].trnCargoSSRLotDetails.BillInvDate', 'BLDate', 'COLUMN'
+
+USE [CFS_BONDED_WAREHOUSE_History]
+GO
+
+EXEC SP_RENAME '[CFS_BONDED_WAREHOUSE_History].[dbo].[trnCargoSSRLotDetails_history].ShippingBillNo', 'BOENo', 'COLUMN' 
+EXEC SP_RENAME '[CFS_BONDED_WAREHOUSE_History].[dbo].[trnCargoSSRLotDetails_history].ShippingBillDate', 'BOEDate', 'COLUMN' 
+EXEC SP_RENAME '[CFS_BONDED_WAREHOUSE_History].[dbo].[trnCargoSSRLotDetails_history].BillInvNumber', 'BLNo', 'COLUMN' 
+EXEC SP_RENAME '[CFS_BONDED_WAREHOUSE_History].[dbo].[trnCargoSSRLotDetails_history].BillInvDate', 'BLDate', 'COLUMN' 
+
+USE [CFS_BONDED_WAREHOUSE]
+GO
+----------------------------------------------------------
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnCargoSSRLotDetails' AND COLUMN_NAME = 'IGMNo')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnCargoSSRLotDetails ADD IGMNo VARCHAR(255)
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_History].Information_schema.Columns WHERE TABLE_NAME = 'trnCargoSSRLotDetails_history' AND COLUMN_NAME = 'IGMNo')
+BEGIN
+	alter table [CFS_BONDED_WAREHOUSE_History].[dbo].[trnCargoSSRLotDetails_history] add IGMNo VARCHAR(255)
+END 
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnCargoSSR' AND COLUMN_NAME = 'CycleName')
+BEGIN
+alter table [CFS_BONDED_WAREHOUSE].[dbo].trnCargoSSR drop column CycleName
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE_].Information_schema.Columns WHERE TABLE_NAME = 'trnCargoSSR' AND COLUMN_NAME = 'CycleID')
+BEGIN
+alter table [CFS_BONDED_WAREHOUSE].[dbo].trnCargoSSR drop column CycleID
+END 
+GO
+
+------------------------
+--DHRUVI
+--16/05/2024
+
+update [CFS_BONDED_WAREHOUSE].admin.pagemenu set Controller='trnContainerSSR' ,MenuName='BOND Container SSR' where controller='trnContainerSSRGW' and PageMenuID=128
+update [CFS_BONDED_WAREHOUSE].admin.pagemenu set MenuName='BOND Cargo SSR' where controller='trnCargoSSR' and PageMenuID=127
+
+USE [CFS_BONDED_WAREHOUSE]
+GO
+EXEC SP_RENAME 'trnContainerSSRLotDetails.ContainerSSRCSID', 'ContainerSSRID', 'COLUMN'
+EXEC SP_RENAME 'trnContainerSSRLotDetails.ShipingBillNo', 'BOENo', 'COLUMN'
+EXEC SP_RENAME 'trnContainerSSRLotDetails.ShipingBillDate', 'BOEDate', 'COLUMN' 
+EXEC SP_RENAME 'trnContainerSSRLotDetails.InvoiceNumber', 'BLNo', 'COLUMN' 
+EXEC SP_RENAME 'trnContainerSSRLotDetails.InvoiceDate', 'BLDate', 'COLUMN' 
+EXEC SP_RENAME 'trnContainerSSR.NOCDate', 'DOCDate', 'COLUMN'
+ALTER TABLE trnContainerSSRLotDetails ADD IGMNo VARCHAR(255)
+USE [CFS_BONDED_WAREHOUSE_History]
+GO
+EXEC SP_RENAME 'trnContainerSSRLotDetails_History.ShipingBillNo', 'BOENo', 'COLUMN'
+EXEC SP_RENAME 'trnContainerSSRLotDetails_History.ShipingBillDate', 'BOEDate', 'COLUMN' 
+EXEC SP_RENAME 'trnContainerSSRLotDetails_History.InvoiceNumber', 'BLNo', 'COLUMN' 
+EXEC SP_RENAME 'trnContainerSSRLotDetails_History.InvoiceDate', 'BLDate', 'COLUMN' 
+EXEC SP_RENAME 'trnContainerSSRLotDetails_History.ContainerSSRCSID', 'ContainerSSRID', 'COLUMN'
+EXEC SP_RENAME 'trnContainerSSRDetails_History.ContainerSSRCSID','ContainerSSRID','COLUMN'
+USE [CFS_BONDED_WAREHOUSE]
+GO
+--------------------------------------
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerSSR' AND COLUMN_NAME = 'SPType')
+BEGIN
+alter table [CFS_BONDED_WAREHOUSE].[dbo].trnContainerSSR add SPType varchar(255)
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerSSRDetails' AND COLUMN_NAME = 'Amount')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnContainerSSRDetails ADD  Amount		decimal(18,2)
+END 
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerSSRDetails' AND COLUMN_NAME = 'GrossAmount')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnContainerSSRDetails ADD  GrossAmount	decimal(18,2)
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerSSRDetails' AND COLUMN_NAME = 'GSTamt')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnContainerSSRDetails ADD  GSTamt		decimal(18,2)
+END 
+GO
+
+-------------------------------------------------------
+--DHRUVI
+--17/05/2024
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'MstrGeneralTariffNOCWiseDetails' AND COLUMN_NAME = 'InBOENO')
+BEGIN
+alter table MstrGeneralTariffNOCWiseDetails ADD InBOENO varchar(255)
+END 
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'MstrGeneralTariffNOCWiseDetails' AND COLUMN_NAME = 'trnDocumentLotDetailsID')
+BEGIN
+alter table MstrGeneralTariffNOCWiseDetails ADD trnDocumentLotDetailsID int
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceConsolidatorCharge' AND COLUMN_NAME = 'trnCargoSSRID')
+BEGIN
+ALTER TABLE BondInvoiceConsolidatorCharge ADD trnCargoSSRID INT
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceConsolidatorCharge' AND COLUMN_NAME = 'trnContainerSSRID')
+BEGIN
+ALTER TABLE BondInvoiceConsolidatorCharge ADD trnContainerSSRID INT
+END
+GO
+---------------------------------------
+USE [CFS_BONDED_WAREHOUSE]
+GO
+EXEC SP_RENAME 'trnContainerSSRDetails.SSRBiilableHead', 'SSRBillableHead', 'COLUMN' 
+EXEC SP_RENAME 'trnContainerSSRDetails.SSRBiilableHeadID', 'SSRBillableHeadID', 'COLUMN' 
+USE [CFS_BONDED_WAREHOUSE_History]
+GO
+EXEC SP_RENAME 'trnContainerSSRDetails_History.SSRBiilableHead', 'SSRBillableHead', 'COLUMN' 
+EXEC SP_RENAME 'trnContainerSSRDetails_History.SSRBiilableHeadID', 'SSRBillableHeadID', 'COLUMN' 
+USE [CFS_BONDED_WAREHOUSE]
+GO
+
+------------------------------------------------------------------
+--Nikul
+--22/05/2024 
+
+IF EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnDocumentLotDetails' AND COLUMN_NAME = 'CPStatus' AND DATA_TYPE = 'bit')
+BEGIN
+	ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnDocumentLotDetails ALTER COLUMN CPStatus int;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnDocumentLotDetails' AND COLUMN_NAME = 'GateInDate')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnDocumentLotDetails ADD GateInDate datetime
+END
+GO
+------------------------
+IF NOT EXISTS (select * from [Admin].[GeneralSettings] where [StrKey] = 'BNDCB' and flagdeleted = 0)
+BEGIN
+		INSERT INTO [Admin].[GeneralSettings]
+		([StrKey],[StrValue],[ModuleName],[Description],[Createdby],[CreatedDate],[flagdeleted],IsActive)
+		VALUES
+		('BNDCB','BNDCBI##FINANCIALYEAR##','Prefix','Bond Invoice','1',[dbo].[GetCurrentDatetime](),0,1)
+END
+GO
+
+--------------------------------
+ALTER TABLE trnCargoSSR DROP COLUMN trnDocumentLotDetailsID
+------------------------------------------------------------------
+-- DHRUVI
+-- DATE :31/05/2024
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoice' AND COLUMN_NAME = 'TotalReleasedArea')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].BondInvoice ADD TotalReleasedArea DECIMAL(18,2)
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoice' AND COLUMN_NAME = 'BalanceArea')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].BondInvoice ADD BalanceArea DECIMAL(18,2)
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceDocumentDetails' AND COLUMN_NAME = 'BondNo')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].BondInvoiceDocumentDetails ADD BondNo VARCHAR(255)
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceDocumentDetails' AND COLUMN_NAME = 'BondDate')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].BondInvoiceDocumentDetails ADD BondDate DATETIME
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceDocumentDetails' AND COLUMN_NAME = 'CPNo')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].BondInvoiceDocumentDetails ADD CPNo VARCHAR(255)
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceDocumentDetails' AND COLUMN_NAME = 'CPDate')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].BondInvoiceDocumentDetails ADD CPDate DATETIME
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceDocumentDetails' AND COLUMN_NAME = 'BLNo')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].BondInvoiceDocumentDetails ADD BLNo VARCHAR(255)
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceDocumentDetails' AND COLUMN_NAME = 'BLDate')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].BondInvoiceDocumentDetails ADD BLDate DATETIME
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceDocumentDetails' AND COLUMN_NAME = 'HoldStatus')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].BondInvoiceDocumentDetails ADD HoldStatus VARCHAR(255)
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceDocumentDetails' AND COLUMN_NAME = 'AssessableValue')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].BondInvoiceDocumentDetails ADD AssessableValue DECIMAL(20,2)
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceDocumentDetails' AND COLUMN_NAME = 'EnhanceAssembleValue')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].BondInvoiceDocumentDetails ADD EnhanceAssembleValue DECIMAL(20,2)
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceDocumentDetails' AND COLUMN_NAME = 'Dutyvalue')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].BondInvoiceDocumentDetails ADD Dutyvalue DECIMAL(20,2)
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceDocumentDetails' AND COLUMN_NAME = 'EnhanceDutyvalue')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].BondInvoiceDocumentDetails ADD EnhanceDutyvalue DECIMAL(20,2)
+END
+GO
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'BondInvoiceDocumentDetails' AND COLUMN_NAME = 'Importer')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].BondInvoiceDocumentDetails ADD Importer VARCHAR(255)
+END
+GO
+
+
+
+
+------------------------------------------------------------------
+--Nikul
+--24/05/2024 
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnCargoSSR' AND COLUMN_NAME = 'InBOENo')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnCargoSSR ADD InBOENo varchar(255)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnCargoSSR' AND COLUMN_NAME = 'trnDocumentLotDetailsID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnCargoSSR ADD trnDocumentLotDetailsID int
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnCargoSSR' AND COLUMN_NAME = 'InBOEDate')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnCargoSSR ADD InBOEDate datetime
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnCargoSSR' AND COLUMN_NAME = 'Cycle')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnCargoSSR ADD Cycle varchar(255)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnCargoSSR' AND COLUMN_NAME = 'SBInvoiceNo')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnCargoSSR ADD SBInvoiceNo varchar(255)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnCargoSSR' AND COLUMN_NAME = 'trnExportDocumentDeclarationLotDetailsID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnCargoSSR ADD trnExportDocumentDeclarationLotDetailsID int
+END
+GO
+
+----------------------------------------------------
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerSSR' AND COLUMN_NAME = 'InBOENo')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnContainerSSR ADD InBOENo varchar(255)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerSSR' AND COLUMN_NAME = 'trnDocumentLotDetailsID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnContainerSSR ADD trnDocumentLotDetailsID int
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerSSR' AND COLUMN_NAME = 'SBInvoiceNo')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnContainerSSR ADD SBInvoiceNo varchar(255)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerSSR' AND COLUMN_NAME = 'trnExportDocumentDeclarationLotDetailsID')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnContainerSSR ADD trnExportDocumentDeclarationLotDetailsID int
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [CFS_BONDED_WAREHOUSE].Information_schema.Columns WHERE TABLE_NAME = 'trnContainerSSR' AND COLUMN_NAME = 'Cycle')
+BEGIN
+ALTER TABLE [CFS_BONDED_WAREHOUSE].[dbo].trnContainerSSR ADD Cycle varchar(255)
+END
+GO
+
+IF  EXISTS (select * from [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead where MstrTariffHeadID = 36 AND Flagdeleted = 1)
+BEGIN
+	update [CFS_BONDED_WAREHOUSE].[DBO].MstrTariffHead set TariffHeadName = 'Bond - Container Weighment Charges', Flagdeleted = 0  where MstrTariffHeadID = 36
+END
+GO
+-----------------------------------------------------------------------------------
+--DHRUVI
+--06/03/2024
+IF NOT EXISTS (SELECT * FROM [PREBONDED].Information_schema.Columns WHERE TABLE_NAME = 'MstrGeneralTariffNOCWiseDetails' AND COLUMN_NAME = 'IsInBOEGroup')
+BEGIN
+ALTER TABLE [PREBONDED].[dbo].MstrGeneralTariffNOCWiseDetails  ADD IsInBOEGroup BIT DEFAULT(0)
+END
+GO
+
+------------------------------------------------------------
+UPDATE [PREBONDED].[dbo].MstrGeneralTariffNOCWiseEffetiveDate SET flagdeleted=1 WHERE MstrGeneralTariffNOCWiseEffetiveDateID=3

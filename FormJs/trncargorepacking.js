@@ -1,15 +1,14 @@
 ﻿$(document).ready(function () {
 
-    Autocompletebox("SpaceCertificateNo", "trnSpaceCertificateGWID", "trnCargoRepackingGW", "GetNoCNo","FillBatchNo");
-    if ($("#trnSpaceCertificateGWID").val() != "" || $("#trnSpaceCertificateGWID").val() != "0") {
-        Autocompletebox("BatchNo", "BatchID", "trnCargoRepackingGW", "GetBatchNo/" + $("#trnSpaceCertificateGWID").val(), "FillLotNo");
-        Autocompletebox("LotNo", "trnDocumentGWLotDetailsID", "trnCargoRepackingGW", "GetLotNo/" + $("#trnSpaceCertificateGWID").val() + "?BatchId=" + $("#BatchID").val(), "FillArea");
+    Autocompletebox("NOCNo", "trnDocumentID", "trnCargoRepacking", "GetNocNo","FillBOENo");
+    if ($("#trnDocumentID").val() != "" || $("#trnDocumentID").val() != "0") {
+        Autocompletebox("LotNo", "trnDocumentLotDetailsID", "trnCargoRepacking", "GetLotNo/" + $("#trnDocumentID").val(), "FillArea");
     }
     
     
-    Autocompletebox("PackingType", "PackingTypeID", "trnCargoRepackingGW", "GetPackingType");
+    Autocompletebox("PackingType", "PackingTypeID", "trnCargoRepacking", "GetPackingType");
 
-    Autocompletebox("WHLocation", "WHLocationID", "trnCargoRepackingGW", "GetWHLocation");
+    Autocompletebox("WHLocation", "WHLocationID", "trnCargoRepacking", "GetWHLocation");
 
    // totalWeight()
 
@@ -25,16 +24,8 @@ $("#txtSearch").keyup(function (event) {
     }
 });
 
-function FillBatchNo() {
-    $("#BatchID").val('0');
-    $("#trnDocumentGWLotDetailsID").val('0');
-    $("#BatchNo").val('');
-    $("#LotNo").val('');
-    FillArea();
-    Autocompletebox("BatchNo", "BatchID", "trnCargoRepackingGW", "GetBatchNo/" + $("#trnSpaceCertificateGWID").val(), "FillLotNo");
-}
-function FillLotNo() {
-    Autocompletebox("LotNo", "trnDocumentGWLotDetailsID", "trnCargoRepackingGW", "GetLotNo/" + $("#trnSpaceCertificateGWID").val() + "?BatchId=" + $("#BatchID").val(), "FillArea");
+function FillBOENo() {
+    Autocompletebox("BOENo", "trnDocumentLotDetailsID", "trnCargoRepacking", "GetBOENo/" + $("#trnDocumentID").val(), "FillArea");
 }
 
 function GetFinalNocBalanceArea() {
@@ -61,15 +52,14 @@ function GetFinalNocBalanceArea() {
  
 
 function FillArea() {
-    //var SbInvoiceID = $("#hdnSbInvoiceNo").val();
      
-    var Lot = $("#trnDocumentGWLotDetailsID").val();
+    var Lot = $("#trnDocumentLotDetailsID").val();
      
     if (Lot != '' && Lot != "0") {
 
         $.ajax({
 
-            url: GetRootPath + "trnCargoRepackingGW/GetAreaFill/" + Lot,
+            url: GetRootPath + "trnCargoRepacking/GetAreaFill/" + Lot,
             type: "POST",
             datatype: "text",
             success: function (data) {
@@ -114,31 +104,22 @@ function validateModel() {
    
     var Errormsg = "";
      
-    var trnSpaceCertificateGWID = $("#trnSpaceCertificateGWID").val()
-    var BatchID = $("#BatchID").val()
-    var trnDocumentGWLotDetailsID = $("#trnDocumentGWLotDetailsID").val()
+    var trnDocumentID = $("#trnDocumentID").val()
+    var trnDocumentLotDetailsID = $("#trnDocumentLotDetailsID").val()
     var AreaDifference = $("#AreaDifference").val()
     var BalanceArea = $("#BalanceArea").val()
     var PackingTypeID = $("#PackingTypeID").val()
     var WHLocationID = $("#WHLocationID").val()
 
-    if (trnSpaceCertificateGWID == "0" || trnSpaceCertificateGWID == "") {
+    if (trnDocumentID == "0" || trnDocumentID == "") {
         isvalid = false;
         Errormsg += "NOC is Required <br />";
-        $("#SpaceCertificateNo").addClass("redborder");
+        $("#NOCNo").addClass("redborder");
     } else {
-        $("#SpaceCertificateNo").removeClass("redborder");
+        $("#NOCNo").removeClass("redborder");
     }
 
-    if (BatchID == "0" || BatchID == "") {
-        isvalid = false;
-        Errormsg += "BatchNo is Required <br />";
-        $("#BatchNo").addClass("redborder");
-    } else {
-        $("#BatchNo").removeClass("redborder");
-    }
-
-    if (trnDocumentGWLotDetailsID == "0" || trnDocumentGWLotDetailsID == "") {
+    if (trnDocumentLotDetailsID == "0" || trnDocumentLotDetailsID == "") {
         isvalid = false;
         Errormsg += "LotNo is Required <br />";
         $("#LotNo").addClass("redborder");
@@ -196,7 +177,7 @@ function validateModel() {
     //;
     //if(isvalid){
     //    $.ajax({
-    //        url: GetRootPath + "trnCargoRepackingGW/Action/" + trnDocumentGWLotDetailsID,
+    //        url: GetRootPath + "trnCargoRepacking/Action/" + trnDocumentLotDetailsID,
     //        type: "Post",
     //        data: $("form").serialize(),
     //        dataType: "text",
@@ -206,7 +187,7 @@ function validateModel() {
     //            var Jobj = JSON.parse(data)
     //            if (Jobj.RedirectUrl)
     //                window.location.href = Jobj.RedirectUrl;
-    //              //window.location = GetRootPath + "trnCargoRepackingGW/Action/" + data + "?doaction=edit";
+    //              //window.location = GetRootPath + "trnCargoRepacking/Action/" + data + "?doaction=edit";
     //        },
     //    });
     //}
@@ -225,21 +206,21 @@ function validateModelCargoRapackingDetails() {
        
         for (var i = 0; i < parseInt(ItemCount); i++) {
 
-            var repackval = $("#lsttrnCargoRepackingGWItems_" + i + "__RepackingPackages").val();
+            var repackval = $("#lsttrnCargoRepackingItems_" + i + "__RepackingPackages").val();
            
             if (repackval != "" && repackval!="0"&& repackval != undefined) {
                 TotalRepackingPackages += parseInt(repackval);
              
                 
-                var packingType = $("#lsttrnCargoRepackingGWItems_" + i + "__NewPackingTypeID").val();
-                var NewWHLocation = $("#lsttrnCargoRepackingGWItems_" + i + "__NewWHLocationID").val();
+                var packingType = $("#lsttrnCargoRepackingItems_" + i + "__NewPackingTypeID").val();
+                var NewWHLocation = $("#lsttrnCargoRepackingItems_" + i + "__NewWHLocationID").val();
                 if (packingType == "" || packingType == "0" || packingType == "0.00" || packingType == undefined) {
                     MErrormsg = "Please Enter New Packaging Type. <br />"
-                    $("#lsttrnCargoRepackingGWItems_" + i + "__NewPackingType").addClass("redborder");
+                    $("#lsttrnCargoRepackingItems_" + i + "__NewPackingType").addClass("redborder");
                 }
                 if (NewWHLocation == "" || NewWHLocation == "0" || NewWHLocation == undefined) {
                     MErrormsg += "Please Enter New WHLocation Type.<br />"
-                    $("#lsttrnCargoRepackingGWItems_" + i + "__NewWHLocation").addClass("redborder");
+                    $("#lsttrnCargoRepackingItems_" + i + "__NewWHLocation").addClass("redborder");
                 }
             }
             
@@ -285,9 +266,125 @@ function RepackingWeight(weight, packages) {
 
 function CalculateWeight(num) {
 
-    WeightCalculation("lsttrnCargoRepackingGWItems_" + num + "__RepackingPackages",
-                      "lsttrnCargoRepackingGWItems_" + num + "__RepackingPieces",
-                      "lsttrnCargoRepackingGWItems_" + num + "__DecPackages",
-                      "lsttrnCargoRepackingGWItems_" + num + "__DecWeight",
-                      "lsttrnCargoRepackingGWItems_" + num + "__RepackingWeight");
+    WeightCalculation("lsttrnCargoRepackingItems_" + num + "__RepackingPackages",
+                      "lsttrnCargoRepackingItems_" + num + "__RepackingPieces",
+                      "lsttrnCargoRepackingItems_" + num + "__DecPackages",
+                      "lsttrnCargoRepackingItems_" + num + "__DecWeight",
+                      "lsttrnCargoRepackingItems_" + num + "__RepackingWeight");
 }
+function ValidateForm() {
+
+   
+
+    var isvalid = true;
+    var MErrormsg = "";
+    var counter = 0;
+    debugger
+    $.ajax({
+        url: GetRootPath + "trnCargoRepacking/validateModel",
+        type: "Post",
+        data: $("form").serialize(),
+        dataType: "text",
+        async: false,
+        success: function (data) {
+            $(".redborder").removeClass("redborder");
+            if (data != "") {
+                isvalid = false;
+                var Errormsg = data.split("|")[0];
+                var ErrorFields = data.split("|")[1].split(",");
+
+                if (ErrorFields != null && ErrorFields.length > 0) {
+                    for (var Q = 0; Q < ErrorFields.length; Q++) {
+                        $("#spn_" + ErrorFields[Q]).text('');
+                        $("#spn_" + ErrorFields[Q]).next().addClass("redborder");
+                    }
+                }
+                if (Errormsg != "") {
+                    MErrormsg += Errormsg;
+                }
+            }
+        }
+    });
+
+    if (!isvalid) {
+        TosterAlert("error", MErrormsg, "Required!");
+    }
+    return isvalid;
+}
+
+btnPrevent();
+document.addEventListener('keydown', function (event) {
+    // Check if the pressed key is Enter
+    if (event.key === 'Enter') {
+        // Prevent the default action to avoid form submission
+        event.preventDefault();
+
+        // Get the currently focused element
+        const focusedElement = document.activeElement;
+
+        // Check which div contains the focused element
+        if (focusedElement.closest('#divHeaderDetail')) {
+            var btnHeaderClear = focusedElement.id;
+            if (btnHeaderClear.includes("btnHeaderClear")) {
+                const headerClear = document.getElementById('btnHeaderClear');
+                headerClear.click();
+            }
+            else {
+                // Find the submit button in LotDetails and trigger a click
+                const btnHeaderSave = document.getElementById('btnHeaderSave');
+                if (btnHeaderSave) {
+                    btnHeaderSave.click();
+                }
+            }
+
+        }        
+        else if (focusedElement.closest('#divFinalSave')) {
+            // Find the submit button in LotDetails and trigger a click
+            var btnFinalClear = focusedElement.id
+            if (btnFinalClear.includes("btnFinalClear")) {
+                const btnclear = document.getElementById(btnFinalClear);
+                if (btnclear) {
+                    btnclear.click();
+                }
+            }
+            else {
+                const btnFinalSave = document.getElementById('btnFinalSave');
+                if (btnFinalSave) {
+                    btnFinalSave.click();
+                }
+            }
+
+        }
+        else if (focusedElement.closest('#divSearch')) {
+            const btn = focusedElement.id;
+            if (btn.includes("btnAdd")) {
+                const btnAdd = document.getElementById(btn);
+                if (btnAdd) {
+                    btnAdd.click();
+                }
+            }
+            else {
+                const btnSearch = document.getElementById("btnSearch");
+                if (btnSearch) {
+                    btnSearch.click();
+                }
+            }
+        }
+        else if (focusedElement.closest('#divBack')) {
+            const btn = focusedElement.id;
+            if (btn.includes('btnEdit')) {
+                const btnEdit = document.getElementById(btn);
+                if (btnEdit) {
+                    btnEdit.click();
+                }
+            }
+            else {
+                const btnBack = document.getElementById('btnBack');
+                if (btnBack) {
+                    btnBack.click();
+                }
+            }
+            
+        }
+    }
+});

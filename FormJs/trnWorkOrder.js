@@ -516,3 +516,53 @@ document.addEventListener('keydown', function (event) {
         }
     }
 });
+
+function CancelReason(ID) {
+    debugger;
+    if (ID != "" && ID != null && ID != undefined) {
+        $("#CancelReason").val('');
+        $("#trnWorkOrderID").val(ID);
+    }
+}
+
+function CancelWorkOrder() {
+    debugger;
+    var CancelReason = $("#CancelReason").val();
+    var isvalid = true;
+    $.ajax({
+        url: GetRootPath + "trnWorkOrder/validateCancelModel/?CancelReason=" + CancelReason,
+        type: "Post",
+        dataType: "text",
+        async: false,
+        success: function (data) {
+            $(".redborder").removeClass("redborder");
+            if (data != "") {
+                isvalid = false;
+                var Errormsg = data.split("|")[0];
+                var ErrorFields = data.split("|")[1].split(",");
+
+                if (ErrorFields != null && ErrorFields.length > 0) {
+                    for (var Q = 0; Q < ErrorFields.length; Q++) {
+                        $("#spn_" + ErrorFields[Q]).text('');
+                        $("#spn_" + ErrorFields[Q]).next().addClass("redborder");
+                    }
+                }
+                if (Errormsg != "") {
+                    TosterAlert("error", Errormsg, "Required!");
+                }
+            }
+            else {
+                $.ajax({
+                    url: GetRootPath + "trnWorkOrder/Cancel/" + $("#trnWorkOrderID").val() + "?Reason=" + CancelReason,
+                    type: "GET",
+                    dataType: "text",
+                    async: false,
+                    success: function (data) {
+                        $('#CancelWorkOrder').modal('hide');
+                        location.reload();
+                    }
+                });
+            }
+        }
+    });
+}
