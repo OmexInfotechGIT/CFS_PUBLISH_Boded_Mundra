@@ -3716,7 +3716,7 @@
             </SortExpressions>
             <Top>12.64855cm</Top>
             <Height>3cm</Height>
-            <Width>19.73001cm</Width>
+            <Width>19.73002cm</Width>
             <ZIndex>5</ZIndex>
             <Style>
               <Border>
@@ -5758,7 +5758,7 @@
             </SortExpressions>
             <Top>15.64791cm</Top>
             <Height>3.07612cm</Height>
-            <Width>19.73001cm</Width>
+            <Width>19.73131cm</Width>
             <ZIndex>6</ZIndex>
             <Style>
               <Border>
@@ -7148,7 +7148,7 @@
             <DataSetName>OperationalDetails</DataSetName>
             <Top>18.73998cm</Top>
             <Height>2.39531cm</Height>
-            <Width>19.73001cm</Width>
+            <Width>19.72998cm</Width>
             <ZIndex>7</ZIndex>
             <Style>
               <Border>
@@ -9868,7 +9868,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Formatnumber(Fields!Rate.Value,2)</Value>
+                                  <Value>=Formatnumber(Sum(Fields!Rate.Value), 2)</Value>
                                   <Style>
                                     <FontFamily>tahoma</FontFamily>
                                     <FontSize>7pt</FontSize>
@@ -9912,7 +9912,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Formatnumber(Fields!TaxableAmount.Value, 2)</Value>
+                                  <Value>=Formatnumber(Sum(Fields!TaxableAmount.Value), 2)</Value>
                                   <Style>
                                     <FontFamily>tahoma</FontFamily>
                                     <FontSize>7pt</FontSize>
@@ -10149,8 +10149,7 @@
                 <TablixMember>
                   <Group Name="Details8">
                     <GroupExpressions>
-                      <GroupExpression>=Fields!SACCode.Value</GroupExpression>
-                      <GroupExpression>=Fields!Rate.Value</GroupExpression>
+                      <GroupExpression>=Fields!TariffHead.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
                 </TablixMember>

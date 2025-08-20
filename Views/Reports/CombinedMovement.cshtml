@@ -60,6 +60,13 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
+                            @Html.CheckBoxFor(Model => ReportsModal.IsDestuffCont, new { @id = "IsDestuffCont" })
+                            @Html.LabelFor(Model => ReportsModal.IsDestuffCont, new { @for = "IsDestuffCont" })
+                            @Html.HiddenFor(Model => ReportsModal.IsDestuffCont)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
                             @Html.CheckBoxFor(Model => ReportsModal.IsLoadedGateOut, new { @id = "IsLoadedGateOut" })
                             @Html.LabelFor(Model => ReportsModal.IsLoadedGateOut, new { @for = "IsLoadedGateOut" })
                             @Html.HiddenFor(Model => ReportsModal.IsLoadedGateOut)

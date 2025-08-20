@@ -9968,7 +9968,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Formatnumber(Fields!Rate.Value,2)</Value>
+                                  <Value>=Formatnumber(Sum(Fields!Rate.Value), 2)</Value>
                                   <Style>
                                     <FontFamily>tahoma</FontFamily>
                                     <FontSize>7pt</FontSize>
@@ -10250,7 +10250,6 @@
                   <Group Name="Details8">
                     <GroupExpressions>
                       <GroupExpression>=Fields!TariffHead.Value</GroupExpression>
-                      <GroupExpression>=Fields!ISOCodeSize.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
                 </TablixMember>

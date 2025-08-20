@@ -55,6 +55,7 @@ function ReportCheck() {
             $('#IsCargoInward').iCheck('check');
             $('#IsCargoOutward').iCheck('check');
             $('#IsLoadedGateIn').iCheck('check');
+            $('#IsDestuffCont').iCheck('check');
             $('#IsLoadedContBal').iCheck('check');
             $('#IsEmptyContBal').iCheck('check');
             $('#IsExportContBal').iCheck('check');
@@ -71,6 +72,7 @@ function ReportCheck() {
             $('#IsCargoInward').iCheck('uncheck');
             $('#IsCargoOutward').iCheck('uncheck');
             $('#IsLoadedGateIn').iCheck('uncheck');
+            $('#IsDestuffCont').iCheck('uncheck');
             $('#IsLoadedContBal').iCheck('uncheck');
             $('#IsEmptyContBal').iCheck('uncheck');
             $('#IsExportContBal').iCheck('uncheck');

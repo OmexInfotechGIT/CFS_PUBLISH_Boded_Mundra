@@ -154,7 +154,7 @@ function ContainerBasedStoragecalculateTermEndDate() {
 
     if (FromDate != null && FromDate != undefined && FromDate != "" && NoOfStoragePeriod != null && NoOfStoragePeriod != undefined && NoOfStoragePeriod != "" && NoOfStoragePeriod != "0" && StoragePeriod != null && StoragePeriod != undefined && StoragePeriod != "" && StoragePeriod != "0") {
         $.ajax({
-            url: GetRootPath + "trnSpaceCertificateGW/CalculateEndDate/?FromDate=" + FromDate + "&NoOfStoragePeriod=" + NoOfStoragePeriod + "&StoragePeriod=" + StoragePeriod,
+            url: GetRootPath + "trnpreproforma/CalculateEndDate/?FromDate=" + FromDate + "&NoOfStoragePeriod=" + NoOfStoragePeriod + "&StoragePeriod=" + StoragePeriod,
             type: "GET",
             dataType: "text",
             success: function (data) {
@@ -180,7 +180,7 @@ function CargoBasedStoragecalculateTermEndDate() {
 
     if (FromDate != null && FromDate != undefined && FromDate != "" && NoOfStoragePeriod != null && NoOfStoragePeriod != undefined && NoOfStoragePeriod != "" && NoOfStoragePeriod != "0" && StoragePeriod != null && StoragePeriod != undefined && StoragePeriod != "" && StoragePeriod != "0") {
         $.ajax({
-            url: GetRootPath + "trnSpaceCertificateGW/CalculateEndDate/?FromDate=" + FromDate + "&NoOfStoragePeriod=" + NoOfStoragePeriod + "&StoragePeriod=" + StoragePeriod,
+            url: GetRootPath + "trnpreproforma/CalculateEndDate/?FromDate=" + FromDate + "&NoOfStoragePeriod=" + NoOfStoragePeriod + "&StoragePeriod=" + StoragePeriod,
             type: "GET",
             dataType: "text",
             success: function (data) {
@@ -201,7 +201,7 @@ function ReserveAreaStoragecalculateTermEndDate() {
 
     if (FromDate != null && FromDate != undefined && FromDate != "" && NoOfStoragePeriod != null && NoOfStoragePeriod != undefined && NoOfStoragePeriod != "" && NoOfStoragePeriod != "0" && StoragePeriod != null && StoragePeriod != undefined && StoragePeriod != "" && StoragePeriod != "0") {
         $.ajax({
-            url: GetRootPath + "trnSpaceCertificateGW/CalculateEndDate/?FromDate=" + FromDate + "&NoOfStoragePeriod=" + NoOfStoragePeriod + "&StoragePeriod=" + StoragePeriod,
+            url: GetRootPath + "trnpreproforma/CalculateEndDate/?FromDate=" + FromDate + "&NoOfStoragePeriod=" + NoOfStoragePeriod + "&StoragePeriod=" + StoragePeriod,
             type: "GET",
             dataType: "text",
             success: function (data) {
@@ -222,7 +222,7 @@ function CargoSlabwiseStoragecalculateTermEndDate() {
 
     if (FromDate != null && FromDate != undefined && FromDate != "" && NoOfStoragePeriod != null && NoOfStoragePeriod != undefined && NoOfStoragePeriod != "" && NoOfStoragePeriod != "0" && StoragePeriod != null && StoragePeriod != undefined && StoragePeriod != "" && StoragePeriod != "0") {
         $.ajax({
-            url: GetRootPath + "trnSpaceCertificateGW/CalculateEndDate/?FromDate=" + FromDate + "&NoOfStoragePeriod=" + NoOfStoragePeriod + "&StoragePeriod=" + StoragePeriod,
+            url: GetRootPath + "trnpreproforma/CalculateEndDate/?FromDate=" + FromDate + "&NoOfStoragePeriod=" + NoOfStoragePeriod + "&StoragePeriod=" + StoragePeriod,
             type: "GET",
             dataType: "text",
             success: function (data) {

@@ -1126,7 +1126,7 @@ function ClearLotDetails() {
 function ChangeStatus(status, MstrDocumentID, StatusRemarks, HoldAgency, HoldAgencyID, IsBilldone, TruckContainerArrival) {
     $("#hdnactualStatus").val(status);
     if (status == "D") {
-        $("#ddlStatus option[value='C']").remove();
+        //$("#ddlStatus option[value='C']").remove();
         $("#ddlStatus option[value='P']").remove();
     }
     if (status == "C") {
