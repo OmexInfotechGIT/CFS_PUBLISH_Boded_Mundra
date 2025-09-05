@@ -169,8 +169,8 @@
         @*@Html.Partial("_ControlSidebar")*@
         @Html.Partial("_historymodal")
     </div>
-    <script src="@RouteJs.RouteJsHandler.HandlerUrl"></script>
-    <script src="@EnumHandler.HandlerUrl"></script>
+    @*<script src="@RouteJs.RouteJsHandler.HandlerUrl"></script>
+        <script src="@EnumHandler.HandlerUrl"></script>*@
 
     @Scripts.Render("~/Bundles/js")
     <script src="@CFS.Com.ClsCommon.GetCacheVersion("Content/js/jquery-ui.js")"></script>

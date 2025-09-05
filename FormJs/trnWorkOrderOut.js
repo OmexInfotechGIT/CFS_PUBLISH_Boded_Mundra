@@ -340,20 +340,31 @@ function EditLotdetails(ID) {
     GetEXBOENoDetails();
 }
 
-function deleteLotDetails(ID) {
+function deleteLotDetails(ID, countRecord, IsTruckInUsed) {
     if (ID != "" && ID != "0" && ID != null) {
-        $.ajax({
-            url: GetRootPath + "trnWorkOrderOut/deleteLotDetails/" + ID,
-            type: "Post",
-            data: $("form").serialize(),
-            dataType: "text",
-            async: false,
-            success: function (data) {
-                var LotNo = $("#DocumentEXBOENo_" + ID).text();
-                filldatatable();
-                TosterAlert('success', ' Lot No "' + LotNo + '"  deleted Successfully! ', 'success!');
+
+        if (IsTruckInUsed == 1 && countRecord == 1) {
+
+            TosterAlert('error', ' There must be at least one record. ', 'error!');
+            
+        } else {
+
+            if (confirm("Are you sure want to delete this record ?")) {
+
+                $.ajax({
+                    url: GetRootPath + "trnWorkOrderOut/deleteLotDetails/" + ID,
+                    type: "Post",
+                    data: $("form").serialize(),
+                    dataType: "text",
+                    async: false,
+                    success: function (data) {
+                        var LotNo = $("#DocumentEXBOENo_" + ID).text();
+                        filldatatable();
+                        TosterAlert('success', ' Lot No "' + LotNo + '"  deleted Successfully! ', 'success!');
+                    }
+                });
             }
-        });
+        }
     }
 }
 

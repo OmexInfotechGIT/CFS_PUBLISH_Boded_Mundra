@@ -1494,7 +1494,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=FormatNumber(Fields!Weight.Value,0)</Value>
+                                  <Value>=FormatNumber(Fields!Weight.Value,2)</Value>
                                   <Style>
                                     <FontFamily>tahoma</FontFamily>
                                     <FontSize>7pt</FontSize>

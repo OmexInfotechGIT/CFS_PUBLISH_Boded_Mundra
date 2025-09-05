@@ -56,10 +56,15 @@
                                     </th>
                                     <th>
                                         <a class="text-black" href="@Url.Action("index", "trnCargoSSR" , new { pg=Model.pagger.CurrentPage, search=Model.pagger.Search,SortColumn ="trnDocumentNo" , SortOrder=(Model.pagger.SortColumn.ToLower() =="trnDocumentNo" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" )} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == " trnDocumentNo" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" ).ToString().ToLower())"></i>NOC No</a>
-                                    </th>                                    
+                                    </th>
                                     <th>
                                         <a class="text-black" href="@Url.Action("index", "trnCargoSSR" , new { pg=Model.pagger.CurrentPage, search=Model.pagger.Search,SortColumn ="ManualSSRNo" , SortOrder=(Model.pagger.SortColumn.ToLower() =="manualssrno" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" )} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == " manualssrno" && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" ).ToString().ToLower())"></i> Manual SSRNo</a>
-
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnCargoSSR" , new { pg=Model.pagger.CurrentPage, search=Model.pagger.Search,SortColumn ="InvoiceNo" , SortOrder=(Model.pagger.SortColumn.ToLower() =="Invoiceno".ToLower() && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" )} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == " Invoiceno".ToLower() && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" ).ToString().ToLower())"></i>Invoice No</a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnCargoSSR" , new { pg=Model.pagger.CurrentPage, search=Model.pagger.Search,SortColumn ="InvoiceDate" , SortOrder=(Model.pagger.SortColumn.ToLower() =="Invoicedate".ToLower() && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" )} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == " Invoicedate".ToLower() && Model.pagger.SortOrder.ToLower()=="asc" ? "desc" : "asc" ).ToString().ToLower())"></i>Invoice Date</a>
                                     </th>
                                     <th class="freezeLastColumn">Action</th>
                                 </tr>
@@ -72,6 +77,8 @@
                                     <td>@Convert.ToDateTime(Model.MyDatatable.Rows[i]["SSRWOdate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat)</td>
                                     <td>@Model.MyDatatable.Rows[i]["trnDocumentNo"]</td>                                    
                                     <td>@Model.MyDatatable.Rows[i]["ManualSSRNo"]</td>
+                                    <td>@Model.MyDatatable.Rows[i]["InvoiceNo"]</td>
+                                    <td>@Model.MyDatatable.Rows[i]["InvoiceDate"]</td>
                                     <td class="freezeLastColumnwithWhite">
                                         @if (ViewBag.gblBlnEdit && (Convert.ToInt32(Model.MyDatatable.Rows[i]["IsInvoiceCreate"]) == 0))
                                         {
@@ -86,7 +93,7 @@
                                         {
                                         <a><i data-toggle="modal" data-target="#DeleteCargoSSR" onclick="DeleteRemarks('trnCargoSSR','@Model.MyDatatable.Rows[i]["trnCargoSSRID"]')" title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
                                         }
-                                        <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", CFS.Com.ClsCommon.Controller(), new { id=Model.MyDatatable.Rows[i]["trnCargoSSRID"], trnDocumentID=Model.MyDatatable.Rows[i]["trnDocumentID"],  format="pdf" })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
+                                        <a target="_blank" href="@Url.Action("GenerateAndDisplayReport", CFS.Com.ClsCommon.Controller(), new { id=Model.MyDatatable.Rows[i]["trnCargoSSRID"], trnDocumentID=Model.MyDatatable.Rows[i]["trnDocumentID"], Cycle=Model.MyDatatable.Rows[i]["Cycle"],  format="pdf" })"><i title="Click to print" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-print"></i></a>
                                     </td>
                                 </tr>
                                 }

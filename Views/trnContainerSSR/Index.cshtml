@@ -48,9 +48,15 @@
                                     </th>
                                     <th>
                                         <a class="text-black" href="@Url.Action("index", "trnContainerSSR", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "trnDocumentNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "trndocumentno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "trndocumentno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>NOC No </a>
-                                    </th>                                    
+                                    </th>
                                     <th>
                                         <a class="text-black" href="@Url.Action("index", "trnContainerSSR", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "SSRNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "ssrno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "ssrno" && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>  Manual SSRNo </a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerSSR", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "InvoiceNo", SortOrder = (Model.pagger.SortColumn.ToLower() == "Invoiceno".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "Invoiceno".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>Invoice No </a>
+                                    </th>
+                                    <th>
+                                        <a class="text-black" href="@Url.Action("index", "trnContainerSSR", new {  pg = Model.pagger.CurrentPage, search = Model.pagger.Search,SortColumn = "InvoiceDate", SortOrder = (Model.pagger.SortColumn.ToLower() == "Invoicedate".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc")} )"><i title="Click to sorting" class="fa fa-sort-amount-@((Model.pagger.SortColumn.ToLower() == "Invoicedate".ToLower() && Model.pagger.SortOrder.ToLower() =="asc" ? "desc" : "asc").ToString().ToLower())"></i>Invoice Date </a>
                                     </th>
                                     <th class="freezeLastColumn">
                                         Action
@@ -66,8 +72,10 @@
                                         <td>@Convert.ToDateTime(Model.MyDatatable.Rows[i]["CreatedDate"]).ToString(CFS.Com.ClsCommon.CSProjectDateFormat)</td>
                                         <td>@Model.MyDatatable.Rows[i]["trnDocumentNo"]</td>                                        
                                         <td>@Model.MyDatatable.Rows[i]["SSRNo"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["InvoiceNo"]</td>
+                                        <td>@Model.MyDatatable.Rows[i]["InvoiceDate"]</td>
                                         <td class="freezeLastColumnwithWhite">
-                                            @if (ViewBag.gblBlnEdit && Convert.ToString(Model.MyDatatable.Rows[i]["HandlingInvoiceNo"]) == "")
+                                            @if (ViewBag.gblBlnEdit && Convert.ToString(Model.MyDatatable.Rows[i]["InvoiceNo"]) == "")
                                             {
                                                 <a href="@Url.Action("Action", "trnContainerSSR", new { id = Model.MyDatatable.Rows[i]["trnContainerSSRID"], pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true, @InBOENoID = Model.MyDatatable.Rows[i]["trnDocumentLotDetailsID"].ToString()+Model.MyDatatable.Rows[i]["trnExportDocumentDeclarationLotDetailsID"].ToString(),  @mode = "Action" , @IsFinished = Model.MyDatatable.Rows[i]["IsFinished"], @trnDocumentNo = Model.MyDatatable.Rows[i]["trnDocumentNoAndCont"] })"><i title="Click to Edit" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-edit"></i></a>
                                             }
@@ -76,7 +84,7 @@
                                                 <a href="@Url.Action("view", "trnContainerSSR", new { id = Model.MyDatatable.Rows[i]["trnContainerSSRID"] , pg = Model.pagger.CurrentPage, search = Model.pagger.Search, doaction = "edit", @IsSearch = true, @InBOENoID = Model.MyDatatable.Rows[i]["trnDocumentLotDetailsID"].ToString()+Model.MyDatatable.Rows[i]["trnExportDocumentDeclarationLotDetailsID"].ToString(),  @mode = "View", @trnDocumentNo = Model.MyDatatable.Rows[i]["trnDocumentNoAndCont"]})"><i title="Click to view" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-eye"></i></a>
                                             }
                                             <a><i data-toggle="modal" data-target="#myModal" onclick="ShowHistory('trnContainerSSR','@Model.MyDatatable.Rows[i]["trnContainerSSRID"]')" title="History" style=" font-size: x-large; cursor: pointer; vertical-align: middle;" class="fa fa-info"></i></a>
-                                            @if (ViewBag.gblBlnDelete && Convert.ToString(Model.MyDatatable.Rows[i]["HandlingInvoiceNo"]) == "")
+                                            @if (ViewBag.gblBlnDelete && Convert.ToString(Model.MyDatatable.Rows[i]["InvoiceNo"]) == "")
                                             {
                                                 <a><i data-toggle="modal" data-target="#DeleteContainerSSR" onclick="DeleteRemarks('trnContainerSSR','@Model.MyDatatable.Rows[i]["trnContainerSSRID"]')" title="Click to Delete" style="font-size: x-large; cursor: pointer; vertical-align: middle; color:red" class="fa fa-trash-o"></i></a>
                                             }

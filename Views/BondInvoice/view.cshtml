@@ -528,7 +528,7 @@
                             </div>
                         </div>
                         <br />
-                        @if (Model.PaymentMode.ToLower() == "cash")
+                        @if ((Model.PaymentMode ?? "").ToLower() == "cash")
                         {
 
                             <div class="box-header with-border">
