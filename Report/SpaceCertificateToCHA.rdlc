@@ -215,10 +215,14 @@
           <DataField>CHAAddress</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="InvoiceDate">
+          <DataField>InvoiceDate</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
       </Fields>
       <rd:DataSetInfo>
         <rd:DataSetName>SpaceCertificateToPrint</rd:DataSetName>
-        <rd:SchemaPath>D:\Dhruvi\CFS_SEABIRD\BONDED_WAREHOUSE\BONDED_WAREHOUSE\App_Data\SpaceCertificateToCHA.xsd</rd:SchemaPath>
+        <rd:SchemaPath>D:\Working-Project\CFS_SEABIRD\BONDED_WAREHOUSE\BONDED_WAREHOUSE\App_Data\SpaceCertificateToCHA.xsd</rd:SchemaPath>
         <rd:TableName>SpaceCertificateDetails</rd:TableName>
         <rd:TableAdapterFillMethod />
         <rd:TableAdapterGetDataMethod />
@@ -555,10 +559,10 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>15.31742cm</Width>
+                  <Width>15.63928cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>4.41259cm</Width>
+                  <Width>4.06863cm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -619,7 +623,7 @@
                                   </Style>
                                 </TextRun>
                                 <TextRun>
-                                  <Value>=First(Fields!NOCDate.Value, "SpaceCertificateDetails")</Value>
+                                  <Value>=First(Fields!InvoiceDate.Value, "SpaceCertificateDetails")</Value>
                                   <Style>
                                     <FontStyle>Normal</FontStyle>
                                     <FontFamily>tahoma</FontFamily>
@@ -1001,7 +1005,7 @@
             <DataSetName>Company</DataSetName>
             <Top>3.49659cm</Top>
             <Height>4.548cm</Height>
-            <Width>19.73001cm</Width>
+            <Width>19.70791cm</Width>
             <ZIndex>3</ZIndex>
             <Style>
               <Border>
@@ -4900,6 +4904,7 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox22</rd:DefaultName>
+              <Top>0in</Top>
               <Height>0.29167in</Height>
               <Width>7.75902in</Width>
               <ZIndex>1</ZIndex>

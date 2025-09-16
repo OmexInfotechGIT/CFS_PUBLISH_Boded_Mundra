@@ -199,6 +199,26 @@
           <DataField>SpaceCerificateIssuedTo</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="SpaceCerificateIssuedToAddress">
+          <DataField>SpaceCerificateIssuedToAddress</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="NOCNo">
+          <DataField>NOCNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="StorageDate">
+          <DataField>StorageDate</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CHAAddress">
+          <DataField>CHAAddress</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="InvoiceDate">
+          <DataField>InvoiceDate</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
       </Fields>
       <rd:DataSetInfo>
         <rd:DataSetName>SpaceCertificateToPrint</rd:DataSetName>
@@ -266,10 +286,10 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>15.66137cm</Width>
+                  <Width>15.47616cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>4.04654cm</Width>
+                  <Width>4.23175cm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -330,7 +350,7 @@
                                   </Style>
                                 </TextRun>
                                 <TextRun>
-                                  <Value>=Fields!NOCDate.Value</Value>
+                                  <Value>=Fields!InvoiceDate.Value</Value>
                                   <Style>
                                     <FontStyle>Normal</FontStyle>
                                     <FontFamily>tahoma</FontFamily>

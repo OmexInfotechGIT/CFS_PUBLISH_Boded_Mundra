@@ -159,7 +159,7 @@ function MobileAccess(MstrCustomerID) {
 
         $("#MobileAccess").modal("show");
         $("#hdnMstrCustomerID").val(MstrCustomerID);
-
+        $("#txtPassword").val("");
         $.ajax({
             url: GetRootPath + "CustomerMaster/ShowMobileLogin",
             type: "Post",
