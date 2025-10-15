@@ -2844,3 +2844,173 @@ update Admin.Generalsettings set StrValue = 'It is presumed that all consignment
 --23/06/2025
 ALTER TABLE trnTruckDestuffingDetails ADD trnDocumentContainerID INT DEFAULT(0) NOT NULL
 ALTER TABLE trnCargoTruckOutwardCumGatepassDetails ADD trnDocumentContainerID INT DEFAULT(0) NOT NULL
+
+
+-----------------------------------------------------------------
+--Nikul
+--Customer Portal
+
+alter table MstrCustomer
+add UserGroupID INT NOT NULL DEFAULT(0)
+
+alter table MstrCustomer
+add UserGroupName Varchar(255) NULL
+
+UPDATE MstrCustomer set UserGroupID = 28, UserGroupName = 'CUSTOMER'
+
+SET IDENTITY_INSERT Admin.CustomerPortalPageMenu ON;
+
+insert into Admin.CustomerPortalPageMenu (CustomerPortalPageMenuID
+,ParentID
+,LevelID
+,Controller
+,Action
+,MenuName
+,MenuLogoText
+,SortOrder
+,FlagDeleted
+,IsActive
+,Createdby
+,CreatedDate
+,UpdatedBy
+,UpdatedDate
+,isStandAlon
+,Warehouse
+,ColdStorage
+,Bonded
+,CFS)
+
+select PageMenuID
+,ParentID
+,LevelID
+,Controller
+,Action
+,MenuName
+,MenuLogoText
+,SortOrder
+,FlagDeleted
+,IsActive
+,Createdby
+,CreatedDate
+,UpdatedBy
+,UpdatedDate
+,isStandAlon
+,Warehouse
+,ColdStorage
+,Bonded
+,CFS from Admin.PageMenu 
+
+
+SET IDENTITY_INSERT Admin.CustomerPortalPageMenu OFF;
+
+
+SET IDENTITY_INSERT Admin.CustomerPortalUserPages ON;
+
+insert into Admin.CustomerPortalUserPages (CustomerPortalUserPagesID
+,UserGroupID
+,CustomerPortalPageMenuID
+,FlagView
+,FlagAdd
+,FlagEdit
+,FlagDelete
+,FlagApprove
+,FlagUnApprove
+,flagDeleted
+,IsActive
+,Createdby
+,CreatedDate
+,UpdatedBy
+,UpdatedDate)
+select UserPagesID
+,UserGroupID
+,PageMenuID
+,FlagView
+,FlagAdd
+,FlagEdit
+,FlagDelete
+,FlagApprove
+,FlagUnApprove
+,flagDeleted
+,IsActive
+,Createdby
+,CreatedDate
+,UpdatedBy
+,UpdatedDate from admin.UserPages
+
+SET IDENTITY_INSERT Admin.CustomerPortalUserPages OFF;
+
+
+--------------------------------------------------------------------------------------
+--Nikul
+--09/06/2025
+
+ALTER TABLE BondInvoice
+ADD TallyUserName NVARCHAR(MAX)
+
+ALTER TABLE BondInvoice
+ADD TallyUserID INT
+
+ALTER TABLE PreProforma
+ADD TallyUserName NVARCHAR(MAX)
+
+ALTER TABLE PreProforma
+ADD TallyUserID INT
+
+ALTER TABLE MstrTariffHead
+ADD RegularTariffCode NVARCHAR(MAX)
+
+ALTER TABLE MstrTariffHead
+ADD SezWithTaxCode NVARCHAR(MAX)
+
+ALTER TABLE MstrTariffHead
+ADD SezWithOutTaxCode NVARCHAR(MAX)
+
+ALTER TABLE MstrTariffHead
+ADD TaxExemptedCode NVARCHAR(MAX)
+
+ALTER TABLE ExportInvoice
+ADD TallyUserName NVARCHAR(MAX)
+
+ALTER TABLE ExportInvoice
+ADD TallyUserID INT
+
+
+ALTER TABLE EmptyInvoice
+ADD TallyUserName NVARCHAR(MAX)
+
+ALTER TABLE EmptyInvoice
+ADD TallyUserID INT
+
+ALTER TABLE MiscInvoice
+ADD TallyUserName NVARCHAR(MAX)
+
+ALTER TABLE MiscInvoice
+ADD TallyUserID INT
+
+--DHRUVI
+--08/07/2025
+update Admin.PageMenu set MenuName='IRN Dashboard' where Controller='trnDashboard'
+
+--NIKUL
+--23/07/2025
+
+
+ALTER table trnWorkOrder ADD IsCancel BIT DEFAULT 0
+ALTER table trnWorkOrderLotDetails ADD IsCancel BIT DEFAULT 0
+
+ALTER TABLE trnWorkOrderOut ADD IsCancel BIT DEFAULT 0
+ALTER TABLE trnWorkOrderOutLotDetails ADD IsCancel BIT DEFAULT 0
+
+--NIKUL
+--28/07/2025
+
+IF EXISTS(SELECT * FROM [PREBONDED].[admin].pagemenu where Controller = 'trnCargoRepackingGW')
+BEGIN
+	UPDATE ADMIN.PageMenu SET Controller = 'trnCargoRepacking' where Controller = 'trnCargoRepackingGW'
+end
+
+--NIKUL
+--12/09/2025
+
+INSERT INTO [PREBONDED].[dbo].[OperationalAutoMail] (PartyType,isAttachment,attachmentUrl)
+SELECT PartyType,isAttachment,attachmentUrl FROM [WHLIVE-SEABIRD].[dbo].[OperationalAutoMail] WHERE PartyType NOT IN ('CHA')

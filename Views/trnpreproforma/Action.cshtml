@@ -100,7 +100,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         @Html.LabelFor(Model => Model.BillToCustomerName, new { @for = "BillToCustomerName" })<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.BillToCustomerID, String.Empty, new { @id = "spn_BillToCustomerID", @class = "help-inline text-red" })
-                        @Html.TextBoxFor(Model => Model.BillToCustomerName, new { @id = "BillToCustomerName", @name = "BillToCustomerName", @class = "form-control", @placeholder = "Enter Billing to party" })
+                        @Html.TextBoxFor(Model => Model.BillToCustomerName, new { @id = "BillToCustomerName", @name = "BillToCustomerName", @class = "form-control", @placeholder = "Enter Billing to party", @onblur = "GetPartyData()" })
                         @Html.HiddenFor(Model => Model.BillToCustomerID, new { @id = "BillToCustomerID", @name = "BillToCustomerID" })
                     </div>
                 </div>
@@ -120,7 +120,7 @@
                 <div class="col-md-2">
                     <div class="form-group">
                         @Html.LabelFor(Model => Model.StateName, new { @for = "state" })<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.StateId, String.Empty, new { @id = "spn_StateId", @class = "help-inline text-red" })
-                        @Html.TextBoxFor(Model => Model.StateName, new { @id = "state", @name = "state", @class = "form-control", @placeholder = "Enter State" })
+                        @Html.TextBoxFor(Model => Model.StateName, new { @id = "state", @name = "state", @class = "form-control", @placeholder = "Enter State", @readonly = "true" })
                         @Html.HiddenFor(Model => Model.StateId, new { @id = "MainStateId" })
                     </div>
                 </div>
@@ -128,7 +128,7 @@
                     <div class="form-group">
                         @Html.LabelFor(Model => Model.GSTCustomerTypeId)<span class="text-red">*</span>
                         @Html.ValidationMessageFor(Model => Model.GSTCustomerTypeId, String.Empty, new { @class = "help-inline text-red" })
-                        @Html.DropDownListFor(Model => Model.GSTCustomerTypeId, Model.GSTCustomerType, new { @id = "dpdGSTCustomerType", onchange = "GSTCustomerTypeChanged()", @class = "form-control" })
+                        @Html.DropDownListFor(Model => Model.GSTCustomerTypeId, Model.GSTCustomerType, new { @id = "dpdGSTCustomerType", onchange = "GSTCustomerTypeChanged()", @class = "form-control", @style = "pointer-events: none;", @readonly = "true" })
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -969,6 +969,7 @@
                     <div class="col-md-1">
                         <div class="form-group">
                             <input type="hidden" id="ContainerSlabwiseStorageTotalBase" name="ContainerSlabwiseStorageTotalBase" />
+                            @Html.HiddenFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageRate, new { @id = "hdnContainerSlabwiseStorageRate" })
                             @Html.LabelFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageTotal)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageTotal, String.Empty, new { @id = "spn_ContainerSlabwiseStorageTotal", @class = "help-inline text-red" })
                             @Html.TextBoxFor(Model => Model.ContainerSlabwiseStorage.ContainerSlabwiseStorageTotal, new { @id = "ContainerSlabwiseStorageTotal", @name = "ContainerSlabwiseStorageTotal", @class = "form-control", @placeholder = "Enter Total", @onblur = "CalculateContainerSlabwiseStorageAMT()" })
                         </div>
@@ -1128,6 +1129,7 @@
                         <div class="form-group">
                             <input type="hidden" id="CargoSlabwiseStorageDiscountamtBase" />
                             <input type="hidden" id="CargoSlabwiseStorageRateBase" />
+                            @Html.HiddenFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageRate, new { @id = "hdnCargoSlabwiseStorageRateBase" })
                             @Html.LabelFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageDiscountamt) @Html.ValidationMessageFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageDiscountamt, String.Empty, new { @id = "spn_CargoSlabwiseStorageDiscountamt", @class = "help-inline text-red" })
                             @Html.TextBoxFor(Model => Model.CargoSlabwiseStorage.CargoSlabwiseStorageDiscountamt, new { @id = "CargoSlabwiseStorageDiscountamt", @name = "CargoSlabwiseStorageDiscountamt", @class = "form-control", @placeholder = "Enter Discount Amt", @onblur = "CalculateCargoSlabwiseStorageAMT()", @maxlength = "11", @onkeypress = "return isNumberWithTwoDecimal(event,'CargoSlabwiseStorageDiscountamt')" })
                         </div>

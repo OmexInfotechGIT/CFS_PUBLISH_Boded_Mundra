@@ -1,0 +1,286 @@
+﻿@model CFS.Models.trnCargoLocationTransfer
+@{
+    ViewBag.gblBlnView = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.View);
+    ViewBag.gblBlnEdit = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Edit);
+    ViewBag.gblBlnAdd = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Add);
+    ViewBag.gblBlnDelete = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Delete);
+    ViewBag.gblBlnApprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Approve);
+    ViewBag.gblBlnUnapprove = CFS.Com.ClsCommon.getaccesspage(CFS.Com.ClsCommon.Controller(), CFS.Com.ClsCommon.AccessType.Unapprove);
+    var IsEdit = false;
+    if (Model.doaction == "edit")
+    {
+        IsEdit = true;
+        ViewBag.Title = "Update Cargo Location Transfer";
+        if (!ViewBag.gblBlnEdit && !ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    else
+    {
+        ViewBag.Title = "Add New Cargo Location Transfer";
+        if (!ViewBag.gblBlnAdd)
+        {
+            Response.Redirect(CFS.Com.ClsCommon.GetRootPath() + "Error/unauthorize/");
+        }
+    }
+    System.Text.StringBuilder StrAutocomplete = new System.Text.StringBuilder();
+}
+
+<!-- Main content -->
+<style>
+    table th, table td {
+        padding: 10px;
+    }
+
+    .tdWidth {
+        width: 200px;
+    }
+</style>
+@using (Html.BeginForm("Action", CFS.Com.ClsCommon.Controller(), FormMethod.Post))
+{
+    @Html.HiddenFor(Model => Model.page)
+    @Html.HiddenFor(Model => Model.trnCargoLocationTransferID)
+    @Html.HiddenFor(Model => Model.doaction)
+    @Html.HiddenFor(Model => Model.filter)
+    @Html.HiddenFor(Model => Model.IsFinished)
+    @Html.HiddenFor(Model => Model.trnCargoLocationTransferNo)
+    <section class="content">
+
+        <div class="box row">
+            <div class="box-body">
+
+                @if (Model != null && Model.doaction == "edit")
+                {
+                    <div class="pull-left">
+                        <div style="display: inline-flex">
+                            <span class="badge bg-light-blue" style="font-size:15px;">Cargo Location Trnsfer Ref No : @CFS.Com.ClsCommon.AddhtmlSpace(3)@Model.trnCargoLocationTransferPrefix@Model.trnCargoLocationTransferNo</span>
+                            <span class="badge bg-light-blue" style="font-size:15px;">Cargo Location Trnsfer Ref Date : @CFS.Com.ClsCommon.AddhtmlSpace(3)@Model.CreatedDate</span>
+                            <span class="badge bg-light-blue" style="font-size:15px;"> Created By:  @Model.UserName</span>
+                        </div>
+                    </div>
+                }
+                @Html.HiddenFor(Model => Model.ItemCount, new { @id = "ItemCount", @name = "ItemCount" })
+                <div class="pull-right" id="divBack">
+                    <div style="display: inline-flex">
+                        <a id="btnBack" href="@Url.Action("Index","trnCargoLocationTransfer", new {pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-primary btn-sm" style="color: #fff" data-toggle="tooltip" title="Back to listing"><i class="fa fa-arrow-left"></i></a>
+                    </div>
+                </div>
+                <div id="divHeaderDetail">
+                    <div class="col-md-12">
+                        <div class="box-body">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.NOCNo)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.NOCNo, String.Empty, new { @id = "spn_trnDocumentID", @class = "help-inline text-red" })
+                                    @if (Model.IsSearch || Model.doaction == "edit")
+                                    {
+                                        @Html.TextBoxFor(Model => Model.NOCNo, new { @id = "NOCNo", @name = "NOCNo", @class = "form-control", @placeholder = "SELECT NOC No", @readonly = "true" })
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBoxFor(Model => Model.NOCNo, new { @id = "NOCNo", @name = "NOCNo", @class = "form-control", @placeholder = "SELECT NOC No" })
+                                    }
+                                    @Html.HiddenFor(Model => Model.trnDocumentID, new { @id = "trnDocumentID", @name = "trnDocumentID" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                @Html.LabelFor(Model => Model.BOENo)<span class="text-red">*</span> @Html.ValidationMessageFor(Model => Model.BOENo, String.Empty, new { @id = "spn_trnDocumentLotDetailsID", @class = "help-inline text-red" })
+                                @if (Model.IsSearch || Model.doaction == "edit")
+                                {
+                                    @Html.TextBoxFor(Model => Model.BOENo, new { @id = "BOENo", @name = "BOENo", @class = "form-control", @placeholder = "Enter BOE No", @readonly = "true" })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(Model => Model.BOENo, new { @id = "BOENo", @name = "BOENo", @class = "form-control", @placeholder = "Enter BOE No" })
+                                }
+                                @Html.HiddenFor(Model => Model.trnDocumentLotDetailsID, new { @id = "trnDocumentLotDetailsID", @name = "trnDocumentLotDetailsID" })
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.ReasonForTransfer)<span class="text-red">*</span>@Html.ValidationMessageFor(Model => Model.ReasonForTransfer, String.Empty, new { @id = "spn_ReasonForTransfer", @class = "help-inline text-red" })
+                                    @Html.TextBoxFor(Model => Model.ReasonForTransfer, new { @id = "ReasonForTransfer", @name = "ReasonForTransfer", @class = "form-control", @placeholder = "Enter Reason For Transfer" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(Model => Model.Remarks)
+                                    @Html.TextBoxFor(Model => Model.Remarks, new { @id = "Remarks", @name = "Remarks", @class = "form-control", @placeholder = "Enter Remarks" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="box-body">
+                            @if (Model.doaction == "add")
+                            {
+                                <div class="col-md-6 pull-right">
+                                    <div class="form-group pull-right">
+                                        <br />
+                                        <button type="submit" style="margin-right: 5px;" class="btn btn-primary" id="btnHeaderSave" onclick="return ValidateForm()"> Continue </button>
+                                        <a href="@Url.Action("index", "trnCargoLocationTransfer")" style="margin-right: 5px;" class="btn btn-danger" id="btnHeaderClear">Cancel</a>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        @if (Model.doaction == "edit" && Model.lsttrnCargoLocationTransferItems.Count > 0)
+        {
+            <div class="box row">
+                <div class="box-header with-border">
+                    <h4><b>Document Detail </b></h4>
+
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12" style="overflow:auto">
+                        <table id="example2" style="white-space: nowrap; font-size: 13px;" class="table-bordered table-hover tblFontSize tblBorderBottom">
+                            <thead>
+                                <tr>
+                                    <th>BOE No.</th>
+                                    <th>BOE Date</th>
+                                    <th>CHA/BROKER</th>
+                                    <th>IMPORTER/PARTY</th>
+                                    <th>BULK/NB STATUS</th>
+                                    <th>CARGO DESC</th>
+                                    <th>PACKAGE TYPE</th>
+                                    <th>Balance Packages</th>
+                                    <th>Balance Pieces</th>
+                                    <th>Balance Weight</th>
+                                    <th>Present Location</th>
+                                    <th>NO OF PKGS</th>
+                                    <th>NO.OF PIECES</th>
+                                    <th>WEIGHT (KGS)</th>
+                                    <th>NEW LOCATION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblData1">
+                                @{
+                                    StrAutocomplete.Append(@" <script> setTimeout(function () {");
+                                    decimal TotalBalPakages = 0, TotalBalPieces = 0, TotalBalWeight = 0, TotalTransferPakages = 0, TotalTransferPieces = 0, TotalTransferWeight = 0;
+                                }
+                                @for (var i = 0; i < @Model.lsttrnCargoLocationTransferItems.Count; i++)
+                                {
+                                    StrAutocomplete.Append($@" Autocompletebox('NewLocation_{i}', 'NewLocationID_{i}', 'trnCargoLocationTransfer', 'GetNewLocation');");
+
+                                    TotalBalPakages += Model.lsttrnCargoLocationTransferItems[i].BalancePackages;
+                                    TotalBalPieces += Model.lsttrnCargoLocationTransferItems[i].BalancePieces;
+                                    TotalBalWeight += Model.lsttrnCargoLocationTransferItems[i].BalanceWeight;
+                                    TotalTransferPakages += Model.lsttrnCargoLocationTransferItems[i].TransferPackages;
+                                    TotalTransferPieces += Model.lsttrnCargoLocationTransferItems[i].TransferPieces;
+                                    TotalTransferWeight += Model.lsttrnCargoLocationTransferItems[i].TransferWeight;
+
+                                    <tr>
+
+                                        <td style="display:none">
+
+                                            @Html.HiddenFor(m => Model.lsttrnCargoLocationTransferItems[i].trnCargoLocationTransferItemsID)
+
+                                            @Html.HiddenFor(m => Model.lsttrnCargoLocationTransferItems[i].trnCargoLocationTransferID)
+
+                                            @Html.HiddenFor(m => Model.lsttrnCargoLocationTransferItems[i].trnDocumentLotDetailsID)
+
+                                            @Html.HiddenFor(m => Model.lsttrnCargoLocationTransferItems[i].trnDocumentID)
+
+                                            @Html.HiddenFor(m => Model.lsttrnCargoLocationTransferItems[i].BOENo)
+                                            @Html.HiddenFor(m => Model.lsttrnCargoLocationTransferItems[i].BOEDate)
+
+                                            @Html.HiddenFor(m => Model.lsttrnCargoLocationTransferItems[i].CHA)
+
+                                            @Html.HiddenFor(m => Model.lsttrnCargoLocationTransferItems[i].Importer)
+
+                                            @Html.HiddenFor(m => Model.lsttrnCargoLocationTransferItems[i].BulkStatus)
+
+                                            @Html.HiddenFor(m => Model.lsttrnCargoLocationTransferItems[i].CargoDesc)
+
+                                            @Html.HiddenFor(m => Model.lsttrnCargoLocationTransferItems[i].PackageType)
+
+                                            @Html.HiddenFor(m => Model.lsttrnCargoLocationTransferItems[i].BalancePackages, new { @id = $@"BalancePackages_{i}" })
+
+                                            @Html.HiddenFor(m => Model.lsttrnCargoLocationTransferItems[i].BalancePieces)
+
+                                            @Html.HiddenFor(m => Model.lsttrnCargoLocationTransferItems[i].BalanceWeight, new { @id = $@"BalanceWeight_{i}" })
+                                            @Html.HiddenFor(m => Model.lsttrnCargoLocationTransferItems[i].PresentLocation)
+
+                                        </td>
+
+                                        <td>@Html.DisplayFor(m => Model.lsttrnCargoLocationTransferItems[i].BOENo)</td>
+                                        <td>@Html.DisplayFor(m => Model.lsttrnCargoLocationTransferItems[i].BOEDate)</td>
+                                        <td>@Html.DisplayFor(m => Model.lsttrnCargoLocationTransferItems[i].CHA)</td>
+                                        <td>@Html.DisplayFor(m => Model.lsttrnCargoLocationTransferItems[i].Importer)</td>
+                                        <td>@Html.DisplayFor(m => Model.lsttrnCargoLocationTransferItems[i].BulkStatus)</td>
+                                        <td>@Html.DisplayFor(m => Model.lsttrnCargoLocationTransferItems[i].CargoDesc)</td>
+                                        <td>@Html.DisplayFor(m => Model.lsttrnCargoLocationTransferItems[i].PackageType)</td>
+                                        <td>@Html.DisplayFor(m => Model.lsttrnCargoLocationTransferItems[i].BalancePackages)</td>
+                                        <td>@Html.DisplayFor(m => Model.lsttrnCargoLocationTransferItems[i].BalancePieces)</td>
+                                        <td>@Html.DisplayFor(m => Model.lsttrnCargoLocationTransferItems[i].BalanceWeight)</td>
+                                        <td>@Html.DisplayFor(m => Model.lsttrnCargoLocationTransferItems[i].PresentLocation)</td>
+                                        <td>
+                                            @Html.ValidationMessageFor(Model => Model.lsttrnCargoLocationTransferItems[i].TransferPackages, String.Empty, new { @id = $@"spn_TransferPackages_{i}", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(m => Model.lsttrnCargoLocationTransferItems[i].TransferPackages, new { @class = "form-control ", @id = $@"TransferPackages_{i}", @name = $@"TransferPackages_{i}", onkeyup = $@"LocationTransferBoeValid({Model.lsttrnCargoLocationTransferItems[i].BalancePackages}, this.value, 'Packages', this,{@Model.lsttrnCargoLocationTransferItems.Count})", @onblur = $@"return WeightCalculation('TransferPackages_{i}','TransferPieces_{i}','BalancePackages_{i}','BalanceWeight_{i}','TransferWeight_{i}')", @onkeypress = $@"return isNumberWithTwoDecimal(event,'TransferPackages_{i}')" })
+                                        </td>
+                                        <td>
+                                            @Html.ValidationMessageFor(Model => Model.lsttrnCargoLocationTransferItems[i].TransferPackages, String.Empty, new { @id = $@"spn_TransferPieces_{i}", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(m => Model.lsttrnCargoLocationTransferItems[i].TransferPieces, new { @class = "form-control ", @id = $@"TransferPieces_{i}", @name = $@"TransferPieces_{i}", onkeyup = $@"LocationTransferBoeValid({Model.lsttrnCargoLocationTransferItems[i].BalancePieces},this.value, 'Pieces', this,{@Model.lsttrnCargoLocationTransferItems.Count})", @onkeypress = $@"return isNumberWithTwoDecimal(event,'TransferPieces_{i}')" })
+                                        </td>
+                                        <td>
+                                            @Html.ValidationMessageFor(Model => Model.lsttrnCargoLocationTransferItems[i].TransferPackages, String.Empty, new { @id = $@"spn_TransferWeight_{i}", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(m => Model.lsttrnCargoLocationTransferItems[i].TransferWeight, new { @class = "form-control ", @id = $@"TransferWeight_{i}", @name = $@"TransferWeight_{i}", onkeyup = $@"LocationTransferBoeValid({Model.lsttrnCargoLocationTransferItems[i].BalanceWeight},this.value, 'Weight', this,{@Model.lsttrnCargoLocationTransferItems.Count})", @onkeypress = $@"return isNumberWithTwoDecimal(event,'TransferWeight_{i}')" })
+                                        </td>
+                                        <td>
+                                            @Html.ValidationMessageFor(Model => Model.lsttrnCargoLocationTransferItems[i].TransferPackages, String.Empty, new { @id = $@"spn_NewLocation_{i}", @class = "help-inline text-red" })
+                                            @Html.TextBoxFor(m => Model.lsttrnCargoLocationTransferItems[i].NewLocation, new { @class = "form-control tdWidth", @id = $@"NewLocation_{i}" })
+                                            @Html.HiddenFor(m => Model.lsttrnCargoLocationTransferItems[i].NewLocationID, new { @id = $@"NewLocationID_{i}" })
+                                        </td>
+
+                                    </tr>
+                                }
+
+                            <tr>
+                                <td colspan="7" align="right" style="font-weight:bold">Total</td>
+                                <td>@TotalBalPakages</td>
+                                <td>@TotalBalPieces</td>
+                                <td>@TotalBalWeight</td>
+                                <td></td>
+                                <td id="TotalTransferPakages">@TotalTransferPakages</td>
+                                <td id="TotalTransferPieces">@TotalTransferPieces</td>
+                                <td id="TotalTransferWeight">@TotalTransferWeight</td>
+
+                                <td></td>
+                            </tr>
+
+                                @{
+                                    StrAutocomplete.Append(@" }, 1000); </script> ");
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row col-md-12" style="margin-top: 10px;" id="divFinalSave">
+                        <div class="form-group pull-right">
+                            <button type="submit" class="btn btn-primary" onclick="return ValidateForm()" id="btnFinalSave">Save</button>
+                            <a href="@Url.Action("Index", "trnCargoLocationTransfer", new { pg = Request.Params["pg"], search = Request.Params["search"] })" class="btn btn-danger" id="btnFinalClear">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+        }
+
+    </section>
+}
+<script>
+    var doaction = '@Model.doaction';
+    var IsView = false;
+</script>
+
+@{
+
+    System.Web.HtmlString HtmlDeatails = new HtmlString(StrAutocomplete.ToString());
+}
+@HtmlDeatails
+<script src="@CFS.Com.ClsCommon.GetCacheVersion("FormJs/trnCargoLocationTransfer.js")"></script>

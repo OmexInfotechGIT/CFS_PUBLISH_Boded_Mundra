@@ -147,6 +147,31 @@ function Callbackautocomplete() {
 
 }
 
+function GetPartyData() {
+
+    let BillToCustomerID = $("#BillToCustomerID").val();
+    debugger
+
+    if (BillToCustomerID != null && BillToCustomerID != undefined && BillToCustomerID != "" && BillToCustomerID != "0") {
+        $.ajax({
+            url: GetRootPath + "trnpreproforma/GetPartyData/?ID=" + BillToCustomerID,
+            type: "GET",
+            dataType: "text",
+            success: function (data) {
+                if (data != "" && data != null) {
+                    data = data.split('|');
+
+                    $("#MainStateId").val(data[0]);
+                    $("#state").val(data[1]);
+                    $("#dpdGSTCustomerType").val(data[2]);
+
+                }
+            }
+        })
+    }
+
+}
+
 function ContainerBasedStoragecalculateTermEndDate() {
     var FromDate = $("#ContainerBasedStorageStorageStartDate").val();
     var NoOfStoragePeriod = $("#ContainerBasedStorageNoOfStoragePeriod").val();
@@ -520,8 +545,8 @@ function CalculateCargoAMT() {
     $("#CargoHandlingTotal").val(CargoHandlingTotal);
     if (parseFloat(QTY) > 0)
     {
-        //Discountamt = (parseFloat(Discountamt) * parseFloat(QTY)).toFixed(2);
-        //$("#CargoHandlingDiscountamt").val(Discountamt);
+        Discountamt = (parseFloat(Discountamt) * parseFloat(QTY)).toFixed(2);
+        $("#CargoHandlingDiscountamt").val(Discountamt);
 
 
         var total = CargoHandlingTotal - Discountamt;
@@ -1284,7 +1309,7 @@ function CalculateContainerSlabwiseStorageAMT() {
     var Rate = $('#ContainerSlabwiseStorageTotalBase').val();
     var Discountamt = $('#ContainerSlabwiseStorageDiscountamtBase').val();
     var GSTPer = $('#ContainerSlabwiseStorageGSTPer').val();
-
+    $("#hdnContainerSlabwiseStorageRate").val(Rate);
     if (GSTPer == undefined || GSTPer == null || GSTPer == "" || GSTPer == 0 || GSTPer > 100) {
         GSTPer = 0;
         $('#ContainerSlabwiseStorageGSTPer').val(0);
@@ -1502,6 +1527,8 @@ function CalculateCargoSlabwiseStorageAMT() {
     var Number = $('#CargoSlabwiseStorageNoOfStoragePeriod').val();
     var Discountamt = $('#CargoSlabwiseStorageDiscountamtBase').val();
     var GSTPer = $('#CargoSlabwiseStorageGSTPer').val();
+
+    $("#hdnCargoSlabwiseStorageRateBase").val($('#CargoSlabwiseStorageRateBase').val());
 
     if (QTY == undefined || QTY == null || QTY == "" || QTY == 0) {
         QTY = 0;
